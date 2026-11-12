@@ -1,7 +1,7 @@
-/* Clue Duel — user interface (v06c) */
+/* Clue Duel — user interface (v07a) */
 'use strict';
 (() => {
-  const APP_VER = 'v06c'; // Project CP: shown as a pill beside the title and in the browser tab
+  const APP_VER = 'v07a'; // Project CP: shown as a pill beside the title and in the browser tab
   const E = window.Engine;
   const $ = (s, el = document) => el.querySelector(s);
   const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -379,7 +379,7 @@
     let html = '';
     const vals = E.showsValues(G);
     const plusTxt = '+' + E.RULES.plusCell;
-    const bTxt = b => (b === 'x2' ? '2×' : plusTxt);
+    const bTxt = b => (b === 'x2' ? '2×' : b === 'p2' ? '+' + E.RULES.plus2Cell : plusTxt); // v07a: +2 cells
     for (let i = 0; i < pz.N; i++) {
       const c = pz.cells[i];
       if (c.k === 'c') { html += clueCellHTML(i, c); continue; }
@@ -602,7 +602,7 @@
     const name = p === 0 ? myName() : opp().n, av = p === 0 ? settings.avatar : opp().a;
     const rows = (G.log || []).filter(e => e.p === p);
     let h = `<div class="ss-head"><span class="av">${av}</span><span class="nm">${esc(name)}</span><span class="tt">${G.scores[p]}</span></div>`;
-    h += '<table class="ss"><thead><tr><th title="Round">Rd</th><th title="Letter points">Ltr</th><th title="Word points">Wd</th><th title="Bonuses: 2×, +5, Full Hand">Bon</th><th title="Penalties: Wrong Cells, Hints, Place, +30s">Pen</th><th title="Turn subtotal">Turn</th></tr></thead><tbody>';
+    h += '<table class="ss"><thead><tr><th title="Round">Rd</th><th title="Letter points">Ltr</th><th title="Word points">Wd</th><th title="Bonuses: 2×, +5, +2, Full Hand">Bon</th><th title="Penalties: Wrong Cells, Hints, Place, +30s">Pen</th><th title="Turn subtotal">Turn</th></tr></thead><tbody>';
     for (const e of rows) {
       const cls = win.get(e.r) === p ? ' class="win"' : '';
       const pen = e.pen ? '−' + e.pen : '';
@@ -673,6 +673,7 @@
         for (const [w, v] of d.wv) if (v) add(esc(w), v);
         if (d.nx2) add('2× bonus' + xn(d.nx2), d.x2);
         if (d.np5) add('+5 bonus' + xn(d.np5), d.p5);
+        if (d.np2) add('+2 bonus' + xn(d.np2), d.p2);
         if (d.full) add('Full Hand', d.full);
       } else { // turns saved by v02
         if (e.ltr) add('Letters', e.ltr);
@@ -784,8 +785,8 @@
         <li>How many tiles each player holds: 5 to 8. Your hand refills from the bag after every turn.</li>
         <li>More tiles give you more choices each turn. Fewer tiles make the <b>Full Hand</b> bonus easier to earn: place as many tiles in one turn as this setting (all 5 of 5, for example). See ${go('Bonuses')}.</li>`)}
       ${sec('Bonus Squares', `
-        <li><b>Fixed</b>: the bonus cells are placed when the game starts and stay put.</li>
-        <li><b>Floating</b>: a new +5 and 2× pair appears every turn from turn 2 and lasts 2 turns; last turn's pair is dimmed.</li>
+        <li><b>Fixed</b>: the bonus cells (2×, +5 and +2) are placed when the game starts and stay put.</li>
+        <li><b>Floating</b>: a new +5 and 2× pair appears every turn from turn 2 and lasts 2 turns; last turn's pair is dimmed. +2 cells are never floating: they come only with Fixed or Both.</li>
         <li><b>Both</b>: fixed cells plus the floating pairs.</li>
         <li><b>Off</b>: no bonus cells.</li>
         <li>What the cells are worth is in ${go('Bonuses')}.</li>`)}
@@ -806,6 +807,7 @@
         <li>Pick one of five scoring modes. The modes differ only in how tiles and words score. Everything else is the same in every mode:</li>
         <li class="help-sub"><b>In every mode</b></li>
         <li><span class="chip p5">+${R.plusCell}</span> cells add <b>${R.plusCell}</b> points.</li>
+        <li><span class="chip p5">+${R.plus2Cell}</span> cells add <b>${R.plus2Cell}</b> points.</li>
         <li><span class="chip x2">2×</span> cells double the turn's points from tiles and words (see ${go('Bonuses')}).</li>
         <li><b>Full Hand</b>: <b>+${R.fullHandBonus}</b> points.</li>
         <li><b>Wrong Cell</b>: costs <b>${wrongMin} points</b>, or the tile's value if that is more. In Classic a wrong Q or Z costs 10 and a wrong E costs 2.</li>
@@ -872,9 +874,9 @@
         <li><b>✓ Done</b> banks this turn's points (it shows how many). With nothing placed it reads <b>Pass</b>.</li>`)}
       ${sec('Bonuses', `
         <li><span class="chip x2">2×</span> doubles your turn's points from tiles and words. Each extra 2× in the same turn adds another double: 10 → 20 → 40 → 60.</li>
-        <li><span class="chip p5">+${R.plusCell}</span> cells add ${R.plusCell} points. They are added after doubling and are never doubled.</li>
+        <li><span class="chip p5">+${R.plusCell}</span> cells add ${R.plusCell} points, and <span class="chip p5">+${R.plus2Cell}</span> cells add ${R.plus2Cell} points. Both are added after doubling and are never doubled. +${R.plus2Cell} cells appear only with the Fixed or Both setting (see ${go('Bonus Squares')}).</li>
         <li><b>Full Hand</b>: place as many tiles in one turn as your ${go('Letters in Hand', '"Letters in Hand"')} setting (all 7 of 7, for example) to earn a +${R.fullHandBonus} point bonus. A tile put down with 🎯 Place counts. A Full Hand bonus is added after doubling and is never doubled. Near the end of the game, when the bag is empty and your hand holds fewer tiles than the setting, it can't be earned.</li>
-        <li>Bonus cells glow green: +${R.plusCell} pulses slowly, 2× quickly.</li>
+        <li>Bonus cells glow green and pulse at three speeds: +${R.plus2Cell} slowest, +${R.plusCell} slowly, 2× quickly. The bigger the bonus, the faster the pulse.</li>
         <li>Where bonus cells appear is set by ${go('Bonus Squares')}.</li>`)}
       ${sec('Turn Reports and The Scoreboard', `
         <li>After each turn, a report shows that player's TOTAL first, then a row for every word, bonus and penalty (+ added, − taken away). On wide screens it sits at the bottom of that player's Scoreboard column; on phones, at the bottom of the grid.</li>

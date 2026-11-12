@@ -1,4 +1,4 @@
-/* Clue Duel — game engine (v06)
+/* Clue Duel — game engine (v07a)
    Puzzle generator (arrow-word grid), tile bag, scoring modes, bonus squares and the computer opponent.
    No DOM code here: app.js handles everything the player sees. */
 'use strict';
@@ -6,7 +6,7 @@
   // ---------- Letter values (rarer letters are worth more) ----------
   const VAL = { A: 1, B: 3, C: 3, D: 2, E: 1, F: 4, G: 2, H: 4, I: 1, J: 8, K: 5, L: 1, M: 3, N: 1, O: 1, P: 3, Q: 10, R: 1, S: 1, T: 1, U: 1, V: 4, W: 4, X: 8, Y: 4, Z: 10 };
   const SIZES = { S: [5, 6], M: [6, 7], L: [7, 11] }; // [columns, rows] of the playable area
-  const RULES = { wrongPenalty: 2, hintCost: 3, fullHandBonus: 10, perLetterWordBonus: 2, plusCell: 5, passLimit: 3, timeCost: 5, timeAdd: 30000 };
+  const RULES = { wrongPenalty: 2, hintCost: 3, fullHandBonus: 10, perLetterWordBonus: 2, plusCell: 5, plus2Cell: 2, passLimit: 3, timeCost: 5, timeAdd: 30000 };
 
   // ---------- Scoring modes (JM, CD-2: 2.1–2.5) ----------
   // tiles: what a placed tile scores · word: what finishing a word scores
@@ -83,25 +83,41 @@
 
   // ---------- Lexicon ----------
   let WORDS = null;
+  // v07a (JM, CD-18: 5.1): a word may appear more than once. The first line is its main clue set; each later line adds
+  // an extra clue set (e.g. HE: "That man" and "Helium's symbol"), and one set is picked at random for each grid.
+  // Optional 6th field: the Challenge Levels where that clue set may be used, "7" (7 and up) or "2-4" (2 to 4)
+  // (JM, CD-13: 2.1–2.3). On a word's first line it also limits where the word itself appears.
+  const skRange = s => { const m = /^\s*(\d+)\s*(?:-\s*(\d+))?\s*$/.exec(s || ''); return m ? [+m[1], m[2] ? +m[2] : 10] : [1, 10]; };
+  const inSk = (r, skill) => !r || (skill >= r[0] && skill <= r[1]);
+  let WBY = null;
   function lexicon() {
     if (WORDS) return WORDS;
     WORDS = [];
-    const seen = new Set();
+    WBY = {};
     for (const raw of String(global.LEXICON_DATA || '').split('\n')) {
       const line = raw.trim();
       if (!line || line[0] === '#') continue;
       const f = line.split('|');
       const w = (f[0] || '').trim().toUpperCase();
-      if (!/^[A-Z]{2,11}$/.test(w) || seen.has(w)) continue;
-      seen.add(w);
-      WORDS.push({
-        w,
+      if (!/^[A-Z]{2,11}$/.test(w)) continue;
+      const set = {
         e: (f[1] || '').trim(),
         h: (f[2] || f[1] || '').trim(),
         l: Math.min(5, Math.max(1, parseInt(f[3], 10) || 1)),
-        p: (f[4] || '').trim()
-      });
+        p: (f[4] || '').trim(),
+        sk: skRange(f[5])
+      };
+      if (WBY[w]) {
+        const en = WBY[w];
+        (en.alts = en.alts || []).push(set);
+        en.wsk = [Math.min(en.wsk[0], set.sk[0]), Math.max(en.wsk[1], set.sk[1])]; // the word appears wherever any set may
+        continue;
+      }
+      const entry = Object.assign({ w, wsk: set.sk.slice() }, set);
+      WBY[w] = entry;
+      WORDS.push(entry);
     }
+    const seen = new Set(Object.keys(WBY));
     // One-letter answers (v04): every letter A–Z, clued from LETTER_DATA (see letterClues)
     for (let k = 0; k < 26; k++) { const ch = String.fromCharCode(65 + k); if (!seen.has(ch)) { seen.add(ch); WORDS.push({ w: ch, e: ch, h: ch, l: 1, p: '' }); } }
     return WORDS;
@@ -157,11 +173,14 @@
 
   // Bitset index: for each word length, position and letter, which words match.
   const indexCache = {};
-  function getIndex(maxLevel) {
-    if (indexCache[maxLevel]) return indexCache[maxLevel];
+  function getIndex(maxLevel, skill) {
+    const ck = maxLevel + ':' + (skill || 0);
+    if (indexCache[ck]) return indexCache[ck];
     const idx = {};
     for (const e of lexicon()) {
       if (e.l > maxLevel) continue;
+      // v07a: a word enters the grid only at Challenge Levels where at least one of its clue sets may be used
+      if (skill && !inSk(e.sk, skill) && !(e.alts || []).some(x => inSk(x.sk, skill))) continue;
       const L = e.w.length;
       (idx[L] = idx[L] || { list: [] }).list.push(e);
     }
@@ -176,7 +195,7 @@
       for (let i = 0; i < n; i++) ix.full[i >>> 5] |= (1 << (i & 31));
       ix.avail = new Uint32Array(nw);
     }
-    indexCache[maxLevel] = idx;
+    indexCache[ck] = idx;
     return idx;
   }
   function popcount(x) { x -= (x >>> 1) & 0x55555555; x = (x & 0x33333333) + ((x >>> 2) & 0x33333333); return (((x + (x >>> 4)) & 0x0F0F0F0F) * 0x01010101) >>> 24; }
@@ -427,7 +446,7 @@
       const step = mode === 'open' ? 25 : 30; // widen the vocabulary if the grid keeps failing to fill
       for (let t = 0; t < tries; t++, attempt++) {
         if (t > 0 && t % step === 0) lvl = Math.min(5, lvl + 1);
-        const idx = getIndex(lvl);
+        const idx = getIndex(lvl, skill);
         const g = makePattern(W, H, L, density, rng, mode, maxOnes);
         if (!g) continue;
         const slots = slotsOf(g, R, C, mode === 'full' ? 1 : 2);
@@ -473,7 +492,13 @@
       const pics = (picIndex()[e.w] || []).filter(x => skill >= PIC_MIN[x.t])
         .map(x => ({ x, r: PIC_RANK[x.t] + rng() * 0.5 })).sort((a, b) => b.r - a.r).map(o2 => o2.x);
       const wp = skill >= 5 ? wordplayIndex()[e.w] : '';
-      if (pics.length && rng() < pPic) {
+      // v07a: a word with extra clue sets picks one of the sets allowed at this Challenge Level at random. Pictures
+      // and wordplay belong to the main meaning, so an extra set uses its own literal or indirect clue only.
+      const sets = [e].concat(e.alts || []).filter(x => inSk(x.sk, skill));
+      const cs = sets.length > 1 ? sets[Math.floor(rng() * sets.length)] : (sets[0] || e);
+      if (cs !== e) {
+        clue = rng() < pHard && cs.h && cs.h !== cs.e ? { t: cs.h, hard: true } : { t: cs.e, hard: false };
+      } else if (pics.length && rng() < pPic) {
         const pick = rng() < 0.65 ? pics[0] : pics[Math.floor(rng() * pics.length)];
         clue = { t: e.e, pic: pick.p, pt: pick.t, hard: pick.t !== 'lit' };
       } else if (rng() < pHard && (wp || (e.h && e.h !== e.e))) clue = wp && rng() < 0.85 ? { t: wp, hard: true, wp: true } : { t: e.h && e.h !== e.e ? e.h : wp, hard: true };
@@ -496,9 +521,11 @@
     }
     // Bonus cells on the remaining (open) letter cells
     const open = shuffle(letterCells.filter(ci => !pre.has(ci)), rng);
-    const nx2 = Math.max(1, Math.round(open.length * 0.08)), np5 = Math.max(1, Math.round(open.length * 0.05));
+    // v07a (JM, CD-13: 1.1, CD-18: 6.2): +2 cells exist only as fixed cells (Fixed and Both), about 6% of open cells
+    const nx2 = Math.max(1, Math.round(open.length * 0.08)), np5 = Math.max(1, Math.round(open.length * 0.05)), np2 = Math.max(1, Math.round(open.length * 0.06));
     open.slice(0, nx2).forEach(ci => { cells[ci].b = 'x2'; });
     open.slice(nx2, nx2 + np5).forEach(ci => { cells[ci].b = 'p5'; });
+    open.slice(nx2 + np5, nx2 + np5 + np2).forEach(ci => { cells[ci].b = 'p2'; });
     return { W, H, R, C, N, cells, slots: outSlots, cellSlots, pre: [...pre], skill, seed: o.seed, attempts: o.attempt + 1, mode: o.mode };
   }
 
@@ -582,12 +609,12 @@
   function scoreMove(state, placements) {
     const pz = state.pz, M = modeOf(state);
     const set = new Set(placements.map(p => p.cell));
-    let raw = 0, nx2 = 0, np5 = 0, chain = 0;
+    let raw = 0, nx2 = 0, np5 = 0, np2 = 0, chain = 0;
     for (const p of placements) {
       if (M.tiles === 'chain') { if (p.reset) chain = 0; chain++; raw += chain; }
       else raw += letterPts(state, p.ch);
       const b = bonusAt(state, p.cell);
-      if (b === 'x2') nx2++; else if (b === 'p5') np5++;
+      if (b === 'x2') nx2++; else if (b === 'p5') np5++; else if (b === 'p2') np2++;
     }
     const touched = new Set();
     placements.forEach(p => pz.cellSlots[p.cell].forEach(si => touched.add(si)));
@@ -600,9 +627,10 @@
     const base = raw + wordPts;
     const x2 = nx2 ? base * 2 * nx2 - base : 0;      // one 2x: base x 2 · two: x 4 · three: x 6 (no compounding)
     const p5 = np5 * M.plus;                          // added after doubling, never doubled
+    const p2 = np2 * RULES.plus2Cell;                 // v07a: +2 cells, also added after doubling
     const full = placements.length > 0 && placements.length >= state.settings.hand;
     const fullPts = full ? M.full : 0;                // added after doubling, never doubled
-    return { letters: raw, raw, base, nx2, x2, np5, p5, words, wordPts, full, fullPts, total: base + x2 + p5 + fullPts };
+    return { letters: raw, raw, base, nx2, x2, np5, p5, np2, p2, words, wordPts, full, fullPts, total: base + x2 + p5 + p2 + fullPts };
   }
 
   function commit(state, player, placements) {
@@ -689,10 +717,10 @@
     const pen = state.turnPen[p];
     const e = { p, n: state.turnNo, r: Math.ceil(state.turnNo / 2), kind: sc ? 'play' : (kind || 'pass'), ltr: 0, wd: 0, bon: 0, pen, tot: -pen };
     if (sc) {
-      e.ltr = sc.raw; e.wd = sc.wordPts; e.bon = sc.x2 + sc.p5 + sc.fullPts; e.tot = sc.total - pen;
+      e.ltr = sc.raw; e.wd = sc.wordPts; e.bon = sc.x2 + sc.p5 + (sc.p2 || 0) + sc.fullPts; e.tot = sc.total - pen;
       e.words = sc.words.map(w => w.w);
       // full breakdown for the turn report (CD-7 add'l 3.3)
-      e.det = { n: state.lastMove.cells.length, wv: sc.words.map(w => [w.w, w.v]), nx2: sc.nx2, x2: sc.x2, np5: sc.np5, p5: sc.p5, full: sc.fullPts };
+      e.det = { n: state.lastMove.cells.length, wv: sc.words.map(w => [w.w, w.v]), nx2: sc.nx2, x2: sc.x2, np5: sc.np5, p5: sc.p5, np2: sc.np2, p2: sc.p2, full: sc.fullPts };
     }
     e.items = (state.turnItems && state.turnItems[p]) || [];
     state.log.push(e);
@@ -790,6 +818,7 @@
           let gain = (bagEmpty ? tileVal(state, t.ch) : 0);
           const b = bonusAt(state, ci); // fixed or floating bonus waiting here
           if (b === 'p5') gain += M.plus;
+          if (b === 'p2') gain += RULES.plus2Cell;
           if (b === 'x2') gain += 4 + runBase; // a 2x doubles everything else this turn
           let risk = 0;
           for (const si of pz.cellSlots[ci]) {

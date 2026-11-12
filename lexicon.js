@@ -1,7 +1,8 @@
-/* Clue Duel — custom lexicon (v06c): 3,327 words, 271 of them 2-letter answers (108 added in v05, 54 in v06)
-   Format, one entry per line:  WORD|literal clue|indirect clue|level 1-5|picture (optional emoji)
+/* Clue Duel — custom lexicon (v07a): 3,414 words (304 of them 2-letter answers) plus 72 extra clue sets
+   Format, one entry per line:  WORD|literal clue|indirect clue|level 1-5|picture (optional emoji)|Challenge Levels (optional: "7" = 7 and up, "2-4")
+   A word listed again adds an EXTRA clue set (one set is picked at random for each grid).
    Level: 1 everyday · 2 common · 3 moderate · 4 advanced · 5 obscure
-   Words are 2–7 letters, plus 11-letter words for Large grids (A–Z only). Duplicates are ignored (first one wins). */
+   Words are 2–7 letters, plus 11-letter words for Large grids (A–Z only). A repeated word adds an extra clue set (see above). */
 self.LEXICON_DATA = `
 # ---------- 2 letters ----------
 AD|Commercial|Promo|1
@@ -3354,6 +3355,172 @@ CF|"Compare," in footnotes|Scholar's "see also"|3
 HB|Middle pencil grade|Standard pencil letters|2
 GT|Gran Turismo|Sports-car letters|2
 IR|Infrared|TV remote's beam|2
+# ---------- v07a additions (JM CD-13: 2.1–2.3, CD-17: 2.3.1, CD-18: 5.1) ----------
+# Format adds an optional 6th field: the Challenge Levels where the clue set may be used ("2-4" = 2 to 4, "7" = 7 and up).
+# A word that is already in the list gets an EXTRA clue set from these lines (one set is picked at random per grid).
+# Country codes (web endings), Challenge Levels 2-4
+AR|Argentina, on the web (.__)|Web ending for Buenos Aires sites|2||2-4
+AT|Austria, on the web (.__)|Web ending for Vienna sites|2||2-4
+AU|Australia, on the web (.__)|Web ending for Sydney sites|2||2-4
+BE|Belgium, on the web (.__)|Web ending for Brussels sites|2||2-4
+BR|Brazil, on the web (.__)|Web ending for Rio sites|2||2-4
+CA|Canada, on the web (.__)|Web ending for Toronto sites|2||2-4
+CH|Switzerland, on the web (.__)|Web ending for Zurich sites|2||2-4
+CL|Chile, on the web (.__)|Web ending for Santiago sites|2||2-4
+CN|China, on the web (.__)|Web ending for Beijing sites|2||2-4
+CO|Colombia, on the web (.__)|Web ending for Bogota sites|2||2-4
+CU|Cuba, on the web (.__)|Web ending for Havana sites|2||2-4
+CZ|Czechia, on the web (.__)|Web ending for Prague sites|2||2-4
+DE|Germany, on the web (.__)|Web ending for Berlin sites|2||2-4
+DK|Denmark, on the web (.__)|Web ending for Copenhagen sites|2||2-4
+EG|Egypt, on the web (.__)|Web ending for Cairo sites|2||2-4
+ES|Spain, on the web (.__)|Web ending for Madrid sites|2||2-4
+FI|Finland, on the web (.__)|Web ending for Helsinki sites|2||2-4
+FR|France, on the web (.__)|Web ending for Paris sites|2||2-4
+GR|Greece, on the web (.__)|Web ending for Athens sites|2||2-4
+HK|Hong Kong, on the web (.__)|Web ending for Kowloon sites|2||2-4
+HU|Hungary, on the web (.__)|Web ending for Budapest sites|2||2-4
+ID|Indonesia, on the web (.__)|Web ending for Jakarta sites|2||2-4
+IE|Ireland, on the web (.__)|Web ending for Dublin sites|2||2-4
+IL|Israel, on the web (.__)|Web ending for Tel Aviv sites|2||2-4
+IN|India, on the web (.__)|Web ending for Mumbai sites|2||2-4
+IS|Iceland, on the web (.__)|Web ending for Reykjavik sites|2||2-4
+IT|Italy, on the web (.__)|Web ending for Rome sites|2||2-4
+JM|Jamaica, on the web (.__)|Web ending for Kingston sites|2||2-4
+JP|Japan, on the web (.__)|Web ending for Tokyo sites|2||2-4
+KE|Kenya, on the web (.__)|Web ending for Nairobi sites|2||2-4
+KR|South Korea, on the web (.__)|Web ending for Seoul sites|2||2-4
+MA|Morocco, on the web (.__)|Web ending for Casablanca sites|2||2-4
+MX|Mexico, on the web (.__)|Web ending for Cancun sites|2||2-4
+MY|Malaysia, on the web (.__)|Web ending for Kuala Lumpur sites|2||2-4
+NG|Nigeria, on the web (.__)|Web ending for Lagos sites|2||2-4
+NL|Netherlands, on the web (.__)|Web ending for Amsterdam sites|2||2-4
+NO|Norway, on the web (.__)|Web ending for Oslo sites|2||2-4
+NZ|New Zealand, on the web (.__)|Web ending for Auckland sites|2||2-4
+PE|Peru, on the web (.__)|Web ending for Lima sites|2||2-4
+PH|Philippines, on the web (.__)|Web ending for Manila sites|2||2-4
+PK|Pakistan, on the web (.__)|Web ending for Karachi sites|2||2-4
+PL|Poland, on the web (.__)|Web ending for Warsaw sites|2||2-4
+PT|Portugal, on the web (.__)|Web ending for Lisbon sites|2||2-4
+RO|Romania, on the web (.__)|Web ending for Bucharest sites|2||2-4
+RU|Russia, on the web (.__)|Web ending for Moscow sites|2||2-4
+SA|Saudi Arabia, on the web (.__)|Web ending for Riyadh sites|2||2-4
+SE|Sweden, on the web (.__)|Web ending for Stockholm sites|2||2-4
+SG|Singapore, on the web (.__)|Web ending for Lion City sites|2||2-4
+TH|Thailand, on the web (.__)|Web ending for Bangkok sites|2||2-4
+TR|Turkey, on the web (.__)|Web ending for Istanbul sites|2||2-4
+TW|Taiwan, on the web (.__)|Web ending for Taipei sites|2||2-4
+UA|Ukraine, on the web (.__)|Web ending for Kyiv sites|2||2-4
+UK|United Kingdom, on the web (.__)|Web ending for London sites|2||2-4
+VE|Venezuela, on the web (.__)|Web ending for Caracas sites|2||2-4
+VN|Vietnam, on the web (.__)|Web ending for Hanoi sites|2||2-4
+ZA|South Africa, on the web (.__)|Web ending for Cape Town sites|2||2-4
+AE|United Arab Emirates, on the web (.__)|Web ending for Dubai sites|2||2-4
+QA|Qatar, on the web (.__)|Web ending for Doha sites|2||2-4
+# Currency codes, Challenge Level 4 and up
+USD|U.S. dollar's code|Greenback, on an exchange board|3||4
+EUR|Euro's code|Currency board letters for Paris or Rome|3||4
+GBP|British pound's code|Sterling, on an exchange board|3||4
+JPY|Japanese yen's code|Tokyo money, on an exchange board|3||4
+CNY|Chinese yuan's code|Beijing money, on an exchange board|3||4
+INR|Indian rupee's code|Mumbai money, on an exchange board|3||4
+CAD|Canadian dollar's code|Loonie, on an exchange board|3||4
+AUD|Australian dollar's code|Aussie money, on an exchange board|3||4
+CHF|Swiss franc's code|Zurich money, on an exchange board|3||4
+MXN|Mexican peso's code|Peso, on an exchange board|3||4
+BRL|Brazilian real's code|Rio money, on an exchange board|3||4
+KRW|South Korean won's code|Seoul money, on an exchange board|3||4
+ZAR|South African rand's code|Rand, on an exchange board|3||4
+SEK|Swedish krona's code|Stockholm money, on an exchange board|3||4
+NOK|Norwegian krone's code|Oslo money, on an exchange board|3||4
+DKK|Danish krone's code|Copenhagen money, on an exchange board|3||4
+NZD|New Zealand dollar's code|Kiwi money, on an exchange board|3||4
+SGD|Singapore dollar's code|Lion City money, on an exchange board|3||4
+HKD|Hong Kong dollar's code|Kowloon money, on an exchange board|3||4
+TRY|Turkish lira's code|Istanbul money, on an exchange board|3||4
+THB|Thai baht's code|Bangkok money, on an exchange board|3||4
+PLN|Polish zloty's code|Warsaw money, on an exchange board|3||4
+AED|UAE dirham's code|Dubai money, on an exchange board|3||4
+# Airport codes, Challenge Level 7 and up
+LAX|Los Angeles airport code|Bag tag for Hollywood trips|4||7
+JFK|New York's biggest airport code|Bag tag for Queens arrivals|4||7
+LHR|London Heathrow code|Bag tag for Big Ben trips|4||7
+CDG|Paris airport code|Bag tag for Eiffel Tower trips|4||7
+ORD|Chicago O'Hare code|Bag tag for Windy City trips|4||7
+ATL|Atlanta airport code|World's busiest airport, on a bag tag|4||7
+DFW|Dallas-Fort Worth code|Bag tag for Texas trips|4||7
+DEN|Denver airport code|Bag tag for Mile High City trips|4||7
+SFO|San Francisco airport code|Bag tag for Golden Gate trips|4||7
+SEA|Seattle airport code|Bag tag for Space Needle trips|4||7
+MIA|Miami airport code|Bag tag for South Beach trips|4||7
+BOS|Boston airport code|Bag tag for Fenway trips|4||7
+LAS|Vegas airport code|Bag tag for Strip trips|4||7
+MCO|Orlando airport code|Bag tag for theme-park trips|4||7
+YYZ|Toronto airport code|Bag tag for CN Tower trips|4||7
+YVR|Vancouver airport code|Bag tag for Stanley Park trips|4||7
+MEX|Mexico City airport code|Bag tag for Aztec-capital trips|4||7
+GRU|Sao Paulo airport code|Bag tag for Brazil's biggest city|4||7
+FRA|Frankfurt airport code|Bag tag for German banking-city trips|4||7
+AMS|Amsterdam airport code|Bag tag for canal-city trips|4||7
+MAD|Madrid airport code|Bag tag for Spanish-capital trips|4||7
+FCO|Rome airport code|Bag tag for Colosseum trips|4||7
+MUC|Munich airport code|Bag tag for Oktoberfest trips|4||7
+ZRH|Zurich airport code|Bag tag for Swiss banking trips|4||7
+DUB|Dublin airport code|Bag tag for Irish-capital trips|4||7
+IST|Istanbul airport code|Bag tag for Bosphorus trips|4||7
+DXB|Dubai airport code|Bag tag for Burj Khalifa trips|4||7
+DOH|Doha airport code|Bag tag for Qatar trips|4||7
+SIN|Singapore airport code|Bag tag for Lion City trips|4||7
+HKG|Hong Kong airport code|Bag tag for Victoria Harbour trips|4||7
+NRT|Tokyo Narita code|Bag tag for Japan trips|4||7
+ICN|Seoul airport code|Bag tag for K-pop capital trips|4||7
+PEK|Beijing airport code|Bag tag for Forbidden City trips|4||7
+SYD|Sydney airport code|Bag tag for Opera House trips|4||7
+AKL|Auckland airport code|Bag tag for Kiwi trips|4||7
+JNB|Johannesburg airport code|Bag tag for South African trips|4||7
+CAI|Cairo airport code|Bag tag for pyramid trips|4||7
+DEL|Delhi airport code|Bag tag for Taj Mahal trips|4||7
+BOM|Mumbai airport code|Bag tag for Bollywood trips|4||7
+# Element symbols (JM CD-17: 2.3.1): extra clue sets for existing words, plus a few new words
+HE|Helium's symbol|Balloon gas, on the periodic table|1
+NE|Neon's symbol|Glowing-sign gas, on the periodic table|1
+AL|Aluminum's symbol|Soda-can metal, on the periodic table|1
+AR|Argon's symbol|Noble gas in light bulbs, on the periodic table|2
+CA|Calcium's symbol|Bone mineral, on the periodic table|1
+CO|Cobalt's symbol|Blue-glass metal, on the periodic table|2
+MG|Magnesium's symbol|Flare metal, on the periodic table|2
+MN|Manganese's symbol|Steel-hardening metal, on the periodic table|3||4
+PB|Lead's symbol|Old water-pipe metal, on the periodic table|2
+PT|Platinum's symbol|Precious-ring metal, on the periodic table|2
+SI|Silicon's symbol|Computer-chip element, on the periodic table|1
+TI|Titanium's symbol|Strong, light metal, on the periodic table|2
+BA|Barium's symbol|X-ray drink element, on the periodic table|3||4
+RA|Radium's symbol|Curie's glowing element, on the periodic table|2
+PO|Polonium's symbol|Element named for Poland|3||4
+CD|Cadmium's symbol|Old battery metal, on the periodic table|3||4
+SE|Selenium's symbol|Element named for the moon|3||4
+ND|Neodymium's symbol|Super-magnet metal, on the periodic table|3||4
+AM|Americium's symbol|Smoke-detector element, on the periodic table|3||4
+CF|Californium's symbol|Element named for a Golden State|3||4
+MD|Mendelevium's symbol|Element named for the periodic table's creator|4||7
+IR|Iridium's symbol|Hardest-to-corrode metal, on the periodic table|3||4
+SR|Strontium's symbol|Red-firework metal, on the periodic table|3||4
+AS|Arsenic's symbol|Poison in old mysteries, on the periodic table|2
+BE|Beryllium's symbol|Emerald element, on the periodic table|3||4
+OS|Osmium's symbol|Densest metal, on the periodic table|3||4
+IN|Indium's symbol|Touch-screen metal, on the periodic table|3||4
+GA|Gallium's symbol|Metal that melts in your hand, on the periodic table|3||4
+PD|Palladium's symbol|Car-converter metal, on the periodic table|3||4
+NO|Nobelium's symbol|Element named for Nobel|3||4
+EU|Europium's symbol|Element named for a continent|3||4
+CM|Curium's symbol|Element named for the Curies|3||4
+BI|Bismuth's symbol|Pink stomach-remedy metal, on the periodic table|3||4
+CS|Cesium's symbol|Atomic-clock element, on the periodic table|3||4
+ES|Einsteinium's symbol|Element named for Einstein|3||4
+GE|Germanium's symbol|Early transistor element, on the periodic table|3||4
+TH|Thorium's symbol|Element named for the god of thunder|3||4
+CN|Copernicium's symbol|Element named for Copernicus|4||7
+BK|Berkelium's symbol|Element named for a California campus|4||7
 `;
 
 /* v04 (JM, CD-9: 1.1): clues for 1-letter answers, which let every clue cell hold a clue.

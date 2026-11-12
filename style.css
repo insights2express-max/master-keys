@@ -1,4 +1,4 @@
-/* Clue Duel — styles (v06c) */
+/* Clue Duel — styles (v07a) */
 :root {
   --bg: #ece6d8;
   --surface: #fbf8f1;
@@ -330,11 +330,11 @@ select {
 .cell .pv { position: absolute; right: 3px; bottom: 1px; font-size: calc(var(--cell) * .2); font-weight: 700; }
 .cell.reveal { color: var(--muted); font-weight: 600; }
 .cell.b-x2 { background: var(--x2-bg); }
-.cell.b-p5 { background: var(--p5-bg); }
+.cell.b-p5, .cell.b-p2 { background: var(--p5-bg); }
 /* Bonus text twice the v01 size */
 .cell .bn { font-size: calc(var(--cell) * .5); font-weight: 900; letter-spacing: -.03em; }
 .cell.b-x2 .bn { color: var(--x2); }
-.cell.b-p5 .bn { color: var(--p5); }
+.cell.b-p5 .bn, .cell.b-p2 .bn { color: var(--p5); }
 /* Medium-green pulse glow on bonus cells, before and after a tile lands: +5 slow, 2x fast */
 .cell .glow {
   position: absolute; inset: 0; pointer-events: none;
@@ -342,6 +342,8 @@ select {
   animation: glow 2.6s ease-in-out infinite;
 }
 .cell.bz-x2 .glow { animation-duration: .9s; }
+/* v07a (JM, CD-18: 6.1.1, CD-19: 2.1a): +2 pulses slowest, so the bigger the bonus, the faster the pulse */
+.cell.bz-p2 .glow { animation-duration: 4.5s; }
 .cell .bdg { position: absolute; left: 2px; top: 1px; font-size: calc(var(--cell) * .2); font-weight: 900; color: #1e7d36; line-height: 1; }
 /* Floating bonuses: last turn's pair is dimmed (it disappears after this turn) */
 .cell.fl-old .bn { opacity: .5; }
