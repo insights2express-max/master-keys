@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#2b3a4a">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Clue Duel">
+  <meta name="description" content="A head-to-head crossword tile game you can play offline.">
+  <title>Clue Duel · v06c</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="icon" href="icons/icon-192.png" type="image/png" sizes="192x192">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- ===== Home / setup ===== -->
+  <section id="home" class="screen">
+    <div class="home-wrap">
+      <header class="brand">
+        <img class="logo" src="icons/icon.svg" alt="" width="64" height="64">
+        <div>
+          <h1>Clue Duel <span class="vpill" id="verPill">v06c</span></h1>
+          <p class="tag">Place your letters. Finish the words. Beat your rival.</p>
+        </div>
+      </header>
+
+      <div class="field">
+        <span class="lbl">You</span>
+        <div class="me-row">
+          <button class="me-av" id="myAv" type="button" aria-label="Choose your avatar">🙂</button>
+          <input type="text" id="myName" maxlength="14" placeholder="Your name" autocomplete="off" spellcheck="false" aria-label="Your name">
+        </div>
+      </div>
+
+      <!-- Opponent (2 rows) + Challenge Level (opponent skill and puzzle difficulty together) -->
+      <div class="pair opp-row">
+        <div class="field">
+          <span class="lbl">Opponent</span>
+          <div class="card opp-card">
+            <div class="opp-face" id="oppFace">🦊</div>
+            <div class="opp-info">
+              <div class="opp-name" id="oppName"></div>
+              <div class="opp-rec" id="oppRec"></div>
+            </div>
+          </div>
+        </div>
+        <label class="field chal">
+          <span class="lbl">Challenge Level</span>
+          <select id="skillSel" aria-label="Challenge Level">
+            <option value="1">1 · Gentle</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10 · Ruthless</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="field">
+        <span class="lbl">Grid Size</span>
+        <div class="seg one" id="sizeSeg">
+          <button type="button" data-v="S">Small <small>(5 × 6)</small></button>
+          <button type="button" data-v="M">Medium <small>(6 × 7)</small></button>
+          <button type="button" data-v="L">Large <small>(7 × 11)</small></button>
+        </div>
+      </div>
+
+      <div class="pair three">
+        <label class="field">
+          <span class="lbl">Letters in Hand</span>
+          <select id="handSel">
+            <option value="5">5 letters</option>
+            <option value="6">6 letters</option>
+            <option value="7">7 letters</option>
+            <option value="8">8 letters</option>
+          </select>
+        </label>
+        <label class="field">
+          <span class="lbl">Bonus Squares</span>
+          <select id="bonusSel">
+            <option value="fixed">Fixed</option>
+            <option value="floating">Floating</option>
+            <option value="both">Both</option>
+            <option value="off">Off</option>
+          </select>
+        </label>
+        <label class="field">
+          <span class="lbl">Clue Pics</span>
+          <select id="picsSel">
+            <option value="off">Off</option>
+            <option value="some">Some</option>
+            <option value="lots">Lots</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="pair">
+        <label class="field">
+          <span class="lbl">Scoring</span>
+          <select id="scoringSel">
+            <option value="classic">Classic</option>
+            <option value="flat">Flat</option>
+            <option value="finisher">Word Finisher</option>
+            <option value="combo">Combo Chain</option>
+            <option value="bounty">Bounty</option>
+          </select>
+        </label>
+        <label class="field">
+          <span class="lbl">Timer</span>
+          <select id="timerSel">
+            <option value="0">Untimed</option>
+            <optgroup label="Per turn">
+              <option value="t30">Blitz · 30 s a turn</option>
+              <option value="t60">1 min a turn</option>
+              <option value="t120">2 min a turn</option>
+              <option value="t180">3 min a turn</option>
+              <option value="t240">4 min a turn</option>
+              <option value="t300">5 min a turn</option>
+            </optgroup>
+            <optgroup label="Whole game (your clock only)">
+              <option value="g120">2 min game</option>
+              <option value="g180">3 min game</option>
+              <option value="g300">5 min game</option>
+              <option value="g600">10 min game</option>
+              <option value="g900">15 min game</option>
+            </optgroup>
+          </select>
+        </label>
+      </div>
+      <span class="opt-desc" id="scoringDesc"></span>
+
+      <button class="btn primary big" id="startBtn" type="button">New Game</button>
+      <button class="btn big" id="resumeBtn" type="button" hidden>Resume Game</button>
+      <button class="btn link" id="howBtn" type="button">How To Play</button>
+      <div class="ver">Plays offline</div>
+    </div>
+  </section>
+
+  <!-- ===== Game ===== -->
+  <section id="game" class="screen" hidden>
+    <header class="topbar">
+      <button class="icon-btn" id="menuBtn" type="button" aria-label="Menu">☰</button>
+      <div class="pl you" id="plYou">
+        <span class="av" id="myAvTop">🙂</span>
+        <div class="pl-txt"><div class="nm" id="myNm">You</div><div class="clk" id="clkTop" hidden></div><div class="sc" id="scYou">0</div></div>
+      </div>
+      <!-- On wide screens the clue bar sits here, between the two scores; on phones it drops to its own row -->
+      <div class="cluebar" id="cluebar" aria-live="polite"></div>
+      <div class="pl opp" id="plOpp">
+        <div class="pl-txt r"><div class="nm" id="oppNm">Opponent</div><div class="sc" id="scOpp">0</div></div>
+        <span class="av" id="oppAv">🦊</span>
+      </div>
+      <button class="icon-btn" id="helpBtn" type="button" aria-label="How To Play">?</button>
+    </header>
+
+    <!-- v06c (JM, CD-18: 3.1a): on phones, ☰ and ? sit at the two ends of this row, so the clue bar above gets their width -->
+    <div class="sheetbar" id="sheetbar">
+      <button class="icon-btn mini" id="menuBtn2" type="button" aria-label="Menu">☰</button>
+      <button class="sheet-toggle" id="sheetToggle" type="button" aria-expanded="false"><span class="cec" id="sheetCec">▸</span> Scoreboard</button>
+      <span class="gameinfo bar" id="infoBar"></span>
+      <button class="icon-btn mini" id="helpBtn2" type="button" aria-label="How To Play">?</button>
+      <div class="sheetpanel" id="sheetPanel" hidden></div>
+    </div>
+    <div class="passwarn bar" id="passWarnBar" role="alert" hidden></div>
+
+    <div class="mainrow">
+      <aside class="side you" id="sideYou">
+        <div class="passwarn" id="passWarnSide" hidden></div>
+        <div class="sheetwrap" id="sheetYou"></div>
+        <div class="turnrep you" id="repYou" hidden></div>
+      </aside>
+      <div class="boardwrap" id="boardwrap">
+        <div id="board" class="board"></div>
+        <!-- Turn reports on narrow screens (wide screens show them on each player's Scoreboard) -->
+        <div class="repov" id="repOv" hidden><div class="turnrep you" id="repYouN" hidden></div><div class="turnrep opp" id="repOppN" hidden></div></div>
+        <div class="pause-ov" id="pauseOv" hidden>
+          <div class="pause-card" role="button" tabindex="0" aria-label="Resume play">
+            <div class="pause-h">PLAY PAUSED</div>
+            <div class="pause-s">Tap here, or press ▶ (or P), to resume</div>
+          </div>
+        </div>
+      </div>
+      <aside class="side opp" id="sideOpp">
+        <div class="gameinfo side" id="infoSide"></div>
+        <div class="sheetwrap" id="sheetOpp"></div>
+        <div class="turnrep opp" id="repOpp" hidden></div>
+      </aside>
+    </div>
+
+    <!-- Hand and buttons share ONE row at every screen size (JM, CD-8: 2.1.1.1). Buttons are only as wide as their text.
+         When the row is too narrow (phones), the buttons inside #morePop move into a pop-up opened by ⋯ More (CD-9: 2.1). -->
+    <div class="dock" id="dock">
+      <div class="rackbar"><div id="rack" class="rack"></div></div>
+      <div class="actions" id="actions">
+        <div class="more-pop" id="morePop">
+          <button class="btn act" id="hintBtn" type="button"><b>💡</b><span id="hintTxt">Hint (−3)</span></button>
+          <button class="btn act" id="placeBtn" type="button" title="Place one of your tiles in a cell where it fits. Costs that tile's value."><b>🎯</b><span>Place (−?)</span></button>
+          <button class="btn act" id="swapBtn" type="button"><b>🔄</b><span>Swap</span></button>
+          <button class="btn act" id="mixBtn" type="button"><b>🔀</b><span>Shuffle</span></button>
+          <button class="btn act" id="pauseBtn" type="button" title="Pause (P)"><b id="pauseIco">⏸️</b><span class="timer" id="timerTxt">∞</span></button>
+          <button class="btn act" id="timeBtn" type="button" title="Add 30 seconds to your clock. Costs 5 points each time." hidden><b>⏱️</b><span>+30s (−5)</span></button>
+        </div>
+        <button class="btn primary act" id="doneBtn" type="button"><b>✓</b><span id="doneTxt">Pass</span></button>
+        <button class="btn act" id="moreBtn" type="button" aria-expanded="false" aria-controls="morePop" title="More buttons"><b>⋯</b><span>More</span></button>
+      </div>
+    </div>
+    <div id="toasts" class="toasts"></div>
+  </section>
+
+  <!-- ===== Hover-zoom (enlarged clue + trace line) ===== -->
+  <svg id="trace" class="trace" aria-hidden="true"><line id="traceLine" x1="0" y1="0" x2="0" y2="0"/></svg>
+  <div id="zoom" class="zoom" aria-hidden="true" hidden></div>
+
+  <!-- ===== Modal ===== -->
+  <div class="modal" id="modal" hidden>
+    <div class="sheet" id="sheet" role="dialog" aria-modal="true"></div>
+  </div>
+
+  <script src="lexicon.js"></script>
+  <script src="cluepics.js"></script>
+  <script src="wordplay.js"></script>
+  <script src="engine.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
