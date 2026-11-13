@@ -1,4 +1,4 @@
-/* Clue Duel — custom lexicon (v07a): 3,414 words (304 of them 2-letter answers) plus 72 extra clue sets
+/* Clue Duel — custom lexicon (v07b): 3,424 words (304 of them 2-letter answers) plus 114 extra clue sets
    Format, one entry per line:  WORD|literal clue|indirect clue|level 1-5|picture (optional emoji)|Challenge Levels (optional: "7" = 7 and up, "2-4")
    A word listed again adds an EXTRA clue set (one set is picked at random for each grid).
    Level: 1 everyday · 2 common · 3 moderate · 4 advanced · 5 obscure
@@ -22,7 +22,7 @@ EN|Half an em|Letter before oh|4
 EX|Former partner|Old flame|2
 GO|Move along|Green-light word|1|🟢
 HA|Laugh sound|Part of a chuckle|1
-HE|That man|Helium symbol|1
+HE|That man|Helium|1
 HI|Hello|Aloha State|1|👋
 ID|Photo card|Ego's partner|2
 IF|Conditional word|Big little word|1
@@ -61,7 +61,7 @@ CD|Music disc|Compact disc|1|💿
 DJ|Party music host|Spinner of records|1|🎧
 GM|Car giant|Chess title|3
 OZ|Ounce|Land of a wizard|2
-RE|Regarding|About, in memos|2
+RE|Regarding|About|2
 EG|For example|"Say," in short|2
 IE|That is|"That is"|3
 ET|"___ cetera"|Latin "and"|3
@@ -2933,39 +2933,39 @@ TRANSFORMER|Thing that changes shape|Robot that becomes a truck|2
 # ---------- v05 additions (JM CD-10: 7.1.1.1) ----------
 # Easy 2-letter answers: they let the 'full' grid style fill more clue cells (levels 1–2)
 AB|Stomach muscle|Six-pack unit|2
-AK|Alaska, on envelopes|Juneau's state|2
-AL|Alabama, on envelopes|Montgomery's state|2
+AK|Alaska|Juneau's state|2
+AL|Alabama|Montgomery's state|2
 AP|Big news agency|Advanced Placement|2
-AR|Arkansas, on envelopes|Little Rock's state|2
+AR|Arkansas|Little Rock's state|2
 AV|Audiovisual|School projector dept.|2
-AZ|Arizona, on envelopes|Grand Canyon State|2
+AZ|Arizona|Grand Canyon State|2
 BA|College degree|Bachelor of Arts letters|2
 BB|Tiny air-gun pellet|Small round shot|2
 BC|Before Christ, on dates|Vancouver's province|2
-CA|California, on envelopes|Golden State|1
+CA|California|Golden State|1
 CB|Trucker's radio|"Breaker, breaker" device|2
 CC|Copy line on an email|Extra-recipients field|2
-CO|Colorado, on envelopes|Company|2
-CT|Connecticut, on envelopes|Hartford's state|2
+CO|Colorado|Company|2
+CT|Connecticut|Hartford's state|2
 CV|Job résumé|Career summary|2
 DC|U.S. capital|Washington letters|1
-DE|Delaware, on envelopes|First State|2
+DE|Delaware|First State|2
 DM|Direct message|Private note on social media|2
-EA|Each, on a price tag|Per item|2
+EA|Each|Per item|2
 ED|Education|Driver's ___ (class)|2
 EV|Electric car|Plug-in ride|2
-FE|Iron, on the periodic table|Chemist's symbol for a magnet metal|2
-FL|Florida, on envelopes|Sunshine State|1
+FE|Iron|Chemist's symbol for a magnet metal|2
+FL|Florida|Sunshine State|1
 FT|Foot or feet|Ruler unit, abbr.|1
 FX|Special effects|Movie magic|2
-GA|Georgia, on envelopes|Peach State|2
+GA|Georgia|Peach State|2
 GG|"Good game!" in online chat|Gamer's polite sign-off|2
 GP|Family doctor|General practitioner|2
 HD|High definition|Sharp-picture letters|1
 HP|Horsepower|Engine power unit|2
 HR|Hour|Hiring dept.|1
-IA|Iowa, on envelopes|Des Moines' state|2
-IL|Illinois, on envelopes|Chicago's state|2
+IA|Iowa|Des Moines' state|2
+IL|Illinois|Chicago's state|2
 IM|Instant message|Quick online note|2
 IP|Internet address letters|Online ID number|2
 IV|Hospital drip|Four, in Roman numerals|2
@@ -2973,25 +2973,25 @@ JR|Junior|Son of a "Sr."|2
 JK|"Just kidding!" in a text|"Only joking"|1
 KG|Kilogram|1,000 grams|2
 KM|Kilometer|1,000 meters|2
-KS|Kansas, on envelopes|Topeka's state|2
-KY|Kentucky, on envelopes|Bluegrass State|2
+KS|Kansas|Topeka's state|2
+KY|Kentucky|Bluegrass State|2
 KB|Kilobyte|Tiny file size unit|2
 LB|Pound, as a weight|Scale unit|2
 LT|Lieutenant|Army rank|2
 MC|Host of a show|Emcee|2
 MG|Milligram|Pill-dose unit|2
 MM|Millimeter|Yummy sound|1
-MN|Minnesota, on envelopes|Land of 10,000 Lakes|2
-MO|Missouri, on envelopes|"Just a ___!" (moment)|2
+MN|Minnesota|Land of 10,000 Lakes|2
+MO|Missouri|"Just a ___!" (moment)|2
 MP|Member of Parliament|Military police|2
-MT|Montana, on envelopes|Mountain, on maps|2
-NC|North Carolina, on envelopes|Raleigh's state|2
-ND|North Dakota, on envelopes|Bismarck's state|2
-NH|New Hampshire, on envelopes|Concord's state|2
-NJ|New Jersey, on envelopes|Garden State|2
-NM|New Mexico, on envelopes|Santa Fe's state|2
-NU|Greek letter after mu|Greek N|2
-NV|Nevada, on envelopes|Las Vegas's state|2
+MT|Montana|Mountain, on maps|2
+NC|North Carolina|Raleigh's state|2
+ND|North Dakota|Bismarck's state|2
+NH|New Hampshire|Concord's state|2
+NJ|New Jersey|Garden State|2
+NM|New Mexico|Santa Fe's state|2
+NU|Greek >Mu|Greek N|2
+NV|Nevada|Las Vegas's state|2
 OJ|Orange juice|Breakfast drink|1
 OP|Photo ___ (posed moment)|___ art (optical style)|2
 OS|Computer's operating system|Windows or macOS, e.g.|2
@@ -3006,35 +3006,35 @@ PT|Physical therapy|Pint|2
 QB|Quarterback|Football passer|2
 RA|Egyptian sun god|Dorm adviser|2
 RC|Radio-controlled, as a toy car|Remote-run|2
-RD|Road, on maps|Street-sign letters, sometimes|1
-RI|Rhode Island, on envelopes|Smallest state|2
+RD|Road, on maps|Street|1
+RI|Rhode Island|Smallest state|2
 RM|Room|Hotel space|2
 RR|Railroad|Train-line letters|2
 RX|Doctor's prescription|Pharmacy symbol|2
-SC|South Carolina, on envelopes|Columbia's state|2
-SD|South Dakota, on envelopes|Camera memory-card letters|2
+SC|South Carolina|Columbia's state|2
+SD|South Dakota|Camera memory-card letters|2
 SK|Slovakia, on maps|Bratislava's land|2
 SM|Small, on a size tag|Shirt size below Med.|1
 SQ|Square|___ ft. (area unit)|2
 TD|Touchdown|Six-pointer|2
 TE|Tight end, in football|Blocker who also catches|2
 TM|Trademark letters|Brand-name mark|2
-TN|Tennessee, on envelopes|Nashville's state|2
+TN|Tennessee|Nashville's state|2
 TP|Toilet paper|Bathroom roll|1
-TX|Texas, on envelopes|Lone Star State|1
+TX|Texas|Lone Star State|1
 TY|"Thanks!" in a text|Quick gratitude|1
 UI|User interface|Screen layout, to app makers|2
 UV|Sunburn rays|Ultraviolet|2
-VA|Virginia, on envelopes|Richmond's state|2
+VA|Virginia|Richmond's state|2
 VI|Six, in Roman numerals|Half of XII|2
 VS|Versus|Matchup letters|1
-VT|Vermont, on envelopes|Maple-syrup state|2
-WA|Washington State, on envelopes|Seattle's state|2
+VT|Vermont|Maple-syrup state|2
+WA|Washington State|Seattle's state|2
 WC|Restroom, in Europe|Water closet|2
-WI|Wisconsin, on envelopes|Cheese state|2
+WI|Wisconsin|Cheese state|2
 WK|Week|Seven days|1
-WV|West Virginia, on envelopes|Mountain State|2
-WY|Wyoming, on envelopes|Cheyenne's state|2
+WV|West Virginia|Mountain State|2
+WY|Wyoming|Cheyenne's state|2
 XO|Hugs-and-kisses sign-off|Love, in a note|1
 XS|Extra small, on a tag|Tiniest shirt size|1
 YA|Young adult, as a book section|Teen-fiction label|2
@@ -3306,8 +3306,8 @@ QI|Life force in Chinese medicine|Tai chi energy|2
 OD|Overdose|Have way too much of, in slang|2
 OG|The original, in slang|Old-school pioneer, in slang|2
 # Greek letters
-MU|Greek letter M|Greek letter after lambda|1
-XI|Greek letter after nu|Greek letter drawn as three stacked lines|1
+MU|Greek M|Greek >Lambda|1
+XI|Greek >Nu|Greek letter drawn as three stacked lines|1
 # Metric units
 CM|Centimeter|Hundredth of a meter|1
 ML|Milliliter|Medicine-spoon unit|1
@@ -3319,21 +3319,21 @@ KJ|Kilojoule|Food-energy unit on many labels|2
 MW|Megawatt|Power-plant output unit|2
 NS|Nanosecond|Billionth of a second|2
 # Chemical symbols
-NA|Sodium's symbol|Half of table salt, on the periodic table|1
-LI|Lithium's symbol|Phone-battery metal, on the periodic table|1
-CL|Chlorine's symbol|Pool chemical, on the periodic table|1
-CR|Chromium's symbol|Shiny-bumper metal, on the periodic table|2
-NI|Nickel's symbol|Coin metal that sticks to magnets, on the periodic table|1
-CU|Copper's symbol|Electric-wire metal, on the periodic table|1
-ZN|Zinc's symbol|Sunscreen metal, on the periodic table|1
-AG|Silver's symbol|Second-place metal, on the periodic table|1
-AU|Gold's symbol|First-place metal, on the periodic table|1
-HG|Mercury's symbol|Old-thermometer metal, on the periodic table|2
-SN|Tin's symbol|Tin-can metal, on the periodic table|2
-XE|Xenon's symbol|Bright-headlight gas, on the periodic table|2
-KR|Krypton's symbol|Superman's home-planet gas, on the periodic table|2
-BR|Bromine's symbol|Red-brown liquid element, on the periodic table|3
-PU|Plutonium's symbol|Reactor fuel, on the periodic table|2
+NA|Sodium|Half of table salt, on the periodic table|1
+LI|Lithium|Phone-battery metal, on the periodic table|1
+CL|Chlorine|Pool chemical, on the periodic table|1
+CR|Chromium|Shiny-bumper metal, on the periodic table|2
+NI|Nickel|Coin metal that sticks to magnets, on the periodic table|1
+CU|Copper|Electric-wire metal, on the periodic table|1
+ZN|Zinc|Sunscreen metal, on the periodic table|1
+AG|Silver|Second-place metal, on the periodic table|1
+AU|Gold|First-place metal, on the periodic table|1
+HG|Mercury|Old-thermometer metal, on the periodic table|2
+SN|Tin|Tin-can metal, on the periodic table|2
+XE|Xenon|Bright-headlight gas, on the periodic table|2
+KR|Krypton|Superman's home-planet gas, on the periodic table|2
+BR|Bromine|Red-brown liquid element, on the periodic table|3
+PU|Plutonium|Reactor fuel, on the periodic table|2
 # Common global abbreviations
 CE|Common Era|Modern-era letters, like AD|1
 FC|Football Club|Soccer-team letters|1
@@ -3359,64 +3359,64 @@ IR|Infrared|TV remote's beam|2
 # Format adds an optional 6th field: the Challenge Levels where the clue set may be used ("2-4" = 2 to 4, "7" = 7 and up).
 # A word that is already in the list gets an EXTRA clue set from these lines (one set is picked at random per grid).
 # Country codes (web endings), Challenge Levels 2-4
-AR|Argentina, on the web (.__)|Web ending for Buenos Aires sites|2||2-4
-AT|Austria, on the web (.__)|Web ending for Vienna sites|2||2-4
-AU|Australia, on the web (.__)|Web ending for Sydney sites|2||2-4
-BE|Belgium, on the web (.__)|Web ending for Brussels sites|2||2-4
-BR|Brazil, on the web (.__)|Web ending for Rio sites|2||2-4
-CA|Canada, on the web (.__)|Web ending for Toronto sites|2||2-4
-CH|Switzerland, on the web (.__)|Web ending for Zurich sites|2||2-4
-CL|Chile, on the web (.__)|Web ending for Santiago sites|2||2-4
-CN|China, on the web (.__)|Web ending for Beijing sites|2||2-4
-CO|Colombia, on the web (.__)|Web ending for Bogota sites|2||2-4
-CU|Cuba, on the web (.__)|Web ending for Havana sites|2||2-4
-CZ|Czechia, on the web (.__)|Web ending for Prague sites|2||2-4
-DE|Germany, on the web (.__)|Web ending for Berlin sites|2||2-4
-DK|Denmark, on the web (.__)|Web ending for Copenhagen sites|2||2-4
-EG|Egypt, on the web (.__)|Web ending for Cairo sites|2||2-4
-ES|Spain, on the web (.__)|Web ending for Madrid sites|2||2-4
-FI|Finland, on the web (.__)|Web ending for Helsinki sites|2||2-4
-FR|France, on the web (.__)|Web ending for Paris sites|2||2-4
-GR|Greece, on the web (.__)|Web ending for Athens sites|2||2-4
-HK|Hong Kong, on the web (.__)|Web ending for Kowloon sites|2||2-4
-HU|Hungary, on the web (.__)|Web ending for Budapest sites|2||2-4
-ID|Indonesia, on the web (.__)|Web ending for Jakarta sites|2||2-4
-IE|Ireland, on the web (.__)|Web ending for Dublin sites|2||2-4
-IL|Israel, on the web (.__)|Web ending for Tel Aviv sites|2||2-4
-IN|India, on the web (.__)|Web ending for Mumbai sites|2||2-4
-IS|Iceland, on the web (.__)|Web ending for Reykjavik sites|2||2-4
-IT|Italy, on the web (.__)|Web ending for Rome sites|2||2-4
-JM|Jamaica, on the web (.__)|Web ending for Kingston sites|2||2-4
-JP|Japan, on the web (.__)|Web ending for Tokyo sites|2||2-4
-KE|Kenya, on the web (.__)|Web ending for Nairobi sites|2||2-4
-KR|South Korea, on the web (.__)|Web ending for Seoul sites|2||2-4
-MA|Morocco, on the web (.__)|Web ending for Casablanca sites|2||2-4
-MX|Mexico, on the web (.__)|Web ending for Cancun sites|2||2-4
-MY|Malaysia, on the web (.__)|Web ending for Kuala Lumpur sites|2||2-4
-NG|Nigeria, on the web (.__)|Web ending for Lagos sites|2||2-4
-NL|Netherlands, on the web (.__)|Web ending for Amsterdam sites|2||2-4
-NO|Norway, on the web (.__)|Web ending for Oslo sites|2||2-4
-NZ|New Zealand, on the web (.__)|Web ending for Auckland sites|2||2-4
-PE|Peru, on the web (.__)|Web ending for Lima sites|2||2-4
-PH|Philippines, on the web (.__)|Web ending for Manila sites|2||2-4
-PK|Pakistan, on the web (.__)|Web ending for Karachi sites|2||2-4
-PL|Poland, on the web (.__)|Web ending for Warsaw sites|2||2-4
-PT|Portugal, on the web (.__)|Web ending for Lisbon sites|2||2-4
-RO|Romania, on the web (.__)|Web ending for Bucharest sites|2||2-4
-RU|Russia, on the web (.__)|Web ending for Moscow sites|2||2-4
-SA|Saudi Arabia, on the web (.__)|Web ending for Riyadh sites|2||2-4
-SE|Sweden, on the web (.__)|Web ending for Stockholm sites|2||2-4
-SG|Singapore, on the web (.__)|Web ending for Lion City sites|2||2-4
-TH|Thailand, on the web (.__)|Web ending for Bangkok sites|2||2-4
-TR|Turkey, on the web (.__)|Web ending for Istanbul sites|2||2-4
-TW|Taiwan, on the web (.__)|Web ending for Taipei sites|2||2-4
-UA|Ukraine, on the web (.__)|Web ending for Kyiv sites|2||2-4
-UK|United Kingdom, on the web (.__)|Web ending for London sites|2||2-4
-VE|Venezuela, on the web (.__)|Web ending for Caracas sites|2||2-4
-VN|Vietnam, on the web (.__)|Web ending for Hanoi sites|2||2-4
-ZA|South Africa, on the web (.__)|Web ending for Cape Town sites|2||2-4
-AE|United Arab Emirates, on the web (.__)|Web ending for Dubai sites|2||2-4
-QA|Qatar, on the web (.__)|Web ending for Doha sites|2||2-4
+AR|Argentina URL|Web ending for Buenos Aires sites|2||2-4
+AT|Austria URL|Web ending for Vienna sites|2||2-4
+AU|Australia URL|Web ending for Sydney sites|2||2-4
+BE|Belgium URL|Web ending for Brussels sites|2||2-4
+BR|Brazil URL|Web ending for Rio sites|2||2-4
+CA|Canada URL|Web ending for Toronto sites|2||2-4
+CH|Switzerland URL|Web ending for Zurich sites|2||2-4
+CL|Chile URL|Web ending for Santiago sites|2||2-4
+CN|China URL|Web ending for Beijing sites|2||2-4
+CO|Colombia URL|Web ending for Bogota sites|2||2-4
+CU|Cuba URL|Web ending for Havana sites|2||2-4
+CZ|Czechia URL|Web ending for Prague sites|2||2-4
+DE|Germany URL|Web ending for Berlin sites|2||2-4
+DK|Denmark URL|Web ending for Copenhagen sites|2||2-4
+EG|Egypt URL|Web ending for Cairo sites|2||2-4
+ES|Spain URL|Web ending for Madrid sites|2||2-4
+FI|Finland URL|Web ending for Helsinki sites|2||2-4
+FR|France URL|Web ending for Paris sites|2||2-4
+GR|Greece URL|Web ending for Athens sites|2||2-4
+HK|Hong Kong URL|Web ending for Kowloon sites|2||2-4
+HU|Hungary URL|Web ending for Budapest sites|2||2-4
+ID|Indonesia URL|Web ending for Jakarta sites|2||2-4
+IE|Ireland URL|Web ending for Dublin sites|2||2-4
+IL|Israel URL|Web ending for Tel Aviv sites|2||2-4
+IN|India URL|Web ending for Mumbai sites|2||2-4
+IS|Iceland URL|Web ending for Reykjavik sites|2||2-4
+IT|Italy URL|Web ending for Rome sites|2||2-4
+JM|Jamaica URL|Web ending for Kingston sites|2||2-4
+JP|Japan URL|Web ending for Tokyo sites|2||2-4
+KE|Kenya URL|Web ending for Nairobi sites|2||2-4
+KR|South Korea URL|Web ending for Seoul sites|2||2-4
+MA|Morocco URL|Web ending for Casablanca sites|2||2-4
+MX|Mexico URL|Web ending for Cancun sites|2||2-4
+MY|Malaysia URL|Web ending for Kuala Lumpur sites|2||2-4
+NG|Nigeria URL|Web ending for Lagos sites|2||2-4
+NL|Netherlands URL|Web ending for Amsterdam sites|2||2-4
+NO|Norway URL|Web ending for Oslo sites|2||2-4
+NZ|New Zealand URL|Web ending for Auckland sites|2||2-4
+PE|Peru URL|Web ending for Lima sites|2||2-4
+PH|Philippines URL|Web ending for Manila sites|2||2-4
+PK|Pakistan URL|Web ending for Karachi sites|2||2-4
+PL|Poland URL|Web ending for Warsaw sites|2||2-4
+PT|Portugal URL|Web ending for Lisbon sites|2||2-4
+RO|Romania URL|Web ending for Bucharest sites|2||2-4
+RU|Russia URL|Web ending for Moscow sites|2||2-4
+SA|Saudi Arabia URL|Web ending for Riyadh sites|2||2-4
+SE|Sweden URL|Web ending for Stockholm sites|2||2-4
+SG|Singapore URL|Web ending for Lion City sites|2||2-4
+TH|Thailand URL|Web ending for Bangkok sites|2||2-4
+TR|Turkey URL|Web ending for Istanbul sites|2||2-4
+TW|Taiwan URL|Web ending for Taipei sites|2||2-4
+UA|Ukraine URL|Web ending for Kyiv sites|2||2-4
+UK|United Kingdom URL|Web ending for London sites|2||2-4
+VE|Venezuela URL|Web ending for Caracas sites|2||2-4
+VN|Vietnam URL|Web ending for Hanoi sites|2||2-4
+ZA|South Africa URL|Web ending for Cape Town sites|2||2-4
+AE|United Arab Emirates URL|Web ending for Dubai sites|2||2-4
+QA|Qatar URL|Web ending for Doha sites|2||2-4
 # Currency codes, Challenge Level 4 and up
 USD|U.S. dollar's code|Greenback, on an exchange board|3||4
 EUR|Euro's code|Currency board letters for Paris or Rome|3||4
@@ -3482,45 +3482,100 @@ CAI|Cairo airport code|Bag tag for pyramid trips|4||7
 DEL|Delhi airport code|Bag tag for Taj Mahal trips|4||7
 BOM|Mumbai airport code|Bag tag for Bollywood trips|4||7
 # Element symbols (JM CD-17: 2.3.1): extra clue sets for existing words, plus a few new words
-HE|Helium's symbol|Balloon gas, on the periodic table|1
-NE|Neon's symbol|Glowing-sign gas, on the periodic table|1
-AL|Aluminum's symbol|Soda-can metal, on the periodic table|1
-AR|Argon's symbol|Noble gas in light bulbs, on the periodic table|2
-CA|Calcium's symbol|Bone mineral, on the periodic table|1
-CO|Cobalt's symbol|Blue-glass metal, on the periodic table|2
-MG|Magnesium's symbol|Flare metal, on the periodic table|2
-MN|Manganese's symbol|Steel-hardening metal, on the periodic table|3||4
-PB|Lead's symbol|Old water-pipe metal, on the periodic table|2
-PT|Platinum's symbol|Precious-ring metal, on the periodic table|2
-SI|Silicon's symbol|Computer-chip element, on the periodic table|1
-TI|Titanium's symbol|Strong, light metal, on the periodic table|2
-BA|Barium's symbol|X-ray drink element, on the periodic table|3||4
-RA|Radium's symbol|Curie's glowing element, on the periodic table|2
-PO|Polonium's symbol|Element named for Poland|3||4
-CD|Cadmium's symbol|Old battery metal, on the periodic table|3||4
-SE|Selenium's symbol|Element named for the moon|3||4
-ND|Neodymium's symbol|Super-magnet metal, on the periodic table|3||4
-AM|Americium's symbol|Smoke-detector element, on the periodic table|3||4
-CF|Californium's symbol|Element named for a Golden State|3||4
-MD|Mendelevium's symbol|Element named for the periodic table's creator|4||7
-IR|Iridium's symbol|Hardest-to-corrode metal, on the periodic table|3||4
-SR|Strontium's symbol|Red-firework metal, on the periodic table|3||4
-AS|Arsenic's symbol|Poison in old mysteries, on the periodic table|2
-BE|Beryllium's symbol|Emerald element, on the periodic table|3||4
-OS|Osmium's symbol|Densest metal, on the periodic table|3||4
-IN|Indium's symbol|Touch-screen metal, on the periodic table|3||4
-GA|Gallium's symbol|Metal that melts in your hand, on the periodic table|3||4
-PD|Palladium's symbol|Car-converter metal, on the periodic table|3||4
-NO|Nobelium's symbol|Element named for Nobel|3||4
-EU|Europium's symbol|Element named for a continent|3||4
-CM|Curium's symbol|Element named for the Curies|3||4
-BI|Bismuth's symbol|Pink stomach-remedy metal, on the periodic table|3||4
-CS|Cesium's symbol|Atomic-clock element, on the periodic table|3||4
-ES|Einsteinium's symbol|Element named for Einstein|3||4
-GE|Germanium's symbol|Early transistor element, on the periodic table|3||4
-TH|Thorium's symbol|Element named for the god of thunder|3||4
-CN|Copernicium's symbol|Element named for Copernicus|4||7
-BK|Berkelium's symbol|Element named for a California campus|4||7
+HE|Helium|Balloon gas, on the periodic table|1
+NE|Neon|Glowing-sign gas, on the periodic table|1
+AL|Aluminum|Soda-can metal, on the periodic table|1
+AR|Argon|Noble gas in light bulbs, on the periodic table|2
+CA|Calcium|Bone mineral, on the periodic table|1
+CO|Cobalt|Blue-glass metal, on the periodic table|2
+MG|Magnesium|Flare metal, on the periodic table|2
+MN|Manganese|Steel-hardening metal, on the periodic table|3||4
+PB|Lead|Old water-pipe metal, on the periodic table|2
+PT|Platinum|Precious-ring metal, on the periodic table|2
+SI|Silicon|Computer-chip element, on the periodic table|1
+TI|Titanium|Strong, light metal, on the periodic table|2
+BA|Barium|X-ray drink element, on the periodic table|3||4
+RA|Radium|Curie's glowing element, on the periodic table|2
+PO|Polonium|Element named for Poland|3||4
+CD|Cadmium|Old battery metal, on the periodic table|3||4
+SE|Selenium|Element named for the moon|3||4
+ND|Neodymium|Super-magnet metal, on the periodic table|3||4
+AM|Americium|Smoke-detector element, on the periodic table|3||4
+CF|Californium|Element named for a Golden State|3||4
+MD|Mendelevium|Element named for the periodic table's creator|4||7
+IR|Iridium|Hardest-to-corrode metal, on the periodic table|3||4
+SR|Strontium|Red-firework metal, on the periodic table|3||4
+AS|Arsenic|Poison in old mysteries, on the periodic table|2
+BE|Beryllium|Emerald element, on the periodic table|3||4
+OS|Osmium|Densest metal, on the periodic table|3||4
+IN|Indium|Touch-screen metal, on the periodic table|3||4
+GA|Gallium|Metal that melts in your hand, on the periodic table|3||4
+PD|Palladium|Car-converter metal, on the periodic table|3||4
+NO|Nobelium|Element named for Nobel|3||4
+EU|Europium|Element named for a continent|3||4
+CM|Curium|Element named for the Curies|3||4
+BI|Bismuth|Pink stomach-remedy metal, on the periodic table|3||4
+CS|Cesium|Atomic-clock element, on the periodic table|3||4
+ES|Einsteinium|Element named for Einstein|3||4
+GE|Germanium|Early transistor element, on the periodic table|3||4
+TH|Thorium|Element named for the god of thunder|3||4
+CN|Copernicium|Element named for Copernicus|4||7
+BK|Berkelium|Element named for a California campus|4||7
+# ---------- v07b additions (JM CD-20: 3.4.6–3.4.8) ----------
+# Chemistry both ways (a formula or symbol as the clue, the word as the answer), formula clues from Challenge Level 5
+AMMONIA|Pungent cleaning gas|Window-cleaner chemical|3
+AMMONIA|NH3|Nitrogen and hydrogen, combined|3||5
+OXYGEN|Gas we breathe|Element number 8|1
+OXYGEN|O2|Air's life-giving gas, chemically|2||5
+METHANE|Natural gas|Swamp gas|3
+METHANE|CH4|Cow-burp gas, chemically|3||5
+COPPER|Metal in electric wires|Penny metal|1
+COPPER|Cu|Element 29|2||5
+NEON|Glowing-sign gas|Las Vegas lights gas|1
+NEON|Ne|Element 10|2||5
+HELIUM|Balloon gas|Squeaky-voice gas|1
+HELIUM|He|Element 2|2||5
+SODIUM|Salt element|Partner of chlorine in salt|2
+SODIUM|Na|Element 11|2||5
+CARBON|Diamond element|Graphite element|1
+CARBON|C, on the periodic table|Element 6|2||5
+DRYICE|Frozen CO2|Stage-fog maker|3
+DRYICE|CO2, frozen solid|Theater-fog block|3||5
+NACL|Salt|Sodium chloride|3||5
+SALT|NaCl|Sodium chloride|2||5
+WATER|Two H's and an O|Wet compound|2||5
+RUST|Fe2O3|Iron oxide|2||5
+IRON|Fe|Element 26|2||5
+SILVER|Ag|Element 47|2||5
+GOLD|Au|Element 79|2||5
+TIN|Sn|Element 50|2||5
+LEAD|Pb|Element 82|2||5
+ZINC|Zn|Element 30|3||5
+# Synonym variants: the same answer with fresh wording (JM CD-20: 3.4.6)
+TUNA|Large sea fish|Huge ocean swimmer|1
+WHALE|Huge ocean mammal|Giant sea swimmer|1
+SHARK|Sea predator|Toothy swimmer|1
+ERR|Blunder|Make a boo-boo|2
+EVE|Prior night|Night before a holiday|1
+DIME|Ten pennies|Small silver coin|1
+DOLLAR|Hundred pennies|Buck|1
+PENNY|One cent|Smallest U.S. coin|1
+LION|Large cat|Jungle king|1
+ELK|Large deer|Antlered giant|1
+EMU|Large bird|Big flightless runner|1
+BOA|Large snake|Fluffy scarf|2
+TOME|Large book|Hefty volume|4
+TUBA|Large brass horn|Low oompah maker|1
+INN|Little hotel|Roadside lodge|1
+POND|Little lake|Duck pool|1
+CANOE|Little boat|Paddle craft|1
+SIP|Tiny drink|Wee taste|1
+DOT|Tiny spot|Period|1
+ANT|Small insect|Picnic pest|1
+INCH|Tiny unit|Move slowly|1
+VIAL|Little bottle|Lab tube|3
+CAMEO|Brief role|Walk-on part|3
+OCEAN|Big sea|The deep blue|1
 `;
 
 /* v04 (JM, CD-9: 1.1): clues for 1-letter answers, which let every clue cell hold a clue.
@@ -3529,46 +3584,46 @@ self.LETTER_DATA = `
 A|ZEBR_|1
 A|PIZZ_|1
 A|Top school grade|1
-A|First letter of the alphabet|1
+A|First letter|1
 A|Blood type|1|🅰️
 A|Vitamin in carrots|2
 A|Musical note before B|3
 B|_ANANA|1
 B|Grade after A|1
 B|Blood type|1|🅱️
-B|Second letter of the alphabet|1
+B|Second letter|1
 B|Sounds like a honey maker|2
-B|Boron's symbol|3
+B|Boron|3
 C|_AMEL|1
 C|Grade for average work|1
 C|Vitamin in oranges|1
 C|Sounds like the ocean|2
 C|Roman 100|2
-C|Carbon's symbol|3
+C|Carbon|3
 D|_INOSAUR|1
 D|Grade below C|1
 D|Vitamin from sunshine|2
 D|Roman 500|2
 D|Musical note after C|3
 E|_LEPHANT|1
-E|East, on a compass|1
-E|Fifth letter of the alphabet|1
+E|East|1
+E|Fifth letter|1
 E|Most common letter in English|2
 E|Vitamin in nuts and seeds|3
 F|_LAMINGO|1
 F|Failing grade|1
-F|Sixth letter of the alphabet|1
+F|Sixth letter|1
 F|°_, on a US weather map|2
-F|Fluorine's symbol|3
+F|Fluorine|3
 G|_IRAFFE|1
-G|Seventh letter of the alphabet|1
+G|Seventh letter|1
 G|Sounds like "gee!"|2
 G|Musical note after F|3
 G|A thousand dollars, in slang|3
 H|_IPPO|1
 H|_ELICOPTER|1
-H|Eighth letter of the alphabet|1
-H|Hydrogen's symbol|2
+H|Eighth letter|1
+H|Hydrogen|2
 H|Shape of a rugby goalpost|3
 I|_GLOO|1
 I|Myself, as a subject|1
@@ -3577,37 +3632,37 @@ I|Roman 1|2
 I|Sounds like an eye|2
 J|_ELLYFISH|1
 J|_UICE|1
-J|Tenth letter of the alphabet|1
+J|Tenth letter|1
 J|Sounds like a blue bird|3
 K|_ANGAROO|1
 K|_OALA|1
-K|Eleventh letter of the alphabet|1
+K|Eleventh letter|1
 K|A thousand (as in 5_)|2
-K|Potassium's symbol|3
+K|Potassium|3
 K|Strikeout, on a baseball scorecard|3
 L|_OLLIPOP|1
 L|Large, on a T-shirt tag|1
-L|Twelfth letter of the alphabet|1
+L|Twelfth letter|1
 L|Roman 50|2
 L|Shape of a carpenter's square|3
 M|_USHROOM|1
 M|Medium, on a T-shirt tag|1
 M|Metro sign letter|1|Ⓜ️
 M|Roman 1000|2
-M|Thirteenth letter of the alphabet|1
+M|Thirteenth letter|1
 N|PEA_UT|1
-N|North, on a compass|1
-N|Fourteenth letter of the alphabet|1
-N|Nitrogen's symbol|3
+N|North|1
+N|Fourteenth letter|1
+N|Nitrogen|3
 O|_CTOPUS|1
 O|Shape of a donut|1|⭕
 O|Hug, in XOXO|2
-O|Oxygen's symbol|2
+O|Oxygen|2
 O|Zero, when reading a phone number|2
 P|_ENGUIN|1
 P|Parking sign letter|1|🅿️
 P|Sounds like a green veggie|2
-P|Phosphorus's symbol|3
+P|Phosphorus|3
 Q|_UEEN|1
 Q|_UILT|1
 Q|Letter nearly always before U|2
@@ -3618,7 +3673,7 @@ R|A pirate's favorite letter|2
 R|Movie rating for adults|3
 S|_NAKE|1
 S|Small, on a T-shirt tag|1
-S|South, on a compass|1
+S|South|1
 S|Shape of a winding road|2
 S|Plural ending|3
 T|_OMATO|1
@@ -3630,16 +3685,16 @@ U|_MBRELLA|1
 U|___-turn|1
 U|Sounds like "you"|1
 U|Shape of a horseshoe magnet|2
-U|Uranium's symbol|3
+U|Uranium|3
 V|_IOLIN|1
 V|Peace-sign letter|1|✌️
 V|Roman 5|2
 V|Shape of a flock of geese|3
 W|_ATERMELON|1
-W|West, on a compass|1
-W|Twenty-third letter of the alphabet|1
+W|West|1
+W|Twenty-third letter|1
 W|Double-U|2
-W|Tungsten's symbol|3
+W|Tungsten|3
 X|_YLOPHONE|1
 X|Marks the spot on a treasure map|1|❌
 X|Roman 10|2
@@ -3650,7 +3705,7 @@ Y|_O-YO|1
 Y|Sounds like "why?"|1
 Y|Shape of a fork in the road|3
 Z|_EBRA|1
-Z|Last letter of the alphabet|1
+Z|Last letter|1
 Z|Sleep sound, in comics|1|💤
 Z|Zed, in Britain|3
 `;

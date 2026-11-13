@@ -1,7 +1,7 @@
-/* Clue Duel — user interface (v07a) */
+/* Clue Duel — user interface (v07b) */
 'use strict';
 (() => {
-  const APP_VER = 'v07a'; // Project CP: shown as a pill beside the title and in the browser tab
+  const APP_VER = 'v07b'; // Project CP: shown as a pill beside the title and in the browser tab
   const E = window.Engine;
   const $ = (s, el = document) => el.querySelector(s);
   const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -13,13 +13,13 @@
     { n: 'Benny Bear', a: '🐻', b: 'Just here for the snacks. Places tiles wherever they fit.' },
     { n: 'Dotty Duckling', a: '🐥', b: 'Still learning. Misses plenty of chances.' },
     { n: 'Pip Penguin', a: '🐧', b: 'Waddles through the easy words first.' },
-    { n: 'Rosie Rabbit', a: '🐰', b: 'Quick, and starting to hold tiles back.' },
-    { n: 'Rusty Fox', a: '🦊', b: 'Sly. Hates leaving you an easy finish.' },
-    { n: 'Kiko Koala', a: '🐨', b: 'Calm and steady. Rarely wastes a tile.' },
-    { n: 'Luna Cat', a: '🐱', b: 'Waits patiently, then pounces on big words.' },
-    { n: 'Otto Octopus', a: '🐙', b: 'Eight arms, almost no wasted moves.' },
-    { n: 'Duchess Dragon', a: '🐉', b: 'Hoards letters like treasure.' },
-    { n: 'Professor Hoot', a: '🦉', b: 'Knows every word. Misses nothing.' }
+    { n: 'Rosie Rabbit', a: '🐰', b: 'Quick, and starting to hold tiles back. Easygoing: rivals at levels 4–7 play gentler than their puzzles.' },
+    { n: 'Rusty Fox', a: '🦊', b: 'Sly. Hates leaving you an easy finish. Easygoing: rivals at levels 4–7 play gentler than their puzzles.' },
+    { n: 'Kiko Koala', a: '🐨', b: 'Calm and steady. Rarely wastes a tile. Easygoing: rivals at levels 4–7 play gentler than their puzzles.' },
+    { n: 'Luna Cat', a: '🐱', b: 'Waits patiently, then pounces on big words. Easygoing: rivals at levels 4–7 play gentler than their puzzles.' },
+    { n: 'Otto Octopus', a: '🐙', b: 'Master level. Eight arms, almost no wasted moves.' },
+    { n: 'Duchess Dragon', a: '🐉', b: 'Master level. Hoards letters like treasure.' },
+    { n: 'Professor Hoot', a: '🦉', b: 'Master level. Knows every word. Misses nothing.' }
   ];
   // Avatars the player can pick (none of the opponents' animals)
   const AVATARS = ['🙂', '😎', '🤓', '🧐', '🤠', '🥳', '😇', '🤖', '👽', '👻', '🐶', '🐼', '🐯', '🦁', '🐸', '🐵', '🦄', '🐢', '🐬', '🦋',
@@ -739,7 +739,7 @@
   }, true);
 
   function openModal(html) { $('#sheet').innerHTML = html; $('#modal').hidden = false; }
-  function closeModal() { $('#modal').hidden = true; $('#sheet').innerHTML = ''; $('#sheet').onclick = null; $('#sheet').onpointerdown = null; }
+  function closeModal() { $('#modal').hidden = true; $('#modal').onclick = null; $('#sheet').innerHTML = ''; $('#sheet').onclick = null; $('#sheet').onpointerdown = null; }
   function confirmBox(title, text, yes, no) {
     return new Promise(res => {
       openModal(`<h2>${esc(title)}</h2><p>${esc(text)}</p><div class="row"><button class="btn" data-a="no">${esc(no)}</button><button class="btn primary" data-a="yes">${esc(yes)}</button></div>`);
@@ -772,10 +772,12 @@
         <li>Type your name in the box beside it. It shows above your score and on the Scoreboard. Left empty, you're "You".</li>`)}
       ${sec('Opponent', `
         <li>Each ${go('Challenge Level')} has its own computer rival, from Benny Bear 🐻 at level 1 to Professor Hoot 🦉 at level 10. Change the level and your rival changes with it.</li>
+        <li>Rivals at levels 4–7 are <b>easygoing</b>: they play gentler than their puzzles, so the climb from 1 to 7 is gradual. Levels 8–10 are the <b>Master</b> levels, with a big step up in the rival's skill.</li>
         <li>Under the rival's name is your <b>won–lost record</b> against them.</li>
         <li>Point at the card with the mouse (or press and hold it on a touch screen) to read the rival's personality: how they like to play.</li>`)}
       ${sec('Challenge Level', `
         <li>Runs from <b>1 · Gentle</b> to <b>10 · Ruthless</b>. It sets two things at once: your rival's skill and the puzzle's difficulty.</li>
+        <li>The rival's skill rises gently from 1 to 7, then jumps at 8: levels 8–10 are the <b>Master</b> levels (see ${go('Opponent')}). The puzzle's difficulty rises steadily at every level.</li>
         <li>As the level rises: words get longer and harder, the grid starts with fewer starter letters, and word and picture clues get trickier.</li>
         <li>Picture clues: at levels 1–5 the ${go('Clue Bar', 'clue bar')} names the kind of picture clue (see ${go('Clue Pics')}); from level 6 you work it out yourself.</li>
         <li>From level 5, word clues turn punny: double meanings and wordplay. A "?" means don't take it literally.</li>`)}
@@ -891,6 +893,8 @@
         <li>It is often smart to save 2× squares for big turns because they double everything else you score that turn. Beware: your opponent can "steal" the bonus squares in the early rounds to keep you from scoring big.</li>`)}
       <div class="row"><button class="btn primary" data-a="ok">Got it</button></div>`);
     const sheet = $('#sheet');
+    // v07b (JM, CD-20: 3.3.1): a tap anywhere outside the How To Play panel closes it, like "Got it"
+    $('#modal').onclick = e => { if (e.target === $('#modal')) closeModal(); };
     const openSec = (s, open) => {
       sheet.querySelectorAll('.help-sec.open').forEach(x => { x.classList.remove('open'); x.querySelector('.help-h').setAttribute('aria-expanded', 'false'); });
       if (open) { s.classList.add('open'); s.querySelector('.help-h').setAttribute('aria-expanded', 'true'); }

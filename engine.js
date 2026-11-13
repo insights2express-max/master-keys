@@ -1,4 +1,4 @@
-/* Clue Duel — game engine (v07a)
+/* Clue Duel — game engine (v07b)
    Puzzle generator (arrow-word grid), tile bag, scoring modes, bonus squares and the computer opponent.
    No DOM code here: app.js handles everything the player sees. */
 'use strict';
@@ -758,7 +758,13 @@
   }
 
   // ---------- Computer opponent ----------
-  function aiParams(skill) {
+  // v07b (JM, CD-20: 4.1.1): ONLY the rival's skill is softened at Challenge Levels 4–7. Levels 1–3 and 8–10 play
+  // as before, and puzzle difficulty (words, clues, starter letters) is unchanged at every level. The curve is
+  // flatter from 1 to 7, then jumps at 8, so 8–10 stand apart as the "Master" levels.
+  const AI_SKILL = { 4: 3.4, 5: 3.8, 6: 4.2, 7: 4.6 };
+  function aiSkill(skill) { return AI_SKILL[skill] || skill; }
+  function aiParams(level) {
+    const skill = aiSkill(level);
     const k = (skill - 1) / 9;
     return {
       miss: 0.5 * Math.pow(1 - k, 1.4),     // chance to overlook a possible placement
