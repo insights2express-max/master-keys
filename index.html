@@ -9,7 +9,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Clue Duel">
   <meta name="description" content="A head-to-head crossword tile game you can play offline.">
-  <title>Clue Duel · v07c</title>
+  <title>Clue Duel · v07d</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="icon" href="icons/icon-192.png" type="image/png" sizes="192x192">
@@ -23,7 +23,7 @@
       <header class="brand">
         <img class="logo" src="icons/icon.svg" alt="" width="64" height="64">
         <div>
-          <h1>Clue Duel <span class="vpill" id="verPill">v07c</span></h1>
+          <h1>Clue Duel <span class="vpill" id="verPill">v07d</span></h1>
           <p class="tag">Place your letters. Finish the words. Beat your rival.</p>
         </div>
       </header>
@@ -153,6 +153,7 @@
       <button class="vt-av" id="vtAv" type="button" aria-label="Choose the Word Vault icon" title="Choose an icon">🔐</button>
       <h2 class="vt-title" id="vtTitle" title="Double-click to rename">Word Vault</h2>
       <span class="vt-clock" id="vtClock" hidden></span>
+      <button class="icon-btn" id="vtSet" type="button" aria-label="Word Vault settings" title="Settings">⚙</button>
       <button class="icon-btn" id="vtHelp" type="button" aria-label="How To Play Word Vault">?</button>
     </header>
     <div class="vt-main">
@@ -173,6 +174,7 @@
         <div class="vt-board" id="vtBoard"></div>
         <div class="vt-acts">
           <button class="btn act" id="vtReveal" type="button"><b>💡</b><span>Reveal (−3)</span></button>
+          <button class="btn act" id="vtNew" type="button"><b>🆕</b><span>New Game</span></button>
           <button class="btn act" id="vtQuit" type="button"><b>🏳️</b><span>Give up</span></button>
         </div>
         <div class="vt-kb" id="vtKb"></div>

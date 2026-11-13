@@ -1,4 +1,4 @@
-/* Clue Duel — custom lexicon (v07c): 3,424 words (304 of them 2-letter answers) plus 114 extra clue sets
+/* Clue Duel — custom lexicon (v07d): 3,424 words (304 of them 2-letter answers) plus 114 extra clue sets
    Format, one entry per line:  WORD|literal clue|indirect clue|level 1-5|picture (optional emoji)|Challenge Levels (optional: "7" = 7 and up, "2-4")
    A word listed again adds an EXTRA clue set (one set is picked at random for each grid).
    Level: 1 everyday · 2 common · 3 moderate · 4 advanced · 5 obscure

@@ -1,6 +1,6 @@
 /* Clue Duel — service worker: caches the whole app so it plays offline.
    Bump CACHE whenever any file changes, so players get the update. */
-const CACHE = 'clue-duel-v07c-2';
+const CACHE = 'clue-duel-v07d-1';
 const ASSETS = [
   './',
   'index.html',

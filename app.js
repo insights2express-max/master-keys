@@ -1,7 +1,7 @@
-/* Clue Duel — user interface (v07c) */
+/* Clue Duel — user interface (v07d) */
 'use strict';
 (() => {
-  const APP_VER = 'v07c'; // Project CP: shown as a pill beside the title and in the browser tab
+  const APP_VER = 'v07d'; // Project CP: shown as a pill beside the title and in the browser tab
   const E = window.Engine;
   const $ = (s, el = document) => el.querySelector(s);
   const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -892,8 +892,8 @@
         <li>The result screen shows both players' stats and your record against this opponent.</li>`)}
       ${sec('Word Vault', `
         <li><b>Word Vault</b> is a word-guessing mini-game, opened from its own button on the menu. Guess the hidden word in a set number of tries.</li>
-        <li>After each guess every letter is marked: <b>blue</b> right letter in the right spot, <b>gold</b> in the word but in another spot, <b>gray</b> not in the word.</li>
-        <li>You choose the Challenge Level (vocabulary), the word's length (4–8 letters), the number of guesses (5–10), a timer and a scoring mode. Tap its <b>?</b> for the full rules.</li>
+        <li>After each guess every letter is marked: <b>green</b> right letter in the right spot, <b>yellow</b> in the word but in another spot, <b>red</b> not in the word. Green letters carry into your next guess.</li>
+        <li>You choose the Challenge Level (vocabulary), the word's length (4–8 letters), the number of guesses (5–10), a timer and a scoring mode, and you can change them during play (⚙). Tap its <b>?</b> for the full rules.</li>
         <li>Make it yours: double-click its title to rename it, and tap the icon beside the title to change it.</li>`)}
       ${sec('Strategy', `
         <li>Don't rush. A word left with only one empty cell is a gift to your rival. Sometimes it pays to <b>hold</b> a tile until you can finish the word yourself.</li>
