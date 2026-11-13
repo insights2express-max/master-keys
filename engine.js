@@ -1,4 +1,4 @@
-/* Clue Duel — game engine (v07d)
+/* Clue Duel — game engine (v07e)
    Puzzle generator (arrow-word grid), tile bag, scoring modes, bonus squares and the computer opponent.
    No DOM code here: app.js handles everything the player sees. */
 'use strict';
@@ -855,6 +855,6 @@
   }
 
   global.Engine = { VAL, SIZES, RULES, MODES, lexicon, generate, newGame, scoreMove, commit, penalize, autoPlace, refill, swapHand, swapSome, endTurn, finish, hint, fits, aiPlan, aiParams, wordValue, boardFull,
-    modeOf, showsValues, tileVal, letterPts, penaltyOf, timerOf, bonusAt, bonusUsed, rollBonuses
+    modeOf, showsValues, tileVal, letterPts, penaltyOf, timerOf, bonusAt, bonusUsed, rollBonuses, pics: picIndex, PIC_MIN
   };
 })(typeof self !== 'undefined' ? self : this);

@@ -1,4 +1,4 @@
-/* Clue Duel — styles (v07d) */
+/* Clue Duel — styles (v07e) */
 :root {
   --bg: #ece6d8;
   --surface: #fbf8f1;
@@ -617,12 +617,12 @@ select {
 @keyframes repin { from { transform: translateY(10px); opacity: 0; } }
 
 /* Add'l 4: last 10 seconds of a timed turn or game: the grid's border flashes every second */
-.board.tf-y { box-shadow: 0 0 0 6px #ffe600, 0 0 26px 8px rgba(255, 230, 0, .75); }
-.board.tf-r { box-shadow: 0 0 0 6px #ff1a1a, 0 0 26px 8px rgba(255, 26, 26, .75); }
-.board.tf-y.tf-a { animation: tfYa 1s ease-out; }
-.board.tf-y.tf-b { animation: tfYb 1s ease-out; }
-.board.tf-r.tf-a { animation: tfRa 1s ease-out; }
-.board.tf-r.tf-b { animation: tfRb 1s ease-out; }
+.board.tf-y, .vt-board.tf-y { box-shadow: 0 0 0 6px #ffe600, 0 0 26px 8px rgba(255, 230, 0, .75); }
+.board.tf-r, .vt-board.tf-r { box-shadow: 0 0 0 6px #ff1a1a, 0 0 26px 8px rgba(255, 26, 26, .75); }
+.board.tf-y.tf-a, .vt-board.tf-y.tf-a { animation: tfYa 1s ease-out; }
+.board.tf-y.tf-b, .vt-board.tf-y.tf-b { animation: tfYb 1s ease-out; }
+.board.tf-r.tf-a, .vt-board.tf-r.tf-a { animation: tfRa 1s ease-out; }
+.board.tf-r.tf-b, .vt-board.tf-r.tf-b { animation: tfRb 1s ease-out; }
 @keyframes tfYa { 0%, 40% { box-shadow: 0 0 0 7px #ffe600, 0 0 30px 10px rgba(255, 230, 0, .9); } 100% { box-shadow: 0 0 0 4px rgba(255, 230, 0, .25), 0 0 8px 2px rgba(255, 230, 0, .15); } }
 @keyframes tfYb { 0%, 40% { box-shadow: 0 0 0 7px #ffe600, 0 0 30px 10px rgba(255, 230, 0, .9); } 100% { box-shadow: 0 0 0 4px rgba(255, 230, 0, .25), 0 0 8px 2px rgba(255, 230, 0, .15); } }
 @keyframes tfRa { 0%, 40% { box-shadow: 0 0 0 7px #ff1a1a, 0 0 30px 10px rgba(255, 26, 26, .9); } 100% { box-shadow: 0 0 0 4px rgba(255, 26, 26, .25), 0 0 8px 2px rgba(255, 26, 26, .15); } }
@@ -809,3 +809,63 @@ select {
   text-shadow: 0 6px 18px rgba(0, 0, 0, .45); animation: vtcheer 2s ease-out forwards;
 }
 @keyframes vtcheer { 0% { transform: translate(-50%, -50%) scale(.3); opacity: 0; } 15% { transform: translate(-50%, -50%) scale(1.15); opacity: 1; } 25% { transform: translate(-50%, -50%) scale(1); } 85% { opacity: 1; } 100% { opacity: 0; transform: translate(-50%, -60%) scale(1); } }
+
+/* v07e (JM, CD-24): Word Vault pause clock, overlays, keyboard-width squares, ✕ clear, darker selection glow, embossed letters,
+   chart note, icon upload */
+.vt-clock {
+  display: inline-flex; align-items: center; gap: 6px; border: 0; cursor: pointer; color: var(--ink);
+  font-size: clamp(22px, 6.4vw, 32px); line-height: 1; padding: 5px 10px; border-radius: 12px; /* twice the old size */
+}
+.vt-clock b { font-family: var(--emoji); font-size: .72em; font-weight: 400; }
+.vt-clock.on { background: #f5c518; color: #1f2933; }
+.vt-clock:disabled { cursor: default; opacity: .7; }
+.vt-boardwrap { position: relative; }
+.vt-board { border-radius: 10px; }
+.vt-cell { width: var(--vw, 52px); height: var(--vh, 52px); font-size: var(--vf, 28px); }
+.vt-clr {
+  width: var(--xw, 34px); height: var(--vh, 52px); border: 0; border-radius: 9px; padding: 0; cursor: pointer;
+  background: var(--btn); color: var(--btn-ink); box-shadow: var(--shadow); font-weight: 900; font-size: calc(var(--xw, 34px) * .5);
+}
+.vt-clr:disabled { opacity: .35; cursor: default; }
+.vt-clr-sp { width: var(--xw, 34px); }
+/* the selected square: a darker blue glow with a black inner outline (CD-24: 1.1.2) */
+.vt-cell.sel, .vt-cell.ok.sel, .vt-cell.typed.sel { box-shadow: inset 0 0 0 3px #000, 0 0 0 3px #0277bd, 0 0 14px 4px rgba(2, 119, 189, .8); }
+/* letters pressed into their squares, on marked squares and keys only (CD-24: 1.1.6) */
+.vt-cell.ok, .vt-cell.in, .vt-cell.no, .vt-k.ok, .vt-k.in, .vt-k.no, .vt-res-w span {
+  text-shadow: -.045em -.045em .03em rgba(0, 0, 0, .55), .045em .045em .03em rgba(255, 255, 255, .6);
+}
+.vt-cell.ok, .vt-cell.in, .vt-cell.no { box-shadow: inset 0 2px 4px rgba(0, 0, 0, .28), inset 0 -2px 3px rgba(255, 255, 255, .22); }
+.vt-cell.ok.sel { box-shadow: inset 0 0 0 3px #000, 0 0 0 3px #0277bd, 0 0 14px 4px rgba(2, 119, 189, .8); }
+/* the overlay: PLAY PAUSED, the Hint, or the word you just left; it covers the grid's full width */
+.vt-ov { position: absolute; inset: 0; z-index: 6; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+.vt-ovcard {
+  width: 100%; max-height: 100%; overflow: auto; box-sizing: border-box; padding: 16px 14px; border-radius: 16px; text-align: center;
+  background: rgba(24, 32, 42, .9); color: #fff; box-shadow: 0 0 0 3px rgba(245, 197, 24, .9), 0 18px 50px rgba(0, 0, 0, .4);
+}
+.vt-ov.hint .vt-ovcard { box-shadow: 0 0 0 3px #4fc3f7, 0 18px 50px rgba(0, 0, 0, .4); }
+.vt-ov.gate .vt-ovcard { box-shadow: 0 0 0 3px var(--vt-no), 0 18px 50px rgba(0, 0, 0, .4); }
+.vt-ov-big { font-size: clamp(28px, 7vw, 46px); font-weight: 900; letter-spacing: .07em; line-height: 1.05; }
+.vt-ov-h { font-size: 18px; font-weight: 900; margin-bottom: 6px; }
+.vt-ov-pic { font-family: var(--emoji); font-size: 44px; line-height: 1.2; margin: 4px 0; }
+.vt-ov-t { font-size: clamp(18px, 5vw, 24px); font-weight: 800; line-height: 1.3; margin: 4px 0; }
+.vt-ov-t.small { font-size: 15px; font-weight: 600; opacity: .9; }
+.vt-ov-s { margin-top: 8px; font-size: 13px; font-weight: 600; opacity: .8; }
+.vt-play.paused .vt-board, .vt-play.paused .vt-kb, .vt-play.paused .vt-acts, .vt-play.paused .vt-info { filter: blur(10px); pointer-events: none; }
+.vt-dist-note { font-size: 12px; color: var(--muted); margin: 6px 0 0; line-height: 1.35; }
+.vt-bar .b.x { background: #8a4a52; }
+.vt-bar .b.x.me { background: var(--vt-no); }
+.vt-bar { cursor: help; }
+.vt-av img, #vaultBtnIco img { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: inherit; }
+.vt-av { overflow: hidden; padding: 0; }
+#vaultBtnIco { display: inline-block; width: 24px; height: 24px; border-radius: 6px; overflow: hidden; line-height: 24px; text-align: center; }
+.vt-upl { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 4px 0 10px; }
+.vt-mine { width: 46px; height: 46px; padding: 0; border-radius: 12px; border: 2px solid var(--line); overflow: hidden; cursor: pointer; background: none; }
+.vt-mine.on { border-color: var(--primary); box-shadow: 0 0 0 2px var(--primary); }
+.vt-mine img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.vt-acts { flex-wrap: wrap; justify-content: center; }
+@media (max-width: 480px) { /* phones: room for the larger clock and the full title */
+  .vt-top { gap: 5px; padding: 8px 8px; }
+  .vt-av { width: 36px; height: 36px; font-size: 21px; }
+  .vt-title { font-size: clamp(17px, 5.1vw, 24px); }
+  .vt-clock { gap: 4px; padding: 5px 7px; }
+}

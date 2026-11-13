@@ -1,7 +1,7 @@
-/* Clue Duel — user interface (v07d) */
+/* Clue Duel — user interface (v07e) */
 'use strict';
 (() => {
-  const APP_VER = 'v07d'; // Project CP: shown as a pill beside the title and in the browser tab
+  const APP_VER = 'v07e'; // Project CP: shown as a pill beside the title and in the browser tab
   const E = window.Engine;
   const $ = (s, el = document) => el.querySelector(s);
   const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -107,7 +107,7 @@
     $('#home').hidden = id !== 'home';
     $('#game').hidden = id !== 'game';
     $('#vault').hidden = id !== 'vault'; // v07c: Word Vault
-    if (id === 'home') { const vs = store.get('cd.vault.settings', {}); $('#vaultBtnName').textContent = (vs.name || '').trim() || 'Word Vault'; $('#vaultBtnIco').textContent = vs.icon || '🔐'; }
+    if (id === 'home') { const vs = store.get('cd.vault.settings', {}); $('#vaultBtnName').textContent = (vs.name || '').trim() || 'Word Vault'; const ico = $('#vaultBtnIco'); if (vs.icon === 'custom' && vs.custom) ico.innerHTML = `<img src="${vs.custom}" alt="">`; else ico.textContent = vs.icon || '🔐'; }
   }
 
   async function startNewGame() {
@@ -893,8 +893,8 @@
       ${sec('Word Vault', `
         <li><b>Word Vault</b> is a word-guessing mini-game, opened from its own button on the menu. Guess the hidden word in a set number of tries.</li>
         <li>After each guess every letter is marked: <b>green</b> right letter in the right spot, <b>yellow</b> in the word but in another spot, <b>red</b> not in the word. Green letters carry into your next guess.</li>
-        <li>You choose the Challenge Level (vocabulary), the word's length (4–8 letters), the number of guesses (5–10), a timer and a scoring mode, and you can change them during play (⚙). Tap its <b>?</b> for the full rules.</li>
-        <li>Make it yours: double-click its title to rename it, and tap the icon beside the title to change it.</li>`)}
+        <li>You choose the Challenge Level (vocabulary), the word's length (4–8 letters), the number of guesses (5–10), a timer and a scoring mode, and you can change them during play (⚙). Extras: 🔎 Hint (−5) shows a clue, 💡 Reveal (−3) places a letter, ✕ clears a guess, and tapping the clock pauses. Tap its <b>?</b> for the full rules.</li>
+        <li>Make it yours: double-click its title to rename it, and tap the icon beside the title to change it or upload your own picture.</li>`)}
       ${sec('Strategy', `
         <li>Don't rush. A word left with only one empty cell is a gift to your rival. Sometimes it pays to <b>hold</b> a tile until you can finish the word yourself.</li>
         <li>It is often smart to save 2× squares for big turns because they double everything else you score that turn. Beware: your opponent can "steal" the bonus squares in the early rounds to keep you from scoring big.</li>`)}
