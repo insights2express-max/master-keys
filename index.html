@@ -9,7 +9,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Clue Duel">
   <meta name="description" content="A head-to-head crossword tile game you can play offline.">
-  <title>Clue Duel · v07b</title>
+  <title>Clue Duel · v07c</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="icon" href="icons/icon-192.png" type="image/png" sizes="192x192">
@@ -23,7 +23,7 @@
       <header class="brand">
         <img class="logo" src="icons/icon.svg" alt="" width="64" height="64">
         <div>
-          <h1>Clue Duel <span class="vpill" id="verPill">v07b</span></h1>
+          <h1>Clue Duel <span class="vpill" id="verPill">v07c</span></h1>
           <p class="tag">Place your letters. Finish the words. Beat your rival.</p>
         </div>
       </header>
@@ -140,10 +140,46 @@
 
       <button class="btn primary big" id="startBtn" type="button">New Game</button>
       <button class="btn big" id="resumeBtn" type="button" hidden>Resume Game</button>
+      <button class="btn big vault-btn" id="vaultBtn" type="button"><span id="vaultBtnIco">🔐</span> <span id="vaultBtnName">Word Vault</span></button>
       <button class="btn link" id="howBtn" type="button">How To Play</button>
       <div class="ver">Plays offline</div>
     </div>
   </section>
+
+  <!-- ===== Word Vault (v07c, JM CD-21: 5.1–5.3): a word-guessing mini-game ===== -->
+  <section id="vault" class="screen" hidden>
+    <header class="vt-top">
+      <button class="icon-btn" id="vtMenu" type="button" aria-label="Back to the menu" title="Back to the menu">☰</button>
+      <button class="vt-av" id="vtAv" type="button" aria-label="Choose the Word Vault icon" title="Choose an icon">🔐</button>
+      <h2 class="vt-title" id="vtTitle" title="Double-click to rename">Word Vault</h2>
+      <span class="vt-clock" id="vtClock" hidden></span>
+      <button class="icon-btn" id="vtHelp" type="button" aria-label="How To Play Word Vault">?</button>
+    </header>
+    <div class="vt-main">
+      <div class="vt-setup" id="vtSetup">
+        <div class="vt-grid">
+          <label class="field"><span class="lbl">Challenge Level</span><select id="vtLevel"></select></label>
+          <label class="field"><span class="lbl">Letters</span><select id="vtLen"></select></label>
+          <label class="field"><span class="lbl">Guesses</span><select id="vtTries"></select></label>
+          <label class="field"><span class="lbl">Timer</span><select id="vtTimer"></select></label>
+          <label class="field"><span class="lbl">Scoring</span><select id="vtScoring"><option value="classic">Classic</option><option value="flat">Flat</option></select></label>
+        </div>
+        <span class="opt-desc" id="vtDesc"></span>
+        <button class="btn primary big" id="vtStart" type="button">Open the Vault</button>
+        <div class="vt-stats" id="vtStats"></div>
+      </div>
+      <div class="vt-play" id="vtPlay" hidden>
+        <div class="vt-info" id="vtInfo"></div>
+        <div class="vt-board" id="vtBoard"></div>
+        <div class="vt-acts">
+          <button class="btn act" id="vtReveal" type="button"><b>💡</b><span>Reveal (−3)</span></button>
+          <button class="btn act" id="vtQuit" type="button"><b>🏳️</b><span>Give up</span></button>
+        </div>
+        <div class="vt-kb" id="vtKb"></div>
+      </div>
+    </div>
+  </section>
+  <div id="toasts" class="toasts"></div>
 
   <!-- ===== Game ===== -->
   <section id="game" class="screen" hidden>
@@ -213,7 +249,6 @@
         <button class="btn act" id="moreBtn" type="button" aria-expanded="false" aria-controls="morePop" title="More buttons"><b>⋯</b><span>More</span></button>
       </div>
     </div>
-    <div id="toasts" class="toasts"></div>
   </section>
 
   <!-- ===== Hover-zoom (enlarged clue + trace line) ===== -->
@@ -230,5 +265,7 @@
   <script src="wordplay.js"></script>
   <script src="engine.js"></script>
   <script src="app.js"></script>
+  <script src="vaultwords.js"></script>
+  <script src="vault.js"></script>
 </body>
 </html>

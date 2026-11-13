@@ -1,4 +1,4 @@
-/* Clue Duel — custom lexicon (v07b): 3,424 words (304 of them 2-letter answers) plus 114 extra clue sets
+/* Clue Duel — custom lexicon (v07c): 3,424 words (304 of them 2-letter answers) plus 114 extra clue sets
    Format, one entry per line:  WORD|literal clue|indirect clue|level 1-5|picture (optional emoji)|Challenge Levels (optional: "7" = 7 and up, "2-4")
    A word listed again adds an EXTRA clue set (one set is picked at random for each grid).
    Level: 1 everyday · 2 common · 3 moderate · 4 advanced · 5 obscure
@@ -3319,21 +3319,21 @@ KJ|Kilojoule|Food-energy unit on many labels|2
 MW|Megawatt|Power-plant output unit|2
 NS|Nanosecond|Billionth of a second|2
 # Chemical symbols
-NA|Sodium|Half of table salt, on the periodic table|1
-LI|Lithium|Phone-battery metal, on the periodic table|1
-CL|Chlorine|Pool chemical, on the periodic table|1
-CR|Chromium|Shiny-bumper metal, on the periodic table|2
-NI|Nickel|Coin metal that sticks to magnets, on the periodic table|1
-CU|Copper|Electric-wire metal, on the periodic table|1
-ZN|Zinc|Sunscreen metal, on the periodic table|1
-AG|Silver|Second-place metal, on the periodic table|1
-AU|Gold|First-place metal, on the periodic table|1
-HG|Mercury|Old-thermometer metal, on the periodic table|2
-SN|Tin|Tin-can metal, on the periodic table|2
-XE|Xenon|Bright-headlight gas, on the periodic table|2
-KR|Krypton|Superman's home-planet gas, on the periodic table|2
-BR|Bromine|Red-brown liquid element, on the periodic table|3
-PU|Plutonium|Reactor fuel, on the periodic table|2
+NA|Sodium|Half of table salt|1
+LI|Lithium|Phone-battery metal|1
+CL|Chlorine|Pool chemical|1
+CR|Chromium|Shiny-bumper metal|2
+NI|Nickel|Coin metal that sticks to magnets|1
+CU|Copper|Electric-wire metal|1
+ZN|Zinc|Sunscreen metal|1
+AG|Silver|Second-place metal|1
+AU|Gold|First-place metal|1
+HG|Mercury|Old-thermometer metal|2
+SN|Tin|Tin-can metal|2
+XE|Xenon|Bright-headlight gas|2
+KR|Krypton|Superman's home-planet gas|2
+BR|Bromine|Red-brown liquid element|3
+PU|Plutonium|Reactor fuel|2
 # Common global abbreviations
 CE|Common Era|Modern-era letters, like AD|1
 FC|Football Club|Soccer-team letters|1
@@ -3482,42 +3482,42 @@ CAI|Cairo airport code|Bag tag for pyramid trips|4||7
 DEL|Delhi airport code|Bag tag for Taj Mahal trips|4||7
 BOM|Mumbai airport code|Bag tag for Bollywood trips|4||7
 # Element symbols (JM CD-17: 2.3.1): extra clue sets for existing words, plus a few new words
-HE|Helium|Balloon gas, on the periodic table|1
-NE|Neon|Glowing-sign gas, on the periodic table|1
-AL|Aluminum|Soda-can metal, on the periodic table|1
-AR|Argon|Noble gas in light bulbs, on the periodic table|2
-CA|Calcium|Bone mineral, on the periodic table|1
-CO|Cobalt|Blue-glass metal, on the periodic table|2
-MG|Magnesium|Flare metal, on the periodic table|2
-MN|Manganese|Steel-hardening metal, on the periodic table|3||4
-PB|Lead|Old water-pipe metal, on the periodic table|2
-PT|Platinum|Precious-ring metal, on the periodic table|2
-SI|Silicon|Computer-chip element, on the periodic table|1
-TI|Titanium|Strong, light metal, on the periodic table|2
-BA|Barium|X-ray drink element, on the periodic table|3||4
-RA|Radium|Curie's glowing element, on the periodic table|2
+HE|Helium|Balloon gas|1
+NE|Neon|Glowing-sign gas|1
+AL|Aluminum|Soda-can metal|1
+AR|Argon|Noble gas in light bulbs|2
+CA|Calcium|Bone mineral|1
+CO|Cobalt|Blue-glass metal|2
+MG|Magnesium|Flare metal|2
+MN|Manganese|Steel-hardening metal|3||4
+PB|Lead|Old water-pipe metal|2
+PT|Platinum|Precious-ring metal|2
+SI|Silicon|Computer-chip element|1
+TI|Titanium|Strong, light metal|2
+BA|Barium|X-ray drink element|3||4
+RA|Radium|Curie's glowing element|2
 PO|Polonium|Element named for Poland|3||4
-CD|Cadmium|Old battery metal, on the periodic table|3||4
+CD|Cadmium|Old battery metal|3||4
 SE|Selenium|Element named for the moon|3||4
-ND|Neodymium|Super-magnet metal, on the periodic table|3||4
-AM|Americium|Smoke-detector element, on the periodic table|3||4
+ND|Neodymium|Super-magnet metal|3||4
+AM|Americium|Smoke-detector element|3||4
 CF|Californium|Element named for a Golden State|3||4
 MD|Mendelevium|Element named for the periodic table's creator|4||7
-IR|Iridium|Hardest-to-corrode metal, on the periodic table|3||4
-SR|Strontium|Red-firework metal, on the periodic table|3||4
-AS|Arsenic|Poison in old mysteries, on the periodic table|2
-BE|Beryllium|Emerald element, on the periodic table|3||4
-OS|Osmium|Densest metal, on the periodic table|3||4
-IN|Indium|Touch-screen metal, on the periodic table|3||4
-GA|Gallium|Metal that melts in your hand, on the periodic table|3||4
-PD|Palladium|Car-converter metal, on the periodic table|3||4
+IR|Iridium|Hardest-to-corrode metal|3||4
+SR|Strontium|Red-firework metal|3||4
+AS|Arsenic|Poison in old mysteries|2
+BE|Beryllium|Emerald element|3||4
+OS|Osmium|Densest metal|3||4
+IN|Indium|Touch-screen metal|3||4
+GA|Gallium|Metal that melts in your hand|3||4
+PD|Palladium|Car-converter metal|3||4
 NO|Nobelium|Element named for Nobel|3||4
 EU|Europium|Element named for a continent|3||4
 CM|Curium|Element named for the Curies|3||4
-BI|Bismuth|Pink stomach-remedy metal, on the periodic table|3||4
-CS|Cesium|Atomic-clock element, on the periodic table|3||4
+BI|Bismuth|Pink stomach-remedy metal|3||4
+CS|Cesium|Atomic-clock element|3||4
 ES|Einsteinium|Element named for Einstein|3||4
-GE|Germanium|Early transistor element, on the periodic table|3||4
+GE|Germanium|Early transistor element|3||4
 TH|Thorium|Element named for the god of thunder|3||4
 CN|Copernicium|Element named for Copernicus|4||7
 BK|Berkelium|Element named for a California campus|4||7
@@ -3538,7 +3538,7 @@ HELIUM|He|Element 2|2||5
 SODIUM|Salt element|Partner of chlorine in salt|2
 SODIUM|Na|Element 11|2||5
 CARBON|Diamond element|Graphite element|1
-CARBON|C, on the periodic table|Element 6|2||5
+CARBON|C|Element 6|2||5
 DRYICE|Frozen CO2|Stage-fog maker|3
 DRYICE|CO2, frozen solid|Theater-fog block|3||5
 NACL|Salt|Sodium chloride|3||5

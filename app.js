@@ -1,7 +1,7 @@
-/* Clue Duel — user interface (v07b) */
+/* Clue Duel — user interface (v07c) */
 'use strict';
 (() => {
-  const APP_VER = 'v07b'; // Project CP: shown as a pill beside the title and in the browser tab
+  const APP_VER = 'v07c'; // Project CP: shown as a pill beside the title and in the browser tab
   const E = window.Engine;
   const $ = (s, el = document) => el.querySelector(s);
   const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -106,6 +106,8 @@
   function showScreen(id) {
     $('#home').hidden = id !== 'home';
     $('#game').hidden = id !== 'game';
+    $('#vault').hidden = id !== 'vault'; // v07c: Word Vault
+    if (id === 'home') { const vs = store.get('cd.vault.settings', {}); $('#vaultBtnName').textContent = (vs.name || '').trim() || 'Word Vault'; $('#vaultBtnIco').textContent = vs.icon || '🔐'; }
   }
 
   async function startNewGame() {
@@ -888,6 +890,11 @@
         <li>The game ends when the grid is full, by the <b>3 PASSES Rule</b> (${esc(PASS_RULE)}), or when a whole-game clock runs out.</li>
         <li>A yellow box warns you after the 1st pass; a red box after the 2nd.</li>
         <li>The result screen shows both players' stats and your record against this opponent.</li>`)}
+      ${sec('Word Vault', `
+        <li><b>Word Vault</b> is a word-guessing mini-game, opened from its own button on the menu. Guess the hidden word in a set number of tries.</li>
+        <li>After each guess every letter is marked: <b>blue</b> right letter in the right spot, <b>gold</b> in the word but in another spot, <b>gray</b> not in the word.</li>
+        <li>You choose the Challenge Level (vocabulary), the word's length (4–8 letters), the number of guesses (5–10), a timer and a scoring mode. Tap its <b>?</b> for the full rules.</li>
+        <li>Make it yours: double-click its title to rename it, and tap the icon beside the title to change it.</li>`)}
       ${sec('Strategy', `
         <li>Don't rush. A word left with only one empty cell is a gift to your rival. Sometimes it pays to <b>hold</b> a tile until you can finish the word yourself.</li>
         <li>It is often smart to save 2× squares for big turns because they double everything else you score that turn. Beware: your opponent can "steal" the bonus squares in the early rounds to keep you from scoring big.</li>`)}
@@ -1546,9 +1553,32 @@
   // =====================================================================
   // Boot
   // =====================================================================
+  // v07c: the Word Vault mini-game (vault.js) shares the menu's modal, toasts, storage and avatar list
+  window.CDUI = {
+    $, esc, store, toast, openModal, closeModal, APP_VER, AVATARS,
+    showScreen, goHome: () => { showScreen('home'); renderHome(); },
+    settings: () => settings
+  };
+  $('#vaultBtn').addEventListener('click', () => { if (window.WordVault) window.WordVault.open(); });
+
   renderHome();
   showScreen('home');
   if ('serviceWorker' in navigator && location.protocol.startsWith('http') && !/[?&]nosw\b/.test(location.search)) {
-    window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => { /* offline install not available */ }); });
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js').then(reg => { try { reg.update(); } catch (e) { /* ignore */ } }).catch(() => { /* offline install not available */ });
+    });
+    // v07c (JM, CD-21: 4.1): when a newer version has just installed itself, offer it at once instead of on the next open
+    if (navigator.serviceWorker.controller) {
+      let shown = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (shown) return;
+        shown = true;
+        const bar = document.createElement('button');
+        bar.type = 'button'; bar.className = 'update-bar';
+        bar.textContent = '✨ New version ready · tap to update';
+        bar.addEventListener('click', () => { if (G && !G.over) save(); location.reload(); });
+        document.body.appendChild(bar);
+      });
+    }
   }
 })();

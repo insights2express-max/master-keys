@@ -1,6 +1,6 @@
 /* Clue Duel — service worker: caches the whole app so it plays offline.
    Bump CACHE whenever any file changes, so players get the update. */
-const CACHE = 'clue-duel-v07b-1';
+const CACHE = 'clue-duel-v07c-1';
 const ASSETS = [
   './',
   'index.html',
@@ -8,6 +8,8 @@ const ASSETS = [
   'lexicon.js',
   'cluepics.js',
   'wordplay.js',
+  'vaultwords.js',
+  'vault.js',
   'engine.js',
   'app.js',
   'manifest.webmanifest',
