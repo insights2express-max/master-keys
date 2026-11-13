@@ -1,4 +1,7 @@
-/* Clue Duel — Word Vault (v07e): a word-guessing mini-game (JM, CD-12: 4.2.1; CD-13: 4.x; CD-18: 7.1a; CD-21: 5.1–5.3; CD-23; CD-24).
+/* Clue Duel — Word Vault (v07f): a word-guessing mini-game (JM, CD-12: 4.2.1; CD-13: 4.x; CD-18: 7.1a; CD-21: 5.1–5.3; CD-23; CD-24; CD-25).
+   v07f (CD-25): no embossed text; played letters are black on green, yellow or red; typed (tentative) letters turn their key
+   black on white; empty squares are dark glass "candy drops" in the slots of a glassy grid panel; a large > marks the
+   active row, so the grid sits centered between it and the ✕; "Blitz · 30s per guess".
    v07e (CD-24): ⏸️ Pause on the (larger) clock, with a blurred grid and tap-anywhere to resume; yellow/red countdown borders;
    squares sized to the keyboard's width; ✕ clears the guess row; 🔎 Hint (−5) shows the word's clue over the grid;
    embossed letters; after New Game the unsolved word is shown until a tap; more icons and your own picture.
@@ -71,7 +74,7 @@
   }
 
   // ---------- Setting choices ----------
-  const TIMERS = [['0', 'Untimed'], ['t30', 'Blitz · 30 s a guess'], ['t60', '1 min a guess'], ['t120', '2 min a guess'], ['t180', '3 min a guess'],
+  const TIMERS = [['0', 'Untimed'], ['t30', 'Blitz · 30s per guess'], ['t60', '1 min a guess'], ['t120', '2 min a guess'], ['t180', '3 min a guess'],
     ['t300', '5 min a guess'], ['g120', '2 min a word'], ['g180', '3 min a word'], ['g300', '5 min a word'], ['g600', '10 min a word'], ['g900', '15 min a word']];
   const OPTS = {
     level: Array.from({ length: 10 }, (_, i) => [i + 1, i === 0 ? '1 · Gentle' : i === 9 ? '10 · Ruthless' : String(i + 1)]),
@@ -213,18 +216,23 @@
     const main = $('.vt-main');
     let W = keys.length ? keys[keys.length - 1].getBoundingClientRect().right - keys[0].getBoundingClientRect().left : Math.min(main.clientWidth - 24, 500);
     if (!(W > 100)) W = Math.min(main.clientWidth - 24, 500);
-    const g = R.len >= 7 ? 5 : 6;
-    const x0 = Math.round(Math.max(28, Math.min(42, W * 0.085)));
-    const cw = Math.floor((W - x0 - R.len * g) / R.len);
-    const xw = Math.floor(W - R.len * (cw + g)); // the ✕ column takes the leftover pixels, so both edges line up exactly
-    const used = $('#vtInfo').offsetHeight + $('.vt-acts').offsetHeight + $('#vtKb').offsetHeight + 3 * 10 + 20;
+    // v07f (CD-25: 1.5.2.3–4): the glass panel spans the keyboard's width; inside it, the > column (left) and the ✕ column
+    // (right) are equal, so the squares sit centered.
+    const g = R.len >= 7 ? 5 : 6, P = 8; // P: the glass panel's padding
+    const inner = W - 2 * P;
+    const x0 = Math.round(Math.max(20, Math.min(36, W * 0.06)));
+    const cw = Math.floor((inner - 2 * x0 - (R.len + 1) * g) / R.len);
+    const xw = Math.floor((inner - R.len * cw - (R.len + 1) * g) / 2); // both side columns share the leftover pixels
+    const used = $('#vtInfo').offsetHeight + $('.vt-acts').offsetHeight + $('#vtKb').offsetHeight + 3 * 10 + 20 + 2 * P;
     const avail = main.clientHeight - used;
     const ch = Math.max(26, Math.min(cw, Math.floor((avail - (R.tries - 1) * g) / R.tries)));
     const b = $('#vtBoard');
     b.style.setProperty('--vw', cw + 'px'); b.style.setProperty('--vh', ch + 'px'); b.style.setProperty('--xw', xw + 'px');
     b.style.setProperty('--vf', Math.round(Math.min(cw, ch * 1.15) * 0.55) + 'px');
     b.style.gap = g + 'px';
-    b.style.gridTemplateColumns = `repeat(${R.len}, var(--vw)) var(--xw)`;
+    b.style.padding = P + 'px';
+    b.style.width = Math.round(W) + 'px';
+    b.style.gridTemplateColumns = `var(--xw) repeat(${R.len}, var(--vw)) var(--xw)`;
   }
   window.addEventListener('resize', () => { if (screenOn() && R) sizeBoard(); });
 
@@ -237,13 +245,16 @@
   }
   function render() {
     const b = [];
+    const CHEV = '<div class="vt-chev" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 3l10 9-10 9" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>';
     for (let r = 0; r < R.tries; r++) {
       const row = R.rows[r];
+      // a large > marks the active guess row; it balances the ✕ on the right, so the grid sits centered (CD-25: 1.5.2.3)
+      b.push(r === R.rows.length && !R.over ? CHEV : '<div class="vt-clr-sp"></div>');
       for (let c = 0; c < R.len; c++) {
         if (row) b.push(`<div class="vt-cell ${row.st[c]}">${row.g[c] === ' ' ? '' : row.g[c]}</div>`);
         else if (r === R.rows.length && !R.over) {
           const cell = R.cells[c], cls = ['vt-cell', 'cur'];
-          if (cell.lock) cls.push('ok', 'pre'); else if (cell.ch) cls.push('typed');
+          if (cell.lock) cls.push('ok', 'pre'); else if (cell.ch) cls.push('typed'); else cls.push('empty');
           if (c === R.sel) cls.push('sel');
           b.push(`<div class="${cls.join(' ')}" data-c="${c}">${cell.ch}</div>`);
         } else b.push('<div class="vt-cell empty"></div>');
@@ -257,10 +268,12 @@
     // keyboard: the best mark each letter has earned so far
     const best = {}, rank = { ok: 3, in: 2, no: 1 };
     for (const row of R.rows) row.g.split('').forEach((ch, i) => { if (ch !== ' ' && (rank[row.st[i]] || 0) > (rank[best[ch]] || 0)) best[ch] = row.st[i]; });
+    // TENTATIVE LETTERS (typed, not yet entered) turn an UNPLAYED key black-on-white until Enter or removal (CD-25: 1.5.2.2.1)
+    const tent = new Set(R.over ? [] : R.cells.filter(x => !x.lock && x.ch).map(x => x.ch));
     const rows = ['QWERTYUIOP', 'ASDFGHJKL', '+ZXCVBNM-'];
     $('#vtKb').innerHTML = rows.map(r => `<div class="vt-kr">${r.split('').map(k => k === '+' ? '<button type="button" class="vt-k wide" data-k="Enter">ENTER</button>'
       : k === '-' ? '<button type="button" class="vt-k wide" data-k="Backspace" aria-label="Delete">⌫</button>'
-        : `<button type="button" class="vt-k ${best[k] || ''}" data-k="${k}">${k}</button>`).join('')}</div>`).join('');
+        : `<button type="button" class="vt-k ${best[k] || (tent.has(k) ? 'tent' : '')}" data-k="${k}">${k}</button>`).join('')}</div>`).join('');
     $('#vtReveal').disabled = R.over || !R.cells.some(c => !c.lock);
     $('#vtQuit').disabled = R.over;
     $('#vtHint').disabled = R.over;

@@ -830,10 +830,7 @@ select {
 .vt-clr-sp { width: var(--xw, 34px); }
 /* the selected square: a darker blue glow with a black inner outline (CD-24: 1.1.2) */
 .vt-cell.sel, .vt-cell.ok.sel, .vt-cell.typed.sel { box-shadow: inset 0 0 0 3px #000, 0 0 0 3px #0277bd, 0 0 14px 4px rgba(2, 119, 189, .8); }
-/* letters pressed into their squares, on marked squares and keys only (CD-24: 1.1.6) */
-.vt-cell.ok, .vt-cell.in, .vt-cell.no, .vt-k.ok, .vt-k.in, .vt-k.no, .vt-res-w span {
-  text-shadow: -.045em -.045em .03em rgba(0, 0, 0, .55), .045em .045em .03em rgba(255, 255, 255, .6);
-}
+/* (v07e embossed letters removed in v07f: JM, CD-25: 1.5.2) */
 .vt-cell.ok, .vt-cell.in, .vt-cell.no { box-shadow: inset 0 2px 4px rgba(0, 0, 0, .28), inset 0 -2px 3px rgba(255, 255, 255, .22); }
 .vt-cell.ok.sel { box-shadow: inset 0 0 0 3px #000, 0 0 0 3px #0277bd, 0 0 14px 4px rgba(2, 119, 189, .8); }
 /* the overlay: PLAY PAUSED, the Hint, or the word you just left; it covers the grid's full width */
@@ -869,3 +866,39 @@ select {
   .vt-title { font-size: clamp(17px, 5.1vw, 24px); }
   .vt-clock { gap: 4px; padding: 5px 7px; }
 }
+
+/* v07f (JM, CD-25: 1.5.2): no embossing; PLAYED LETTERS are black on their color; TENTATIVE LETTERS invert their key;
+   the active row is marked by a large > and the grid is centered; every square is a glass "candy drop" sitting in a shallow
+   slot of a glassy grid panel */
+.vt-cell, .vt-k, .vt-res-w span { text-shadow: none; -webkit-text-stroke: 0; }
+.vt-k.ok, .vt-k.in, .vt-k.no, .vt-res-w span, .vt-chip.ok, .vt-chip.in, .vt-chip.no { color: #000; -webkit-text-stroke: 0; }
+.vt-k.tent { background: var(--btn-ink); color: var(--btn); }
+@media (prefers-color-scheme: dark) { .vt-k.tent { background: #fff; color: #000; } }
+/* the glassy grid panel */
+.vt-board {
+  box-sizing: border-box; justify-content: center; border-radius: 18px;
+  background: linear-gradient(160deg, rgba(255, 255, 255, .15), rgba(255, 255, 255, .03) 45%, rgba(0, 0, 0, .14)), rgba(22, 30, 40, .8);
+  -webkit-backdrop-filter: blur(10px) saturate(1.3); backdrop-filter: blur(10px) saturate(1.3);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .22), inset 0 0 0 1px rgba(255, 255, 255, .1), 0 10px 26px rgba(0, 0, 0, .35);
+}
+/* each square: a glass drop (shine on top, shade underneath) resting in a slot (shaded upper lip, lit lower lip) */
+.vt-cell {
+  position: relative; isolation: isolate; opacity: 1; border-radius: 10px; color: #000;
+  --slot: 0 -1px 0 3px rgba(0, 0, 0, .55), 0 1px 0 3px rgba(255, 255, 255, .14);
+  --drop: inset 0 -5px 8px rgba(0, 0, 0, .38), inset 0 2px 1px rgba(255, 255, 255, .35), 0 2px 3px rgba(0, 0, 0, .55);
+}
+.vt-cell, .vt-cell.empty, .vt-cell.typed, .vt-cell.ok, .vt-cell.in, .vt-cell.no { box-shadow: var(--drop), var(--slot); opacity: 1; }
+.vt-cell::before {
+  content: ''; position: absolute; z-index: -1; left: 9%; right: 9%; top: 5%; height: 44%; pointer-events: none;
+  border-radius: 8px 8px 50% 50% / 8px 8px 35% 35%; background: linear-gradient(rgba(255, 255, 255, .5), rgba(255, 255, 255, .04));
+}
+/* empty squares, in the active row and the rows below, are the same dark glass; TENTATIVE LETTERS show white on it */
+.vt-cell.empty, .vt-cell.typed { background: radial-gradient(circle at 50% 125%, rgba(79, 195, 247, .12), transparent 60%), #0b1016; color: #fff; }
+.vt-cell.empty::before, .vt-cell.typed::before { background: linear-gradient(rgba(255, 255, 255, .18), rgba(255, 255, 255, 0)); }
+.vt-cell.ok, .vt-cell.in, .vt-cell.no { color: #000; -webkit-text-stroke: 0; }
+.vt-cell.ok { background: var(--vt-ok); } .vt-cell.in { background: var(--vt-in); } .vt-cell.no { background: var(--vt-no); }
+/* the selected square keeps its blue glow */
+.vt-board .vt-cell.sel { box-shadow: inset 0 0 0 3px #000, var(--drop), 0 0 0 3px #0277bd, 0 0 14px 4px rgba(2, 119, 189, .8); }
+/* the large > on the active row */
+.vt-chev { width: var(--xw, 30px); height: var(--vh, 52px); display: grid; place-items: center; color: #4fc3f7; filter: drop-shadow(0 0 6px rgba(79, 195, 247, .75)); }
+.vt-chev svg { width: 80%; height: 72%; }
