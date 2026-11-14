@@ -1,4 +1,4 @@
-/* Clue Duel — game engine (v08)
+/* Clue Duel — game engine (v08b)
    Puzzle generator (arrow-word grid), tile bag, scoring modes, bonus squares and the computer opponent.
    No DOM code here: app.js handles everything the player sees. */
 'use strict';
@@ -89,6 +89,8 @@
   // (JM, CD-13: 2.1–2.3). On a word's first line it also limits where the word itself appears.
   const skRange = s => { const m = /^\s*(\d+)\s*(?:-\s*(\d+))?\s*$/.exec(s || ''); return m ? [+m[1], m[2] ? +m[2] : 10] : [1, 10]; };
   const inSk = (r, skill) => !r || (skill >= r[0] && skill <= r[1]);
+  // v08b (JM CD-28: 1.3; Lexicon L07): the Status field. Blank or ACTIVE = in play; ON-DECK, PARKED, ARCHIVED = left out.
+  const isActive = s => { const t = String(s || '').trim().toUpperCase(); return !t || t === 'ACTIVE'; };
   let WBY = null;
   function lexicon() {
     if (WORDS) return WORDS;
@@ -100,6 +102,7 @@
       const f = line.split('|');
       const w = (f[0] || '').trim().toUpperCase();
       if (!/^[A-Z]{2,11}$/.test(w)) continue;
+      if (!isActive(f[6])) continue; // v08b (JM CD-28: 1.3): ON-DECK, PARKED and ARCHIVED clue sets leave both games
       const set = {
         e: (f[1] || '').trim(),
         h: (f[2] || f[1] || '').trim(),
@@ -133,6 +136,7 @@
       const f = line.split('|');
       const ch = (f[0] || '').trim().toUpperCase();
       if (!/^[A-Z]$/.test(ch) || !f[1]) continue;
+      if (!isActive(f[4])) continue; // v08b: only ACTIVE letter clues (status: 5th field)
       (LETTERS[ch] = LETTERS[ch] || []).push({ t: f[1].trim(), l: Math.min(3, Math.max(1, parseInt(f[2], 10) || 1)), p: (f[3] || '').trim() });
     }
     return LETTERS;

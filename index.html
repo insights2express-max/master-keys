@@ -9,7 +9,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Clue Duel">
   <meta name="description" content="A head-to-head crossword tile game you can play offline.">
-  <title>Clue Duel · v08</title>
+  <title>Clue Duel · v08b</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="icon" href="icons/icon-192.png" type="image/png" sizes="192x192">
@@ -23,7 +23,7 @@
       <header class="brand">
         <img class="logo" src="icons/icon.svg" alt="" width="64" height="64">
         <div>
-          <h1>Clue Duel <span class="vpill" id="verPill">v08</span></h1>
+          <h1>Clue Duel <span class="vpill" id="verPill">v08b</span></h1>
           <p class="tag">Place your letters. Finish the words. Beat your rival.</p>
         </div>
       </header>
@@ -120,19 +120,19 @@
           <select id="timerSel">
             <option value="0">Untimed</option>
             <optgroup label="Per turn">
-              <option value="t30">Blitz · 30 s a turn</option>
-              <option value="t60">1 min a turn</option>
-              <option value="t120">2 min a turn</option>
-              <option value="t180">3 min a turn</option>
-              <option value="t240">4 min a turn</option>
-              <option value="t300">5 min a turn</option>
+              <option value="t30">Blitz · 30 s per turn</option>
+              <option value="t60">1 min per turn</option>
+              <option value="t120">2 min per turn</option>
+              <option value="t180">3 min per turn</option>
+              <option value="t240">4 min per turn</option>
+              <option value="t300">5 min per turn</option>
             </optgroup>
             <optgroup label="Whole game (your clock only)">
-              <option value="g120">2 min game</option>
-              <option value="g180">3 min game</option>
-              <option value="g300">5 min game</option>
-              <option value="g600">10 min game</option>
-              <option value="g900">15 min game</option>
+              <option value="g120">2 min per game</option>
+              <option value="g180">3 min per game</option>
+              <option value="g300">5 min per game</option>
+              <option value="g600">10 min per game</option>
+              <option value="g900">15 min per game</option>
             </optgroup>
           </select>
         </label>
@@ -175,12 +175,12 @@
         <div class="vt-boardwrap" id="vtWrap"><div class="vt-board" id="vtBoard"></div><div class="vt-ov" id="vtOv" hidden></div></div>
         <div class="vt-acts">
           <button class="btn act" id="vtHint" type="button" title="Show a clue for the word (5 coins)"><b>🔎</b><span>Hint 🪙5</span></button>
-          <button class="btn act" id="vtReveal" type="button"><b>💡</b><span>Reveal (−3)</span></button>
+          <button class="btn act" id="vtReveal" type="button"><b>💡</b><span>Reveal 🪙8</span></button>
           <button class="btn act" id="vtNew" type="button"><b>🆕</b><span>New Game</span></button>
           <button class="btn act" id="vtQuit" type="button"><b>🏳️</b><span>Give up</span></button>
+          <!-- v08b (JM, CD-27: 3.4.1): the key-size handle sits at the end of the button row (drag down = shorter keys) -->
+          <div class="vt-grip" id="vtGrip" role="separator" aria-orientation="horizontal" aria-label="Drag down for shorter keys, up for taller" title="Key size: drag down for shorter keys, up for taller · double-click for the tallest"><span>⇕</span></div>
         </div>
-        <!-- v08 (JM, CD-26): grab bar: drag up for taller keys -->
-        <div class="vt-grip" id="vtGrip" role="separator" aria-orientation="horizontal" aria-label="Drag up or down to resize the keyboard" title="Drag up or down to resize the keyboard · double-click to reset"><span></span></div>
         <div class="vt-kb" id="vtKb"></div>
       </div>
     </div>
@@ -193,7 +193,7 @@
       <button class="icon-btn" id="menuBtn" type="button" aria-label="Menu">☰</button>
       <div class="pl you" id="plYou">
         <span class="av" id="myAvTop">🙂</span>
-        <div class="pl-txt"><div class="nm" id="myNm">You</div><div class="clk" id="clkTop" hidden></div><div class="sc" id="scYou">0</div></div>
+        <div class="pl-txt"><div class="nm" id="myNm">You</div><div class="clk" id="clkTop" role="button" tabindex="0" title="Tap to pause" hidden></div><div class="sc" id="scYou">0</div></div>
       </div>
       <!-- On wide screens the clue bar sits here, between the two scores; on phones it drops to its own row -->
       <div class="cluebar" id="cluebar" aria-live="polite"></div>

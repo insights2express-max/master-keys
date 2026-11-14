@@ -1,4 +1,4 @@
-/* Clue Duel — styles (v08) */
+/* Clue Duel — styles (v08b) */
 :root {
   --bg: #ece6d8;
   --surface: #fbf8f1;
@@ -927,10 +927,35 @@ select {
 
 /* Word Vault (v08, JM CD-26): the active row's > is 25% bolder (in vault.js) and 25% brighter, same height */
 .vt-chev { color: #4fc3f7; filter: brightness(1.25) drop-shadow(0 0 7px rgba(79, 195, 247, .9)); }
-/* the grab bar above the keyboard, and keys whose height follows it (--kh, --kf set by vault.js) */
-.vt-grip { margin-top: auto; width: 100%; max-width: 520px; height: 16px; flex: none; display: grid; place-items: center; cursor: ns-resize; touch-action: none; user-select: none; }
-.vt-grip span { width: 46px; height: 5px; border-radius: 3px; background: var(--muted); opacity: .65; }
-.vt-grip:hover span, .vt-grip.on span { background: #4fc3f7; opacity: 1; box-shadow: 0 0 8px rgba(79, 195, 247, .8); }
-.vt-kb { margin-top: 0; }
+/* keys whose height follows the auto-fit (--kh, --kf set by vault.js) */
 .vt-k { height: var(--kh, 48px); font-size: var(--kf, 17px); }
 .vt-k.wide { font-size: clamp(12px, calc(var(--kf, 17px) - 5px), 14px); } /* ENTER always fits its key */
+
+/* v08b (JM CD-27: 3.4.1): the key-size handle is a slim ⇕ tab at the right end of the button row, so the keyboard can
+   reach right up to the buttons */
+.vt-kb { margin-top: auto; }
+.vt-grip {
+  flex: none; align-self: stretch; width: 26px; border-radius: 10px; display: grid; place-items: center; cursor: ns-resize;
+  touch-action: none; user-select: none; background: var(--surface); box-shadow: var(--shadow); color: var(--muted); font-size: 16px; font-weight: 900;
+}
+.vt-grip:hover, .vt-grip.on { color: #4fc3f7; box-shadow: 0 0 0 2px #4fc3f7, 0 0 10px rgba(79, 195, 247, .7); }
+/* (4.1.1) the ␣ key: touch screens only, in row 2's free slot (rows keep their key size) */
+.vt-k.spc { display: none; font-size: calc(var(--kf, 17px) + 12px); font-weight: 900; }
+@media (pointer: coarse) { .vt-k.spc { display: block; } }
+/* (4.1.2) ⌫: orange with a larger black icon */
+.vt-k.bksp, .vt-k.wide.bksp { background: #ff8f00; color: #000; font-size: calc(var(--kf, 17px) + 9px); }
+/* Reveal's share of the word, e.g. ¹⁄₅ */
+#vtReveal .frac { font-weight: 800; letter-spacing: -.02em; }
+/* (2.4.1) result windows: grouped sections */
+.res-h { margin: 12px 0 4px; font-size: 14px; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+.coin-tbl td.neg { color: var(--bad); font-weight: 800; }
+.coin-tbl td.pos { color: #1e9e4a; font-weight: 800; }
+.res-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 0 14px; }
+@media (max-width: 480px) { .res-cols { grid-template-columns: 1fr; } }
+.res-big { display: flex; justify-content: center; gap: 22px; margin: 4px 0 2px; }
+.res-big div { text-align: center; }
+.res-big b { display: block; font-size: 30px; font-weight: 900; font-variant-numeric: tabular-nums; }
+.res-big span { font-size: 12px; color: var(--muted); }
+.res-big .me b { color: var(--you); } .res-big .them b { color: var(--opp); }
+/* (CD-27 add'l 4) on phones, the clock under your score is the Pause button */
+.clk[role="button"] { cursor: pointer; }

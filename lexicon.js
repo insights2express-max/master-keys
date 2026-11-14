@@ -4,8 +4,8 @@
    Level: 1 everyday · 2 common · 3 moderate · 4 advanced · 5 obscure
    Words are 2–7 letters, plus 11-letter words for Large grids (A–Z only). A repeated word adds an extra clue set (see above). */
 // Lexicon edition (JM, CD-24 other edits 1.1): its own number, separate from the game version. Add 1 whenever the word data or the Lexicon page changes.
-// L01 v07a · L02 v07b · L03 v07c · L04 v07d (wrapping cells) · L05 v07e (8-letter hint clues, edition number) · L06 v08 (8-letter easy and hard hints)
-self.LEXICON_VER = 'L06';
+// L01 v07a · L02 v07b · L03 v07c · L04 v07d (wrapping cells) · L05 v07e (8-letter hint clues, edition number) · L06 v08 (8-letter easy and hard hints) · L07 (editor page: Status, Comments, Edit Mode + Copy Edits, advanced search; "/" in 23 Word Vault clues) · L08 v08b (58 country-code clues "Madrid URL" style, JM CD-27; Word Vault tricky hints)
+self.LEXICON_VER = 'L08';
 self.LEXICON_DATA = `
 # ---------- 2 letters ----------
 AD|Commercial|Promo|1
@@ -3362,64 +3362,64 @@ IR|Infrared|TV remote's beam|2
 # Format adds an optional 6th field: the Challenge Levels where the clue set may be used ("2-4" = 2 to 4, "7" = 7 and up).
 # A word that is already in the list gets an EXTRA clue set from these lines (one set is picked at random per grid).
 # Country codes (web endings), Challenge Levels 2-4
-AR|Argentina URL|Web ending for Buenos Aires sites|2||2-4
-AT|Austria URL|Web ending for Vienna sites|2||2-4
-AU|Australia URL|Web ending for Sydney sites|2||2-4
-BE|Belgium URL|Web ending for Brussels sites|2||2-4
-BR|Brazil URL|Web ending for Rio sites|2||2-4
-CA|Canada URL|Web ending for Toronto sites|2||2-4
-CH|Switzerland URL|Web ending for Zurich sites|2||2-4
-CL|Chile URL|Web ending for Santiago sites|2||2-4
-CN|China URL|Web ending for Beijing sites|2||2-4
-CO|Colombia URL|Web ending for Bogota sites|2||2-4
-CU|Cuba URL|Web ending for Havana sites|2||2-4
-CZ|Czechia URL|Web ending for Prague sites|2||2-4
-DE|Germany URL|Web ending for Berlin sites|2||2-4
-DK|Denmark URL|Web ending for Copenhagen sites|2||2-4
-EG|Egypt URL|Web ending for Cairo sites|2||2-4
-ES|Spain URL|Web ending for Madrid sites|2||2-4
-FI|Finland URL|Web ending for Helsinki sites|2||2-4
-FR|France URL|Web ending for Paris sites|2||2-4
-GR|Greece URL|Web ending for Athens sites|2||2-4
-HK|Hong Kong URL|Web ending for Kowloon sites|2||2-4
-HU|Hungary URL|Web ending for Budapest sites|2||2-4
-ID|Indonesia URL|Web ending for Jakarta sites|2||2-4
-IE|Ireland URL|Web ending for Dublin sites|2||2-4
-IL|Israel URL|Web ending for Tel Aviv sites|2||2-4
-IN|India URL|Web ending for Mumbai sites|2||2-4
-IS|Iceland URL|Web ending for Reykjavik sites|2||2-4
-IT|Italy URL|Web ending for Rome sites|2||2-4
-JM|Jamaica URL|Web ending for Kingston sites|2||2-4
-JP|Japan URL|Web ending for Tokyo sites|2||2-4
-KE|Kenya URL|Web ending for Nairobi sites|2||2-4
-KR|South Korea URL|Web ending for Seoul sites|2||2-4
-MA|Morocco URL|Web ending for Casablanca sites|2||2-4
-MX|Mexico URL|Web ending for Cancun sites|2||2-4
-MY|Malaysia URL|Web ending for Kuala Lumpur sites|2||2-4
-NG|Nigeria URL|Web ending for Lagos sites|2||2-4
-NL|Netherlands URL|Web ending for Amsterdam sites|2||2-4
-NO|Norway URL|Web ending for Oslo sites|2||2-4
-NZ|New Zealand URL|Web ending for Auckland sites|2||2-4
-PE|Peru URL|Web ending for Lima sites|2||2-4
-PH|Philippines URL|Web ending for Manila sites|2||2-4
-PK|Pakistan URL|Web ending for Karachi sites|2||2-4
-PL|Poland URL|Web ending for Warsaw sites|2||2-4
-PT|Portugal URL|Web ending for Lisbon sites|2||2-4
-RO|Romania URL|Web ending for Bucharest sites|2||2-4
-RU|Russia URL|Web ending for Moscow sites|2||2-4
-SA|Saudi Arabia URL|Web ending for Riyadh sites|2||2-4
-SE|Sweden URL|Web ending for Stockholm sites|2||2-4
-SG|Singapore URL|Web ending for Lion City sites|2||2-4
-TH|Thailand URL|Web ending for Bangkok sites|2||2-4
-TR|Turkey URL|Web ending for Istanbul sites|2||2-4
-TW|Taiwan URL|Web ending for Taipei sites|2||2-4
-UA|Ukraine URL|Web ending for Kyiv sites|2||2-4
-UK|United Kingdom URL|Web ending for London sites|2||2-4
-VE|Venezuela URL|Web ending for Caracas sites|2||2-4
-VN|Vietnam URL|Web ending for Hanoi sites|2||2-4
-ZA|South Africa URL|Web ending for Cape Town sites|2||2-4
-AE|United Arab Emirates URL|Web ending for Dubai sites|2||2-4
-QA|Qatar URL|Web ending for Doha sites|2||2-4
+AR|Argentina URL|Buenos Aires URL|2||2-4
+AT|Austria URL|Vienna URL|2||2-4
+AU|Australia URL|Sydney URL|2||2-4
+BE|Belgium URL|Brussels URL|2||2-4
+BR|Brazil URL|Rio URL|2||2-4
+CA|Canada URL|Toronto URL|2||2-4
+CH|Switzerland URL|Zurich URL|2||2-4
+CL|Chile URL|Santiago URL|2||2-4
+CN|China URL|Beijing URL|2||2-4
+CO|Colombia URL|Bogota URL|2||2-4
+CU|Cuba URL|Havana URL|2||2-4
+CZ|Czechia URL|Prague URL|2||2-4
+DE|Germany URL|Berlin URL|2||2-4
+DK|Denmark URL|Copenhagen URL|2||2-4
+EG|Egypt URL|Cairo URL|2||2-4
+ES|Spain URL|Madrid URL|2||2-4
+FI|Finland URL|Helsinki URL|2||2-4
+FR|France URL|Paris URL|2||2-4
+GR|Greece URL|Athens URL|2||2-4
+HK|Hong Kong URL|Kowloon URL|2||2-4
+HU|Hungary URL|Budapest URL|2||2-4
+ID|Indonesia URL|Jakarta URL|2||2-4
+IE|Ireland URL|Dublin URL|2||2-4
+IL|Israel URL|Tel Aviv URL|2||2-4
+IN|India URL|Mumbai URL|2||2-4
+IS|Iceland URL|Reykjavik URL|2||2-4
+IT|Italy URL|Rome URL|2||2-4
+JM|Jamaica URL|Kingston URL|2||2-4
+JP|Japan URL|Tokyo URL|2||2-4
+KE|Kenya URL|Nairobi URL|2||2-4
+KR|South Korea URL|Seoul URL|2||2-4
+MA|Morocco URL|Casablanca URL|2||2-4
+MX|Mexico URL|Cancun URL|2||2-4
+MY|Malaysia URL|Kuala Lumpur URL|2||2-4
+NG|Nigeria URL|Lagos URL|2||2-4
+NL|Netherlands URL|Amsterdam URL|2||2-4
+NO|Norway URL|Oslo URL|2||2-4
+NZ|New Zealand URL|Auckland URL|2||2-4
+PE|Peru URL|Lima URL|2||2-4
+PH|Philippines URL|Manila URL|2||2-4
+PK|Pakistan URL|Karachi URL|2||2-4
+PL|Poland URL|Warsaw URL|2||2-4
+PT|Portugal URL|Lisbon URL|2||2-4
+RO|Romania URL|Bucharest URL|2||2-4
+RU|Russia URL|Moscow URL|2||2-4
+SA|Saudi Arabia URL|Riyadh URL|2||2-4
+SE|Sweden URL|Stockholm URL|2||2-4
+SG|Singapore URL|Lion City URL|2||2-4
+TH|Thailand URL|Bangkok URL|2||2-4
+TR|Turkey URL|Istanbul URL|2||2-4
+TW|Taiwan URL|Taipei URL|2||2-4
+UA|Ukraine URL|Kyiv URL|2||2-4
+UK|United Kingdom URL|London URL|2||2-4
+VE|Venezuela URL|Caracas URL|2||2-4
+VN|Vietnam URL|Hanoi URL|2||2-4
+ZA|South Africa URL|Cape Town URL|2||2-4
+AE|United Arab Emirates URL|Dubai URL|2||2-4
+QA|Qatar URL|Doha URL|2||2-4
 # Currency codes, Challenge Level 4 and up
 USD|U.S. dollar's code|Greenback, on an exchange board|3||4
 EUR|Euro's code|Currency board letters for Paris or Rome|3||4
