@@ -9,7 +9,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Clue Duel">
   <meta name="description" content="A head-to-head crossword tile game you can play offline.">
-  <title>Clue Duel · v08b</title>
+  <title>Clue Duel · v08c</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="icon" href="icons/icon-192.png" type="image/png" sizes="192x192">
@@ -23,7 +23,7 @@
       <header class="brand">
         <img class="logo" src="icons/icon.svg" alt="" width="64" height="64">
         <div>
-          <h1>Clue Duel <span class="vpill" id="verPill">v08b</span></h1>
+          <h1>Clue Duel <span class="vpill" id="verPill">v08c</span></h1>
           <p class="tag">Place your letters. Finish the words. Beat your rival.</p>
         </div>
       </header>
@@ -120,19 +120,19 @@
           <select id="timerSel">
             <option value="0">Untimed</option>
             <optgroup label="Per turn">
-              <option value="t30">Blitz · 30 s per turn</option>
-              <option value="t60">1 min per turn</option>
-              <option value="t120">2 min per turn</option>
-              <option value="t180">3 min per turn</option>
-              <option value="t240">4 min per turn</option>
-              <option value="t300">5 min per turn</option>
+              <option value="t30">Blitz · 30 s per TURN</option>
+              <option value="t60">1 min per TURN</option>
+              <option value="t120">2 min per TURN</option>
+              <option value="t180">3 min per TURN</option>
+              <option value="t240">4 min per TURN</option>
+              <option value="t300">5 min per TURN</option>
             </optgroup>
             <optgroup label="Whole game (your clock only)">
-              <option value="g120">2 min per game</option>
-              <option value="g180">3 min per game</option>
-              <option value="g300">5 min per game</option>
-              <option value="g600">10 min per game</option>
-              <option value="g900">15 min per game</option>
+              <option value="g120">2 min per GAME</option>
+              <option value="g180">3 min per GAME</option>
+              <option value="g300">5 min per GAME</option>
+              <option value="g600">10 min per GAME</option>
+              <option value="g900">15 min per GAME</option>
             </optgroup>
           </select>
         </label>
@@ -142,7 +142,7 @@
       <button class="btn primary big" id="startBtn" type="button">New Game</button>
       <button class="btn big" id="resumeBtn" type="button" hidden>Resume Game</button>
       <button class="btn big vault-btn" id="vaultBtn" type="button"><span id="vaultBtnIco">🔐</span> <span id="vaultBtnName">Word Vault</span></button>
-      <button class="btn link" id="howBtn" type="button">How To Play</button>
+      <div class="home-links"><button class="btn link" id="histBtn" type="button">📜 Game History</button><button class="btn link" id="howBtn" type="button">How To Play</button></div>
       <div class="ver">Plays offline</div>
     </div>
   </section>
@@ -174,10 +174,15 @@
         <div class="vt-info" id="vtInfo"></div>
         <div class="vt-boardwrap" id="vtWrap"><div class="vt-board" id="vtBoard"></div><div class="vt-ov" id="vtOv" hidden></div></div>
         <div class="vt-acts">
-          <button class="btn act" id="vtHint" type="button" title="Show a clue for the word (5 coins)"><b>🔎</b><span>Hint 🪙5</span></button>
-          <button class="btn act" id="vtReveal" type="button"><b>💡</b><span>Reveal 🪙8</span></button>
-          <button class="btn act" id="vtNew" type="button"><b>🆕</b><span>New Game</span></button>
-          <button class="btn act" id="vtQuit" type="button"><b>🏳️</b><span>Give up</span></button>
+          <!-- v08c (JM CD-30: 4.2a): two groups: gold coin buttons (two taps to buy) | gray round game controls (ask first) -->
+          <div class="vt-grp coins">
+            <button class="btn act coinbtn" id="vtHint" type="button" title="Show a clue for the word (5 coins)"><b>🔎</b><span>Hint 🪙5</span></button>
+            <button class="btn act coinbtn" id="vtReveal" type="button"><b>💡</b><span>Reveal 🪙8</span></button>
+          </div>
+          <div class="vt-grp ctl">
+            <button class="btn act ctlbtn" id="vtNew" type="button"><b>🆕</b><span>New Game</span></button>
+            <button class="btn act ctlbtn" id="vtQuit" type="button"><b>🏳️</b><span>Give up</span></button>
+          </div>
           <!-- v08b (JM, CD-27: 3.4.1): the key-size handle sits at the end of the button row (drag down = shorter keys) -->
           <div class="vt-grip" id="vtGrip" role="separator" aria-orientation="horizontal" aria-label="Drag down for shorter keys, up for taller" title="Key size: drag down for shorter keys, up for taller · double-click for the tallest"><span>⇕</span></div>
         </div>
@@ -244,12 +249,12 @@
       <div class="rackbar"><div id="rack" class="rack"></div></div>
       <div class="actions" id="actions">
         <div class="more-pop" id="morePop">
-          <button class="btn act" id="hintBtn" type="button"><b>💡</b><span id="hintTxt">Hint 🪙3</span></button>
-          <button class="btn act" id="placeBtn" type="button" title="Place one of your tiles in a cell where it fits. Costs that tile's value in coins."><b>🎯</b><span>Place 🪙?</span></button>
+          <button class="btn act coinbtn" id="hintBtn" type="button"><b>💡</b><span id="hintTxt">Hint 🪙3</span></button>
+          <button class="btn act coinbtn" id="placeBtn" type="button" title="Place one of your tiles in a cell where it fits. Costs that tile's value in coins."><b>🎯</b><span>Place 🪙?</span></button>
           <button class="btn act" id="swapBtn" type="button"><b>🔄</b><span>Swap</span></button>
           <button class="btn act" id="mixBtn" type="button"><b>🔀</b><span>Shuffle</span></button>
           <button class="btn act" id="pauseBtn" type="button" title="Pause (P)"><b id="pauseIco">⏸️</b><span class="timer" id="timerTxt">∞</span></button>
-          <button class="btn act" id="timeBtn" type="button" title="Add 30 seconds to your clock. Costs 5 coins each time." hidden><b>⏱️</b><span>+30s 🪙5</span></button>
+          <button class="btn act coinbtn" id="timeBtn" type="button" title="Add 30 seconds to your clock. Costs 5 coins each time." hidden><b>⏱️</b><span>+30s 🪙5</span></button>
         </div>
         <button class="btn primary act" id="doneBtn" type="button"><b>✓</b><span id="doneTxt">Pass</span></button>
         <button class="btn act" id="moreBtn" type="button" aria-expanded="false" aria-controls="morePop" title="More buttons"><b>⋯</b><span>More</span></button>

@@ -1,8 +1,10 @@
-/* Clue Duel — Word Vault (v08b): a word-guessing mini-game (JM, CD-12: 4.2.1; CD-13: 4.x; CD-18: 7.1a; CD-21: 5.1–5.3; CD-23; CD-24; CD-25; CD-26).
+/* Clue Duel — Word Vault (v08c): a word-guessing mini-game (JM, CD-12: 4.2.1; CD-13: 4.x; CD-18: 7.1a; CD-21: 5.1–5.3; CD-23; CD-24; CD-25; CD-26).
    v08 (CD-26): coins (the Hint costs 5 coins; solved words pay coins); the Hint's difficulty follows the Challenge Level;
    a 25% bolder and brighter >; every timer says "per"; the Space bar jumps to the next open square; a grab bar makes the keys taller.
    v08b (CD-27): Reveal costs coins (40 ÷ letters); keys auto-fit (tallest by default, ⇕ handle in the button row); ␣ key on
    touch screens; orange ⌫; GUESS / WORD in capitals; every New Game shows the word that ended; tricky hints at levels 8–10.
+   v08c (CD-30, CD-32): button groups (gold coin buttons | gray round game buttons); New Game and Give up ask first; coin buttons
+   take two taps; finished words go into the shared Game History; levels 8–10 get SHORT hints (one to three words).
    v07f (CD-25): no embossed text; played letters are black on green, yellow or red; typed (tentative) letters turn their key
    black on white; empty squares are dark glass "candy drops" in the slots of a glassy grid panel; a large > marks the
    active row, so the grid sits centered between it and the ✕; "Blitz · 30s per guess".
@@ -56,8 +58,13 @@
       const i = line.indexOf('|');
       if (i > 0) HARD[line.slice(0, i)] = line.slice(i + 1).trim();
     }
+    // v08c (JM CD-30: 2.7.1; CD-32: 2.1a): short hints (one to three words, one angle), only at levels 8–10
+    for (const line of String(window.VAULT_SHORT || '').split('\n')) {
+      const i = line.indexOf('|');
+      if (i > 0) SHORT[line.slice(0, i)] = line.slice(i + 1).trim();
+    }
   }
-  const HARD = {};
+  const HARD = {}, SHORT = {};
   // Hint difficulty follows the Challenge Level (v08, JM CD-26). Every answer has three hints:
   //   direct  = literal and simple, mostly one word  (4–7 letters: the main game's literal clue; 8 letters: the easy clue)
   //   middle  = 4–7 letters: the indirect clue; 8 letters: the plain definition (several words)
@@ -66,16 +73,20 @@
   // Levels 1–3 always get the direct hint and 8–10 the tricky one; 4–7 draw from a mix that tilts toward tricky as the level rises.
   // v08b (CD-27: 3.5.1, more contrast): 4–5 lean direct, 6–7 lean tricky, so the middle levels step up instead of blending.
   const HINT_MIX = { 4: [60, 35, 5], 5: [35, 45, 20], 6: [10, 40, 50], 7: [0, 25, 75] };
+  // v08c (CD-32: 2.1a) THREE STEPS: levels 1–3 direct · 4–7 the mix above (up to the tricky hint) · 8–10 only the SHORT hint
+  // (tier 3; a word without one falls back to its tricky hint).
   function hintTiers(a) {
-    if (a.w.length === 8) return [a.ez || a.c, a.c, a.hd || a.c];
+    if (a.w.length === 8) return [a.ez || a.c, a.c, a.hd || a.c, SHORT[a.w] || a.hd || a.c];
     const wp = (E.wordplay && E.wordplay()[a.w]) || '';
-    return [a.c, a.h || a.c, HARD[a.w] || wp || a.h || a.c];
+    const tricky = HARD[a.w] || wp || a.h || a.c;
+    return [a.c, a.h || a.c, tricky, SHORT[a.w] || tricky];
   }
   function hintText(a, level) {
     const t = hintTiers(a);
-    let k = level <= 3 ? 0 : level >= 8 ? 2 : -1;
+    let k = level <= 3 ? 0 : level >= 8 ? 3 : -1;
     if (k < 0) { const m = HINT_MIX[level], r = Math.random() * 100; k = r < m[0] ? 0 : r < m[0] + m[1] ? 1 : 2; }
-    return t[k] || t[0] || `It starts with ${a.w[0]} and ends with ${a.w[a.w.length - 1]}.`;
+    const pick = s => (E.oneClue ? E.oneClue(s) : s); // L09: one of the ";"-separated alternatives
+    return pick(t[k]) || pick(t[0]) || `It starts with ${a.w[0]} and ends with ${a.w[a.w.length - 1]}.`;
   }
   // Hint (JM, CD-24: 1.1.5): the word's clue, plus a clue picture when the main game has one allowed at this Challenge Level
   // (the easiest kind first: a hint should help). v08: the clue is chosen once per word, by hintText.
@@ -185,19 +196,28 @@
   }
   // New Game (JM, CD-23: 1.1.1.5): a fresh word with the current settings. Abandoning a word you've already guessed at
   // counts it as not solved (as Give up does), so streaks stay honest.
+  // v08c (JM CD-30: 4.3): New Game and Give up ask first whenever the word isn't finished. The safe choice,
+  // "Keep playing", is the main (blue) button; tapping outside the window also keeps playing.
+  function askSure(head, text, go, onGo) {
+    openModal(`<h2>${head}</h2><p>${text}</p>
+      <div class="row"><button class="btn" data-a="yes">${go}</button><button class="btn primary" data-a="no">Keep playing</button></div>`);
+    $('#modal').onclick = e => { if (e.target === $('#modal')) closeModal(); };
+    $('#sheet').onclick = e => { const b = e.target.closest('[data-a]'); if (!b) return; closeModal(); if (b.dataset.a === 'yes') onGo(); };
+  }
+  const counts = () => R.rows.length || R.hints || R.reveals; // a word you've worked on counts as not solved if you leave it
   function newWord(confirmed) {
-    if (R && !R.over && R.rows.length && !confirmed) {
-      openModal(`<h2>Start a new word?</h2><p>This word will count as not solved.</p>
-        <div class="row"><button class="btn" data-a="no">Keep playing</button><button class="btn primary" data-a="yes">New word</button></div>`);
-      $('#modal').onclick = e => { if (e.target === $('#modal')) closeModal(); };
-      $('#sheet').onclick = e => { const b = e.target.closest('[data-a]'); if (!b) return; closeModal(); if (b.dataset.a === 'yes') newWord(true); };
+    if (R && !R.over && !confirmed) {
+      askSure('Start a new word?', counts() ? 'This word will count as not solved.' : 'You\'ll skip this word.', '🆕 New word', () => newWord(true));
       return;
     }
     // v08b (JM CD-27 add'l 6): EVERY New Game shows the word that just ended, until a click or tap anywhere
     let prev = null;
     if (R) {
       prev = { w: R.a.w, hint: R.hint, won: R.over && R.won };
-      if (!R.over && R.rows.length) { R.over = true; recordLoss(); }
+      if (!R.over && counts()) {
+        R.over = true; recordLoss();
+        addHistory(`Left unsolved: ${R.a.w}`, '—', `<div class="vt-res-h">🆕 Left for a new word</div><div class="vt-res-w">${R.a.w.split('').map(ch => `<span>${ch}</span>`).join('')}</div>${R.hint && R.hint.t ? `<p class="vt-res-c">Clue: ${esc(R.hint.t)}</p>` : ''}${coinTable(null)}`);
+      }
       clearInterval(R.tId);
     }
     start(prev);
@@ -419,6 +439,7 @@
   $('#vtHint').addEventListener('click', () => {
     if (!R || R.over) return;
     if (!R.hints) {
+      if (UI.armTap && UI.coins && UI.coins.bal >= HINT_COINS && !UI.armTap($('#vtHint'), HINT_COINS)) return; // v08c: second tap buys
       if (UI.coins && !UI.coins.spend(HINT_COINS, `${title()} Hint`)) return;
       R.hints = 1; toast(`Hint · 🪙−${HINT_COINS}`);
     }
@@ -505,6 +526,7 @@
     const opts = []; for (let i = 0; i < R.len; i++) if (!R.cells[i].lock) opts.push(i);
     if (opts.length <= 1 && R.cells.filter(c => !c.lock).length <= 1) { toast('Nothing left to reveal'); return; }
     const cost = revealCost();
+    if (UI.armTap && UI.coins && UI.coins.bal >= cost && !UI.armTap($('#vtReveal'), cost)) return; // v08c: second tap buys
     if (UI.coins && !UI.coins.spend(cost, `${title()} Reveal (1/${R.len})`)) return;
     const i = opts[Math.floor(Math.random() * opts.length)];
     R.revealed.set(i, R.a.w[i]); R.reveals++; R.revealCoins = (R.revealCoins || 0) + cost;
@@ -514,7 +536,9 @@
     render();
   });
   $('#vtNew').addEventListener('click', () => newWord(false));
-  $('#vtQuit').addEventListener('click', () => { if (R && !R.over) finish(false, true); });
+  $('#vtQuit').addEventListener('click', () => {
+    if (R && !R.over) askSure('Give up this word?', 'It counts as not solved, and the word is shown.', '🏳️ Give up', () => { if (R && !R.over) finish(false, true); });
+  });
 
   // ---------- Clock: counts down in timed games and up in untimed ones. It stops while paused, while a window is open,
   // while the app is hidden, and until the word-you-left window is tapped away. ----------
@@ -595,6 +619,7 @@
     const sc = score(won);
     sc.coins = won ? coinsFor() : null;
     if (sc.coins && UI.coins) UI.coins.add(sc.coins.total, `${title()}: ${R.a.w}`);
+    R.coinsEarned = sc.coins ? sc.coins.total : 0; // v08c: for the Game History
     if (won) {
       stats.played++; stats.won++; stats.streak++; stats.best = Math.max(stats.best, stats.streak);
       stats.dist[R.rows.length] = (stats.dist[R.rows.length] || 0) + 1;
@@ -633,6 +658,15 @@
     return `<h3 class="res-h">🪙 Coins</h3><table class="score-table coin-tbl">${rows.map(r => `<tr><td>${esc(r[0])}</td><td class="${r[1] < 0 ? 'neg' : 'pos'}">${r[1] < 0 ? '−' + -r[1] : '+' + r[1]}</td></tr>`).join('')}`
       + `<tr class="total"><td>This word ${net < 0 ? '−' + -net : '+' + net} · Balance</td><td data-coins>${UI.coins ? UI.coins.bal : ''}</td></tr></table>`;
   }
+  // v08c (JM CD-30: 4.5): every finished word goes into the shared Game History (with a copy of its result window)
+  function addHistory(head, score, body) {
+    if (!UI.history || !R || R.histSaved) return;
+    R.histSaved = true;
+    const coins = (R.won && R.coinsEarned ? R.coinsEarned : 0) - (R.hints ? HINT_COINS : 0) - (R.revealCoins || 0);
+    const tl = (TIMERS.find(t => t[0] === R.timer) || [0, ''])[1];
+    UI.history.add({ g: 'vault', win: !!R.won, title: `${title()} · ${head}`,
+      sub: [`Level ${R.level || vs.level}`, `${R.len} letters × ${R.tries}`, tl].filter(Boolean).join(' · '), score, coins, html: body });
+  }
   function showResult(won, gaveUp, sc, ms) {
     const w = R.a.w, pct = stats.played ? Math.round(100 * stats.won / stats.played) : 0;
     const keys = []; for (let i = 1; i <= 10; i++) if (stats.dist[i]) keys.push(String(i)); if (stats.dist.X) keys.push('X');
@@ -640,7 +674,7 @@
     // Guesses needed (CD-24: 1.2.1): one row per number of guesses; the bar's number = words solved in that many guesses
     const tip = k => { const n = stats.dist[k], wd = n === 1 ? 'word' : 'words'; return k === 'X' ? `Not solved: ${n} ${wd}` : `Solved in ${k} ${+k === 1 ? 'guess' : 'guesses'}: ${n} ${wd}`; };
     const bars = keys.map(k => `<div class="vt-bar" title="${tip(k)}"><span class="k">${k === 'X' ? '✗' : k}</span><span class="b${(won && +k === R.rows.length) || (!won && k === 'X') ? ' me' : ''}${k === 'X' ? ' x' : ''}" style="width:${Math.max(8, Math.round(100 * stats.dist[k] / maxN))}%">${stats.dist[k]}</span></div>`).join('');
-    openModal(`
+    const body = `
       <div class="vt-res-h">${won ? '🔓 Vault cracked!' : gaveUp ? '🏳️ You gave up' : '🔒 The Vault stays shut'}</div>
       <div class="vt-res-w">${w.split('').map(ch => `<span>${ch}</span>`).join('')}</div>
       ${R.hint && R.hint.t ? `<p class="vt-res-c">Clue: ${esc(R.hint.t)}</p>` : ''}
@@ -653,7 +687,9 @@
         <div><b>${stats.streak}</b><span>Streak</span></div><div><b>${stats.best}</b><span>Best streak</span></div>
       </div>
       ${bars ? `<h3>Guesses needed</h3><div class="vt-dist">${bars}</div>
-        <p class="vt-dist-note">Each row is a number of guesses (✗ = not solved). Its bar shows how many words you've solved in that many guesses, so a longer bar means it happens more often. The highlighted bar is this word.</p>` : ''}
+        <p class="vt-dist-note">Each row is a number of guesses (✗ = not solved). Its bar shows how many words you've solved in that many guesses, so a longer bar means it happens more often. The highlighted bar is this word.</p>` : ''}`;
+    addHistory(won ? `Solved ${w} in ${R.rows.length}/${R.tries}` : `${gaveUp ? 'Gave up' : 'Not solved'}: ${w}`, won ? `${sc.total} pts` : '—', body);
+    openModal(`${body}
       <div class="row"><button class="btn" data-a="setup">⚙ Settings</button><button class="btn primary" data-a="again">Next word</button></div>`);
     $('#modal').onclick = e => { if (e.target === $('#modal')) closeModal(); };
     $('#sheet').onclick = e => {
@@ -673,7 +709,7 @@
         <li>Tap a square (or use the ← → arrow keys) to choose where the next letter goes; the chosen square glows blue. The <b>Space bar</b> (on phones and tablets, the <b>␣</b> key at the end of the middle row) jumps to the next open square to the right (after the last one, back to the first). The orange <b>⌫</b> clears a letter, and <b>✕</b> at the end of the row clears the whole guess.</li>
         <li><b>💡 Reveal</b> places one letter in its spot. Its price is that letter's share of the word: the whole word is worth <b>40 coins</b>, so one letter costs 40 ÷ the number of letters (rounded up). The button shows both, like <b>Reveal ¹⁄₅ 🪙8</b> for a 5-letter word: ¹⁄₄ 🪙10 · ¹⁄₅ 🪙8 · ¹⁄₆ 🪙7 · ¹⁄₇ 🪙6 · ¹⁄₈ 🪙5. A letter of a short word gives away more, so it costs more.</li>
         <li><b>🔎 Hint (🪙${HINT_COINS})</b> shows a clue for the word (sometimes with a picture) over the grid; tap anywhere to close it. It costs ${HINT_COINS} <b>coins</b>, not points. Once paid for, <b>Hint ✓</b> shows it again for free.</li>
-        <li>The Hint follows the <b>Challenge Level</b>: at 1–3 it is direct and simple (mostly one word, like "Froth" for FOAM); at 8–10 it is indirect, a metaphor or a pun; at 4–7 you get a mix that grows trickier as the level rises.</li>
+        <li>The Hint follows the <b>Challenge Level</b>: at 1–3 it is direct and simple (mostly one word, like "Froth" for FOAM); at 4–7 you get a mix that grows trickier as the level rises; at 8–10 it is a <b>short, sly</b> hint of one to three words, like "Tree-hanger" for UNAU or "River horse"-style nicknames.</li>
         <li><b>🪙 Coins</b> (one currency with Clue Duel; your balance shows beside the line above the grid): every word you solve pays <b>2 per letter</b> and <b>2 per guess to spare</b>. Timed rounds add <b>speed coins</b>: 1 for every second left on the clock when you solve it, up to 20 per letter. Untimed rounds pay no speed coins.</li>
         <li><b>Key size:</b> the keys grow on their own to fill the space below the buttons, so fewer guesses (a shorter grid) give taller keys, up to twice the normal height. To make them shorter, drag the <b>⇕</b> handle at the right end of the button row down (drag up to raise them again); double-click (or double-tap) it for the tallest keys. Your choice is remembered on this device and follows the grid's size.</li>
         <li><b>⏸️ Pause:</b> tap the clock. The grid is hidden until you tap anywhere. The clock counts down in timed games and counts up in untimed ones. In the last 10 seconds the grid's border flashes yellow, then red.</li>
@@ -682,8 +718,9 @@
         <li><b>Timer:</b> the main game's choices. "Per GUESS" gives each guess its own clock (when it runs out, that guess is used up); "per WORD" times the whole round. The clock stops while a window is open or the app is hidden.</li>
         <li><b>Scoring</b> (only when you solve it): <b>Classic</b> scores the word's letter values (as in the main game) plus 2 per letter; <b>Flat</b> scores 2 per letter. Both add <b>+5</b> for every guess you didn't need and, in timed rounds, a time bonus (1 point per 5 seconds left, up to 30). (Hint and Reveal cost coins, not points.)</li>
         <li><b>⚙ Settings</b> (in the header, or tap the line above the grid) change the game at any time; changes apply from the next word.</li>
-        <li><b>🆕 New Game</b> starts a fresh word. <b>🏳️ Give up</b> shows the word. Either one, once you've made a guess, counts that word as not solved and breaks your streak. After every New Game, the word that just ended is shown over the new grid until you click or tap anywhere; the new word's clock starts then.</li>
-        <li>Your stats (played, solved %, streaks, best time, guesses needed) are kept on this device.</li>
+        <li>The buttons come in two groups: the <b>gold coin buttons</b> (🔎 Hint, 💡 Reveal) on the left, and the <b>gray round game buttons</b> (🆕 New Game, 🏳️ Give up) on the right. A coin button takes <b>two taps</b>: the first turns it gold and shows "Tap again · 🪙N" for 3 seconds; the second tap buys. (Seeing a Hint again is free and needs one tap.)</li>
+        <li><b>🆕 New Game</b> starts a fresh word. <b>🏳️ Give up</b> shows the word. Both ask first while the word is unfinished ("Keep playing" is the main button). Either one, once you've made a guess or used a Hint or Reveal, counts that word as not solved and breaks your streak. After every New Game, the word that just ended is shown over the new grid until you click or tap anywhere; the new word's clock starts then.</li>
+        <li>Your stats (played, solved %, streaks, best time, guesses needed) are kept on this device. Every finished word also goes into <b>📜 Game History</b> on the menu, where you can reopen its full result.</li>
         <li><b>Guesses needed</b> (on the result window): one row for each number of guesses, from 1 up, plus ✗ for words not solved. The bar and its number show how many words you've solved in that many guesses, so your longest bar is your usual result. The highlighted bar is the word just played. On a computer, point at a row to see it in words.</li>
         <li><b>Make it yours:</b> double-click (or double-tap) the title to rename the game, and tap the icon beside it to choose another or to upload your own picture. Both are remembered on this device.</li>
       </ul>

@@ -91,6 +91,12 @@
   const inSk = (r, skill) => !r || (skill >= r[0] && skill <= r[1]);
   // v08b (JM CD-28: 1.3; Lexicon L07): the Status field. Blank or ACTIVE = in play; ON-DECK, PARKED, ARCHIVED = left out.
   const isActive = s => { const t = String(s || '').trim().toUpperCase(); return !t || t === 'ACTIVE'; };
+  // Lexicon L09 (JM CD-28: 1.2, first used in CD-29 Copy Edits): ";" separates alternative clues in one field,
+  // e.g. "S. African rand; S. African currency". Each time a clue is shown, one of them is picked at random.
+  const oneClue = (t, rnd) => {
+    const a = String(t || '').split(';').map(s => s.trim()).filter(Boolean);
+    return a.length > 1 ? a[Math.floor((rnd || Math.random)() * a.length)] : (a[0] || '');
+  };
   let WBY = null;
   function lexicon() {
     if (WORDS) return WORDS;
@@ -507,6 +513,7 @@
         clue = { t: e.e, pic: pick.p, pt: pick.t, hard: pick.t !== 'lit' };
       } else if (rng() < pHard && (wp || (e.h && e.h !== e.e))) clue = wp && rng() < 0.85 ? { t: wp, hard: true, wp: true } : { t: e.h && e.h !== e.e ? e.h : wp, hard: true };
       else clue = { t: e.e, hard: false };
+      clue.t = oneClue(clue.t, rng); // L09: pick one of the ";"-separated alternatives
       cells[s.clue][s.d] = si;
       s.cells.forEach(ci => cellSlots[ci].push(si));
       return { d: s.d, cells: s.cells, clueCell: s.clue, word: e.w, lvl: e.l, clue };
@@ -859,6 +866,6 @@
   }
 
   global.Engine = { VAL, SIZES, RULES, MODES, lexicon, generate, newGame, scoreMove, commit, penalize, autoPlace, refill, swapHand, swapSome, endTurn, finish, hint, fits, aiPlan, aiParams, wordValue, boardFull,
-    modeOf, showsValues, tileVal, letterPts, penaltyOf, timerOf, bonusAt, bonusUsed, rollBonuses, pics: picIndex, wordplay: wordplayIndex, PIC_MIN
+    modeOf, showsValues, tileVal, letterPts, penaltyOf, timerOf, bonusAt, bonusUsed, rollBonuses, pics: picIndex, wordplay: wordplayIndex, PIC_MIN, oneClue
   };
 })(typeof self !== 'undefined' ? self : this);

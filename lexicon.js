@@ -4,8 +4,8 @@
    Level: 1 everyday · 2 common · 3 moderate · 4 advanced · 5 obscure
    Words are 2–7 letters, plus 11-letter words for Large grids (A–Z only). A repeated word adds an extra clue set (see above). */
 // Lexicon edition (JM, CD-24 other edits 1.1): its own number, separate from the game version. Add 1 whenever the word data or the Lexicon page changes.
-// L01 v07a · L02 v07b · L03 v07c · L04 v07d (wrapping cells) · L05 v07e (8-letter hint clues, edition number) · L06 v08 (8-letter easy and hard hints) · L07 (editor page: Status, Comments, Edit Mode + Copy Edits, advanced search; "/" in 23 Word Vault clues) · L08 v08b (58 country-code clues "Madrid URL" style, JM CD-27; Word Vault tricky hints)
-self.LEXICON_VER = 'L08';
+// L01 v07a · L02 v07b · L03 v07c · L04 v07d (wrapping cells) · L05 v07e (8-letter hint clues, edition number) · L06 v08 (8-letter easy and hard hints) · L07 (editor page: Status, Comments, Edit Mode + Copy Edits, advanced search; "/" in 23 Word Vault clues) · L08 v08b (58 country-code clues "Madrid URL" style, JM CD-27; Word Vault tricky hints) · L09 (JM's first Copy Edits, CD-29: ZAR clues, EXCITE added ON-DECK; ";" separates alternative clues, one picked at random)
+self.LEXICON_VER = 'L09';
 self.LEXICON_DATA = `
 # ---------- 2 letters ----------
 AD|Commercial|Promo|1
@@ -3433,7 +3433,7 @@ CHF|Swiss franc's code|Zurich money, on an exchange board|3||4
 MXN|Mexican peso's code|Peso, on an exchange board|3||4
 BRL|Brazilian real's code|Rio money, on an exchange board|3||4
 KRW|South Korean won's code|Seoul money, on an exchange board|3||4
-ZAR|South African rand's code|Rand, on an exchange board|3||4
+ZAR|S. African rand; Money in S. Africa; S. African currency|Rand, on FOREX; S. African cash|3||4
 SEK|Swedish krona's code|Stockholm money, on an exchange board|3||4
 NOK|Norwegian krone's code|Oslo money, on an exchange board|3||4
 DKK|Danish krone's code|Copenhagen money, on an exchange board|3||4
@@ -3579,6 +3579,8 @@ INCH|Tiny unit|Move slowly|1
 VIAL|Little bottle|Lab tube|3
 CAMEO|Brief role|Walk-on part|3
 OCEAN|Big sea|The deep blue|1
+# ---------- Lexicon L09: JM's Copy Edits (CD-29: 1.8). Status ON-DECK = not in the games yet ----------
+EXCITE|Energize; Activate; Agitate|Light one's fire|2||4|ON-DECK
 `;
 
 /* v04 (JM, CD-9: 1.1): clues for 1-letter answers, which let every clue cell hold a clue.

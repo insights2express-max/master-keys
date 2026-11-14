@@ -959,3 +959,44 @@ select {
 .res-big .me b { color: var(--you); } .res-big .them b { color: var(--opp); }
 /* (CD-27 add'l 4) on phones, the clock under your score is the Pause button */
 .clk[role="button"] { cursor: pointer; }
+
+/* ===== v08c (JM CD-30: 4.2a, 4.4, 4.5) ===== */
+/* Coin buttons (both games): a gold tint, so it's clear they spend coins */
+.btn.coinbtn { background: linear-gradient(180deg, #fff6d6, #f6df92); color: #3b2a0b; box-shadow: inset 0 0 0 1.5px #d9b44a, var(--shadow); }
+/* Word Vault's button row: [coin buttons] gap [gray round game controls] ⇕ */
+.vt-grp { display: flex; gap: 8px; }
+.vt-grp.ctl { margin-left: 10px; padding-left: 12px; border-left: 2px solid var(--line); }
+.btn.ctlbtn { background: #e3e5e8; color: #2b3138; border-radius: 999px; box-shadow: inset 0 0 0 1.5px #b7bcc3; }
+@media (prefers-color-scheme: dark) { .btn.ctlbtn { background: #3a4048; color: #e8eaed; box-shadow: inset 0 0 0 1.5px #59616b; } }
+@media (max-width: 480px) {
+  .vt-acts { gap: 6px; }
+  .vt-grp { gap: 5px; }
+  .vt-grp.ctl { margin-left: 4px; padding-left: 7px; }
+}
+/* (4.4) the first tap ARMS a coin button: it glows gold and reads "Tap again · 🪙N" for 3 seconds */
+.btn.coinbtn { position: relative; }
+.btn.armed { box-shadow: 0 0 0 3px #f5b400, 0 0 14px rgba(245, 180, 0, .8); }
+.btn.armed::after {
+  content: attr(data-arm); position: absolute; inset: 0; border-radius: inherit; display: grid; place-items: center;
+  background: #ffc61a; color: #241800; font-weight: 900; font-size: 12px; line-height: 1.15; text-align: center; padding: 0 3px;
+  white-space: pre-line; overflow: hidden;
+  animation: armPulse .6s ease-in-out infinite alternate;
+}
+@keyframes armPulse { from { background: #ffc61a; } to { background: #ffdb5c; } }
+@media (prefers-reduced-motion: reduce) { .btn.armed::after { animation: none; } }
+/* (4.5) Game History */
+.home-links { display: flex; justify-content: center; gap: 6px; flex-wrap: wrap; }
+.hist-seg { margin: 4px 0 10px; }
+.hist-seg button.on { background: var(--primary); color: var(--primary-ink); }
+.hist-list, .sheet .hist-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; max-height: 55vh; overflow-y: auto; }
+.hist-it { width: 100%; display: flex; align-items: center; gap: 10px; text-align: left; border: 0; border-radius: 12px; padding: 8px 10px;
+  background: var(--surface); color: var(--ink); box-shadow: inset 4px 0 0 var(--line), var(--shadow); cursor: pointer; font: inherit; }
+.hist-it.won { box-shadow: inset 4px 0 0 #1e9e4a, var(--shadow); }
+.hist-it.lost { box-shadow: inset 4px 0 0 var(--bad), var(--shadow); }
+.hi-ico { font-family: var(--emoji); font-size: 22px; flex: none; }
+.hi-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.hi-main b { line-height: 1.2; }
+.hi-main small, .hi-side small { color: var(--muted); font-size: 12px; }
+.hi-side { flex: none; display: flex; flex-direction: column; align-items: flex-end; font-variant-numeric: tabular-nums; }
+.hist-note, .hist-none { color: var(--muted); font-size: 13px; text-align: center; }
+.hist-when { text-align: center; color: var(--muted); font-size: 13px; font-weight: 700; margin-bottom: 4px; }

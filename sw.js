@@ -1,6 +1,6 @@
 /* Clue Duel — service worker: caches the whole app so it plays offline.
    Bump CACHE whenever any file changes, so players get the update. */
-const CACHE = 'clue-duel-v08b-2'; // -2: Lexicon L09 page only (game files unchanged)
+const CACHE = 'clue-duel-v08c-1'; // v08c: button groups, confirmations, two-tap coin buttons, Game History, short level 8-10 hints
 const ASSETS = [
   './',
   'index.html',

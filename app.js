@@ -1,7 +1,7 @@
-/* Clue Duel — user interface (v08b) */
+/* Clue Duel — user interface (v08c) */
 'use strict';
 (() => {
-  const APP_VER = 'v08b'; // Project CP: shown as a pill beside the title and in the browser tab
+  const APP_VER = 'v08c'; // Project CP: shown as a pill beside the title and in the browser tab
   const E = window.Engine;
   const $ = (s, el = document) => el.querySelector(s);
   const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -140,6 +140,7 @@
   $('#myName').addEventListener('keydown', e => { if (e.key === 'Enter') e.target.blur(); });
   $('#myAv').addEventListener('click', pickAvatar);
   $('#howBtn').addEventListener('click', showHelp);
+  $('#histBtn').addEventListener('click', () => showHistory()); // v08c (CD-30: 4.5)
   $('#startBtn').addEventListener('click', startNewGame);
   $('#resumeBtn').addEventListener('click', resumeGame);
 
@@ -325,7 +326,8 @@
   }
   $('#moreBtn').addEventListener('click', () => setMore(!$('#dock').classList.contains('more-open')));
   // a button in the pop-up closes it after doing its job; so does a tap anywhere else
-  $('#morePop').addEventListener('click', e => { if (e.target.closest('button')) setTimeout(() => setMore(false), 0); });
+  // v08c: except a coin button's first (arming) tap, so the second tap can land
+  $('#morePop').addEventListener('click', e => { const b = e.target.closest('button'); if (b && !b.classList.contains('armed')) setTimeout(() => setMore(false), 0); });
   document.addEventListener('pointerdown', e => { if ($('#dock').classList.contains('more-open') && !e.target.closest('#morePop, #moreBtn')) setMore(false); });
 
   // v06c (JM, CD-18: 4.2): clue text is MEASURED, not guessed. The size starts from the usual look and shrinks
@@ -514,8 +516,8 @@
   // Round · Bag · mode (JM, CD-5: 1.2)
   function timerLabel() {
     const t = E.timerOf(G.settings.timer);
-    if (t.kind === 'turn') return t.secs === 30 ? 'Blitz · 30 s per turn' : `${t.secs / 60} min per turn`; // v08b: always "per"
-    if (t.kind === 'game') return `${t.secs / 60} min per game`;
+    if (t.kind === 'turn') return t.secs === 30 ? 'Blitz · 30 s per TURN' : `${t.secs / 60} min per TURN`; // v08b: always "per"
+    if (t.kind === 'game') return `${t.secs / 60} min per GAME`;
     return 'Untimed';
   }
   function renderInfo() {
@@ -808,6 +810,69 @@
 
   function openModal(html) { $('#sheet').innerHTML = html; $('#modal').hidden = false; }
   function closeModal() { $('#modal').hidden = true; $('#modal').onclick = null; $('#sheet').innerHTML = ''; $('#sheet').onclick = null; $('#sheet').onpointerdown = null; }
+  // v08c (JM CD-30: 4.4): coin buttons take TWO taps. The first tap "arms" the button: it turns gold and reads
+  // "Tap again · 🪙N" for 3 seconds; a second tap in that time buys. Anything else (time running out, another tap
+  // elsewhere) disarms it. The label is drawn over the button (CSS ::after), so re-renders don't disturb it.
+  // Returns true when the tap should go ahead and spend.
+  const ARM_MS = 3000;
+  function disarm(b) { if (!b) return; b.classList.remove('armed'); clearTimeout(b._armT); b._armT = 0; }
+  function armTap(btn, price) {
+    if (btn.classList.contains('armed')) { disarm(btn); return true; }
+    document.querySelectorAll('.btn.armed').forEach(disarm);
+    btn.dataset.arm = `Tap again\n🪙${price}`; // two lines, so it fits narrow buttons
+    btn.classList.add('armed');
+    btn._armT = setTimeout(() => disarm(btn), ARM_MS);
+    return false;
+  }
+  document.addEventListener('pointerdown', e => {
+    document.querySelectorAll('.btn.armed').forEach(b => { if (!b.contains(e.target)) disarm(b); });
+  }, true);
+
+  // v08c (JM CD-30: 4.5): GAME HISTORY. The last 100 results from both games, newest first, kept on this device.
+  // Each entry keeps a copy of its result window, so tapping it shows the full result again.
+  const HIST_KEY = 'cd.history', HIST_MAX = 100;
+  const hist = {
+    list() { return store.get(HIST_KEY, []); },
+    add(e) {
+      const a = hist.list();
+      a.unshift(Object.assign({ t: Date.now() }, e));
+      if (a.length > HIST_MAX) a.length = HIST_MAX;
+      // if storage is full, keep fewer old results rather than lose the new one
+      for (let n = a.length; n > 0; n = Math.floor(n * 0.7)) {
+        try { localStorage.setItem(HIST_KEY, JSON.stringify(a.slice(0, n))); return; } catch (x) { /* too big: trim */ }
+      }
+    },
+    show: showHistory
+  };
+  const when = t => new Date(t).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+  function showHistory(filter) {
+    const f = filter || 'all', all = hist.list();
+    const rows = all.map((e, i) => ({ e, i })).filter(x => f === 'all' || x.e.g === f);
+    const tab = (v, l) => `<button type="button" data-f="${v}" class="${f === v ? 'on' : ''}">${l}</button>`;
+    openModal(`<h2>📜 Game History</h2>
+      <div class="seg one hist-seg">${tab('all', 'All')}${tab('duel', '🧩 Clue Duel')}${tab('vault', '🔐 Word Vault')}</div>
+      ${rows.length ? `<ul class="hist-list">${rows.map(({ e, i }) => `<li><button type="button" class="hist-it ${e.win ? 'won' : 'lost'}" data-i="${i}">
+          <span class="hi-ico">${e.g === 'duel' ? '🧩' : '🔐'}</span>
+          <span class="hi-main"><b>${esc(e.title)}</b><small>${esc(e.sub || '')}</small><small>${when(e.t)}</small></span>
+          <span class="hi-side"><b>${esc(e.score || '')}</b><small>🪙${signed(e.coins)}</small></span></button></li>`).join('')}</ul>`
+        : `<p class="hist-none">No ${f === 'duel' ? 'Clue Duel ' : f === 'vault' ? 'Word Vault ' : ''}results yet. Finished games show up here.</p>`}
+      <p class="hist-note">The last ${HIST_MAX} results, kept on this device. Tap one to see its full result.</p>
+      <div class="row"><button class="btn primary" data-a="close">Close</button></div>`);
+    $('#modal').onclick = e => { if (e.target === $('#modal')) closeModal(); };
+    $('#sheet').onclick = e => {
+      const t = e.target.closest('[data-f]'); if (t) return showHistory(t.dataset.f);
+      const it = e.target.closest('[data-i]');
+      if (it) {
+        const h = all[+it.dataset.i]; if (!h) return;
+        openModal(`<div class="hist-when">📜 ${when(h.t)}</div><div class="hist-res">${h.html || ''}</div>
+          <div class="row"><button class="btn" data-a="back">◂ History</button><button class="btn primary" data-a="close">Close</button></div>`);
+        $('#sheet').onclick = ev => { const b = ev.target.closest('[data-a]'); if (!b) return; if (b.dataset.a === 'back') showHistory(f); else closeModal(); };
+        return;
+      }
+      if (e.target.closest('[data-a="close"]')) closeModal();
+    };
+  }
+
   function confirmBox(title, text, yes, no) {
     return new Promise(res => {
       openModal(`<h2>${esc(title)}</h2><p>${esc(text)}</p><div class="row"><button class="btn" data-a="no">${esc(no)}</button><button class="btn primary" data-a="yes">${esc(yes)}</button></div>`);
@@ -905,8 +970,8 @@
         <li>Rare letters cut both ways: a J left in your hand at the end costs you 6, and a J in a wrong cell costs 6.</li>`)}
       ${sec('Timer', `
         <li><b>Untimed</b>: take as long as you like.</li>
-        <li><b>Per turn</b> (Blitz · 30 s per turn, or 1 to 5 min per turn): when it runs out, your turn ends and the tiles you placed still score.</li>
-        <li><b>Whole game</b> (2 to 15 min per game): your clock runs only on your turns; when it reaches zero, the game ends.</li>
+        <li><b>Per turn</b> (Blitz · 30 s per TURN, or 1 to 5 min per TURN): when it runs out, your turn ends and the tiles you placed still score.</li>
+        <li><b>Whole game</b> (2 to 15 min per GAME): your clock runs only on your turns; when it reaches zero, the game ends.</li>
         <li>Clocks never run while a ${go('Turn Reports and The Scoreboard', 'turn report')} is waiting for your tap, or while the game is paused.</li>
         <li>In the last 10 seconds the grid's border flashes every second: <b>yellow</b> from 10 to 6, <b>red</b> from 5 to 1.</li>`)}
       ${sec('Resume Game', `
@@ -958,7 +1023,8 @@
         <li>The result screen shows both players' stats and your record against this opponent.</li>`)}
       ${sec('Coins', `
         <li><b>🪙 Coins</b> are one currency shared by Clue Duel and ${go('Word Vault')}. You start with <b>${COIN.start}</b>. Your balance shows on the menu, in the game's info line and above the Word Vault grid; tap it for details and your latest coins.</li>
-        <li><b>Spend them on</b> 💡 Hint (${hintC}), 🎯 Place (the tile's value) and ⏱️ +30s (${R.timeCost}) in Clue Duel, and 🔎 Hint (5) and 💡 Reveal (40 ÷ the word's letters, like ¹⁄₅ 🪙8) in Word Vault. These cost coins, not points. Without enough coins the button is dimmed, and a tap tells you what it costs.</li>
+        <li><b>Spend them on</b> 💡 Hint (${hintC}), 🎯 Place (the tile's value) and ⏱️ +30s (${R.timeCost}) in Clue Duel, and 🔎 Hint (5) and 💡 Reveal (40 ÷ the word's letters, like ¹⁄₅ 🪙8) in Word Vault. These cost coins, not points. Coin buttons are <b>gold</b>. Without enough coins the button is dimmed, and a tap tells you what it costs.</li>
+        <li><b>Two taps to buy:</b> the first tap on a coin button turns it bright gold and shows "Tap again · 🪙N" (for Place, the price of the tile it found) for 3 seconds; the second tap buys. Tapping anywhere else, or waiting, cancels it. This stops accidental spending.</li>
         <li><b>Speed coins</b> (timed games only): end a turn that placed tiles and earn <b>1 coin for every second left</b> on your clock. A 1-minute turn finished in 35 seconds pays 25. The most a turn can pay is ${COIN.perTile} per tile placed, but there's <b>no cap</b> when you place every tile in your hand. Time bought with +30s doesn't count.</li>
         <li>With a <b>whole-game</b> clock, speed coins are paid once, when the game ends. Your clock is <b>shared evenly among your turns</b>: a 5-minute game in which you took 6 turns gives each turn 50 seconds. Each turn then pays like a per-turn game: the seconds it saved from its 50, up to ${COIN.perTile} per tile it placed (no cap if it emptied your hand); passes and swaps pay nothing. The total is never more than the time left on your clock, and nothing is paid if your clock runs out. <i>Example:</i> a turn that took 20 seconds and placed 2 tiles saved 30 seconds and pays 30 (its cap is 40).</li>
         <li><b>Untimed games</b> pay no speed coins.</li>
@@ -970,6 +1036,10 @@
         <li>After each guess every letter is marked: <b>green</b> right letter in the right spot, <b>yellow</b> in the word but in another spot, <b>red</b> not in the word. Green letters carry into your next guess.</li>
         <li>You choose the Challenge Level (vocabulary), the word's length (4–8 letters), the number of guesses (5–10), a timer and a scoring mode, and you can change them during play (⚙). Extras: 🔎 Hint (🪙5) shows a clue that gets trickier as the Challenge Level rises, 💡 Reveal places a letter (its coin price is that letter's share of the word: 40 ÷ letters, like ¹⁄₅ 🪙8), ✕ clears a guess, and tapping the clock pauses. Tap its <b>?</b> for the full rules.</li>
         <li>Make it yours: double-click its title to rename it, and tap the icon beside the title to change it or upload your own picture.</li>`)}
+      ${sec('Game History', `
+        <li><b>📜 Game History</b> (on the menu, beside How To Play) lists your last 100 results from both games, newest first: the date, the settings, the score and the coins won or spent. A green edge marks a win, a red edge a loss.</li>
+        <li>Filter it by game (All, 🧩 Clue Duel, 🔐 Word Vault), and tap any result to see its full result window again; ◂ History goes back to the list.</li>
+        <li>It's kept on this device only, like your stats and coins.</li>`)}
       ${sec('Strategy', `
         <li>Don't rush. A word left with only one empty cell is a gift to your rival. Sometimes it pays to <b>hold</b> a tile until you can finish the word yourself.</li>
         <li>It is often smart to save 2× squares for big turns because they double everything else you score that turn. Beware: your opponent can "steal" the bonus squares in the early rounds to keep you from scoring big.</li>`)}
@@ -1423,6 +1493,7 @@
     const h = E.hint(G, 0, { tiles: new Set(ui.pending.map(p => p.tileId)), cells: new Set(ui.pending.map(p => p.cell)) });
     if (!h) { toast('No hint available'); return; }
     const cost = E.RULES.hintCost; // v08: coins, not points
+    if (coins.bal >= cost && !armTap($('#hintBtn'), cost)) return; // v08c: second tap buys
     if (!coins.spend(cost, 'Hint')) return;
     coinItem('hint', -cost);
     ui.hintCell = h.cell;
@@ -1440,11 +1511,20 @@
     const a = E.autoPlace(G, 0, { tiles: new Set(ui.pending.map(p => p.tileId)), cells: new Set(ui.pending.map(p => p.cell)) });
     if (!a) { toast('None of your tiles fits an open cell'); return; }
     const cost = Math.max(1, a.cost); // v08: coins, not points (the tile's value; 1 in modes without values)
-    if (!coins.spend(cost, `Place ${a.ch}`)) return;
-    coinItem('place', -cost, a.ch);
+    // v08c: second tap buys. The tile is picked at random on each tap, so the armed price is the one that tap found;
+    // the buying tap keeps that same tile (ui.armPlace) so the price you saw is the price you pay.
+    if (coins.bal >= cost) {
+      if (!$('#placeBtn').classList.contains('armed')) { ui.armPlace = a; armTap($('#placeBtn'), cost); return; }
+      armTap($('#placeBtn'), cost);
+    }
+    if (ui.armPlace && G.hands[0].some(t => t.id === ui.armPlace.tileId) && !ui.pending.some(p => p.cell === ui.armPlace.cell)) Object.assign(a, ui.armPlace);
+    ui.armPlace = null;
+    const paid = Math.max(1, a.cost);
+    if (!coins.spend(paid, `Place ${a.ch}`)) return;
+    coinItem('place', -paid, a.ch);
     ui.hintCell = -1;
     placeTile(a.tileId, a.cell);
-    toast(`Placed ${a.ch} · 🪙−${cost}`);
+    toast(`Placed ${a.ch} · 🪙−${paid}`);
     save();
   });
 
@@ -1453,6 +1533,7 @@
     if (!myTurn()) return;
     const tm = E.timerOf(G.settings.timer);
     if (tm.kind === 'none') return;
+    if (coins.bal >= E.RULES.timeCost && !armTap($('#timeBtn'), E.RULES.timeCost)) return; // v08c: second tap buys
     if (!coins.spend(E.RULES.timeCost, '+30s')) return; // v08: coins, not points
     coinItem('time', -E.RULES.timeCost);
     if (tm.kind === 'turn') { ui.left += E.RULES.timeAdd; ui.bought = (ui.bought || 0) + E.RULES.timeAdd; }
@@ -1677,8 +1758,7 @@
       + (coinRows.length ? coinRows.map(x => `<tr><td>${esc(x[0])}</td><td class="${x[1] < 0 ? 'neg' : 'pos'}">${sg(x[1])}</td></tr>`).join('') : '<tr><td>No coins earned or spent</td><td>0</td></tr>')
       + `<tr class="total"><td>This game ${sg(net)} · Balance</td><td data-coins>${coins.bal}</td></tr></table>`;
     const helpRows = [[`Hints`, st.hints[0]], ['Place', (st.places || [0])[0]], ['+30s', (st.time || [0])[0]]].filter(x => x[1]);
-    setTimeout(() => {
-      openModal(`
+    const resBody = `
         <div class="result-face">${face}</div>
         <div class="result-title">${esc(title)}</div>
         <p style="text-align:center;margin-top:0">${ended}</p>
@@ -1696,7 +1776,16 @@
         ${helpRows.length ? `<h3 class="res-h">💡 Help you used</h3><table class="score-table">${helpRows.map(x => `<tr><td>${x[0]}</td><td>${x[1]}×</td></tr>`).join('')}</table>` : ''}
         ${coinTbl}
         <h3 class="res-h">📈 Record</h3>
-        <p class="rec-line"><span class="rl-a">Record vs ${esc(o.n)}:</span><span class="rl-b">${rec.w} won · ${rec.l} lost${rec.d ? ` · ${rec.d} drawn` : ''}</span></p>
+        <p class="rec-line"><span class="rl-a">Record vs ${esc(o.n)}:</span><span class="rl-b">${rec.w} won · ${rec.l} lost${rec.d ? ` · ${rec.d} drawn` : ''}</span></p>`;
+    // v08c (CD-30: 4.5): one History entry per finished game
+    if (!G.histSaved) {
+      G.histSaved = true;
+      const sz = { S: 'Small', M: 'Medium', L: 'Large' }[G.settings.size] || '';
+      hist.add({ g: 'duel', win: r.winner === 0, title: `${r.winner === 0 ? 'Won' : r.winner === 1 ? 'Lost' : 'Drew'} vs ${o.n} [${G.settings.skill}]`,
+        sub: [sz, timerLabel()].filter(Boolean).join(' · '), score: `${G.scores[0]}–${G.scores[1]}`, coins: net, html: resBody });
+    }
+    setTimeout(() => {
+      openModal(`${resBody}
         <div class="row"><button class="btn" data-a="board">See grid</button><button class="btn" data-a="menu">Menu</button><button class="btn primary" data-a="again">Rematch</button></div>`);
       $('#sheet').onclick = e => {
         const b = e.target.closest('[data-a]');
@@ -1719,6 +1808,7 @@
   // v07c: the Word Vault mini-game (vault.js) shares the menu's modal, toasts, storage and avatar list
   window.CDUI = {
     $, esc, store, toast, openModal, closeModal, APP_VER, AVATARS, coins, coinPill, COIN, // v08: coins shared with Word Vault
+    armTap, history: hist, // v08c: two-tap coin buttons; Game History shared with Word Vault
     showScreen, goHome: () => { showScreen('home'); renderHome(); },
     settings: () => settings
   };

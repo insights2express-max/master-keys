@@ -2090,3 +2090,2085 @@ ZIPPER|Fly's fastener
 ZONE|Twilight, for one
 ZOOM|Video call app, or speed off
 PUPPET|Pinocchio, before he became a real boy`;
+/* VAULT_SHORT: short hints for Challenge Levels 8-10 (WORD|hint), from wordlists/vault-hints-short.txt (v08c). */
+self.VAULT_SHORT = `ABANDON|Jump ship
+ABET|Getaway driver
+ABHOR|Can't stomach
+ABILITY|Scout's quarry
+ABJECT|Rock-bottom
+ABLE|Up to it
+ABOUT|Ballpark
+ABOVE|Sky side
+ACHE|Marathon souvenir
+ACID|Lemon's bite
+ACORN|Oak seed
+ACRE|Plowman's day
+ACRID|Nose-stinging
+ACROBAT|Gravity defier
+ACTION|Director's cue
+ACTIVE|Couch-shy
+ACTOR|Borrowed lives
+ACUMEN|Business edge
+ADAGE|Old saw
+ADAPT|Chameleon skill
+ADEPT|Has the knack
+ADMIT|Own up
+ADOPT|Take in strays
+ADORN|Tinsel up
+ADROIT|Nimble-fingered
+ADULT|Off the kids' menu
+ADVICE|Seldom taken
+ADZE|Shipwright's blade
+AEGIS|Zeus's shield
+AEON|Bus wait
+AFTER|Post-
+AGAIN|Encore
+AGED|Like cheddar
+AGENDA|Meeting map
+AGHAST|Jaw-dropped
+AGILE|Cat-like
+AGLOW|Lit up
+AGOG|Wide-eyed
+AGREE|Nod along
+AGUE|Old shivers
+AHEAD|Pace-setting
+AIDE|Right hand
+AIRPORT|Gate keeper
+AIRY|Soufflé-light
+AISLE|Bride's path
+AJAR|Half-shut
+ALARM|Monday ring
+ALBUM|Track holder
+ALCHEMY|Lead to gold
+ALEE|Sheltered side
+ALERT|Push notice
+ALIENS|Little green visitors
+ALIKE|Peas in a pod
+ALIT|Came down
+ALIVE|Kicking
+ALLOW|Green light
+ALLURE|Siren's pull
+ALOE|Burn soother
+ALOFT|Kite-high
+ALONE|Home, in a film
+ALONG|Sing-___
+ALSO|Me-too word
+ALTER|Tailor's task
+ALTO|Mezzo neighbor
+AMBER|Fossil honey
+AMBLE|Sunday stroll
+AMEN|Last word
+AMID|In the thick
+AMISS|Out of whack
+AMMONIA|Pungent cleaner
+AMPLE|Room to spare
+ANAGRAM|Silent listen
+ANEW|Clean-slate
+ANGEL|Halo wearer
+ANGER|Seeing red
+ANGRY|Steaming
+ANIMAL|Ark passenger
+ANIMATE|Pixar's job
+ANKLE|Sock line
+ANNEX|Add-on wing
+ANON|In a bit
+ANTE|Buy-in
+ANTENNA|Bug feeler
+APART|Worlds away
+APEX|Tip-top
+APRICOT|Fuzzy stone
+ARCANE|Insider-only
+ARDOR|Heart's fire
+AREA|Square footage
+ARENA|Gladiator stage
+ARGUE|Debate club act
+ARIA|Diva solo
+ARID|Cactus-friendly
+ARISE|Alarm's request
+ARMOIRE|Narnia door
+ARMOR|Tin suit
+AROMA|Bakery drift
+ARTIST|Easel user
+ASIDE|Stage whisper
+ASKEW|Picture-frame tilt
+ASSET|Plus column
+ASTIR|Up and about
+ASTUTE|Tack-sharp
+ATOM|Tiny building block
+ATONE|Yom Kippur aim
+ATOP|Cherry's spot
+ATTACK|Panic type
+ATTIC|Trunk storage
+AUDIO|Earful
+AUDIT|Ledger probe
+AUGUST|Leo's month
+AUNT|Agatha, to Bertie
+AURA|Saint's glow
+AUTUMN|Leaf drop
+AVAIL|To no ___
+AVARICE|Scrooge's sin
+AVER|Under-oath act
+AVID|Bookworm-like
+AVOCADO|Toast topper
+AVOID|Like the plague
+AWAKE|Up at 3 a.m.
+AWARD|Mantel piece
+AWARE|Woke
+AWASH|Flooded deck
+AWAY|Out of office
+AXIS|Spin line
+AXLE|Wheel bar
+BADLY|Off-key
+BAGEL|Chewy ring
+BAGPIPE|Kilted wail
+BAKE|Oven job
+BAKERY|Predawn rise
+BAKING|Batter to cake
+BALANCE|Tightrope need
+BALCONY|Juliet's perch
+BALD|Eagle misnomer
+BALLET|Swan Lake art
+BALLOON|Party floater
+BALM|Lip tube
+BALMY|Palm-tree warm
+BANAL|Dishwater-dull
+BANANA|Monkey snack
+BANANAS|Nuts
+BANDAGE|Boo-boo cover
+BANTER|Talk-show patter
+BARBER|Pole owner
+BARE|Stitchless
+BARK|Woof
+BARN|Cow home
+BASIC|Square one
+BASIL|Pesto green
+BASKET|Hoop
+BATCH|One tray
+BATHTUB|Duck pond
+BAYOU|Gator water
+BAZAAR|Stall maze
+BEAD|Rosary bit
+BEAK|Toucan's pride
+BEARD|Santa's chin
+BEAST|Belle's love
+BEAVER|Busy builder
+BEDBUG|Sheet sneak
+BEDLAM|Mosh pit
+BEDROOM|Pillow place
+BEEF|Grudge
+BEEHIVE|Buzz factory
+BEETLE|Scarab
+BEFIT|Suit to a T
+BEGIN|Kick off
+BEING|Human, say
+BELIE|Poker face act
+BELLHOP|Bag carrier
+BELLY|Butterfly home
+BELOW|Basement way
+BEMUSE|Leave scratching heads
+BERET|Painter's cap
+BERRY|Bramble gem
+BESTOW|Knighthood act
+BICYCLE|Pedal pusher
+BIKE|Two-wheeler
+BINDER|Ring holder
+BIRCH|Paper bark
+BIRTH|Grand entrance
+BISCUIT|Gravy partner
+BISON|Plains giant
+BLAME|Finger-point
+BLASE|Seen it all
+BLAZE|Trail-maker
+BLEND|Smoothie job
+BLEW|Birthday candle act
+BLINK|Miss it
+BLITHE|Whistling
+BLOSSOM|Spring flourish
+BLUR|Speed's smear
+BOAST|Horn-tooting
+BOGUS|Three-dollar bill
+BOLT|Lightning
+BONUS|Cherry on top
+BOOKEND|Shelf guard
+BOOST|Leg up
+BOOTH|Ballot box spot
+BOTH|The pair
+BOTTLE|Message holder
+BOWLING|Ten pins
+BRACKET|March chart
+BRAID|Three-strand twist
+BRAIN|Control tower
+BRANCH|Bank outlet
+BRAVADO|Bluster
+BRAVE|Face the music
+BREEZE|Cakewalk
+BRIDE|Veil wearer
+BRIM|Hat edge
+BRINE|Pickle bath
+BRING|Potluck order
+BRINY|Like the deep
+BRIO|Sparkle
+BRISK|Autumn walk
+BROOM|Witch's ride
+BROTHER|Bro
+BROWN|Tan's cousin
+BROWNIE|Fudgy square
+BUBBLE|Popper
+BUDDY|Movie pairing
+BUFFALO|Wings city
+BUGLE|Reveille
+BUILD|Lego act
+BULLDOG|Churchill's dog
+BULLPEN|Reliever's wait
+BUNNY|Egg deliverer
+BUOY|Bobbing marker
+BURRITO|Wrapped meal
+BURY|Hatchet's fate
+BUSY|Beehive state
+BUTTER|Toast melt
+BUTTONS|Fasteners
+BUZZ|Crew cut
+CABBAGE|Slaw base
+CACHE|Squirrel's store
+CACTUS|Desert pincushion
+CADENCE|March beat
+CADET|West Pointer
+CAFE|Latte spot
+CAGE|Bird jail
+CAJOLE|Sweet-talk
+CAMEL|Desert ship
+CAMEO|Hitchcock habit
+CAMERA|Shutterbug's tool
+CAMPING|Roughing it
+CANDLE|Wick
+CANDLES|Cake wicks
+CANDOR|No-filter talk
+CANNY|Scottish wise
+CANOE|Paddle boat
+CANVAS|Blank start
+CANYON|Gorge
+CAPRICE|Paganini piece
+CARAMEL|Golden chew
+CARAVAN|Camel train
+CARBON|Diamond stuff
+CAROL|Doorstep song
+CARPOOL|Lane privilege
+CARTOON|Toon
+CASHIER|Ringer-up
+CATFISH|Whiskered swimmer
+CEILING|Upper limit
+CELERY|Crunchy stalk
+CELLAR|Wine dungeon
+CEREAL|Bowl filler
+CHALET|Alpine cabin
+CHANCE|Monopoly card
+CHAOS|Toddler party
+CHAP|Dry-lip woe
+CHAPTER|Book part
+CHARIOT|Ben-Hur's ride
+CHASE|Bank, or a car scene
+CHEAP|Dollar-store
+CHEETAH|Spotted sprinter
+CHEF|Toque wearer
+CHERRY|Sundae top
+CHESS|Checkmate game
+CHICK|Peeper
+CHIDE|Tut-tut
+CHIEF|Head of a tribe
+CHILD|Labor laws' concern
+CHIME|Ding-dong
+CHIMERA|Myth hybrid
+CHIMNEY|Sweep's route
+CHIRP|Tweet
+CHOIR|Robed voices
+CHOWDER|Clam bowl
+CHUNK|Cookie bit
+CIDER|Pressed apples
+CIRCUS|Big top
+CITY|Concrete jungle
+CIVET|Musky prowler
+CIVIC|Town-minded
+CLARION|Rallying call
+CLAY|Potter's medium
+CLEAN|Whistle-like
+CLEF|Staff sign
+CLERK|Desk jockey
+CLEVER|Fox-like
+CLIMATE|Long weather
+CLOAK|Magician's swirl
+CLOCKS|Tickers
+CLOSET|Skeleton spot
+CLOTH|Clergy, collectively
+CLOWNS|Red noses
+COBRA|Hooded hisser
+COBWEB|Lacy trap
+COCOA|Hot choc
+COCONUT|Hairy fruit
+COFFEE|Joe
+COHORT|Peer group
+COIN|Pocket jingle
+COLOR|Crayon choice
+COMEDY|Stand-up
+COMET|Halley's
+COMPASS|North finder
+COMPOST|Scrap heap
+CONCERT|Encore setting
+COOKIE|Site tracker
+COOKIES|Jar raid
+COOKING|Stove time
+COPE|Get by
+COPPER|Penny metal
+CORAL|Reef builder
+COTTAGE|Thatched home
+COTTON|Boll
+COUGH|Lozenge cue
+COUNTRY|Flag holder
+COUSIN|Second, once removed
+COUSINS|Reunion kids
+COVEN|Cauldron circle
+COVET|Tenth commandment no-no
+COWBOY|Ten-gallon wearer
+COWGIRL|Annie Oakley
+COZY|Tea warmer
+CRACKER|Code breaker
+CRADLE|Phone rest
+CRAYON|Wax stick
+CRAYONS|Box of 64
+CRAZY|Patsy Cline hit
+CREDO|Words to live by
+CREEK|No-paddle place
+CRICKET|Night chirper
+CRIME|Noir subject
+CRISP|Fresh-bill feel
+CRONY|Yes-man
+CRUMB|Cookie trace
+CRYPT|Tomb room
+CRYSTAL|Seer's ball
+CUMIN|Chili spice
+CUPCAKE|Mini cake
+CURL|Hockey's icy cousin
+CURTAIN|Final drop
+CUSTARD|Wobbly dessert
+CUTE|Kitten-like
+CZAR|Policy boss
+DAGGER|Macbeth vision
+DAILY|Paper
+DAIRY|Milk business
+DAIS|Speaker's riser
+DAISY|Loves me not
+DAMP|Basement-like
+DANCER|Happy feet
+DANCING|Footwork
+DANGER|Skull and bones
+DARK|Lights out
+DATA|Raw numbers
+DAWN|Rooster time
+DEALT|Passed out
+DEBT|Red ink
+DEBUT|Coming out
+DECAY|Dentist's foe
+DECOR|Interior look
+DECORUM|Etiquette
+DEIGN|Stoop
+DELAY|Gate board word
+DELTA|River fan
+DEMURE|Shy violet
+DENIM|Jean stuff
+DENTIST|Drill sergeant
+DEPTH|Diver's gauge
+DESSERT|Sweet course
+DETER|Scarecrow job
+DIAPER|Pampers
+DIARY|Locked secrets
+DIME|Thin coin
+DINE|Wine's partner
+DINER|Jukebox booth
+DINNER|Bell at six
+DIRT|Gossip
+DIRTY|Laundry pile
+DITCH|Ghost, socially
+DITTO|Quote marks, again
+DIVOT|Fairway scar
+DIZZY|Spun out
+DOFF|Tip one's hat
+DOGMA|Party line
+DOGSLED|Iditarod ride
+DOLL|Barbie
+DOLLAR|Greenback
+DOLPHIN|Flipper
+DOME|Capitol cap
+DONKEY|Eeyore
+DONOR|Blood bank hero
+DONUT|Cop's treat
+DOOR|Knock spot
+DOORMAT|Welcome sign
+DOORWAY|Threshold
+DOSE|Pill count
+DOTAGE|Second childhood
+DOUR|Stony-faced
+DOWRY|Bride's purse
+DOZE|Forty winks
+DOZEN|Baker's minus one
+DRAGON|Hoard keeper
+DRAWER|Sock home
+DRAWING|Raffle
+DRESSER|Chest
+DROLL|Deadpan
+DRUMMER|Beat keeper
+DRYAD|Tree spirit
+DUEL|Hamilton's end
+DUET|Two-part harmony
+DULL|Butter knife
+DUNE|Desert wave
+DUPE|Con's mark
+DUSK|Bat hour
+DUVET|Bed cloud
+DWARF|Snow White's seven
+EACH|Apiece price word
+EAGER|Beaver-like
+EAGLE|Two under par
+EARL|Count's peer
+EARLY|Worm-getter
+EARN|Bring home
+EARRING|Lobe jewel
+EARWAX|Swab target
+EASE|Breeze
+EASEL|Painter's stand
+EASILY|Hands down
+EAST|Orient
+EASY|Pie-like
+EBONY|Piano black
+ECLIPSE|Moon's cover-up
+EDDY|Stream curl
+EDICT|Royal word
+EDIT|Red-pen
+EDITOR|Red-pen wielder
+EERIE|Twilight Zone-ish
+EGGCUP|Boiled perch
+EGRET|Wading white
+EIGHT|Octo
+ELAN|Dash
+ELATE|Make giddy
+ELICIT|Coax out
+ELITE|Navy SEALs
+ELIXIR|Cure-all
+ELSE|Or ___!
+ELUDE|Dodge the net
+EMBER|Glowing coal
+EMIR|Gulf ruler
+EMIT|Beam out
+EMPEROR|New clothes wearer
+EMPTY|Running on fumes
+ENEMY|Arch-foe
+ENERGY|Joule stuff
+ENIGMA|Wartime code
+ENJOY|Bon appétit
+ENNUI|Sunday afternoon
+ENVOY|Embassy sender
+ENVY|Green-eyed monster
+EPEE|Foil's cousin
+EPIC|Odyssey
+EPITOME|Embodiment
+EPOCH|Jurassic
+EQUAL|Sign of two lines
+EQUIP|Rig
+ERASE|Pencil's other end
+ERASER|Pencil's tail
+ERGO|Hence
+ERNE|Fish hawk's kin
+ERROR|Fielder's blot
+ERSATZ|Knockoff
+ESPY|Clap eyes on
+ESSAY|Five-paragraph job
+ETCH|Aqua fortis art
+ETHIC|Code
+ETUI|Sewing kit
+EVADE|Tax ___
+EVENING|Gown time
+EVENT|Track meet item
+EVER|Happily ___ after
+EVIL|Dark side
+EXACT|Change wanted
+EXALT|Put on a pedestal
+EXAM|Blue book
+EXILE|Elba stay
+EXIT|Stage left
+EXODUS|Moses's march
+EXPEL|Boot out
+EXPLORE|Map-making
+EXPO|World's fair
+EXTRA|Background actor
+EYEBALL|Size up
+FABLE|Tortoise tale
+FABRIC|Social ___
+FACET|Gem face
+FACT|Encyclopedia stuff
+FADE|Haircut style
+FAIL|Epic ___
+FAINT|Smelling-salt case
+FAIRIES|Wing-folk
+FAIRY|Tooth collector
+FAITH|Mustard-seed trust
+FAKE|Knockoff
+FALCON|Hooded hunter
+FALSE|Teeth type
+FAME|Fifteen minutes
+FAMILY|Tree members
+FAMOUS|Walk of Fame-worthy
+FANCY|Tickle one's ___
+FANG|Vampire tooth
+FARM|Funny one
+FARMER|Dell dweller
+FASHION|Runway world
+FATE|Three sisters' job
+FATHER|Pops
+FAUX|Fur kind
+FAWN|Bambi
+FEAR|Factor in a reality show
+FEAST|Thanksgiving
+FEAT|Herculean task
+FEIGN|Play possum
+FENCES|Good neighbors' makers
+FERAL|Back to nature
+FERN|Frond
+FERRY|Crossing boat
+FERVENT|Revival-tent hot
+FERVOR|Revival heat
+FETID|Gym-sock smell
+FEVER|Saturday Night one
+FIASCO|Damp squib
+FICTION|Make-believe
+FICUS|Office tree
+FIDGETY|Antsy
+FIFTY|Half a century
+FIGHT|Ring event
+FILL|Top up
+FIND|Lost-and-found item
+FIREFLY|Glow bug
+FIREMAN|Pole slider
+FISHING|Fly casting
+FISHNET|Trawl
+FIST|Bump giver
+FJORD|Norse inlet
+FLAIR|Showbiz knack
+FLAP|Kerfuffle
+FLAW|Achilles' heel
+FLEA|Itch maker
+FLEW|Over the cuckoo's nest
+FLOCK|Fold
+FLOOD|Ark's reason
+FLORA|Plant life
+FLOW|In the zone
+FLUTE|Piper's pipe
+FOAM|Latte cap
+FOCUS|Zoom in
+FOIL|Fencing blade
+FOLDER|Desktop icon
+FOLIO|Page number
+FOLK|Guitar music kind
+FOOD|Chain kind
+FORAY|Sortie
+FORCE|May it be with you
+FOREST|Sherwood
+FOREVER|Diamond's span
+FORGE|Fake a signature
+FORTY|Winks count
+FOSSIL|Stone bone
+FOUR|Clover leaves
+FOYER|Coat spot
+FRAIL|Bird-boned
+FRAY|Jeans edge
+FREE|On the house
+FREEDOM|Bell's ring
+FREEZE|Ice over
+FREEZER|Ice box
+FRIDGE|Magnet board
+FRIEND|Facebook add
+FRIENDS|Central Perk crew
+FROST|Robert the poet
+FUEL|Tank filler
+FULL|Moon phase
+FUND|Rainy-day jar
+FUROR|Brouhaha
+FUSS|Much ado
+GAIN|Pounds, sadly
+GALA|Black-tie bash
+GALAXY|Star city
+GALLANT|Knightly
+GALLERY|Hanging space
+GALORE|By the bushel
+GAMBIT|Opening ploy
+GAMUT|A to Z
+GARAGE|Car den
+GARBAGE|Oscar's home
+GARDEN|Eden
+GARISH|Neon-loud
+GARLIC|Clove cluster
+GAUDY|Rhinestone-heavy
+GAUZE|Wound wrap
+GAVEL|Order maker
+GECKO|Wall-walker
+GENRE|Shelf label
+GENTLE|Lamb-like
+GERM|Hand-sanitizer foe
+GIANT|Beanstalk dweller
+GIANTS|Titans
+GINGER|Snap spice
+GIRAFFE|Tall order
+GIRL|Scout
+GIST|Long and short
+GIVE|Some ___ and take
+GLACIER|Frozen flow
+GLAD|Tidings kind
+GLASS|Slipper stuff
+GLEAN|Pick over
+GLIB|Slick-tongued
+GLIMMER|Hope's spark
+GLITTER|Craft sparkle
+GLOAT|Rub it in
+GLOBAL|Small-world
+GLOBE|Spinning map
+GLOVE|Hand sock
+GLOW|Firefly trait
+GLUE|Elmer's
+GNAT|Picnic pest
+GNOME|Garden guard
+GOBLIN|Gringotts banker
+GOLD|Fool's envy
+GOLDEN|Rule kind
+GOLF|Tee time
+GOLFER|Fore! shouter
+GONE|With the wind
+GOOD|Behaved
+GORGE|Pig out
+GORILLA|Silverback
+GOWN|Ball dress
+GRAB|Smash-and-___
+GRACE|Mealtime prayer
+GRAPE|Vine fruit
+GRASS|Snitch
+GRAVY|Easy money
+GRAY|Matter of brains
+GREAT|Dane type
+GREET|Wal-Mart job
+GRID|Waffle pattern
+GRIN|Cheshire smile
+GROUP|Chat type
+GROW|Plant's job
+GUESS|Twenty Questions act
+GUEST|Couch surfer
+GUESTS|Company
+GUIDE|Sherpa
+GUILE|Fox's way
+GUITAR|Six strings
+GULF|Mexico's water
+GULP|Nervous swallow
+GUST|Hat thief
+GUSTO|Opera-singer zeal
+HABIT|Nun's attire
+HAIKU|Seventeen syllables
+HAIRCUT|Barber's job
+HALF|Fifty percent
+HALIBUT|Flat swimmer
+HALL|Fame's house
+HALLWAY|Locker row
+HALO|Angel ring
+HAMLET|Danish prince
+HAMSTER|Wheel runner
+HANDBAG|Kelly bag
+HANGER|Wire wardrobe
+HAPPILY|Ever after
+HAPPY|Meal of a clown
+HARBOR|Safe haven
+HARD|Rock-like
+HARDY|Laurel's partner
+HARM|No ___ done
+HARSH|Grating
+HARVEST|Moon kind
+HATCH|Egg exit
+HATE|Love's flip
+HAUGHTY|Nose-in-air
+HAVEN|Port in a storm
+HAZE|Frat ritual
+HEAL|Time's job
+HEALTHY|Fiddle-fit
+HEAP|Jalopy
+HEAR|Seashell's gift
+HEARD|Got wind
+HEAVY|Metal kind
+HEED|Mind
+HEIST|Ocean's Eleven job
+HELIUM|Squeaky gas
+HELIX|DNA shape
+HELLO|Adele hit
+HELMET|Crash cap
+HELP|SOS
+HELPER|Sidekick
+HERB|Kitchen windowsill plant
+HERON|Wader
+HEYDAY|Glory days
+HICCUPS|Diaphragm hops
+HIDDEN|Camo-clad
+HIGH|Five kind
+HIGHWAY|Interstate
+HIKING|Trail time
+HILL|Jack and Jill's climb
+HIPPO|Hungry Hungry one
+HIRE|Take on
+HISTORY|Repeating thing
+HIVE|Swarm home
+HOARSE|Concert-goer's voice
+HOBBY|Stamp collecting
+HOCKEY|Puck sport
+HOLIDAY|Day off
+HONE|Whetstone act
+HONEST|Abe-like
+HONEY|Sweetie
+HOOP|Rim
+HOPE|Pandora's last
+HORIZON|Sky line
+HOSE|Garden snake
+HOTDOG|Ballpark frank
+HOTDOGS|Franks
+HOTEL|Monopoly upgrade
+HOUR|Happy one
+HOUSE|Cards stack
+HOVEL|Tumbledown hut
+HUGE|Whale-sized
+HUMAN|Bean kind
+HUNDRED|Centipede legs
+HUNGRY|Hippo game adjective
+HUNT|Scavenger event
+HURRY|Chop-chop
+HURT|Feelings, sometimes
+HUSH|Puppies brand
+HUSKY|Sled puller
+ICEBERG|Titanic's foe
+ICEBOX|Cold storage
+IDEA|Bright bulb
+IDEAL|Utopian
+IDIOM|Turn of phrase
+IDLE|Ticking over
+IDOL|Pin-up
+IGLOO|Snow house
+IGUANA|Green basker
+IMAGE|Selfie
+IMBUE|Infuse
+IMPEL|Drive on
+INANE|Airheaded
+INCH|Creep
+INCITE|Stir up
+INDEX|Back pages
+INEPT|Butterfingered
+INERT|Noble-gas-like
+INFER|Read between lines
+INKLING|Faint clue
+INKY|Squid-black
+INLET|Sea finger
+INNER|Child kind
+INPUT|Two cents
+INSECT|Six-legger
+INTO|Keen on
+IOTA|Greek "i"
+IRATE|Steaming mad
+IRIS|Eye ring
+IRONY|Alanis topic
+ISLAND|Gilligan's spot
+ISLE|Man, for one
+ITCH|Seven-year one
+IVORY|Tusk stuff
+JACKPOT|Three cherries
+JADE|Green stone
+JAIL|Monopoly corner
+JASMINE|Night bloom
+JAZZ|Bebop
+JEAN|Blue cloth
+JEANS|Levi's
+JEEP|Off-roader
+JELLY|Wobbler
+JERSEY|Garden State
+JEST|Court fool's line
+JEWEL|Crown piece
+JEWELS|Crown pieces
+JIGSAW|Thousand pieces
+JOCULAR|Jokey
+JOIN|Sign up
+JOKE|Knock-knock
+JOKER|Batman foe
+JOLT|Caffeine kick
+JOURNEY|Odyssey
+JOVIAL|Santa-like
+JUDGE|Gavel wielder
+JUICE|Pulp drink
+JUMP|Hopscotch move
+JUMPING|Skipping rope
+JUNGLE|Asphalt one
+JUNIOR|Dad's namesake
+JURY|Twelve peers
+JUST|Desserts kind
+KALE|Superfood leaf
+KARMA|What goes around
+KAYAK|Inuit craft
+KEEL|Hull spine
+KEEN|Mustard-like
+KETCHUP|Fry dip
+KETTLE|Whistler
+KEYHOLE|Peeper's view
+KIDNEY|Bean shape
+KILT|Tartan skirt
+KINDRED|Like-minded
+KINGDOM|Animal ___
+KISS|French one
+KITCHEN|Galley
+KITE|String flyer
+KITTEN|Yarn chaser
+KIWI|Fuzzy fruit
+KNACK|Green thumb
+KNEE|Leg hinge
+KNIFE|Butter spreader
+KNIT|Purl
+KNOCK|Opportunity's act
+KNOW|In the ___
+KOALA|Gum-leaf eater
+LABEL|Record company
+LACONIC|Spartan
+LADDER|Rung climb
+LADLE|Soup scoop
+LADY|Liberty, say
+LADYBUG|Spotted beetle
+LAGOON|Atoll pool
+LAKE|Swan's stage
+LAMB|Mary's pet
+LAMENT|Bagpipe tune
+LAMP|Lava type
+LAND|Touch down
+LANE|Bowler's alley
+LANTERN|Jack-o'-light
+LAPSE|Memory slip
+LAPTOP|Portable office
+LARGE|Living ___
+LASER|Light saber
+LATE|Fashionably so
+LATER|Alligator rhyme
+LATTE|Foam art
+LAUD|Sing the praises
+LAUGH|Hyena's sound
+LAUNDRY|Wash load
+LAVA|Magma, outside
+LAWN|Sprinkler spot
+LAYER|Cake level
+LAZY|Sunday-like
+LEADER|Pack head
+LEARN|Pick up
+LEASH|Dog's line
+LEAST|Last and ___
+LEAVE|Shore pass
+LEDGE|Window perch
+LEGEND|Map key
+LEMONS|Sour fruit
+LEMUR|Ring-tail
+LEND|An ear, say
+LENS|Spectacle part
+LEOPARD|Spot keeper
+LESS|Is more
+LESSON|Hard knock
+LETTUCE|Iceberg
+LIAR|Pinocchio
+LIBRARY|Book hall
+LIEGE|Vassal's boss
+LIEU|Stead
+LIFE|Board game
+LILAC|Purple bloom
+LILY|Frog pad
+LIMIT|Speed sign
+LINEN|Flax fabric
+LION|Pride member
+LITHE|Gymnast-like
+LIVE|Unscripted
+LIZARD|Scaly basker
+LLAMA|Andes spitter
+LOAD|Laundry unit
+LOAN|Library deal
+LOBSTER|Red clawer
+LOCAL|Pub
+LOCKET|Photo pendant
+LODGE|Moose meet hall
+LOFT|Top floor
+LOGIC|Spock's trait
+LOOK|Peepers' job
+LOOSE|Goose's state
+LORD|Manor master
+LORE|Folk wisdom
+LOSE|Shake off
+LOSS|Red column
+LOST|TV island show
+LOTUS|Yoga pose
+LOVE|Zero, in tennis
+LOVER|Romeo
+LOWER|Case kind
+LOYAL|Dog-like
+LUCID|Dream type
+LUCK|Four-leaf gift
+LUCKY|Clover-carrying
+LUNAR|Moony
+LUNCH|Midday bite
+LUNCHES|Brown bags
+LUNG|Breath bag
+LUNGE|Fencer's thrust
+LURE|Fly
+LUSTER|Pearl's glow
+LUTE|Minstrel's strings
+LYRIC|Song line
+MACHINE|Time ___
+MADE|To order
+MAGIC|Johnson of hoops
+MAGICAL|Fairy-tale
+MAGNET|Fridge art holder
+MAILBOX|Letter slot
+MAIM|Hobble for good
+MAIN|Course kind
+MAJOR|Big league
+MAKER|Meet your ___
+MALE|Lion's mane holder
+MALICE|Aforethought partner
+MALL|Shop hub
+MAMMOTH|Woolly giant
+MANE|Lion's mop
+MANGO|Tropical stone
+MANOR|Downton type
+MANTRA|Om
+MANY|Legion
+MAPLE|Leafs' emblem
+MARBLE|Statue stone
+MARBLES|Lost wits
+MARKET|Bull or bear spot
+MASK|Zorro's look
+MAST|Sail pole
+MATH|Numbers
+MAXIM|Poor Richard's line
+MAYOR|Key holder
+MAZE|Rat test
+MEADOW|Buttercup field
+MEAL|Happy one
+MEAT|Butcher's case
+MEDAL|Olympic prize
+MEDALS|Podium haul
+MEEK|Inheritors of earth
+MELON|Cantaloupe
+MELT|Grilled cheese
+MENU|App list
+MERCY|Have it on me
+MERIT|Badge reason
+MERMAID|Ariel
+MESS|Hall for troops
+MESSAGE|Bottle cargo
+METHANE|Swamp gas
+MICE|Clicker pair
+MIEN|Air
+MILD|Salsa level
+MILE|Four-minute goal
+MILK|Moo juice
+MIND|Over matter
+MINERAL|Crystal
+MINIVAN|Soccer-mom ride
+MINUS|Negative sign
+MINUTES|Meeting record
+MIRACLE|34th Street event
+MIRROR|Fairest asker
+MIRTH|Belly laughs
+MIST|Morning veil
+MITTEN|Thumb sock
+MITTENS|Kitten's lost pair
+MOAT|Castle ring
+MOCHA|Coffee-chocolate
+MODE|À la ___
+MODEL|Runway walker
+MOGUL|Ski bump
+MOMENT|Kodak one
+MONEY|Talks, they say
+MONKEY|Banana lover
+MONSOON|Rain season
+MONSTER|Truck kind
+MONTH|Moon's lap
+MOOD|Ring kind
+MOON|Cow jump target
+MOONLIT|Silvered
+MOOSE|Antlered giant
+MOOT|Academic
+MORAL|Fable's end
+MORE|Seconds
+MORNING|Coffee hour
+MOROSE|Eeyore-like
+MOSS|Rolling stone's lack
+MOST|Lion's share
+MOTH|Flame lover
+MOTHER|Ma
+MOTIF|Recurring note
+MOTOR|Mouth, nonstop
+MOVIE|Popcorn event
+MUCH|A lot
+MUDDY|Puddle-splashed
+MUFFIN|Top hat bake
+MULE|Stubborn hauler
+MURAL|Wall art
+MURK|Swamp water
+MUSE|Calliope, say
+MUSEUM|Exhibit hall
+MUSIC|Food of love
+MUSICAL|Show tunes
+MUSTARD|Colonel's color
+MYSTERY|Whodunit
+NACHO|Cheesy chip
+NADIR|All-time low
+NAIVE|Wide-eyed
+NAME|Tag on a lapel
+NAPE|Neck back
+NAPKIN|Bib
+NATURE|Mother of all
+NEAR|Warm, in a game
+NEAT|Straight up
+NECKTIE|Windsor knot
+NEED|Mother of invention
+NEON|Sign gas
+NEPHEW|Huey, to Donald
+NEST|Twig home
+NETWORK|Mingle
+NEVER|Land of Peter Pan
+NEWS|Evening broadcast
+NEXT|In line
+NICE|Riviera city
+NICHE|Market gap
+NIECES|Sibling's girls
+NIGHT|After hours
+NIMBLE|Jack-like
+NINE|Cloud number
+NOBLE|Gas kind
+NODE|Lymph spot
+NOISE|Static
+NOMAD|Bedouin
+NONE|Zip
+NOODLES|Ramen
+NOON|High twelve
+NORTH|Pole star's way
+NOSE|Sniffer
+NOSTRUM|Snake oil
+NOTHING|Much ado about
+NOVA|Star flare
+NOVICE|Greenhorn
+NUGGETS|Gold rush finds
+NUMBER|Ether
+OAKEN|Acorn-born
+OASIS|Mirage hope
+OATH|Scout's honor
+OATMEAL|Porridge
+OBEY|Simon says
+OBLONG|Stretched oval
+OBOE|Reed pipe
+OCEAN|Big blue
+OCEANS|Seven seas
+OCTET|Eight voices
+OCTOPUS|Eight arms
+ODDS|Bookie's figures
+ODOR|Skunk's gift
+OFFER|Godfather's kind
+OFTEN|Again and again
+OGLE|Make eyes at
+OKRA|Ladies' fingers
+OLIO|Mixed bag
+OLIVE|Martini garnish
+OMELET|Folded eggs
+OMEN|Black cat, say
+OMIT|Edit out
+ONCE|In a blue moon
+ONION|Tear maker
+ONLY|Lonely number
+ONTO|Wise to
+ONUS|Load to bear
+OPAL|October gem
+OPEN|Sesame's word
+OPERA|Fat lady's stage
+OPINION|Two cents
+OPTIC|Fiber type
+OPULENT|Gilded
+OPUS|Magnum ___
+ORACLE|Delphi seer
+ORAL|Exam type
+ORANGE|Peel fruit
+ORANGES|Navels
+ORATE|Soapbox talk
+ORBIT|Moon's path
+ORCA|Sea panda
+ORCHARD|Tree farm
+ORGANIC|Chemical-free
+ORZO|Rice impostor
+OSTRICH|Head-burier
+OTHER|Half kind
+OTTER|Raft holder
+OUST|Show the door
+OUTER|Space kind
+OVAL|Office shape
+OVEN|Bun warmer
+OVERT|In plain sight
+OWNER|Deed holder
+OXIDE|Zinc ___
+OXYGEN|Breath gas
+OYSTER|Pearl maker
+OZONE|Sky shield
+PACE|Car kind
+PADDLE|Ping-pong bat
+PAID|Stamped
+PAIL|Jack and Jill's load
+PAIN|French bread
+PAINT|Number kit
+PAINTER|Brush hand
+PAIR|Socks, say
+PAJAMAS|Bedtime suit
+PALATE|Gourmet's gift
+PALE|Ghostly
+PALL|Coffin cloth
+PANCAKE|Stack piece
+PANDA|Bamboo eater
+PANEL|Judges' table
+PAPER|Tiger kind
+PARADE|Float line
+PARAGON|Shining example
+PARCH|Bake dry
+PARE|Whittle
+PARENT|Because-I-said-so
+PARENTS|Folks
+PARODY|Weird Al art
+PARROT|Copycat bird
+PARSLEY|Plate decor
+PAST|Prologue, they say
+PASTA|Penne
+PATH|Garden walk
+PATIO|Deck
+PATTERN|Plaid
+PEACE|Dove's message
+PEACHES|Georgia fruit
+PEACOCK|Fan tail
+PEAK|Prime time
+PEANUT|Goober
+PEANUTS|Snoopy strip
+PEAR|Bartlett
+PEBBLE|Shore stone
+PECAN|Pie nut
+PEDAL|Soft piano part
+PEEL|Banana coat
+PELICAN|Pouch beak
+PENCIL|No. 2
+PENGUIN|Batman foe
+PENNY|Lincoln coin
+PENSIVE|Chin-on-fist
+PEPPER|Sneeze spice
+PERFECT|Ten
+PERIL|Pauline's plight
+PETAL|Bloom bit
+PHONE|Ringer
+PHONES|Cells
+PHOTO|Snap
+PIANO|Ivories
+PICKLE|Jam
+PICKLES|Gherkins
+PICNIC|Basket lunch
+PICTURE|Thousand words
+PIECE|Of cake
+PIER|Santa Monica sight
+PIGPEN|Messy room
+PILE|Laundry heap
+PILGRIM|Plymouth arrival
+PILLOW|Head rest
+PINK|Flamingo hue
+PIQUE|Snit
+PIRATE|Peg leg
+PITCHER|Mound man
+PITH|Orange fluff
+PIVOT|Hoops footwork
+PIZZA|Delivery box
+PLACID|Millpond-like
+PLAID|Lumberjack print
+PLAN|Game ___
+PLANET|Wanderer
+PLANETS|Solar eight
+PLASTIC|Card
+PLAYER|Piano kind
+PLAYPEN|Tot corral
+PLAZA|Town hub
+PLEA|Courtroom word
+PLENTY|Horn of ___
+PLOD|Slog
+PLUM|Prize
+PLUMBER|Mario's job
+PLUME|Smoke column
+PLUS|Math cross
+PLUSH|Velvety
+POCKET|Pool hole
+POCKETS|Jean slots
+POEM|Ode
+POET|Laureate
+POETRY|Slam stuff
+POINT|Index finger act
+POISE|Finishing school aim
+POISON|Hemlock
+POLAR|Ice cap
+POLKA|Dot
+POND|Duck pool
+PONY|Express rider
+POODLE|Show dog
+POOR|Richard's almanac
+POPCORN|Movie kernels
+PORCH|Stoop
+PORK|Barrel
+POSE|Strike one
+POSH|Spice Girl
+POSTER|Wall ad
+POSTMAN|Rings twice
+POTATO|Mr. Head
+POTHOLE|Tire's foe
+POUCH|Kangaroo pocket
+POUR|Cats and dogs
+POWER|Plant kind
+PRAY|Mantis's way
+PRETTY|Picture
+PRETZEL|Yoga pose shape
+PREY|Lion's lunch
+PRICE|Right one
+PRINCE|Frog's future
+PRISM|Pink Floyd cover
+PRIZE|Cracker Jack find
+PROBE|Rover
+PROBLEM|Houston has one
+PROJECT|Science-fair entry
+PROMISE|Crossed heart
+PROP|Stage item
+PROSE|Not verse
+PROUD|Puffed up
+PROXY|Stand-in
+PSALM|David's song
+PUDDLE|Splash zone
+PUFF|Magic Dragon
+PULL|Taffy act
+PUMA|Catamount
+PUMPKIN|Coach, once
+PUNY|Ninety-pound
+PURE|Driven snow
+PURPLE|Prince's rain
+PURR|Cat motor
+PURSE|Prize pot
+PUSH|Stroller verb
+PUZZLE|Sudoku
+PYRAMID|Giza tomb
+QUAIL|Cower
+QUAINT|Twee
+QUALM|Second thought
+QUARTZ|Watch crystal
+QUASI|Sort of
+QUAY|Tie-up spot
+QUELL|Put down
+QUEST|Grail hunt
+QUICKLY|On the double
+QUIET|Library rule
+QUIETLY|On tiptoe
+QUILT|Patchwork
+QUIRK|Tic
+QUIT|Bow out
+QUIZ|Pop test
+QUOTE|Bartlett's item
+RABBIT|Hat trick
+RACCOON|Masked bandit
+RACK|Torture frame
+RADAR|M*A*S*H clerk
+RADIO|Golden-age box
+RAFT|Huck's ride
+RAGE|All the ___
+RAID|Bug spray
+RAIN|Puddle maker
+RAINBOW|Leprechaun's arc
+RAISINS|Cookie dots
+RAKE|Leaf comb
+RAMP|Skate park slope
+RANCH|Spread
+RAPID|White-water
+RAPPORT|Chemistry
+RARE|Steak order
+RATTLE|Snake's tail
+RAVEL|Bolero man
+RAVEN|Nevermore bird
+RAVINE|Gully
+RAVIOLI|Stuffed squares
+REACH|Arm's length
+READ|Lip ___
+READING|First R
+READY|Set
+REAL|Deal
+REALM|Domain
+REAP|Sow's sequel
+REBUS|Sign-and-symbol game
+RECANT|Take back
+RECEIPT|Paper trail
+RECESS|Wall nook
+RECIPE|Grandma's card
+REED|Clarinet piece
+REEF|Coral wall
+REFEREE|Striped shirt
+REIN|Horse's steering
+RELAX|Frankie's advice
+RELISH|Hot dog topper
+RELY|Count
+REMEDY|Chicken soup
+REMIT|Pay up
+REMOTE|Clicker
+REPLY|RSVP
+RESCUE|Lifeguard's job
+RESIN|Violin bow rub
+RESOLVE|New Year's one
+REVEL|Merrymake
+REVERIE|Woolgathering
+RHINO|Horned tank
+RHYME|Moon-June
+RIBBON|Blue prize
+RICE|Sushi base
+RIDDLE|Sphinx's test
+RIDER|Ghost one
+RIDGE|Rooftop spine
+RIFE|Teeming
+RIOT|Hoot
+RISE|Dough's job
+RISK|Board game of war
+RIVERS|Nile and Rhine
+RIVET|Jeans stud
+ROAD|Abbey ___
+ROAM|Free-range
+ROAR|Lion's line
+ROBE|Judge's look
+ROBIN|Batman's sidekick
+ROBOT|Droid
+ROBOTS|Droids
+ROCKY|Balboa
+ROGUE|Elephant type
+ROOF|Fiddler's perch
+ROUTE|66, say
+ROYAL|Flush type
+RUBY|July gem
+RUDE|Elbows-out
+RUIN|Rome's remains
+RULERS|Monarchs
+RUNNING|Mascara's flaw
+RURAL|Farmland
+RUSE|Trojan horse
+RUST|Iron's blush
+RUSTIC|Log-cabin
+RUSTY|Out of practice
+SABLE|Mink's cousin
+SADDLE|Horse seat
+SAFARI|Game drive
+SAGA|Norse tale
+SAIL|Mast hanger
+SAILOR|Popeye
+SALAD|Caesar dish
+SALE|Yard event
+SALMON|Upstream swimmer
+SALSA|Ballroom heat
+SAME|Ditto
+SANDBOX|Toddler beach
+SAPLING|Young oak
+SARDINE|Canned fish
+SAUCE|Cheek
+SAUCER|UFO
+SAUNA|Sweat box
+SAUSAGE|Edible links
+SAVANT|Rain Man type
+SAVE|Goalie's job
+SAVOR|Linger over
+SCAN|Barcode act
+SCAR|Old wound
+SCARF|Wolf down
+SCIENCE|Lab work
+SCION|Dynasty heir
+SCOFF|Pooh-pooh
+SCOOTER|Kick ride
+SCOUT|Eagle rank
+SCREEN|Mesh door
+SEAFOOD|Catch of the day
+SEAGULL|Chip thief
+SEAM|Stitch line
+SEAT|Electoral prize
+SEAWEED|Nori
+SECONDS|Buffet return
+SECRET|Pinky-sworn
+SEDAN|Four-door
+SEEK|Hide-and-___
+SEEM|Look
+SEER|Crystal gazer
+SEESAW|Playground lever
+SELF|Mirror subject
+SELL|Hawk
+SEND|Hit the button
+SERENE|Zen
+SERUM|Truth ___
+SEVEN|Seas count
+SHADOW|Groundhog's fear
+SHADOWS|Silhouettes
+SHAMPOO|Rinse-repeat
+SHAPE|Fitness
+SHARE|Stock unit
+SHEEN|Patent shine
+SHEEP|Counting aid
+SHELF|Continental edge
+SHELTER|Bus stop
+SHIRT|Tee
+SHOCK|Static zap
+SHOE|Loafer
+SHOP|Talk ___
+SHORE|Prop up
+SHOUT|Isley Brothers hit
+SHOVEL|Spade
+SHOW|Tell's partner
+SHOWER|Spray
+SHUN|Ice out
+SHUT|Eye time
+SICK|Rad
+SIEGE|Troy's decade
+SIGHT|Sore one
+SIGN|Zodiac one
+SILK|Worm's work
+SILO|Missile home
+SILVER|Lone Ranger's horse
+SINEW|Muscle tie
+SING|Rat out
+SINGER|Sewing machine brand
+SINGING|Karaoke
+SISTER|Sis
+SIZE|Shoe number
+SKATING|Figure eights
+SKETCH|Doodle
+SKIFF|Dinghy
+SKIING|Slalom
+SKILL|Craft
+SKIN|Drum head
+SKIP|Stone-on-water move
+SKIT|SNL bit
+SKULL|Crossbones partner
+SKUNK|Stinker
+SLAM|Poetry event
+SLED|Rosebud
+SLEEP|Shut-eye
+SLEEPY|Drowsy dwarf
+SLEEVE|Arm tube
+SLICE|Pie wedge
+SLIDE|Second base move
+SLIM|Fat chance
+SLIPPER|Cinderella's loss
+SLOW|Snail-paced
+SLOWLY|At a crawl
+SMALL|Talk kind
+SMART|Sting
+SMELL|Nose job
+SMILE|Cheese!
+SMOKE|Fire's sign
+SMOOTH|Operator type
+SMUG|Cat with cream
+SNACK|Nosh
+SNAIL|Slow mail
+SNAKE|Charmer's pet
+SNAP|Croc's jaws
+SNEAK|Peek kind
+SNEAKER|Trainer
+SNEEZE|Pepper's effect
+SNORKEL|Breathing tube
+SNOW|TV static
+SNOWMAN|Frosty
+SNUB|Leave on read
+SOAP|Daytime drama
+SOAR|Glide high
+SOCCER|Football
+SODA|Pop
+SODIUM|Salt half
+SOFA|Potato's place
+SOFT|Serve kind
+SOIL|Earthworm home
+SOLACE|Tea and sympathy
+SOLAR|Sunny
+SOLDIER|Grunt
+SOLEMN|Grave
+SOLID|Rock-steady
+SOLVE|Crack
+SOMEONE|Anybody
+SONAR|Sub's ears
+SONG|Ditty
+SOON|Any minute
+SORT|Type
+SOUL|Seoul's sound-alike
+SOUP|Alphabet bowl
+SOUR|Lemony
+SOUTH|Down under
+SPACE|Keyboard bar
+SPAR|Shadowbox
+SPARK|Plug kind
+SPARROW|Little brown bird
+SPATULA|Flipper
+SPEAK|Fido's trick
+SPECIAL|Today's dish
+SPEED|Keanu film
+SPEND|Splurge
+SPICE|Girls' group
+SPIDER|Web spinner
+SPIEL|Salesman's patter
+SPINACH|Popeye's power
+SPIRE|Steeple
+SPONGE|Moocher
+SPOON|Cuddle
+SPOONS|Cutlery
+SPORT|Good one
+SPRAY|Mist
+SPRITE|Lemon-lime pop
+SPUD|Tater
+SPUR|Cowboy heel
+SQUASH|Racquet sport
+SQUAT|Diddly
+SQUID|Ink squirter
+STABLE|Mr. Ed's home
+STACK|Library shelves
+STADIUM|Arena
+STAFF|Wizard's stick
+STAID|Prim
+STAIR|Way up
+STAMPS|Philatelist's love
+STANZA|Verse block
+STAPLER|Office chomper
+STATION|Gas ___
+STAY|Rover's command
+STEAM|Head of it
+STEEL|Girder metal
+STEP|Two-___
+STEW|Fret
+STICKER|Decal
+STING|Police singer
+STOA|Greek porch
+STOIC|Poker-faced
+STOOL|Bar perch
+STOP|Bus shelter
+STORE|Squirrel away
+STORK|Baby courier
+STOVE|Pot's perch
+STOW|Overhead bin act
+STREAM|Netflix verb
+STREET|Sesame ___
+STRING|Yo-yo tail
+STRONG|Atlas-like
+STUDENT|Pupil
+SUAVE|Bond-like
+SUBTLE|Faint
+SUGAR|Rush kind
+SUMMER|Beach season
+SUMMIT|Everest top
+SUNBURN|Beach blush
+SUNDIAL|Noon shadow
+SUNLIT|Bright
+SUNNY|Side up
+SUNRISE|Daybreak
+SUNSET|Ride-off time
+SURE|You bet
+SURF|Channel-hop
+SURFING|Wave riding
+SUSHI|Raw roll
+SWAMI|Guru
+SWAN|Ugly duckling, later
+SWAY|Palm tree move
+SWEATER|Jumper
+SWEET|Sixteen kind
+SWIFT|Taylor
+SWIM|Lap time
+SWORD|Excalibur
+TABLET|Stone slate
+TABOO|Party word game
+TACIT|Implied
+TACO|Shell dinner
+TACT|Kid gloves
+TADPOLE|Pollywog
+TAILOR|Hemmer
+TAKE|Movie shot
+TALE|Fairy one
+TALK|Cheap, they say
+TALL|Tale kind
+TALON|Hawk claw
+TAME|Lion trainer's goal
+TANGENT|Side track
+TANGLE|Mop of hair
+TAPIR|Snouted grazer
+TASK|Chore
+TAUNT|Nyah-nyah
+TAUT|Drum-tight
+TEACH|Classroom job
+TEACHER|Apple getter
+TEACUP|Saucer partner
+TEAM|Huddle
+TEAPOT|Short and stout
+TEETH|Pearly whites
+TELL|Show-and-___
+TEMP|Fever reading
+TEMPEST|Teapot storm
+TEND|Bar job
+TENET|Creed point
+TENNIS|Love game
+TENT|Pup shelter
+TENUOUS|Thin-threaded
+TEPID|Halfhearted
+TEST|Litmus one
+TEXT|SMS
+THAN|Rather ___
+THAT|Yon
+THEM|Those folks
+THEME|Park kind
+THEN|Way back
+THEY|Folks at large
+THICK|As thieves
+THIN|Ice warning
+THING|Addams hand
+THINK|Rodin's subject
+THIRSTY|Parched
+THORN|Rose's guard
+THREE|Crowd
+THRONE|Iron one
+THUMB|Hitchhiker's sign
+THUNDER|Sky drum
+THWART|Stymie
+THYME|Herb sprig
+TIARA|Bride's sparkle
+TICKET|Stub
+TIDE|Moon's pull
+TIDY|Kondo'd
+TIGER|Tony of cereal
+TILE|Scrabble piece
+TIMER|Egg clock
+TINY|Tim of Dickens
+TIRADE|Harangue
+TIRED|Bushed
+TOAD|Warty hopper
+TOASTER|Pop-up maker
+TODAY|Here and now
+TODDLER|Tot
+TOFFEE|Brittle sweet
+TOGA|Senate sheet
+TOILET|Throne
+TOLD|You so
+TOMATO|Ketchup base
+TOMB|Pharaoh's rest
+TOME|Doorstop
+TONE|Ring kind
+TONGUE|Taster
+TONIC|Pick-me-up
+TONIGHT|Tomorrow's eve
+TOOL|Pawn
+TOPAZ|Hitchcock title gem
+TOPIC|Talk point
+TORE|Sped
+TORNADO|Dorothy's ride
+TOTAL|Write off
+TOTE|Lug
+TOTEM|Spirit symbol
+TOUCH|Midas gift
+TOUR|Guide's job
+TOWEL|Throw-in item
+TOWELS|Bath sheets
+TOWN|Crier's place
+TRACTOR|Farm hauler
+TRADE|Wind kind
+TRAFFIC|Gridlock
+TRAIL|Mix kind
+TRAVEL|Basketball foul
+TREAT|Trick-or-___
+TREE|Family chart
+TREETOP|Canopy
+TREND|Hashtag rise
+TRIAL|Twelve Angry Men
+TRIBE|Survivor team
+TRICK|Hat ___
+TRIM|Christmas tree job
+TRIO|Stooges count
+TROPHY|Cup
+TROUT|Rainbow swimmer
+TRUCK|Rig
+TRUE|Blue kind
+TRUMPET|Herald's horn
+TRUNK|Car's back
+TRUST|Fall kind
+TRUTH|Nothing but
+TRYST|Lovers' meeting
+TSAR|Romanov ruler
+TUBA|Brass bass
+TULIP|Dutch bloom
+TUNA|Melt filling
+TUNE|Fine-___
+TUNNEL|Mole road
+TURN|Signal kind
+TURTLE|Shell dweller
+TUSK|Walrus tooth
+TUTOR|Coach
+TUXEDO|Penguin suit
+TWELVE|Jury count
+TWIN|Mirror sibling
+TWISTER|Funnel cloud
+UKULELE|Island strummer
+ULCER|Stomach sore
+UMBRA|Full shadow
+UNAU|Tree-hanger
+UNCLE|Say it to give up
+UNCLES|Parents' brothers
+UNDER|Wraps location
+UNDO|Unbutton
+UNEASE|Butterflies
+UNICORN|Horned myth
+UNIFY|Merge
+UNION|Jack kind
+UNIQUE|One-off
+UNIT|Module
+UNTIL|Up to
+UNTO|To, of old
+UPON|Once ___
+UPPER|Stimulant
+URBAN|Citified
+URGE|Itch
+USED|Car lot word
+USER|Login holder
+USUAL|Same old
+USURP|Grab the throne
+UTTER|Say
+VAIN|Mirror-gazing
+VALE|Dale
+VALLEY|Low land
+VALOR|Medal courage
+VALUE|Meal deal
+VAMPIRE|Night biter
+VAPOR|Contrail
+VASE|Ming pot
+VAST|Boundless
+VEER|Swerve off
+VELLUM|Calfskin page
+VELVET|Plush
+VENOM|Bite poison
+VERB|Doing word
+VERBOSE|Long-winded
+VERITY|Gospel
+VERVE|Vim
+VERY|Truly
+VEST|Cardigan cousin
+VETO|Pen-stroke no
+VIAL|Ampule
+VIDEO|Streamed thing
+VIEW|Room with one
+VIGIL|Candle wait
+VILE|Foul
+VILLAGE|Child raiser
+VINE|Climber
+VIOLA|Bigger fiddle
+VIOLIN|Fiddle
+VIPER|Adder
+VISA|Entry stamp
+VISIT|Drop by
+VISOR|Cap brim
+VITAL|Signs kind
+VITAMIN|Pill letter
+VIXEN|Lady fox
+VOGUE|Madonna hit
+VOICE|Say
+VOID|Null
+VOLCANO|Fire mountain
+VOTE|Show of hands
+WADE|Paddle
+WAFFLE|Hedge
+WAFFLES|Grid cakes
+WAGE|Hourly rate
+WAGON|Covered ride
+WAIT|Hang on
+WALK|Dog's request
+WALL|Great Chinese one
+WALLET|Billfold
+WALNUT|Brain nut
+WALRUS|Beatles' "I Am" one
+WALTZ|Three-step
+WAND|Spell stick
+WANDER|Not all are lost
+WANE|Ebb
+WANT|Ad kind
+WARM|Close, in a game
+WARN|Tip off
+WARRIOR|Weekend one
+WARY|Leery
+WASP|Yellowjacket
+WATER|Adam's ale
+WAYWARD|Errant
+WEAK|Tea type
+WEAN|Break off
+WEAR|Sport
+WEASEL|Pop goes the ___
+WEATHER|Forecast
+WEDDING|I do's
+WEED|Dandelion
+WEEK|Payday span
+WEEKEND|Sat-Sun
+WEEP|Willow's way
+WEIGH|Scale it
+WEIGHT|Scale reading
+WEST|Go young man
+WHALE|Moby Dick
+WHAT|Huh?
+WHEAT|Shredded cereal
+WHEN|Say ___!
+WHIM|Impulse
+WHISKER|Hair's breadth
+WHISTLE|Ref's tool
+WHITE|Snowy
+WHOLE|Nine yards
+WIDE|Barn-door
+WIDOW|Black ___ spider
+WIFE|Spouse, sometimes
+WILD|Feral
+WILL|Last testament
+WILT|Thirsty plant's sag
+WILY|Coyote's adjective
+WINDOW|Shop display
+WINE|Merlot
+WINK|Eye flick
+WINNER|Chicken dinner one
+WINTER|Snow season
+WIPE|Windshield job
+WISE|Three men's word
+WISH|Star's job
+WITCH|Wicked West one
+WITNESS|Onlooker
+WIZARD|Oz man
+WOLF|Pack hunter
+WOMAN|Rib-made, in Genesis
+WOOD|Lumber
+WOOL|Over the eyes
+WORD|Promise
+WORK|Nine-to-five
+WORLD|Globe
+WORRY|Beads
+WOUND|Time heals it
+WRATH|Khan's, in a film
+WREN|Tiny brown bird
+WRIST|Watch spot
+WRITE|Ink it
+WRITING|Pen work
+YACHT|Rich man's boat
+YAWN|Bore's reply
+YEAR|Orbit
+YEARN|Pine
+YELL|Holler
+YODEL|Alpine call
+YOGA|Mat class
+YOGURT|Cultured cup
+YOKE|Ox harness
+YOLK|Yellow center
+YOUNG|Green
+YOUTH|Salad days
+ZANY|Madcap
+ZEAL|Fire
+ZEALOT|True believer
+ZEALOUS|Gung-ho
+ZEBRA|Ref's nickname
+ZENITH|High noon
+ZESTY|Tangy
+ZINC|Sunblock metal
+ZIPPER|Fly
+ZONE|In the ___
+ZOOM|Video call
+PUPPET|Sock show
+ABSOLUTE|No strings
+ACCIDENT|Oops
+ACTIVITY|Bustle
+ADDITION|Annex
+AIRPLANE|Jumbo
+ALPHABET|Soup letters
+ANYTHING|Name your price
+APPROACH|Tack
+ARGUMENT|Spat
+BACKPACK|Hiker's load
+BASEBALL|Diamond game
+BATHROOM|Loo
+BIRTHDAY|Candle day
+BLANKETS|Bed layers
+BOOKCASE|Shelf tower
+BUILDING|Edifice
+BUSINESS|Monkey ___
+CALENDAR|Year grid
+CAMPFIRE|S'mores glow
+CARDINAL|Red bird
+CHAMPION|Belt holder
+CHILDREN|Small fry
+COLONIAL|Settler-era
+COMPLETE|Done and dusted
+COMPUTER|Mouse owner
+CONCRETE|Sidewalk stuff
+CONTRACT|Fine print
+COURTESY|Please and thank you
+CREATIVE|Out-of-the-box
+CRITICAL|Mass kind
+CUCUMBER|Cool customer
+DAUGHTER|Girl child
+DAYLIGHT|Savings time kind
+DECISION|Split one
+DELIGHTS|Turkish ___
+DESIGNER|Label maker
+DIAMONDS|Girl's best friends
+DINOSAUR|Fossil king
+DISCOVER|Columbus act
+DISTANCE|Long-___ call
+DOORBELL|Ding-dong
+DOWNHILL|Slipping
+ELEPHANT|Room's ignored one
+ENVELOPE|Letter jacket
+EQUATION|Math balance
+EVERYONE|One and all
+EXERCISE|Reps
+FAMILIAR|Spirit's pet
+FESTIVAL|Woodstock
+FIREWORK|Sky burst
+FLAMINGO|Pink stilt-walker
+FOOTBALL|Gridiron
+FOREHEAD|Brow's home
+FRACTION|Pizza slice share
+FRIENDLY|Fire kind
+GARDENER|Green thumb
+GENEROUS|Big-hearted
+GIGANTIC|Colossal
+GRATEFUL|Dead band
+HANDBALL|Wall game
+HAPPENED|Came to pass
+HARDWARE|Nuts and bolts
+HEADACHE|Aspirin target
+HEADLINE|Front-page top
+HIGHLAND|Fling kind
+HOMEWORK|Dog's dinner
+HOSPITAL|ER home
+HUMIDITY|Muggy air
+HUNDREDS|Benjamins
+ICEBERGS|Floating peaks
+INCREASE|Hike
+INDIRECT|Oblique
+INSTANCE|Case
+INTEREST|Bank's cut
+INVENTOR|Edison
+JEALOUSY|Green eye
+JOURNALS|Logbooks
+KANGAROO|Joey's mom
+KEYBOARD|QWERTY
+KINDNESS|Random act
+LANGUAGE|Body ___
+LAUGHTER|Best medicine
+LAVENDER|Lilac hue
+LEMONADE|Life's lemon payoff
+LISTENER|Ear
+MAGAZINE|Glossy
+MAGNETIC|Drawing
+MARATHON|Long haul
+MATERIAL|Girl kind
+MEMORIAL|Day in May
+MIDNIGHT|Witching hour
+MOMENTUM|Snowball's gain
+MOUNTAIN|Everest
+MUSHROOM|Cloud kind
+NOTEBOOK|Spiral-bound
+NUMEROUS|Umpteen
+OBSTACLE|Course kind
+OCCASION|Rise to it
+ORDINARY|Run-of-the-mill
+ORIGINAL|Sin type
+OUTDOORS|Open air
+OVERCOAT|Greatcoat
+PAINTING|Canvas
+PANCAKES|Stack
+PARADISE|Eden
+PARALLEL|Never meeting
+PASSPORT|Border pass
+PATIENCE|Virtue
+PEACEFUL|Easy, in a song
+PLATFORM|Shoe heel type
+PLEASANT|Balmy
+POSITIVE|Test result, sometimes
+POSSIBLE|Mission Im-
+PRACTICE|Makes perfect
+PRESENCE|Aura
+PRINCESS|Tiara wearer
+PROBABLY|Odds-on
+PROBLEMS|99 of them
+PROPERTY|Monopoly deed
+PROSPECT|Gold-rush act
+PROVINCE|Quebec, for one
+PUMPKINS|Patch crop
+QUESTION|Twenty of them
+RAINBOWS|Sky arcs
+RAINCOAT|Mac
+REACTION|Knee-jerk
+RECORDER|School flute
+RELATIVE|Einstein theory
+REMEMBER|The Alamo, say
+RESEARCH|Legwork
+RHYTHMIC|Drumming
+SANDWICH|Earl's lunch
+SCHEDULE|Train board
+SCISSORS|Rock-paper beater
+SEASHELL|Ocean's ear
+SENTENCE|Judge's words
+SHOULDER|Cold one
+SIDEWALK|Chalk canvas
+SKELETON|Closet secret
+SNOWBALL|Grow fast
+SOLUTION|Saline, say
+SOMEBODY|Anyone
+SPARKLER|Fizzing wand
+SPECTRUM|Rainbow range
+SQUIRREL|Nut hoarder
+STRAIGHT|Poker hand
+STRENGTH|Samson's hair
+STRUGGLE|Uphill battle
+SUNSHINE|Rays
+SURPRISE|Ambush party
+SWIMMING|Laps
+TAPESTRY|Woven wall
+TEASPOON|Stirrer
+TERRIBLE|Ivan's title
+THOUSAND|Island dressing
+THRILLER|Page-turner
+TOGETHER|As one
+TOMORROW|Never comes
+TORTOISE|Hare's rival
+TREASURE|X marks it
+TROPICAL|Balmy
+UMBRELLA|Brolly
+UNIVERSE|Everything
+VACATION|Getaway
+VERTICAL|Blinds kind
+VILLAGER|Local
+VOLCANIC|Hot-tempered
+WATCHDOG|Guardian
+WEEKENDS|Days off
+WHATEVER|Meh
+WILDLIFE|Fauna
+WOODLAND|Hundred-acre place
+WORKSHOP|Santa's place
+YOURSELF|Do-it-___
+ZUCCHINI|Courgette
+ALLEGORY|Animal Farm, say
+AMBROSIA|Olympian snack
+CADENCES|Beats
+CAJOLERY|Sweet talk
+DILIGENT|Beaver-like
+EPHEMERA|Fleeting things
+GARRISON|Fort troops
+INDOLENT|Couch-bound
+LUMINOUS|Watch-dial bright
+OBDURATE|Mulish
+PALISADE|Stake fence
+QUIXOTIC|Windmill-tilting
+REVERENT|Awed
+SERENITY|Prayer's aim
+SOLITUDE|Alone time
+SYCAMORE|Plane tree
+TENACITY|Bulldog trait
+TRANQUIL|Still
+VERBATIM|To the letter
+VIGILANT|Hawk-eyed
+WANDERER|Rover`;
