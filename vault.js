@@ -5,6 +5,7 @@
    touch screens; orange ⌫; GUESS / WORD in capitals; every New Game shows the word that ended; tricky hints at levels 8–10.
    v08c (CD-30, CD-32): button groups (gold coin buttons | gray round game buttons); New Game and Give up ask first; coin buttons
    take two taps; finished words go into the shared Game History; levels 8–10 get SHORT hints (one to three words).
+   v08d (CD-34: 1.1–1.2): coin buttons are blue, each icon on a white circle.
    v07f (CD-25): no embossed text; played letters are black on green, yellow or red; typed (tentative) letters turn their key
    black on white; empty squares are dark glass "candy drops" in the slots of a glassy grid panel; a large > marks the
    active row, so the grid sits centered between it and the ✕; "Blitz · 30s per guess".
@@ -718,7 +719,7 @@
         <li><b>Timer:</b> the main game's choices. "Per GUESS" gives each guess its own clock (when it runs out, that guess is used up); "per WORD" times the whole round. The clock stops while a window is open or the app is hidden.</li>
         <li><b>Scoring</b> (only when you solve it): <b>Classic</b> scores the word's letter values (as in the main game) plus 2 per letter; <b>Flat</b> scores 2 per letter. Both add <b>+5</b> for every guess you didn't need and, in timed rounds, a time bonus (1 point per 5 seconds left, up to 30). (Hint and Reveal cost coins, not points.)</li>
         <li><b>⚙ Settings</b> (in the header, or tap the line above the grid) change the game at any time; changes apply from the next word.</li>
-        <li>The buttons come in two groups: the <b>gold coin buttons</b> (🔎 Hint, 💡 Reveal) on the left, and the <b>gray round game buttons</b> (🆕 New Game, 🏳️ Give up) on the right. A coin button takes <b>two taps</b>: the first turns it gold and shows "Tap again · 🪙N" for 3 seconds; the second tap buys. (Seeing a Hint again is free and needs one tap.)</li>
+        <li>The buttons come in two groups: the <b>blue coin buttons</b> (🔎 Hint, 💡 Reveal) on the left, and the <b>gray round game buttons</b> (🆕 New Game, 🏳️ Give up) on the right. A coin button takes <b>two taps</b>: the first lights it up and shows "Tap again · 🪙N" for 3 seconds; the second tap buys. (Seeing a Hint again is free and needs one tap.)</li>
         <li><b>🆕 New Game</b> starts a fresh word. <b>🏳️ Give up</b> shows the word. Both ask first while the word is unfinished ("Keep playing" is the main button). Either one, once you've made a guess or used a Hint or Reveal, counts that word as not solved and breaks your streak. After every New Game, the word that just ended is shown over the new grid until you click or tap anywhere; the new word's clock starts then.</li>
         <li>Your stats (played, solved %, streaks, best time, guesses needed) are kept on this device. Every finished word also goes into <b>📜 Game History</b> on the menu, where you can reopen its full result.</li>
         <li><b>Guesses needed</b> (on the result window): one row for each number of guesses, from 1 up, plus ✗ for words not solved. The bar and its number show how many words you've solved in that many guesses, so your longest bar is your usual result. The highlighted bar is the word just played. On a computer, point at a row to see it in words.</li>

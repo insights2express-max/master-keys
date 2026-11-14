@@ -1,4 +1,4 @@
-/* Clue Duel — game engine (v08b)
+/* Clue Duel — game engine (v08d)
    Puzzle generator (arrow-word grid), tile bag, scoring modes, bonus squares and the computer opponent.
    No DOM code here: app.js handles everything the player sees. */
 'use strict';
@@ -6,7 +6,7 @@
   // ---------- Letter values (rarer letters are worth more) ----------
   const VAL = { A: 1, B: 3, C: 3, D: 2, E: 1, F: 4, G: 2, H: 4, I: 1, J: 8, K: 5, L: 1, M: 3, N: 1, O: 1, P: 3, Q: 10, R: 1, S: 1, T: 1, U: 1, V: 4, W: 4, X: 8, Y: 4, Z: 10 };
   const SIZES = { S: [5, 6], M: [6, 7], L: [7, 11] }; // [columns, rows] of the playable area
-  const RULES = { wrongPenalty: 2, hintCost: 3, fullHandBonus: 10, perLetterWordBonus: 2, plusCell: 5, plus2Cell: 2, passLimit: 3, timeCost: 5, timeAdd: 30000 };
+  const RULES = { wrongPenalty: 2, hintCost: 3, fullHandBonus: 10, perLetterWordBonus: 2, plusCell: 5, plus2Cell: 2, passLimit: 3, timeCost: 5, timeAdd: 30000, checkBase: 5, checkPerWrong: 5 };
 
   // ---------- Scoring modes (JM, CD-2: 2.1–2.5) ----------
   // tiles: what a placed tile scores · word: what finishing a word scores
@@ -22,7 +22,7 @@
     finisher: { name: 'Word Finisher', tiles: 'none', word: 'sq', plus: RULES.plusCell, full: RULES.fullHandBonus,
       desc: 'Tiles score nothing on their own. Finish a word to score its length × length (4 letters = 16).' },
     combo: { name: 'Combo Chain', tiles: 'chain', word: 'none', plus: RULES.plusCell, full: RULES.fullHandBonus,
-      desc: 'Each correct tile in a turn is worth 1 more than the last: 1, 2, 3… A wrong cell restarts the chain.' },
+      desc: 'Each correct tile in a turn is worth 1 more than the last: 1, 2, 3… A wrong tile doesn\'t break the chain; it only costs its penalty.' },
     bounty: { name: 'Bounty', tiles: 'bounty', word: 'sum', plus: RULES.plusCell, full: RULES.fullHandBonus,
       desc: 'Letter values come from this grid: a letter that appears once is worth 6, a common one 1. Finishing a word scores its letters again, plus 2 per letter.' }
   };
@@ -644,6 +644,18 @@
     return { letters: raw, raw, base, nx2, x2, np5, p5, np2, p2, words, wordPts, full, fullPts, total: base + x2 + p5 + p2 + fullPts };
   }
 
+  // v08d (JM CD-34: 4.1c): tiles are only penciled in during a turn. At DONE (or when the clock runs out) each one
+  // is checked: tiles in their right cells lock in and score; wrong ones go back to the hand, and each costs the
+  // Wrong Cell penalty. Combo Chain counts the right tiles 1, 2, 3… (wrong ones no longer restart it).
+  function judge(state, player, placements) {
+    const right = [], wrong = [];
+    for (const p of placements) (fits(state, p.cell, p.ch) ? right : wrong).push(p);
+    let pen = 0;
+    for (const p of wrong) { const v = penaltyOf(state, 'wrong', p.ch); pen += v; penalize(state, player, v, 'wrong', p.ch); }
+    const sc = right.length ? commit(state, player, right.map(p => ({ cell: p.cell, tileId: p.tileId, ch: p.ch }))) : null;
+    return { right, wrong, pen, sc };
+  }
+
   function commit(state, player, placements) {
     const sc = scoreMove(state, placements);
     const ids = new Set(placements.map(p => p.tileId));
@@ -813,11 +825,17 @@
     const behind = state.scores[me] - handVal(me) <= state.scores[opp] - handVal(opp);
     const mustPlay = state.passes >= RULES.passLimit - 1 && behind;
 
+    // v08d: a careless opponent pencils one tile into a wrong cell; it bounces at its DONE, like yours would
+    let slip = null;
     if (hand.length && rng() < P.wrong) {
       const t = hand[Math.floor(rng() * hand.length)];
       const wrongCells = [];
       for (let i = 0; i < pz.N; i++) if (pz.cells[i].k === 'l' && !board[i] && pz.cells[i].s !== t.ch) wrongCells.push(i);
-      if (wrongCells.length) plan.push({ wrong: true, cell: wrongCells[Math.floor(rng() * wrongCells.length)], tileId: t.id, ch: t.ch });
+      if (wrongCells.length) {
+        slip = { wrong: true, cell: wrongCells[Math.floor(rng() * wrongCells.length)], tileId: t.id, ch: t.ch };
+        hand = hand.filter(x => x !== t);
+        board[slip.cell] = t.ch; // that cell is taken for the rest of this plan
+      }
     }
     let placed = 0, runBase = 0;
     for (;;) {
@@ -862,10 +880,11 @@
       placed++;
       runBase += best.base;
     }
+    if (slip) plan.splice(Math.floor(rng() * (plan.length + 1)), 0, slip);
     return plan;
   }
 
-  global.Engine = { VAL, SIZES, RULES, MODES, lexicon, generate, newGame, scoreMove, commit, penalize, autoPlace, refill, swapHand, swapSome, endTurn, finish, hint, fits, aiPlan, aiParams, wordValue, boardFull,
+  global.Engine = { VAL, SIZES, RULES, MODES, lexicon, generate, newGame, scoreMove, commit, judge, penalize, autoPlace, refill, swapHand, swapSome, endTurn, finish, hint, fits, aiPlan, aiParams, wordValue, boardFull,
     modeOf, showsValues, tileVal, letterPts, penaltyOf, timerOf, bonusAt, bonusUsed, rollBonuses, pics: picIndex, wordplay: wordplayIndex, PIC_MIN, oneClue
   };
 })(typeof self !== 'undefined' ? self : this);

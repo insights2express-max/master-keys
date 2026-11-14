@@ -9,7 +9,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Clue Duel">
   <meta name="description" content="A head-to-head crossword tile game you can play offline.">
-  <title>Clue Duel · v08c</title>
+  <title>Clue Duel · v08d</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="icon" href="icons/icon-192.png" type="image/png" sizes="192x192">
@@ -23,7 +23,7 @@
       <header class="brand">
         <img class="logo" src="icons/icon.svg" alt="" width="64" height="64">
         <div>
-          <h1>Clue Duel <span class="vpill" id="verPill">v08c</span></h1>
+          <h1>Clue Duel <span class="vpill" id="verPill">v08d</span></h1>
           <p class="tag">Place your letters. Finish the words. Beat your rival.</p>
         </div>
       </header>
@@ -174,7 +174,7 @@
         <div class="vt-info" id="vtInfo"></div>
         <div class="vt-boardwrap" id="vtWrap"><div class="vt-board" id="vtBoard"></div><div class="vt-ov" id="vtOv" hidden></div></div>
         <div class="vt-acts">
-          <!-- v08c (JM CD-30: 4.2a): two groups: gold coin buttons (two taps to buy) | gray round game controls (ask first) -->
+          <!-- v08c (JM CD-30: 4.2a): two groups: blue coin buttons (two taps to buy) | gray round game controls (ask first) -->
           <div class="vt-grp coins">
             <button class="btn act coinbtn" id="vtHint" type="button" title="Show a clue for the word (5 coins)"><b>🔎</b><span>Hint 🪙5</span></button>
             <button class="btn act coinbtn" id="vtReveal" type="button"><b>💡</b><span>Reveal 🪙8</span></button>
@@ -248,13 +248,15 @@
     <div class="dock" id="dock">
       <div class="rackbar"><div id="rack" class="rack"></div></div>
       <div class="actions" id="actions">
+        <!-- v08d (JM CD-34: 2.1–2.2, 4.1c): the blue coin buttons sit together, first (on phones: the top row of ⋯ More) -->
         <div class="more-pop" id="morePop">
           <button class="btn act coinbtn" id="hintBtn" type="button"><b>💡</b><span id="hintTxt">Hint 🪙3</span></button>
           <button class="btn act coinbtn" id="placeBtn" type="button" title="Place one of your tiles in a cell where it fits. Costs that tile's value in coins."><b>🎯</b><span>Place 🪙?</span></button>
+          <button class="btn act coinbtn" id="checkBtn" type="button" title="Check the tiles you've penciled in this turn. Costs 5 coins, plus 5 for each wrong tile; wrong tiles go back to your hand with no point penalty."><b>☑️</b><span>Check 🪙5+</span></button>
+          <button class="btn act coinbtn" id="timeBtn" type="button" title="Add 30 seconds to your clock. Costs 5 coins each time." hidden><b>⏱️</b><span>+30s 🪙5</span></button>
           <button class="btn act" id="swapBtn" type="button"><b>🔄</b><span>Swap</span></button>
           <button class="btn act" id="mixBtn" type="button"><b>🔀</b><span>Shuffle</span></button>
           <button class="btn act" id="pauseBtn" type="button" title="Pause (P)"><b id="pauseIco">⏸️</b><span class="timer" id="timerTxt">∞</span></button>
-          <button class="btn act coinbtn" id="timeBtn" type="button" title="Add 30 seconds to your clock. Costs 5 coins each time." hidden><b>⏱️</b><span>+30s 🪙5</span></button>
         </div>
         <button class="btn primary act" id="doneBtn" type="button"><b>✓</b><span id="doneTxt">Pass</span></button>
         <button class="btn act" id="moreBtn" type="button" aria-expanded="false" aria-controls="morePop" title="More buttons"><b>⋯</b><span>More</span></button>

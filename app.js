@@ -1,7 +1,7 @@
-/* Clue Duel — user interface (v08c) */
+/* Clue Duel — user interface (v08d) */
 'use strict';
 (() => {
-  const APP_VER = 'v08c'; // Project CP: shown as a pill beside the title and in the browser tab
+  const APP_VER = 'v08d'; // Project CP: shown as a pill beside the title and in the browser tab
   const E = window.Engine;
   const $ = (s, el = document) => el.querySelector(s);
   const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -68,7 +68,7 @@
     openModal(`<h2>🪙 Coins: ${coinData.bal}</h2>
       <p class="help-note">One currency for Clue Duel and Word Vault. Earned ${coinData.earned} · spent ${coinData.spent} on this device.</p>
       <ul class="coin-how">
-        <li><b>Spend:</b> 💡 Hint ${E.RULES.hintCost}, 🎯 Place = the tile's value, ⏱️ +30s ${E.RULES.timeCost} (Clue Duel); 🔎 Hint 5, 💡 Reveal 40 ÷ letters (Word Vault).</li>
+        <li><b>Spend:</b> 💡 Hint ${E.RULES.hintCost}, 🎯 Place = the tile's value, ☑️ Check ${E.RULES.checkBase} + ${E.RULES.checkPerWrong} per wrong tile, ⏱️ +30s ${E.RULES.timeCost} (Clue Duel); 🔎 Hint 5, 💡 Reveal 40 ÷ letters (Word Vault).</li>
         <li><b>Speed coins:</b> in timed games, 1 coin for every second left on your clock when you end a turn that placed tiles. Up to ${COIN.perTile} per tile placed, with no cap when you place every tile in your hand. Untimed games pay no speed coins; time bought with +30s doesn't count.</li>
         <li><b>Whole-game clocks</b> pay at the end: your clock is shared evenly among your turns, and each turn pays the seconds it saved from its share, by the rule above.</li>
         <li><b>Win a Clue Duel game:</b> +${COIN.win}.</li>
@@ -90,7 +90,8 @@
   const ui = {
     pending: [], selTile: null, selSlot: -1, selCell: -1, busy: false, hintCell: -1, timerId: 0, cell: 40, token: 0,
     aiPending: null, flash: null, pop: -1, dragging: false, noClickUntil: 0, sheetOpen: false, layoutKey: '',
-    left: 0, lastTick: 0, paused: false, chainBroken: false, sortK: -1
+    left: 0, lastTick: 0, paused: false, chainBroken: false, sortK: -1,
+    passHold: 0, passSeen: 0 // v08d: the PASS banner holds the game until tapped (passSeen = the pass count it last held for)
   };
   document.title = `Clue Duel · ${APP_VER}`;
   $('#verPill').textContent = APP_VER;
@@ -237,7 +238,7 @@
   function enterGame(fresh) {
     ui.token++;
     checkPics();
-    Object.assign(ui, { pending: [], selTile: null, selSlot: -1, selCell: -1, busy: false, hintCell: -1, aiPending: null, flash: null, pop: -1, layoutKey: '', chainBroken: false });
+    Object.assign(ui, { pending: [], selTile: null, selSlot: -1, selCell: -1, busy: false, hintCell: -1, aiPending: null, flash: null, pop: -1, layoutKey: '', chainBroken: false, passHold: 0, passSeen: G.passes || 0 });
     setPaused(false);
     showScreen('game');
     clearReports();
@@ -305,7 +306,7 @@
     const dock = $('#dock');
     dock.classList.remove('compact');
     const n = G.settings.hand, cs = getComputedStyle(dock);
-    // (40 px spare: "Pass" grows to "Done +13" during a turn)
+    // (40 px spare: "Pass" grows to "Done · 3" during a turn)
     const avail = dock.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - $('#actions').offsetWidth - 40;
     const compact = (avail - 6 * (n - 1)) / n < 40;
     dock.classList.toggle('compact', compact);
@@ -453,13 +454,14 @@
       } else if (pend.has(i)) {
         const p = pend.get(i);
         cls.push('pending');
-        inner = `<span class="ch">${p.ch}</span>${vals ? `<span class="pv">${E.tileVal(G, p.ch)}</span>` : ''}`;
+        if (p.ok) cls.push('chk'); // v08d: known to fit (☑️ Check or 🎯 Place)
+        inner = `<span class="ch">${p.ch}</span>${vals ? `<span class="pv">${E.tileVal(G, p.ch)}</span>` : ''}${p.ok ? '<span class="okm">✓</span>' : ''}`;
       } else if (ui.aiPending && ui.aiPending.has(i)) {
         cls.push('aipend');
         inner = `<span class="ch">${ui.aiPending.get(i)}</span>`;
-      } else if (ui.flash && ui.flash.cell === i) {
+      } else if (ui.flash && ui.flash.has(i)) { // v08d: wrong tiles shake as they bounce back (a Map: cell → letter)
         cls.push('wrongflash', 'shake');
-        inner = `<span class="ch">${ui.flash.ch}</span>`;
+        inner = `<span class="ch">${ui.flash.get(i)}</span>`;
       } else if (G.over) {
         cls.push('reveal');
         inner = `<span class="ch">${c.s}</span>`;
@@ -601,9 +603,10 @@
     }
     let msg;
     if (G.over) msg = 'Game over. Tap any clue to review the words.';
+    else if (ui.passHold) msg = 'Read the PASS banner, then click or tap anywhere to continue. The game waits.';
     else if (G.turn === 1) msg = `${opp().n} is thinking…`;
     else if (repsOn()) msg = 'Click or tap anywhere to start your turn. Your clock waits.';
-    else if (ui.pending.length) msg = 'Tap DONE to bank your points. Drag a placed tile to move it, or tap it to take it back.';
+    else if (ui.pending.length) msg = 'Tiles are penciled in until you tap DONE: then wrong ones bounce back and cost points. Drag a tile to move it, or tap it to take it back.';
     else if (!G.hands[0].length) msg = 'No tiles left. Tap Pass.';
     else msg = 'Your turn. Drag a tile onto the grid, or tap a tile then a cell. Tap a clue to read it; point at (or press and hold) a clue to zoom.';
     bar.innerHTML = `<div class="cb-status">${esc(msg)}</div>`;
@@ -621,35 +624,64 @@
     $('#timeBtn').classList.toggle('poor', coins.bal < E.RULES.timeCost);
     // +30s only exists in timed games (JM, CD-7 add'l 1.2)
     $('#timeBtn').hidden = E.timerOf(G.settings.timer).kind === 'none';
+    $('#morePop').style.setProperty('--mc', $('#timeBtn').hidden ? 3 : 4); // v08d: coin buttons on the pop-up's top row
     $('#timeBtn').disabled = !mine;
     $('#swapBtn').disabled = !mine || !G.bag.length || !!ui.pending.length || !G.hands[0].length;
     $('#mixBtn').disabled = !G || G.over || G.hands[0].length < 2;
+    // v08d (JM CD-34: 4.1c): ☑️ Check tests your penciled tiles now. It costs 5, plus 5 for each wrong tile, so you
+    // need enough coins for the worst case (every unchecked tile wrong) before it can run.
+    const unk = ui.pending.filter(p => !p.ok).length;
+    $('#checkBtn').disabled = !mine || !unk;
+    $('#checkBtn').classList.toggle('poor', coins.bal < checkMax());
     $('#doneBtn').disabled = !mine;
     if (ui.pending.length) {
-      const sc = E.scoreMove(G, ui.pending);
-      $('#doneTxt').textContent = `Done +${sc.total}`;
-      $('#doneBtn').title = '';
+      // v08d (CD-34: 4.4): a tile count, not points (points would tell you which tiles are right)
+      $('#doneTxt').textContent = `Done · ${ui.pending.length}`;
+      $('#doneBtn').title = `Check and bank your ${ui.pending.length} penciled tile${ui.pending.length > 1 ? 's' : ''}. Wrong ones bounce back to your hand and cost the Wrong Cell penalty.`;
     } else {
       $('#doneTxt').textContent = 'Pass';
       $('#doneBtn').title = 'Pass. ' + PASS_RULE;
     }
     $('#swapBtn').title = 'Swap some or all of your tiles. Ends your turn and counts as a pass.';
   }
+  const checkMax = () => E.RULES.checkBase + E.RULES.checkPerWrong * ui.pending.filter(p => !p.ok).length;
 
   // ---------- 3 PASSES Rule warning ----------
+  // v08d (JM CD-33 add'l 1; CD-34: 3.1–3.3): no pass pill. A new pass holds the game until you tap (the opponent
+  // waits and your clock stops); after the tap the banner shrinks to its heading while the streak lasts.
+  // Pills (toasts) move below the banner so they never cover it.
   function renderPassWarn() {
     const n = G && !G.over ? (G.passes || 0) : 0;
+    if (n > ui.passSeen) { ui.passHold = n; ui.passSeen = n; }
+    else if (n < ui.passSeen) { ui.passSeen = n; ui.passHold = 0; }
+    if (!n) ui.passHold = 0;
+    const e = n && G.log && G.log[G.log.length - 1];
+    let who = '';
+    if (e && e.kind !== 'play') {
+      const nm = e.p === 0 ? 'You' : opp().n;
+      who = e.kind === 'swap' ? `${nm} swapped` : (e.items || []).some(x => x.k === 'wrong') ? `${nm}: every tile bounced` : `${nm} passed`;
+    }
+    const held = !!ui.passHold;
     let html = '';
-    if (n === 1) html = `<span class="pw-h">PASS 1 of 3</span>${PASS_RULE}`;
-    else if (n >= 2) html = `<span class="pw-h">PASS 2 of 3 · LAST CHANCE</span>The next turn must place a tile, or the game ends. ${PASS_RULE}`;
+    if (n === 1) html = `<span class="pw-h">PASS 1 of 3${who ? ' · ' + esc(who) : ''}</span>${held ? PASS_RULE : ''}`;
+    else if (n >= 2) html = `<span class="pw-h">PASS 2 of 3 · LAST CHANCE${who ? ' · ' + esc(who) : ''}</span>${held ? 'The next turn must place a tile, or the game ends. ' + PASS_RULE : ''}`;
+    if (held) html += '<span class="pw-tap">Tap anywhere to continue</span>';
     for (const id of ['#passWarnBar', '#passWarnSide']) {
       const el = $(id);
       el.hidden = !n;
       el.classList.toggle('yellow', n === 1);
       el.classList.toggle('red', n >= 2);
+      el.classList.toggle('short', !held);
       el.innerHTML = html;
     }
+    placeToasts();
   }
+  function placeToasts() {
+    const bar = $('#passWarnBar'), box = $('#toasts');
+    const r = !bar.hidden && bar.offsetParent ? bar.getBoundingClientRect() : null;
+    box.style.top = r && r.height ? Math.round(r.bottom + 6) + 'px' : '';
+  }
+  window.addEventListener('resize', () => { if (G && !$('#game').hidden) placeToasts(); });
 
   // ---------- Running Scoreboard (renamed from Scoresheet, CD-7 add'l 3.2.1) ----------
   function roundWinners() {
@@ -722,7 +754,8 @@
   // stops the moment the opponent finishes, and nothing can be played until you tap (CD-9: 3.1a, 3.1.1).
   // Row 1 is the turn TOTAL; then one row per word, bonus and penalty. The Scoreboard stays as the lasting record.
   const reps = { html: [null, null], key: [0, 0], swallowUntil: 0 };
-  const repsOn = () => !!(reps.html[0] || reps.html[1]);
+  // v08d: a held PASS banner counts as a report: the game waits, and one tap closes both
+  const repsOn = () => !!(reps.html[0] || reps.html[1] || ui.passHold);
   const lastLog = () => G.log[G.log.length - 1];
   function reportHTML(e) {
     const M = E.modeOf(G);
@@ -757,7 +790,7 @@
     grp('time', xs => '+30s' + xn(xs.length));
     if (!items.length && e.pen) add('Penalties', -e.pen);
     // v08: coins spent and earned this turn, on their own line under the points (they never change the score)
-    const LBL = { hint: 'Hint', place: 'Place', time: '+30s', speed: 'Speed' };
+    const LBL = { hint: 'Hint', place: 'Place', check: 'Check', time: '+30s', speed: 'Speed' };
     const cs = {};
     for (const x of items) if (x.c) cs[x.k] = (cs[x.k] || 0) + x.c;
     const coinTxt = Object.keys(cs).map(k => `${LBL[k] || k} ${cs[k] < 0 ? '−' + -cs[k] : '+' + cs[k]}`).join(' · ');
@@ -788,6 +821,7 @@
   function clearReports() {
     if (!repsOn()) return;
     reps.html = [null, null];
+    ui.passHold = 0;
     for (const id of ['#repYou', '#repYouN', '#repOpp', '#repOppN']) $(id).dataset.k = '';
     renderReports();
     // the game carries on: time spent reading never counts
@@ -945,8 +979,8 @@
         <li><span class="chip p5">+${R.plus2Cell}</span> cells add <b>${R.plus2Cell}</b> points.</li>
         <li><span class="chip x2">2×</span> cells double the turn's points from tiles and words (see ${go('Bonuses')}).</li>
         <li><b>Full Hand</b>: <b>+${R.fullHandBonus}</b> points.</li>
-        <li><b>Wrong Cell</b>: costs <b>${wrongMin} points</b>, or the tile's value if that is more. In Classic a wrong Q or Z costs 10 and a wrong E costs 2.</li>
-        <li><b>Hint</b>, <b>Place</b> and <b>+30s</b> cost <b>coins</b>, not points (see ${go('Coins')}).</li>
+        <li><b>Wrong Cell</b>: each tile still in a wrong cell when you tap Done costs <b>${wrongMin} points</b>, or the tile's value if that is more. In Classic a wrong Q or Z costs 10 and a wrong E costs 2.</li>
+        <li><b>Hint</b>, <b>Place</b>, <b>Check</b> and <b>+30s</b> cost <b>coins</b>, not points (see ${go('Coins')}).</li>
         <li>When the game ends, the tiles still in each hand are taken off that player's score (see ${go('The End')}).</li>
         ${modeH('classic')}
         <li>Each tile scores its letter value, shown on the tile: common letters like E and T are worth 1; Q and Z are worth 10.</li>
@@ -959,8 +993,8 @@
         <li>Tiles score nothing on their own. Finishing a word scores its length × length.</li>
         <li><i>Example:</i> you place the T that finishes CAT: 3 × 3 = <b>9</b>. Finishing a 5-letter word scores 25.</li>
         ${modeH('combo')}
-        <li>Each correct tile in a turn is worth 1 more than the one before: 1, 2, 3… Words score nothing extra. A wrong cell restarts the chain at 1.</li>
-        <li><i>Example:</i> 4 tiles in one turn: 1 + 2 + 3 + 4 = <b>10</b>. Two tiles, a wrong cell, then two more: 1 + 2 + 1 + 2 = 6, minus the Wrong Cell.</li>
+        <li>Each correct tile in a turn is worth 1 more than the one before: 1, 2, 3… Words score nothing extra. A wrong tile doesn't break the chain; it only costs its Wrong Cell penalty.</li>
+        <li><i>Example:</i> 4 right tiles in one turn: 1 + 2 + 3 + 4 = <b>10</b>. 4 right tiles and 1 wrong one: still 10, minus the Wrong Cell.</li>
         ${modeH('bounty')}
         <li>Like Classic, but each letter's value is set by how often it appears in <b>this</b> grid (counting the starter letters), so the values change every game. They are shown on your tiles.</li>
         <li>A letter that appears once is worth <b>6</b>; twice, <b>4</b>; 3 times, <b>3</b>; 4 or 5 times, <b>2</b>; 6 times or more, <b>1</b>.</li>
@@ -970,7 +1004,7 @@
         <li>Rare letters cut both ways: a J left in your hand at the end costs you 6, and a J in a wrong cell costs 6.</li>`)}
       ${sec('Timer', `
         <li><b>Untimed</b>: take as long as you like.</li>
-        <li><b>Per turn</b> (Blitz · 30 s per TURN, or 1 to 5 min per TURN): when it runs out, your turn ends and the tiles you placed still score.</li>
+        <li><b>Per turn</b> (Blitz · 30 s per TURN, or 1 to 5 min per TURN): when it runs out, your turn ends and the tiles you penciled in are checked, as if you had tapped Done.</li>
         <li><b>Whole game</b> (2 to 15 min per GAME): your clock runs only on your turns; when it reaches zero, the game ends.</li>
         <li>Clocks never run while a ${go('Turn Reports and The Scoreboard', 'turn report')} is waiting for your tap, or while the game is paused.</li>
         <li>In the last 10 seconds the grid's border flashes every second: <b>yellow</b> from 10 to 6, <b>red</b> from 5 to 1.</li>`)}
@@ -994,19 +1028,23 @@
         <li>Some clues are pictures: see ${go('Clue Pics')}.</li>`)}
       ${sec('Your Turn', `
         <li>Drag tiles from your hand onto the cells where they belong, or tap a tile and then a cell. Place as many as you like. This turn's tiles are bright orange with a blue frame.</li>
-        <li>A tile only stays in its correct cell. A wrong cell costs ${wrongMin} points (or the tile's value, if that is more) and the tile returns to your hand.</li>
-        <li>Drag a tile you placed this turn to another cell, or back to your hand. Tapping it also takes it back.</li>
+        <li><b>Tiles are only penciled in</b> until you tap ✓ Done, so a slip of the finger costs nothing: drag a tile you placed this turn to another cell, or back to your hand. Tapping it also takes it back.</li>
+        <li>When you tap <b>Done</b>, every penciled tile is checked. Tiles in their correct cells lock in and score. Each tile in a wrong cell shakes, goes back to your hand and costs ${wrongMin} points (or the tile's value, if that is more). That check is final.</li>
+        <li>Not sure? <b>☑️ Check</b> (see ${go('The Buttons')}) tests your penciled tiles before Done, for coins instead of points.</li>
+        <li>A turn in which every tile bounces places nothing, so it counts as a pass. Your rival plays by the same rules.</li>
         <li>Drag tiles inside your hand to sort them your way. A gold space shows where the tile will land.</li>
         <li>Your hand refills from the bag after every turn as long as more tiles exist in the bag. Near the end of a game, your opponent may hold more tiles than you, requiring you to PASS until all tiles have been played (or three passes in a row have occurred to end the game).</li>`)}
       ${sec('The Buttons', `
         <li>Your hand and the buttons share the bottom row. On a phone, ✓ Done stays on the row and the other buttons open from <b>⋯ More</b>; in timed games your clock then shows under your score.</li>
         <li><b>💡 Hint (🪙${hintC})</b>: shows a cell where one of your tiles fits. It costs ${hintC} ${go('Coins', 'coins')}.</li>
-        <li><b>🎯 Place (🪙?)</b>: puts one random tile from your hand into a cell where it fits. It costs that tile's value in coins (shown on the tile; 1 in modes without tile values), then scores like any tile you place.</li>
+        <li><b>🎯 Place (🪙?)</b>: puts one random tile from your hand into a cell where it fits. It costs that tile's value in coins (shown on the tile; 1 in modes without tile values), then scores like any tile you place. It's marked ✓ (known to fit).</li>
+        <li><b>☑️ Check (🪙${R.checkBase}+)</b>: tests the tiles you've penciled in this turn. It costs ${R.checkBase} coins, plus ${R.checkPerWrong} for each wrong tile it finds. Wrong tiles go back to your hand with <b>no point penalty</b>; right ones get a ✓ (move one and it's unchecked again). You need enough coins for the worst case (every unchecked tile wrong): with 3 unchecked tiles, ${R.checkBase + 3 * R.checkPerWrong}.</li>
+        <li>The coin buttons (💡 Hint, 🎯 Place, ☑️ Check, ⏱️ +30s) are <b>blue</b> and sit together; on a phone they're the top row of ⋯ More.</li>
         <li><b>🔄 Swap</b>: trade some or all of your tiles for new ones from the bag. It ends your turn and counts as a pass.</li>
         <li><b>🔀 Shuffle</b>: mixes the order of your hand.</li>
         <li><b>⏸️ Pause</b> (or the P key) shows your clock in timed games. On a phone, tapping the clock under your score also pauses (and resumes) the game. It stops every clock and hides the grid, clues and hand; tap the PLAY PAUSED panel, ▶️, or P to resume. The game also pauses when you switch to another tab or app.</li>
         <li><b>⏱️ +30s (🪙${R.timeCost})</b> (timed games only): adds 30 seconds to your clock for ${R.timeCost} coins. Use it as often as you like. Bought time never pays speed coins.</li>
-        <li><b>✓ Done</b> banks this turn's points (it shows how many). With nothing placed it reads <b>Pass</b>.</li>`)}
+        <li><b>✓ Done</b> (green) checks and banks this turn's tiles. It shows how many are penciled in, like <b>Done · 3</b> (not the points, which would give away which tiles are right). With nothing placed it reads <b>Pass</b>.</li>`)}
       ${sec('Bonuses', `
         <li><span class="chip x2">2×</span> doubles your turn's points from tiles and words. Each extra 2× in the same turn adds another double: 10 → 20 → 40 → 60.</li>
         <li><span class="chip p5">+${R.plusCell}</span> cells add ${R.plusCell} points, and <span class="chip p5">+${R.plus2Cell}</span> cells add ${R.plus2Cell} points. Both are added after doubling and are never doubled. +${R.plus2Cell} cells appear only with the Fixed or Both setting (see ${go('Bonus Squares')}).</li>
@@ -1019,12 +1057,12 @@
         <li>The <b>Scoreboard</b> keeps every turn by round: letter points, word points, bonuses, penalties and the turn's total. Green marks the higher score in each round. On phones, tap ▸ Scoreboard to open it.</li>`)}
       ${sec('The End', `
         <li>The game ends when the grid is full, by the <b>3 PASSES Rule</b> (${esc(PASS_RULE)}), or when a whole-game clock runs out.</li>
-        <li>A yellow box warns you after the 1st pass; a red box after the 2nd.</li>
+        <li>A yellow PASS banner warns you after the 1st pass; a red one after the 2nd. It says who passed and <b>holds the game until you tap</b> (your rival waits and your clock stops). After your tap it shrinks to one line until someone places a tile.</li>
         <li>The result screen shows both players' stats and your record against this opponent.</li>`)}
       ${sec('Coins', `
         <li><b>🪙 Coins</b> are one currency shared by Clue Duel and ${go('Word Vault')}. You start with <b>${COIN.start}</b>. Your balance shows on the menu, in the game's info line and above the Word Vault grid; tap it for details and your latest coins.</li>
-        <li><b>Spend them on</b> 💡 Hint (${hintC}), 🎯 Place (the tile's value) and ⏱️ +30s (${R.timeCost}) in Clue Duel, and 🔎 Hint (5) and 💡 Reveal (40 ÷ the word's letters, like ¹⁄₅ 🪙8) in Word Vault. These cost coins, not points. Coin buttons are <b>gold</b>. Without enough coins the button is dimmed, and a tap tells you what it costs.</li>
-        <li><b>Two taps to buy:</b> the first tap on a coin button turns it bright gold and shows "Tap again · 🪙N" (for Place, the price of the tile it found) for 3 seconds; the second tap buys. Tapping anywhere else, or waiting, cancels it. This stops accidental spending.</li>
+        <li><b>Spend them on</b> 💡 Hint (${hintC}), 🎯 Place (the tile's value), ☑️ Check (${R.checkBase} + ${R.checkPerWrong} per wrong tile) and ⏱️ +30s (${R.timeCost}) in Clue Duel, and 🔎 Hint (5) and 💡 Reveal (40 ÷ the word's letters, like ¹⁄₅ 🪙8) in Word Vault. These cost coins, not points. Coin buttons are <b>blue</b>. Without enough coins the button is dimmed, and a tap tells you what it costs.</li>
+        <li><b>Two taps to buy:</b> the first tap on a coin button lights it up and shows "Tap again · 🪙N" (for Place, the price of the tile it found; for Check, 🪙5+) for 3 seconds; the second tap buys. Tapping anywhere else, or waiting, cancels it. This stops accidental spending.</li>
         <li><b>Speed coins</b> (timed games only): end a turn that placed tiles and earn <b>1 coin for every second left</b> on your clock. A 1-minute turn finished in 35 seconds pays 25. The most a turn can pay is ${COIN.perTile} per tile placed, but there's <b>no cap</b> when you place every tile in your hand. Time bought with +30s doesn't count.</li>
         <li>With a <b>whole-game</b> clock, speed coins are paid once, when the game ends. Your clock is <b>shared evenly among your turns</b>: a 5-minute game in which you took 6 turns gives each turn 50 seconds. Each turn then pays like a per-turn game: the seconds it saved from its 50, up to ${COIN.perTile} per tile it placed (no cap if it emptied your hand); passes and swaps pay nothing. The total is never more than the time left on your clock, and nothing is paid if your clock runs out. <i>Example:</i> a turn that took 20 seconds and placed 2 tiles saved 30 seconds and pays 30 (its cap is 40).</li>
         <li><b>Untimed games</b> pay no speed coins.</li>
@@ -1126,9 +1164,9 @@
     closeZoom(true); cancelDrag();
     const placements = ui.pending.slice();
     Object.assign(ui, { pending: [], selTile: null, hintCell: -1, selSlot: -1, selCell: -1 });
-    if (placements.length) E.commit(G, 0, placements);
-    logMyTurn(placements.length);
-    E.endTurn(G, placements.length, 'pass', 'clock');
+    const n = judgeMine(placements);
+    logMyTurn(n);
+    E.endTurn(G, n, 'pass', 'clock');
     showReport(lastLog());
     toast('Your clock ran out. Game over.', 'bad', 3000);
     afterTurn(true);
@@ -1160,11 +1198,26 @@
   // Pause automatically when you switch to another tab or app
   document.addEventListener('visibilitychange', () => { if (document.hidden && G && !G.over && !$('#game').hidden) setPaused(true); });
   // Waits that respect Pause (used by the opponent's turn)
-  async function nap(ms) { await sleep(ms); while (ui.paused) await sleep(150); }
+  // (v08d: and while a PASS banner holds the game)
+  async function nap(ms) { await sleep(ms); while (ui.paused || ui.passHold) await sleep(150); }
 
-  function passToast(who, kind) {
-    const n = G.passes;
-    toast(`${who} ${kind === 'swap' ? 'swapped tiles' : 'passed'}${n ? ` · pass ${n} of ${E.RULES.passLimit}` : ''}`, n >= 2 ? 'bad' : '', 2600);
+  // v08d (JM CD-34: 4.1c): your penciled tiles are checked when the turn ends. Right ones score; wrong ones shake,
+  // go back to your hand and each costs the Wrong Cell penalty. Returns how many tiles stayed on the board.
+  function judgeMine(placements) {
+    if (!placements.length) return 0;
+    const r = E.judge(G, 0, placements);
+    if (r.wrong.length) {
+      bounce(r.wrong);
+      toast(`${r.wrong.map(p => p.ch).join(', ')} ${r.wrong.length > 1 ? 'didn\'t fit' : 'didn\'t fit'} · −${r.pen}`, 'bad', 2600);
+      if (navigator.vibrate) try { navigator.vibrate(60); } catch (e) { /* ignore */ }
+    }
+    return r.right.length;
+  }
+  // Wrong tiles shake in their cells for a moment, then the cells clear
+  function bounce(list, ms = 900) {
+    const m = new Map(list.map(p => [p.cell, p.ch]));
+    ui.flash = m;
+    setTimeout(() => { if (ui.flash === m) { ui.flash = null; if (G) render(); } }, ms);
   }
 
   function afterTurn(over) {
@@ -1181,12 +1234,11 @@
     closeZoom(true); cancelDrag();
     const placements = ui.pending.slice();
     Object.assign(ui, { pending: [], selTile: null, hintCell: -1, selSlot: -1, selCell: -1 });
-    if (placements.length) E.commit(G, 0, placements);
-    if (placements.length) speedCoins(placements.length);
-    logMyTurn(placements.length);
-    const over = E.endTurn(G, placements.length);
+    const n = judgeMine(placements);
+    if (n) speedCoins(n);
+    logMyTurn(n);
+    const over = E.endTurn(G, n);
     showReport(lastLog());
-    if (!placements.length && !over) passToast(myName(), 'pass');
     afterTurn(over);
   }
   $('#doneBtn').addEventListener('click', onDone);
@@ -1245,35 +1297,26 @@
     await nap(650 + Math.random() * 650);
     if (token !== ui.token) return;
     const plan = E.aiPlan(G);
-    const real = [];
+    // v08d: the opponent pencils its tiles in too (a careless one may slip a tile into a wrong cell);
+    // they are checked at its DONE, by the same rule as yours
+    const steps = [];
     ui.aiPending = new Map();
-    let reset = false;
     for (const step of plan) {
-      if (step.wrong) {
-        const pen = E.penaltyOf(G, 'wrong', step.ch);
-        E.penalize(G, 1, pen, 'wrong', step.ch);
-        reset = true;
-        ui.flash = { cell: step.cell, ch: step.ch };
-        render();
-        toast(`${opp().n} tried ${step.ch} in a wrong cell · −${pen}`, 'opp');
-        await nap(750);
-        if (token !== ui.token) return;
-        ui.flash = null;
-        continue;
-      }
       ui.aiPending.set(step.cell, step.ch);
       ui.pop = step.cell;
-      real.push(Object.assign({ reset }, step));
-      reset = false;
+      steps.push({ cell: step.cell, tileId: step.tileId, ch: step.ch });
       render();
       await nap(430);
       if (token !== ui.token) return;
     }
     ui.aiPending = null;
-    if (real.length) E.commit(G, 1, real);
-    const over = E.endTurn(G, real.length);
+    const r = E.judge(G, 1, steps);
+    if (r.wrong.length) {
+      bounce(r.wrong);
+      toast(`${opp().n}'s ${r.wrong.map(p => p.ch).join(', ')} didn't fit · −${r.pen}`, 'opp', 2600);
+    }
+    const over = E.endTurn(G, r.right.length);
     showReport(lastLog());
-    if (!real.length && !over) passToast(opp().n, 'pass');
     save();
     ui.busy = false;
     if (over) { render(); gameOver(); return; }
@@ -1281,28 +1324,16 @@
   }
 
   // Place one of your tiles on a cell
-  function placeTile(tileId, ci) {
+  // v08d (JM CD-34: 4.1c): no instant check. The tile is penciled in and can be moved or taken back until DONE
+  // (ok = already known to fit: placed by 🎯 Place, or passed a ☑️ Check)
+  function placeTile(tileId, ci, ok) {
     if (!myTurn()) return;
     const t = G.hands[0].find(x => x.id === tileId);
     const c = G.pz.cells[ci];
     if (!t || !c || c.k !== 'l' || G.board[ci] || ui.pending.some(p => p.cell === ci) || ui.pending.some(p => p.tileId === tileId)) {
       ui.selTile = null; render(); return;
     }
-    if (c.s !== t.ch) {
-      const pen = E.penaltyOf(G, 'wrong', t.ch);
-      E.penalize(G, 0, pen, 'wrong', t.ch);
-      ui.chainBroken = true; // Combo Chain restarts after a wrong cell
-      ui.selTile = null;
-      ui.flash = { cell: ci, ch: t.ch };
-      render();
-      setTimeout(() => { if (ui.flash && ui.flash.cell === ci) { ui.flash = null; render(); } }, 650);
-      toast(`${t.ch} doesn't go there · −${pen}`, 'bad');
-      if (navigator.vibrate) try { navigator.vibrate(60); } catch (e) { /* ignore */ }
-      save();
-      return;
-    }
-    ui.pending.push({ cell: ci, tileId, ch: t.ch, reset: ui.chainBroken });
-    ui.chainBroken = false;
+    ui.pending.push({ cell: ci, tileId, ch: t.ch, ok: !!ok });
     ui.selTile = null;
     if (ui.hintCell === ci) ui.hintCell = -1;
     if (ui.selSlot < 0 || !G.pz.slots[ui.selSlot].cells.includes(ci)) ui.selSlot = G.pz.cellSlots[ci][0];
@@ -1311,7 +1342,7 @@
     render();
   }
 
-  // Move a tile placed this turn: to another cell (checked like any placement) or back to the hand
+  // Move a tile penciled in this turn: to another cell (it is unchecked again there) or back to the hand
   function movePending(ci, target) {
     const idx = ui.pending.findIndex(p => p.cell === ci);
     if (idx < 0 || !target) { render(); return; }
@@ -1319,7 +1350,6 @@
     const ni = +target.dataset.i;
     if (ni === ci || G.board[ni] || ui.pending.some(p => p.cell === ni)) { render(); return; }
     const p = ui.pending.splice(idx, 1)[0];
-    if (p.reset) ui.chainBroken = true; // keep a broken chain broken
     placeTile(p.tileId, ni);
   }
 
@@ -1523,9 +1553,39 @@
     if (!coins.spend(paid, `Place ${a.ch}`)) return;
     coinItem('place', -paid, a.ch);
     ui.hintCell = -1;
-    placeTile(a.tileId, a.cell);
+    placeTile(a.tileId, a.cell, true);
     toast(`Placed ${a.ch} · 🪙−${paid}`);
     save();
+  });
+
+  // ☑️ Check (v08d, JM CD-34: 4.1c, 4.1.1): tests your penciled tiles now, before DONE. Costs 5, plus a 5-coin
+  // "work fee" for each wrong tile it finds. Wrong tiles go back to your hand with no point penalty; right ones
+  // get a ✓ and stay penciled in (moving one makes it unchecked again). You need coins for the worst case.
+  $('#checkBtn').addEventListener('click', () => {
+    if (!myTurn()) return;
+    const unk = ui.pending.filter(p => !p.ok);
+    if (!unk.length) { toast('Nothing to check: pencil in a tile first'); return; }
+    const max = checkMax();
+    if (coins.bal < max) {
+      toast(`Not enough coins: checking ${unk.length} tile${unk.length > 1 ? 's' : ''} can cost up to 🪙${max}, you have 🪙${coins.bal}`, 'bad', 3200);
+      return;
+    }
+    if (!armTap($('#checkBtn'), `${E.RULES.checkBase}+`)) return; // second tap buys
+    const wrong = unk.filter(p => !E.fits(G, p.cell, p.ch));
+    const cost = E.RULES.checkBase + E.RULES.checkPerWrong * wrong.length;
+    if (!coins.spend(cost, 'Check')) return;
+    coinItem('check', -cost);
+    for (const p of unk) if (!wrong.includes(p)) p.ok = true;
+    if (wrong.length) {
+      ui.pending = ui.pending.filter(p => !wrong.includes(p));
+      bounce(wrong);
+    }
+    const okN = unk.length - wrong.length;
+    toast(wrong.length
+      ? `☑️ ${wrong.map(p => p.ch).join(', ')} didn't fit (back in your hand)${okN ? ` · ${okN} OK` : ''} · 🪙−${cost}`
+      : `☑️ All ${okN} fit · 🪙−${cost}`, wrong.length ? 'bad' : 'you', 3000);
+    save();
+    render();
   });
 
   // +30s (JM, CD-7 add'l 1.2): timed games only; 30 more seconds on your clock for 5 points, as often as you like
@@ -1604,7 +1664,7 @@
       logMyTurn(0);
       const over = E.endTurn(G, 0, 'swap');
       showReport(lastLog());
-      if (!over) passToast(myName(), 'swap');
+      // v08d: no pass pill; the PASS banner reports the swap
       afterTurn(over);
     };
   });
