@@ -1,4 +1,6 @@
-/* Clue Duel — Word Vault (v07f): a word-guessing mini-game (JM, CD-12: 4.2.1; CD-13: 4.x; CD-18: 7.1a; CD-21: 5.1–5.3; CD-23; CD-24; CD-25).
+/* Clue Duel — Word Vault (v08): a word-guessing mini-game (JM, CD-12: 4.2.1; CD-13: 4.x; CD-18: 7.1a; CD-21: 5.1–5.3; CD-23; CD-24; CD-25; CD-26).
+   v08 (CD-26): coins (the Hint costs 5 coins; solved words pay coins); the Hint's difficulty follows the Challenge Level;
+   a 25% bolder and brighter >; every timer says "per"; the Space bar jumps to the next open square; a grab bar makes the keys taller.
    v07f (CD-25): no embossed text; played letters are black on green, yellow or red; typed (tentative) letters turn their key
    black on white; empty squares are dark glass "candy drops" in the slots of a glassy grid panel; a large > marks the
    active row, so the grid sits centered between it and the ✕; "Blitz · 30s per guess".
@@ -39,24 +41,42 @@
     }
     for (const e of E.lexicon()) {
       const n = e.w.length;
-      if (n >= 4 && n <= 7 && GUESS[n].has(e.w)) ANS[n].push({ w: e.w, l: e.l, c: e.e });
+      if (n >= 4 && n <= 7 && GUESS[n].has(e.w)) ANS[n].push({ w: e.w, l: e.l, c: e.e, h: e.h });
     }
+    // 8-letter answers: WORD|level|clue|easy clue|hard clue (v08)
     for (const line of String(window.VAULT_EIGHT || '').split('\n')) {
-      const [w, l, c] = line.split('|');
-      if (w && w.length === 8) ANS[8].push({ w, l: +l || 1, c: (c || '').trim() });
+      const [w, l, c, ez, hd] = line.split('|');
+      if (w && w.length === 8) ANS[8].push({ w, l: +l || 1, c: (c || '').trim(), ez: (ez || '').trim(), hd: (hd || '').trim() });
     }
   }
+  // Hint difficulty follows the Challenge Level (v08, JM CD-26). Every answer has three hints:
+  //   direct  = literal and simple, mostly one word  (4–7 letters: the main game's literal clue; 8 letters: the easy clue)
+  //   middle  = 4–7 letters: the indirect clue; 8 letters: the plain definition (several words)
+  //   tricky  = indirect, metaphorical or a pun, several words fine (4–7 letters: the wordplay clue when the word has
+  //             one, otherwise the indirect clue; 8 letters: the hard clue)
+  // Levels 1–3 always get the direct hint and 8–10 the tricky one; 4–7 draw from a mix that tilts toward tricky as the level rises.
+  const HINT_MIX = { 4: [50, 40, 10], 5: [30, 45, 25], 6: [15, 45, 40], 7: [5, 35, 60] };
+  function hintTiers(a) {
+    if (a.w.length === 8) return [a.ez || a.c, a.c, a.hd || a.c];
+    const wp = (E.wordplay && E.wordplay()[a.w]) || '';
+    return [a.c, a.h || a.c, wp || a.h || a.c];
+  }
+  function hintText(a, level) {
+    const t = hintTiers(a);
+    let k = level <= 3 ? 0 : level >= 8 ? 2 : -1;
+    if (k < 0) { const m = HINT_MIX[level], r = Math.random() * 100; k = r < m[0] ? 0 : r < m[0] + m[1] ? 1 : 2; }
+    return t[k] || t[0] || `It starts with ${a.w[0]} and ends with ${a.w[a.w.length - 1]}.`;
+  }
   // Hint (JM, CD-24: 1.1.5): the word's clue, plus a clue picture when the main game has one allowed at this Challenge Level
-  // (the easiest kind first: a hint should help)
-  function clueOf(a) {
+  // (the easiest kind first: a hint should help). v08: the clue is chosen once per word, by hintText.
+  function clueOf(a, level) {
     let pic = '';
     try {
       const P = (E.pics && E.pics()[a.w]) || [], MIN = E.PIC_MIN || {}, RANK = ['lit', 'cat', 'assoc', 'rebus', 'sound', 'math'];
-      const ok = P.filter(x => (MIN[x.t] || 1) <= R.level).sort((x, y) => RANK.indexOf(x.t) - RANK.indexOf(y.t));
+      const ok = P.filter(x => (MIN[x.t] || 1) <= level).sort((x, y) => RANK.indexOf(x.t) - RANK.indexOf(y.t));
       if (ok.length) pic = ok[0].p;
     } catch (e) { /* no picture */ }
-    const t = a.c || `It starts with ${a.w[0]} and ends with ${a.w[a.w.length - 1]}.`;
-    return { t, pic };
+    return { t: hintText(a, level), pic };
   }
   // Challenge Level (1–10) sets the vocabulary: the target word level, and the highest level allowed
   const TARGET = [1, 1, 1, 2, 2, 3, 3, 4, 5, 5];
@@ -74,8 +94,9 @@
   }
 
   // ---------- Setting choices ----------
-  const TIMERS = [['0', 'Untimed'], ['t30', 'Blitz · 30s per guess'], ['t60', '1 min a guess'], ['t120', '2 min a guess'], ['t180', '3 min a guess'],
-    ['t300', '5 min a guess'], ['g120', '2 min a word'], ['g180', '3 min a word'], ['g300', '5 min a word'], ['g600', '10 min a word'], ['g900', '15 min a word']];
+  // v08 (JM, CD-26: 2.1): every timer says "per"
+  const TIMERS = [['0', 'Untimed'], ['t30', 'Blitz · 30s per guess'], ['t60', '1 min per guess'], ['t120', '2 min per guess'], ['t180', '3 min per guess'],
+    ['t300', '5 min per guess'], ['g120', '2 min per word'], ['g180', '3 min per word'], ['g300', '5 min per word'], ['g600', '10 min per word'], ['g900', '15 min per word']];
   const OPTS = {
     level: Array.from({ length: 10 }, (_, i) => [i + 1, i === 0 ? '1 · Gentle' : i === 9 ? '10 · Ruthless' : String(i + 1)]),
     len: [4, 5, 6, 7, 8].map(n => [n, n + ' letters']),
@@ -87,8 +108,8 @@
   const timerOf = code => { const m = /^([tg])(\d+)$/.exec(code || ''); return m ? { kind: m[1] === 't' ? 'guess' : 'word', ms: +m[2] * 1000 } : { kind: 'none', ms: 0 }; };
   const VAL = E.VAL;
   const DESC = {
-    classic: 'Solve to score the word\'s letter values plus 2 per letter, +5 for every guess you didn\'t need, and a time bonus in timed games. A Hint costs 5; each Reveal costs 3.',
-    flat: 'Solve to score 2 per letter, +5 for every guess you didn\'t need, and a time bonus in timed games. A Hint costs 5; each Reveal costs 3.'
+    classic: 'Solve to score the word\'s letter values plus 2 per letter, +5 for every guess you didn\'t need, and a time bonus in timed games. Each Reveal costs 3 points; a Hint costs 5 coins.',
+    flat: 'Solve to score 2 per letter, +5 for every guess you didn\'t need, and a time bonus in timed games. Each Reveal costs 3 points; a Hint costs 5 coins.'
   };
   const fillSelect = (sel, opts, val) => { sel.innerHTML = opts.map(([v, t]) => `<option value="${v}">${esc(t)}</option>`).join(''); sel.value = String(val); };
   const setFrom = (k, v) => { vs[k] = k === 'timer' || k === 'scoring' ? v : +v; saveVs(); };
@@ -163,7 +184,7 @@
       return;
     }
     let prev = null;
-    if (R && !R.over && R.rows.length) { R.over = true; clearInterval(R.tId); recordLoss(); prev = R.a; }
+    if (R && !R.over && R.rows.length) { R.over = true; clearInterval(R.tId); recordLoss(); prev = { w: R.a.w, hint: R.hint }; }
     if (R) clearInterval(R.tId);
     start(prev);
   }
@@ -174,16 +195,16 @@
     hideOv();
     const a = pickWord();
     R = { a, rows: [], cells: [], sel: 0, over: false, won: false, revealed: new Map(), reveals: 0, hints: 0, used: 0, left: timerOf(vs.timer).ms, tId: 0,
-      paused: false, gate: false, ov: null, len: vs.len, tries: vs.tries, timer: vs.timer, scoring: vs.scoring, level: vs.level };
+      paused: false, gate: false, ov: null, len: vs.len, tries: vs.tries, timer: vs.timer, scoring: vs.scoring, level: vs.level, lastLeft: 0 };
+    R.hint = clueOf(a, R.level); // v08: this word's hint, at this Challenge Level's difficulty, fixed for the round
     $('#vtPlay').classList.remove('paused');
     newRow();
     showPlay();
     if (prev && prev.w) {
       R.gate = true;
-      const c = clueOf(prev);
       showOv('gate', `<div class="vt-ov-h">🔒 Not solved. The word was:</div>
         <div class="vt-res-w">${prev.w.split('').map(ch => `<span>${ch}</span>`).join('')}</div>
-        <p class="vt-ov-t small">Clue: ${esc(c.t)}</p>
+        <p class="vt-ov-t small">Clue: ${esc(prev.hint ? prev.hint.t : '')}</p>
         <div class="vt-ov-s">Tap anywhere to start your new word${timerOf(R.timer).kind !== 'none' ? ' (its clock starts then)' : ''}</div>`);
     }
     startClock();
@@ -204,7 +225,7 @@
   }
   function showPlay() {
     $('#vtSetup').hidden = true; $('#vtPlay').hidden = false;
-    $('#vtInfo').innerHTML = `<button type="button" class="vt-infobtn" id="vtInfoBtn" title="Change settings">Level ${R.level} · ${R.len} letters · ${R.tries} guesses · ${R.scoring === 'flat' ? 'Flat' : 'Classic'} ⚙</button>`;
+    $('#vtInfo').innerHTML = `<button type="button" class="vt-infobtn" id="vtInfoBtn" title="Change settings">Level ${R.level} · ${R.len} letters · ${R.tries} guesses · ${R.scoring === 'flat' ? 'Flat' : 'Classic'} ⚙</button>${UI.coinPill ? ' ' + UI.coinPill() : ''}`;
     render();
     sizeBoard();
   }
@@ -223,7 +244,10 @@
     const x0 = Math.round(Math.max(20, Math.min(36, W * 0.06)));
     const cw = Math.floor((inner - 2 * x0 - (R.len + 1) * g) / R.len);
     const xw = Math.floor((inner - R.len * cw - (R.len + 1) * g) / 2); // both side columns share the leftover pixels
-    const used = $('#vtInfo').offsetHeight + $('.vt-acts').offsetHeight + $('#vtKb').offsetHeight + 3 * 10 + 20 + 2 * P;
+    // v08: the board is sized for the keyboard at its normal height, so a taller keyboard (grab handle) only fills the
+    // free space between the buttons and the keyboard and never shrinks the squares
+    const kbNormal = $('#vtKb').offsetHeight - 3 * (kbNow - KB_MIN);
+    const used = $('#vtInfo').offsetHeight + $('.vt-acts').offsetHeight + kbNormal + $('#vtGrip').offsetHeight + 4 * 10 + 20 + 2 * P;
     const avail = main.clientHeight - used;
     const ch = Math.max(26, Math.min(cw, Math.floor((avail - (R.tries - 1) * g) / R.tries)));
     const b = $('#vtBoard');
@@ -233,8 +257,53 @@
     b.style.padding = P + 'px';
     b.style.width = Math.round(W) + 'px';
     b.style.gridTemplateColumns = `var(--xw) repeat(${R.len}, var(--vw)) var(--xw)`;
+    fitKb();
   }
   window.addEventListener('resize', () => { if (screenOn() && R) sizeBoard(); });
+
+  // ---------- Keyboard height (v08, JM CD-26): drag the grab handle above the keyboard up to make every key taller,
+  // up to the space just below the action buttons; drag down to shrink it back; double-click (or double-tap) resets it.
+  // Remembered on this device (vs.kbH, in localStorage). ----------
+  const KB_MIN = 48;                                   // the normal key height (px)
+  let kbNow = KB_MIN;                                  // the key height on screen now
+  const kbH = () => Math.max(KB_MIN, Math.round(+vs.kbH || KB_MIN)); // the height the player chose
+  // the tallest keys that still fit: the keyboard may grow into the gap between the buttons and the grab handle
+  function kbMax() {
+    const acts = $('.vt-acts'), grip = $('#vtGrip');
+    if (!acts || !grip || $('#vtPlay').hidden) return kbNow;
+    const gap = grip.getBoundingClientRect().top - acts.getBoundingClientRect().bottom - 10; // 10 = the row gap that always stays
+    return Math.max(KB_MIN, kbNow + Math.floor(gap / 3));
+  }
+  function applyKb(h) {
+    kbNow = h;
+    const kb = $('#vtKb');
+    kb.style.setProperty('--kh', h + 'px');
+    kb.style.setProperty('--kf', Math.round(17 + (h - KB_MIN) * 0.18) + 'px'); // letters grow a little with the keys
+  }
+  // the chosen height, or less when this screen has less room (the choice itself is kept for bigger screens)
+  function fitKb() { applyKb(Math.min(kbH(), kbMax())); }
+  (function gripWiring() {
+    const g = $('#vtGrip');
+    let drag = null;
+    g.addEventListener('pointerdown', e => {
+      if (!R) return;
+      e.preventDefault();
+      drag = { y: e.clientY, h: kbNow, max: kbMax() };
+      g.setPointerCapture(e.pointerId);
+      g.classList.add('on');
+    });
+    g.addEventListener('pointermove', e => {
+      if (!drag) return;
+      // the keyboard's top follows the finger: 3 rows share the change
+      const h = Math.max(KB_MIN, Math.min(drag.max, Math.round(drag.h + (drag.y - e.clientY) / 3)));
+      applyKb(h);
+      vs.kbH = h;
+    });
+    const end = () => { if (!drag) return; drag = null; g.classList.remove('on'); saveVs(); };
+    g.addEventListener('pointerup', end);
+    g.addEventListener('pointercancel', end);
+    g.addEventListener('dblclick', () => { vs.kbH = KB_MIN; saveVs(); applyKb(KB_MIN); });
+  })();
 
   // Mark a guess: 'ok' right spot, 'in' elsewhere in the word, 'no' not in the word (repeated letters counted properly)
   function mark(guess, ans) {
@@ -245,7 +314,7 @@
   }
   function render() {
     const b = [];
-    const CHEV = '<div class="vt-chev" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 3l10 9-10 9" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>';
+    const CHEV = '<div class="vt-chev" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 3l10 9-10 9" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>'; // v08: 25% bolder (stroke 4 → 5)
     for (let r = 0; r < R.tries; r++) {
       const row = R.rows[r];
       // a large > marks the active guess row; it balances the ✕ on the right, so the grid sits centered (CD-25: 1.5.2.3)
@@ -277,8 +346,9 @@
     $('#vtReveal').disabled = R.over || !R.cells.some(c => !c.lock);
     $('#vtQuit').disabled = R.over;
     $('#vtHint').disabled = R.over;
-    $('#vtHint span').textContent = R.hints ? 'Hint ✓' : 'Hint (−5)';
-    $('#vtHint').title = R.hints ? 'Show the clue again (free)' : 'Show a clue for the word (−5)';
+    $('#vtHint span').textContent = R.hints ? 'Hint ✓' : `Hint 🪙${HINT_COINS}`;
+    $('#vtHint').title = R.hints ? 'Show the clue again (free)' : `Show a clue for the word (${HINT_COINS} coins)`;
+    $('#vtHint').classList.toggle('poor', !R.hints && UI.coins && UI.coins.bal < HINT_COINS);
     renderClock();
   }
 
@@ -316,11 +386,16 @@
   $('#vtClock').addEventListener('click', () => { if (R && !R.over) setPaused(!R.paused); });
   document.addEventListener('visibilitychange', () => { if (document.hidden && R && !R.over && screenOn()) setPaused(true); });
 
-  // ---------- Hint (−5): the word's clue over the grid; seeing it again is free (CD-24: 1.1.5) ----------
+  // ---------- Hint: the word's clue over the grid; seeing it again is free (CD-24: 1.1.5).
+  // v08 (CD-26: 3.1): it costs 5 coins instead of 5 points ----------
+  const HINT_COINS = 5;
   $('#vtHint').addEventListener('click', () => {
     if (!R || R.over) return;
-    if (!R.hints) { R.hints = 1; toast('Hint · −5'); }
-    const c = clueOf(R.a);
+    if (!R.hints) {
+      if (UI.coins && !UI.coins.spend(HINT_COINS, `${title()} Hint`)) return;
+      R.hints = 1; toast(`Hint · 🪙−${HINT_COINS}`);
+    }
+    const c = R.hint;
     showOv('hint', `<div class="vt-ov-h">🔎 Hint</div>${c.pic ? `<div class="vt-ov-pic">${esc(c.pic)}</div>` : ''}<div class="vt-ov-t">${esc(c.t)}</div>
       <div class="vt-ov-s">Tap anywhere to close · Hint ✓ shows it again for free</div>`);
     render();
@@ -336,6 +411,12 @@
   function key(k) {
     if (!R || R.over || R.paused || R.gate || !$('#modal').hidden) return;
     if (k === 'Enter') return submit();
+    // Space bar (v08, JM CD-26): the next open square to the right in the active row, wrapping from the last back to
+    // the first. "Open" = not a locked (carried-forward green or revealed) letter, so typed letters can be revisited.
+    if (k === ' ') {
+      for (let n = 1; n <= R.len; n++) { const j = ((R.sel < 0 ? -1 : R.sel) + n) % R.len; if (editable(j)) { R.sel = j; break; } }
+      return render();
+    }
     if (k === 'ArrowLeft' || k === 'ArrowRight') {
       const d = k === 'ArrowLeft' ? -1 : 1;
       for (let i = R.sel + d; i >= 0 && i < R.len; i += d) if (editable(i)) { R.sel = i; break; }
@@ -377,6 +458,7 @@
     const st = mark(g, R.a.w);
     R.rows.push({ g, st });
     const tm = timerOf(R.timer);
+    R.lastLeft = R.left; // v08: the time left when this guess went in (the time bonus and speed coins use it)
     if (tm.kind === 'guess') R.left = tm.ms; // each guess gets a fresh clock
     if (g === R.a.w) return finish(true);
     if (R.rows.length >= R.tries) return finish(false);
@@ -453,10 +535,20 @@
     const spare = R.tries - R.rows.length;
     if (spare) rows.push([`Guesses to spare ×${spare}`, 5 * spare]);
     const tm = timerOf(R.timer);
-    if (tm.kind !== 'none') { const tb = Math.min(30, Math.floor(R.left / 5000)); if (tb) rows.push(['Time bonus (1 per 5 s left)', tb]); }
-    if (R.hints) rows.push(['Hint', -5]);
+    // v08: the time left when the winning guess went in (with a per-guess clock, R.left has already been reset)
+    if (tm.kind !== 'none') { const tb = Math.min(30, Math.floor(R.lastLeft / 5000)); if (tb) rows.push(['Time bonus (1 per 5 s left)', tb]); }
     if (R.reveals) rows.push([`Reveal ×${R.reveals}`, -3 * R.reveals]);
     return { total: Math.max(0, rows.reduce((a, r) => a + r[1], 0)), rows };
+  }
+  // Coins for a solved word (v08, CD-26: 3.1): 2 per letter + 2 per guess to spare; timed rounds add speed coins,
+  // 1 per second left on the clock when the word was solved (up to 20 per letter). Untimed rounds pay no speed coins.
+  function coinsFor() {
+    const C = UI.COIN || { vaultLetter: 2, vaultSpare: 2, perTile: 20 };
+    const rows = [[`${R.len} letters`, C.vaultLetter * R.len]];
+    const spare = R.tries - R.rows.length;
+    if (spare) rows.push([`${spare} guess${spare > 1 ? 'es' : ''} to spare`, C.vaultSpare * spare]);
+    if (timerOf(R.timer).kind !== 'none') { const sp = Math.min(C.perTile * R.len, Math.floor(R.lastLeft / 1000)); if (sp) rows.push(['Speed', sp]); }
+    return { total: rows.reduce((a, r) => a + r[1], 0), rows };
   }
   function recordLoss() { stats.played++; stats.streak = 0; stats.dist.X = (stats.dist.X || 0) + 1; saveStats(); }
   function finish(won, gaveUp) {
@@ -465,6 +557,8 @@
     hideOv(); setFlash(0);
     const ms = R.used;
     const sc = score(won);
+    sc.coins = won ? coinsFor() : null;
+    if (sc.coins && UI.coins) UI.coins.add(sc.coins.total, `${title()}: ${R.a.w}`);
     if (won) {
       stats.played++; stats.won++; stats.streak++; stats.best = Math.max(stats.best, stats.streak);
       stats.dist[R.rows.length] = (stats.dist[R.rows.length] || 0) + 1;
@@ -503,8 +597,9 @@
     openModal(`
       <div class="vt-res-h">${won ? '🔓 Vault cracked!' : gaveUp ? '🏳️ You gave up' : '🔒 The Vault stays shut'}</div>
       <div class="vt-res-w">${w.split('').map(ch => `<span>${ch}</span>`).join('')}</div>
-      ${R.a.c ? `<p class="vt-res-c">Clue: ${esc(R.a.c)}</p>` : ''}
+      ${R.hint && R.hint.t ? `<p class="vt-res-c">Clue: ${esc(R.hint.t)}</p>` : ''}
       ${won ? `<table class="score-table vt-sc">${sc.rows.map(r => `<tr><td>${esc(r[0])}</td><td>${r[1] < 0 ? '−' + Math.abs(r[1]) : '+' + r[1]}</td></tr>`).join('')}<tr class="total"><td>Score</td><td>${sc.total}</td></tr></table>` : ''}
+      ${sc.coins ? `<p class="coin-line">🪙 <b>+${sc.coins.total} coins</b> (${sc.coins.rows.map(r => `${esc(r[0])} +${r[1]}`).join(' · ')})${R.hints ? ` · Hint −${HINT_COINS}` : ''} · balance <b data-coins>${UI.coins ? UI.coins.bal : ''}</b></p>` : ''}
       <div class="vt-res-stats">
         <div><b>${fmt(ms)}</b><span>Time</span></div><div><b>${stats.bestMs ? fmt(stats.bestMs) : '–'}</b><span>Best time</span></div>
         <div><b>${stats.played}</b><span>Played</span></div><div><b>${pct}%</b><span>Solved</span></div>
@@ -528,13 +623,16 @@
         <li>Guess the hidden word. Type a word (on screen or your keyboard) and press <b>ENTER</b>. Every guess must be a real word of the right length.</li>
         <li>Each letter of your guess is then marked: <span class="vt-chip ok">green</span> right letter in the right spot, <span class="vt-chip in">yellow</span> in the word but in another spot, <span class="vt-chip no">red</span> not in the word. The keyboard keeps the best mark for each letter.</li>
         <li>Green letters carry into your next guess automatically, and typing starts at the first open square.</li>
-        <li>Tap a square (or use the ← → arrow keys) to choose where the next letter goes; the chosen square glows blue. ⌫ clears it, and <b>✕</b> at the end of the row clears the whole guess.</li>
-        <li><b>🔎 Hint (−5)</b> shows a clue for the word (sometimes with a picture) over the grid; tap anywhere to close it. Once paid for, <b>Hint ✓</b> shows it again for free.</li>
+        <li>Tap a square (or use the ← → arrow keys) to choose where the next letter goes; the chosen square glows blue. The <b>Space bar</b> jumps to the next open square to the right (after the last one, back to the first). ⌫ clears it, and <b>✕</b> at the end of the row clears the whole guess.</li>
+        <li><b>🔎 Hint (🪙${HINT_COINS})</b> shows a clue for the word (sometimes with a picture) over the grid; tap anywhere to close it. It costs ${HINT_COINS} <b>coins</b>, not points. Once paid for, <b>Hint ✓</b> shows it again for free.</li>
+        <li>The Hint follows the <b>Challenge Level</b>: at 1–3 it is direct and simple (mostly one word, like "Froth" for FOAM); at 8–10 it is indirect, a metaphor or a pun; at 4–7 you get a mix that grows trickier as the level rises.</li>
+        <li><b>🪙 Coins</b> (one currency with Clue Duel; your balance shows beside the line above the grid): every word you solve pays <b>2 per letter</b> and <b>2 per guess to spare</b>. Timed rounds add <b>speed coins</b>: 1 for every second left on the clock when you solve it, up to 20 per letter. Untimed rounds pay no speed coins.</li>
+        <li><b>Taller keys:</b> drag the grab bar above the keyboard up to make every key taller (as far as the space below the buttons allows), or down to shrink them. Double-click (or double-tap) it to reset. Your choice is remembered on this device.</li>
         <li><b>⏸️ Pause:</b> tap the clock. The grid is hidden until you tap anywhere. The clock counts down in timed games and counts up in untimed ones. In the last 10 seconds the grid's border flashes yellow, then red.</li>
         <li><b>Challenge Level</b> (1–10) sets how hard the vocabulary is: everyday words at 1–3, rarer ones as it rises.</li>
         <li><b>Letters</b> (4–8) and <b>Guesses</b> (5–10) set the word's length and how many tries you get.</li>
-        <li><b>Timer:</b> the main game's choices. "A guess" gives each guess its own clock (when it runs out, that guess is used up); "a word" times the whole round. The clock stops while a window is open or the app is hidden.</li>
-        <li><b>Scoring</b> (only when you solve it): <b>Classic</b> scores the word's letter values (as in the main game) plus 2 per letter; <b>Flat</b> scores 2 per letter. Both add <b>+5</b> for every guess you didn't need and, in timed rounds, a time bonus (1 point per 5 seconds left, up to 30). The <b>Hint</b> costs <b>5</b>; each <b>💡 Reveal</b> places one letter in its spot and costs <b>3</b>.</li>
+        <li><b>Timer:</b> the main game's choices. "Per guess" gives each guess its own clock (when it runs out, that guess is used up); "per word" times the whole round. The clock stops while a window is open or the app is hidden.</li>
+        <li><b>Scoring</b> (only when you solve it): <b>Classic</b> scores the word's letter values (as in the main game) plus 2 per letter; <b>Flat</b> scores 2 per letter. Both add <b>+5</b> for every guess you didn't need and, in timed rounds, a time bonus (1 point per 5 seconds left, up to 30). Each <b>💡 Reveal</b> places one letter in its spot and costs <b>3 points</b>. (The Hint costs coins, not points.)</li>
         <li><b>⚙ Settings</b> (in the header, or tap the line above the grid) change the game at any time; changes apply from the next word.</li>
         <li><b>🆕 New Game</b> starts a fresh word. <b>🏳️ Give up</b> shows the word. Either one, once you've made a guess, counts that word as not solved and breaks your streak. After New Game, the word you left is shown over the new grid until you tap; the new word's clock starts then.</li>
         <li>Your stats (played, solved %, streaks, best time, guesses needed) are kept on this device.</li>

@@ -9,7 +9,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Clue Duel">
   <meta name="description" content="A head-to-head crossword tile game you can play offline.">
-  <title>Clue Duel · v07f</title>
+  <title>Clue Duel · v08</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="icon" href="icons/icon-192.png" type="image/png" sizes="192x192">
@@ -23,7 +23,7 @@
       <header class="brand">
         <img class="logo" src="icons/icon.svg" alt="" width="64" height="64">
         <div>
-          <h1>Clue Duel <span class="vpill" id="verPill">v07f</span></h1>
+          <h1>Clue Duel <span class="vpill" id="verPill">v08</span></h1>
           <p class="tag">Place your letters. Finish the words. Beat your rival.</p>
         </div>
       </header>
@@ -33,6 +33,7 @@
         <div class="me-row">
           <button class="me-av" id="myAv" type="button" aria-label="Choose your avatar">🙂</button>
           <input type="text" id="myName" maxlength="14" placeholder="Your name" autocomplete="off" spellcheck="false" aria-label="Your name">
+          <span class="home-coins" id="homeCoins"></span><!-- v08: your coin balance -->
         </div>
       </div>
 
@@ -173,11 +174,13 @@
         <div class="vt-info" id="vtInfo"></div>
         <div class="vt-boardwrap" id="vtWrap"><div class="vt-board" id="vtBoard"></div><div class="vt-ov" id="vtOv" hidden></div></div>
         <div class="vt-acts">
-          <button class="btn act" id="vtHint" type="button" title="Show a clue for the word"><b>🔎</b><span>Hint (−5)</span></button>
+          <button class="btn act" id="vtHint" type="button" title="Show a clue for the word (5 coins)"><b>🔎</b><span>Hint 🪙5</span></button>
           <button class="btn act" id="vtReveal" type="button"><b>💡</b><span>Reveal (−3)</span></button>
           <button class="btn act" id="vtNew" type="button"><b>🆕</b><span>New Game</span></button>
           <button class="btn act" id="vtQuit" type="button"><b>🏳️</b><span>Give up</span></button>
         </div>
+        <!-- v08 (JM, CD-26): grab bar: drag up for taller keys -->
+        <div class="vt-grip" id="vtGrip" role="separator" aria-orientation="horizontal" aria-label="Drag up or down to resize the keyboard" title="Drag up or down to resize the keyboard · double-click to reset"><span></span></div>
         <div class="vt-kb" id="vtKb"></div>
       </div>
     </div>
@@ -241,12 +244,12 @@
       <div class="rackbar"><div id="rack" class="rack"></div></div>
       <div class="actions" id="actions">
         <div class="more-pop" id="morePop">
-          <button class="btn act" id="hintBtn" type="button"><b>💡</b><span id="hintTxt">Hint (−3)</span></button>
-          <button class="btn act" id="placeBtn" type="button" title="Place one of your tiles in a cell where it fits. Costs that tile's value."><b>🎯</b><span>Place (−?)</span></button>
+          <button class="btn act" id="hintBtn" type="button"><b>💡</b><span id="hintTxt">Hint 🪙3</span></button>
+          <button class="btn act" id="placeBtn" type="button" title="Place one of your tiles in a cell where it fits. Costs that tile's value in coins."><b>🎯</b><span>Place 🪙?</span></button>
           <button class="btn act" id="swapBtn" type="button"><b>🔄</b><span>Swap</span></button>
           <button class="btn act" id="mixBtn" type="button"><b>🔀</b><span>Shuffle</span></button>
           <button class="btn act" id="pauseBtn" type="button" title="Pause (P)"><b id="pauseIco">⏸️</b><span class="timer" id="timerTxt">∞</span></button>
-          <button class="btn act" id="timeBtn" type="button" title="Add 30 seconds to your clock. Costs 5 points each time." hidden><b>⏱️</b><span>+30s (−5)</span></button>
+          <button class="btn act" id="timeBtn" type="button" title="Add 30 seconds to your clock. Costs 5 coins each time." hidden><b>⏱️</b><span>+30s 🪙5</span></button>
         </div>
         <button class="btn primary act" id="doneBtn" type="button"><b>✓</b><span id="doneTxt">Pass</span></button>
         <button class="btn act" id="moreBtn" type="button" aria-expanded="false" aria-controls="morePop" title="More buttons"><b>⋯</b><span>More</span></button>

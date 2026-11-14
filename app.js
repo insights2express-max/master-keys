@@ -1,7 +1,7 @@
-/* Clue Duel — user interface (v07f) */
+/* Clue Duel — user interface (v08: coins) */
 'use strict';
 (() => {
-  const APP_VER = 'v07f'; // Project CP: shown as a pill beside the title and in the browser tab
+  const APP_VER = 'v08'; // Project CP: shown as a pill beside the title and in the browser tab
   const E = window.Engine;
   const $ = (s, el = document) => el.querySelector(s);
   const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -33,6 +33,56 @@
     set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* storage full or blocked */ } },
     del(k) { try { localStorage.removeItem(k); } catch (e) { /* ignore */ } }
   };
+
+  // ---------- Coins (v08; JM CD-13: 5a, 5.3.1; CD-18: 8.1; CD-26: 3.1): ONE currency for both games ----------
+  // Spent on: Hint, Place and +30s in Clue Duel (instead of points), and Word Vault's Hint.
+  // Earned by: speed (1 coin per second left on a timed clock, on turns that place tiles; never in untimed games),
+  // winning a Clue Duel game, and solving a Word Vault word. Kept on this device (localStorage 'cd.coins').
+  const COIN = { start: 100, win: 10, perTile: 20, vaultLetter: 2, vaultSpare: 2 };
+  const coinData = Object.assign({ bal: COIN.start, earned: 0, spent: 0, log: [] }, store.get('cd.coins', {}));
+  const coins = {
+    get bal() { return coinData.bal; },
+    // n > 0 earns, n < 0 spends; why = a short label for the coin history
+    add(n, why) {
+      n = Math.round(n || 0);
+      if (!n) return 0;
+      coinData.bal += n;
+      if (n > 0) coinData.earned += n; else coinData.spent -= n;
+      coinData.log.unshift([Date.now(), n, String(why || '')]);
+      if (coinData.log.length > 12) coinData.log.length = 12;
+      store.set('cd.coins', coinData);
+      renderCoins();
+      return n;
+    },
+    // true when paid; otherwise a toast explains and nothing is spent
+    spend(n, why) {
+      if (coinData.bal < n) { toast(`Not enough coins: ${why} costs 🪙${n}, you have 🪙${coinData.bal}`, 'bad', 2800); return false; }
+      coins.add(-n, why);
+      return true;
+    }
+  };
+  const coinPill = () => `<button type="button" class="coin-pill" data-coinbtn title="Your coins: tap for details"><span aria-hidden="true">🪙</span><b data-coins>${coinData.bal}</b></button>`;
+  function renderCoins() { document.querySelectorAll('[data-coins]').forEach(el => { el.textContent = coinData.bal; }); }
+  function coinWindow() {
+    const when = t => { const m = Math.round((Date.now() - t) / 60000); return m < 1 ? 'just now' : m < 60 ? m + ' min ago' : m < 1440 ? Math.round(m / 60) + ' h ago' : Math.round(m / 1440) + ' d ago'; };
+    openModal(`<h2>🪙 Coins: ${coinData.bal}</h2>
+      <p class="help-note">One currency for Clue Duel and Word Vault. Earned ${coinData.earned} · spent ${coinData.spent} on this device.</p>
+      <ul class="coin-how">
+        <li><b>Spend:</b> 💡 Hint ${E.RULES.hintCost}, 🎯 Place = the tile's value, ⏱️ +30s ${E.RULES.timeCost} (Clue Duel); 🔎 Hint 5 (Word Vault).</li>
+        <li><b>Speed coins:</b> in timed games, 1 coin for every second left on your clock when you end a turn that placed tiles. Up to ${COIN.perTile} per tile placed, with no cap when you place every tile in your hand. Untimed games pay no speed coins; time bought with +30s doesn't count.</li>
+        <li><b>Win a Clue Duel game:</b> +${COIN.win}.</li>
+        <li><b>Solve a Word Vault word:</b> ${COIN.vaultLetter} per letter, ${COIN.vaultSpare} per guess to spare, plus speed coins in timed rounds (up to ${COIN.perTile} per letter).</li>
+      </ul>
+      ${coinData.log.length ? `<h3>Latest</h3><table class="score-table coin-log">${coinData.log.map(([t, n, w]) => `<tr><td>${esc(w)}<small> · ${when(t)}</small></td><td class="${n < 0 ? 'neg' : 'pos'}">${n < 0 ? '−' + -n : '+' + n}</td></tr>`).join('')}</table>` : ''}
+      <div class="row"><button class="btn primary" data-a="ok">OK</button></div>`);
+    $('#modal').onclick = e => { if (e.target === $('#modal')) closeModal(); };
+    $('#sheet').onclick = e => { if (e.target.closest('[data-a]')) closeModal(); };
+  }
+  document.addEventListener('click', e => {
+    if (!(e.target && e.target.closest && e.target.closest('[data-coinbtn]'))) return;
+    if (G && !G.over && !$('#game').hidden && E.timerOf(G.settings.timer).kind !== 'none') setPaused(true);
+    coinWindow();
+  });
   const settings = Object.assign({ skill: 3, size: 'M', hand: 6, timer: '0', scoring: 'classic', bonus: 'floating', pics: 'some', name: '', avatar: '🙂' }, store.get('cd.settings', {}));
   if (typeof settings.timer === 'number') settings.timer = settings.timer > 0 ? 't' + settings.timer : '0'; // v01 settings
   let G = null; // engine state of the current game
@@ -73,6 +123,8 @@
     if (document.activeElement !== $('#myName')) $('#myName').value = settings.name || '';
     const saved = store.get('cd.save', null);
     $('#resumeBtn').hidden = !(saved && !saved.over);
+    if (!$('#homeCoins').firstChild) $('#homeCoins').innerHTML = coinPill(); // v08
+    renderCoins();
   }
   function saveSettings() { store.set('cd.settings', settings); renderHome(); }
 
@@ -468,8 +520,9 @@
   function renderInfo() {
     const r = Math.ceil(G.turnNo / 2), M = E.modeOf(G);
     const bonusName = { fixed: 'Fixed bonuses', floating: 'Floating bonuses', both: 'Fixed + floating bonuses', off: 'No bonuses' }[G.settings.bonus] || '';
-    $('#infoBar').textContent = `Round ${r} · Bag ${G.bag.length} · ${M.name}`;
-    $('#infoSide').innerHTML = `<b>Round ${r}</b> · Bag ${G.bag.length}<br>${esc(M.name)} · ${esc(bonusName)}<br>${esc(timerLabel())}`;
+    // v08: the coin balance leads the line, so a narrow screen trims the mode name, not the coins
+    $('#infoBar').innerHTML = `${coinPill()} Round ${r} · Bag ${G.bag.length} · ${esc(M.name)}`;
+    $('#infoSide').innerHTML = `<div class="info-coins">${coinPill()}</div><b>Round ${r}</b> · Bag ${G.bag.length}<br>${esc(M.name)} · ${esc(bonusName)}<br>${esc(timerLabel())}`;
   }
 
   // The clock shown on the Pause button
@@ -555,9 +608,14 @@
 
   function renderActions() {
     const mine = myTurn();
-    $('#hintTxt').textContent = `Hint (−${E.penaltyOf(G, 'hint')})`;
+    // v08: Hint, Place and +30s cost coins; a button you can't afford is dimmed (a tap says why)
+    const hc = E.RULES.hintCost;
+    $('#hintTxt').textContent = `Hint 🪙${hc}`;
     $('#hintBtn').disabled = !mine || !G.hands[0].length;
+    $('#hintBtn').classList.toggle('poor', coins.bal < hc);
     $('#placeBtn').disabled = !mine || G.hands[0].length <= ui.pending.length;
+    $('#placeBtn').classList.toggle('poor', coins.bal < 1);
+    $('#timeBtn').classList.toggle('poor', coins.bal < E.RULES.timeCost);
     // +30s only exists in timed games (JM, CD-7 add'l 1.2)
     $('#timeBtn').hidden = E.timerOf(G.settings.timer).kind === 'none';
     $('#timeBtn').disabled = !mine;
@@ -604,7 +662,7 @@
     const name = p === 0 ? myName() : opp().n, av = p === 0 ? settings.avatar : opp().a;
     const rows = (G.log || []).filter(e => e.p === p);
     let h = `<div class="ss-head"><span class="av">${av}</span><span class="nm">${esc(name)}</span><span class="tt">${G.scores[p]}</span></div>`;
-    h += '<table class="ss"><thead><tr><th title="Round">Rd</th><th title="Letter points">Ltr</th><th title="Word points">Wd</th><th title="Bonuses: 2×, +5, +2, Full Hand">Bon</th><th title="Penalties: Wrong Cells, Hints, Place, +30s">Pen</th><th title="Turn subtotal">Turn</th></tr></thead><tbody>';
+    h += '<table class="ss"><thead><tr><th title="Round">Rd</th><th title="Letter points">Ltr</th><th title="Word points">Wd</th><th title="Bonuses: 2×, +5, +2, Full Hand">Bon</th><th title="Penalties: Wrong Cells (Hint, Place and +30s cost coins, not points)">Pen</th><th title="Turn subtotal">Turn</th></tr></thead><tbody>';
     for (const e of rows) {
       const cls = win.get(e.r) === p ? ' class="win"' : '';
       const pen = e.pen ? '−' + e.pen : '';
@@ -684,8 +742,9 @@
       }
     } else rows.push(`<div class="tr-row"><span class="l">${e.kind === 'swap' ? 'Swapped' : 'Passed'}</span><span class="v">0</span></div>`);
     const items = e.items || [];
+    // point rows: only items that cost points (v08: Hint, Place and +30s cost coins; older saves still show their points)
     const grp = (k, label) => {
-      const xs = items.filter(x => x.k === k);
+      const xs = items.filter(x => x.k === k && x.v);
       if (xs.length) add(label(xs), -xs.reduce((a, x) => a + x.v, 0));
     };
     // v06: a Wrong Cell's cost depends on the tile, so the row names the letters (older saves have none)
@@ -694,9 +753,15 @@
     grp('place', xs => 'Place ' + xs.map(x => x.ch).join(', '));
     grp('time', xs => '+30s' + xn(xs.length));
     if (!items.length && e.pen) add('Penalties', -e.pen);
+    // v08: coins spent and earned this turn, on their own line under the points (they never change the score)
+    const LBL = { hint: 'Hint', place: 'Place', time: '+30s', speed: 'Speed' };
+    const cs = {};
+    for (const x of items) if (x.c) cs[x.k] = (cs[x.k] || 0) + x.c;
+    const coinTxt = Object.keys(cs).map(k => `${LBL[k] || k} ${cs[k] < 0 ? '−' + -cs[k] : '+' + cs[k]}`).join(' · ');
     const name = e.p === 0 ? myName() : opp().n, av = e.p === 0 ? settings.avatar : opp().a;
     return `<div class="tr-head"><span class="av">${av}</span><span class="nm">${esc(name)}</span><span class="rd">Round ${e.r}</span></div>`
       + `<div class="tr-row tot"><span class="l">TOTAL</span><span class="v">${signed(e.tot)}</span></div>${rows.join('')}`
+      + (coinTxt ? `<div class="tr-coin">🪙 ${coinTxt}</div>` : '')
       + (e.p === 1 && !G.over ? '<div class="tr-tap">Click or tap anywhere to play</div>' : '');
   }
   function showReport(e) {
@@ -815,7 +880,7 @@
         <li><span class="chip x2">2×</span> cells double the turn's points from tiles and words (see ${go('Bonuses')}).</li>
         <li><b>Full Hand</b>: <b>+${R.fullHandBonus}</b> points.</li>
         <li><b>Wrong Cell</b>: costs <b>${wrongMin} points</b>, or the tile's value if that is more. In Classic a wrong Q or Z costs 10 and a wrong E costs 2.</li>
-        <li><b>Hint</b>: costs <b>${hintC} points</b> (see ${go('The Buttons')}).</li>
+        <li><b>Hint</b>, <b>Place</b> and <b>+30s</b> cost <b>coins</b>, not points (see ${go('Coins')}).</li>
         <li>When the game ends, the tiles still in each hand are taken off that player's score (see ${go('The End')}).</li>
         ${modeH('classic')}
         <li>Each tile scores its letter value, shown on the tile: common letters like E and T are worth 1; Q and Z are worth 10.</li>
@@ -869,12 +934,12 @@
         <li>Your hand refills from the bag after every turn as long as more tiles exist in the bag. Near the end of a game, your opponent may hold more tiles than you, requiring you to PASS until all tiles have been played (or three passes in a row have occurred to end the game).</li>`)}
       ${sec('The Buttons', `
         <li>Your hand and the buttons share the bottom row. On a phone, ✓ Done stays on the row and the other buttons open from <b>⋯ More</b>; in timed games your clock then shows under your score.</li>
-        <li><b>💡 Hint (−${hintC})</b>: shows a cell where one of your tiles fits.</li>
-        <li><b>🎯 Place (−?)</b>: puts one random tile from your hand into a cell where it fits. It costs that tile's value (shown on the tile; 1 in modes without tile values), then scores like any tile you place.</li>
+        <li><b>💡 Hint (🪙${hintC})</b>: shows a cell where one of your tiles fits. It costs ${hintC} ${go('Coins', 'coins')}.</li>
+        <li><b>🎯 Place (🪙?)</b>: puts one random tile from your hand into a cell where it fits. It costs that tile's value in coins (shown on the tile; 1 in modes without tile values), then scores like any tile you place.</li>
         <li><b>🔄 Swap</b>: trade some or all of your tiles for new ones from the bag. It ends your turn and counts as a pass.</li>
         <li><b>🔀 Shuffle</b>: mixes the order of your hand.</li>
         <li><b>⏸️ Pause</b> (or the P key) shows your clock in timed games. It stops every clock and hides the grid, clues and hand; tap the PLAY PAUSED panel, ▶️, or P to resume. The game also pauses when you switch to another tab or app.</li>
-        <li><b>⏱️ +30s (−${R.timeCost})</b> (timed games only): adds 30 seconds to your clock for ${R.timeCost} points. Use it as often as you like.</li>
+        <li><b>⏱️ +30s (🪙${R.timeCost})</b> (timed games only): adds 30 seconds to your clock for ${R.timeCost} coins. Use it as often as you like. Bought time never pays speed coins.</li>
         <li><b>✓ Done</b> banks this turn's points (it shows how many). With nothing placed it reads <b>Pass</b>.</li>`)}
       ${sec('Bonuses', `
         <li><span class="chip x2">2×</span> doubles your turn's points from tiles and words. Each extra 2× in the same turn adds another double: 10 → 20 → 40 → 60.</li>
@@ -883,17 +948,26 @@
         <li>Bonus cells glow green and pulse at three speeds: +${R.plus2Cell} slowest, +${R.plusCell} slowly, 2× quickly. The bigger the bonus, the faster the pulse.</li>
         <li>Where bonus cells appear is set by ${go('Bonus Squares')}.</li>`)}
       ${sec('Turn Reports and The Scoreboard', `
-        <li>After each turn, a report shows that player's TOTAL first, then a row for every word, bonus and penalty (+ added, − taken away). On wide screens it sits at the bottom of that player's Scoreboard column; on phones, at the bottom of the grid.</li>
+        <li>After each turn, a report shows that player's TOTAL first, then a row for every word, bonus and penalty (+ added, − taken away). Coins spent or earned that turn show on a 🪙 line at the bottom; they never change the score. On wide screens it sits at the bottom of that player's Scoreboard column; on phones, at the bottom of the grid.</li>
         <li>While a report is on screen the game waits: your clock stops the moment your rival finishes, and nothing can be played. <b>Click or tap anywhere</b> to close the reports and start your turn. That click does nothing else.</li>
         <li>The <b>Scoreboard</b> keeps every turn by round: letter points, word points, bonuses, penalties and the turn's total. Green marks the higher score in each round. On phones, tap ▸ Scoreboard to open it.</li>`)}
       ${sec('The End', `
         <li>The game ends when the grid is full, by the <b>3 PASSES Rule</b> (${esc(PASS_RULE)}), or when a whole-game clock runs out.</li>
         <li>A yellow box warns you after the 1st pass; a red box after the 2nd.</li>
         <li>The result screen shows both players' stats and your record against this opponent.</li>`)}
+      ${sec('Coins', `
+        <li><b>🪙 Coins</b> are one currency shared by Clue Duel and ${go('Word Vault')}. You start with <b>${COIN.start}</b>. Your balance shows on the menu, in the game's info line and above the Word Vault grid; tap it for details and your latest coins.</li>
+        <li><b>Spend them on</b> 💡 Hint (${hintC}), 🎯 Place (the tile's value) and ⏱️ +30s (${R.timeCost}) in Clue Duel, and 🔎 Hint (5) in Word Vault. These cost coins, not points. Without enough coins the button is dimmed, and a tap tells you what it costs.</li>
+        <li><b>Speed coins</b> (timed games only): end a turn that placed tiles and earn <b>1 coin for every second left</b> on your clock. A 1-minute turn finished in 35 seconds pays 25. The most a turn can pay is ${COIN.perTile} per tile placed, but there's <b>no cap</b> when you place every tile in your hand. Time bought with +30s doesn't count.</li>
+        <li>With a <b>whole-game</b> clock, speed coins are paid once, when the game ends: 1 per second left, up to ${COIN.perTile} per tile you placed (no cap if your hand is empty).</li>
+        <li><b>Untimed games</b> pay no speed coins.</li>
+        <li><b>Winning</b> a game pays <b>+${COIN.win}</b>.</li>
+        <li><b>Word Vault</b> pays coins for every word you solve: see its <b>?</b>.</li>
+        <li>Each turn report shows that turn's coins on a 🪙 line, and the result screen totals the game's coins.</li>`)}
       ${sec('Word Vault', `
         <li><b>Word Vault</b> is a word-guessing mini-game, opened from its own button on the menu. Guess the hidden word in a set number of tries.</li>
         <li>After each guess every letter is marked: <b>green</b> right letter in the right spot, <b>yellow</b> in the word but in another spot, <b>red</b> not in the word. Green letters carry into your next guess.</li>
-        <li>You choose the Challenge Level (vocabulary), the word's length (4–8 letters), the number of guesses (5–10), a timer and a scoring mode, and you can change them during play (⚙). Extras: 🔎 Hint (−5) shows a clue, 💡 Reveal (−3) places a letter, ✕ clears a guess, and tapping the clock pauses. Tap its <b>?</b> for the full rules.</li>
+        <li>You choose the Challenge Level (vocabulary), the word's length (4–8 letters), the number of guesses (5–10), a timer and a scoring mode, and you can change them during play (⚙). Extras: 🔎 Hint (🪙5) shows a clue that gets trickier as the Challenge Level rises, 💡 Reveal (−3 points) places a letter, ✕ clears a guess, and tapping the clock pauses. Tap its <b>?</b> for the full rules.</li>
         <li>Make it yours: double-click its title to rename it, and tap the icon beside the title to change it or upload your own picture.</li>`)}
       ${sec('Strategy', `
         <li>Don't rush. A word left with only one empty cell is a gift to your rival. Sometimes it pays to <b>hold</b> a tile until you can finish the word yourself.</li>
@@ -952,6 +1026,7 @@
     ui.chainBroken = false;
     stopTimer();
     const tm = E.timerOf(G.settings.timer);
+    ui.bought = 0; // v08: +30s time bought this turn (it never pays speed coins)
     if (tm.kind !== 'none') {
       if (tm.kind === 'turn') ui.left = tm.secs * 1000;
       ui.lastTick = Date.now();
@@ -1031,12 +1106,33 @@
     const placements = ui.pending.slice();
     Object.assign(ui, { pending: [], selTile: null, hintCell: -1, selSlot: -1, selCell: -1 });
     if (placements.length) E.commit(G, 0, placements);
+    if (placements.length) speedCoins(placements.length);
     const over = E.endTurn(G, placements.length);
     showReport(lastLog());
     if (!placements.length && !over) passToast(myName(), 'pass');
     afterTurn(over);
   }
   $('#doneBtn').addEventListener('click', onDone);
+
+  // ---------- Coins in the game (v08) ----------
+  // Every coin spent or earned on a turn is also noted on that turn's report (item.c; item.v = 0, so no points change)
+  function coinItem(kind, c, ch) {
+    E.penalize(G, 0, 0, kind, ch);
+    const its = G.turnItems[0];
+    its[its.length - 1].c = c;
+    if (c > 0) G.coinsIn = (G.coinsIn || 0) + c; else G.coinsOut = (G.coinsOut || 0) - c;
+  }
+  // Speed coins (CD-13: 5.3.1; CD-18: 8.1): per-turn clocks only, on a turn that placed tiles. 1 coin per whole second
+  // left, not counting time bought with +30s. Capped at 20 per tile placed, with no cap when the hand was emptied.
+  function speedCoins(n) {
+    if (E.timerOf(G.settings.timer).kind !== 'turn') return;
+    let c = Math.floor(Math.max(0, ui.left - (ui.bought || 0)) / 1000);
+    if (G.hands[0].length) c = Math.min(c, COIN.perTile * n);
+    if (c <= 0) return;
+    coinItem('speed', c);
+    coins.add(c, `Speed coins (${n} tile${n > 1 ? 's' : ''})`);
+    toast(`🪙 +${c} speed coins`, 'you');
+  }
 
   async function runAiTurn() {
     const token = ui.token;
@@ -1293,13 +1389,14 @@
     if (!myTurn()) return;
     const h = E.hint(G, 0, { tiles: new Set(ui.pending.map(p => p.tileId)), cells: new Set(ui.pending.map(p => p.cell)) });
     if (!h) { toast('No hint available'); return; }
-    const cost = E.penaltyOf(G, 'hint');
-    E.penalize(G, 0, cost, 'hint');
+    const cost = E.RULES.hintCost; // v08: coins, not points
+    if (!coins.spend(cost, 'Hint')) return;
+    coinItem('hint', -cost);
     ui.hintCell = h.cell;
     ui.selTile = h.tileId;
     ui.selSlot = G.pz.cellSlots[h.cell][0];
     ui.selCell = h.cell;
-    toast(`Hint · −${cost}. Tap the glowing cell to place it.`);
+    toast(`Hint · 🪙−${cost}. Tap the glowing cell to place it.`);
     save();
     render();
   });
@@ -1309,10 +1406,12 @@
     if (!myTurn()) return;
     const a = E.autoPlace(G, 0, { tiles: new Set(ui.pending.map(p => p.tileId)), cells: new Set(ui.pending.map(p => p.cell)) });
     if (!a) { toast('None of your tiles fits an open cell'); return; }
-    E.penalize(G, 0, a.cost, 'place', a.ch);
+    const cost = Math.max(1, a.cost); // v08: coins, not points (the tile's value; 1 in modes without values)
+    if (!coins.spend(cost, `Place ${a.ch}`)) return;
+    coinItem('place', -cost, a.ch);
     ui.hintCell = -1;
     placeTile(a.tileId, a.cell);
-    toast(`Placed ${a.ch} · −${a.cost}`);
+    toast(`Placed ${a.ch} · 🪙−${cost}`);
     save();
   });
 
@@ -1321,9 +1420,11 @@
     if (!myTurn()) return;
     const tm = E.timerOf(G.settings.timer);
     if (tm.kind === 'none') return;
-    E.penalize(G, 0, E.RULES.timeCost, 'time');
-    if (tm.kind === 'turn') ui.left += E.RULES.timeAdd; else G.clock += E.RULES.timeAdd;
-    toast(`+30 s · −${E.RULES.timeCost}`);
+    if (!coins.spend(E.RULES.timeCost, '+30s')) return; // v08: coins, not points
+    coinItem('time', -E.RULES.timeCost);
+    if (tm.kind === 'turn') { ui.left += E.RULES.timeAdd; ui.bought = (ui.bought || 0) + E.RULES.timeAdd; }
+    else { G.clock += E.RULES.timeAdd; G.boughtMs = (G.boughtMs || 0) + E.RULES.timeAdd; }
+    toast(`+30 s · 🪙−${E.RULES.timeCost}`);
     save();
     render();
   });
@@ -1516,6 +1617,20 @@
     const title = r.winner === 0 ? `${myName() === 'You' ? 'You win' : myName() + ' wins'}!` : r.winner === 1 ? `${o.n} wins` : 'It\'s a draw';
     const st = G.stats;
     const ended = r.complete ? 'The grid is complete.' : r.reason === 'clock' ? 'Your whole-game clock ran out.' : 'Three passes in a row ended the game (3 PASSES Rule).';
+    // v08 coins at the end: whole-game clocks pay their speed coins once, here (1 per second left, bought time excluded,
+    // up to 20 per tile you placed, no cap when your hand is empty); a win pays +10
+    const endCoins = [];
+    if (!G.coinsPaid) {
+      G.coinsPaid = true;
+      if (E.timerOf(G.settings.timer).kind === 'game' && st.placed[0] > 0) {
+        let c = Math.floor(Math.max(0, G.clock - (G.boughtMs || 0)) / 1000);
+        if (r.leftover[0] > 0) c = Math.min(c, COIN.perTile * st.placed[0]);
+        if (c > 0) { coins.add(c, 'Speed coins (game clock)'); endCoins.push(['Speed (clock left)', c]); }
+      }
+      if (r.winner === 0) { coins.add(COIN.win, 'Clue Duel win'); endCoins.push(['Win', COIN.win]); }
+    }
+    const cIn = (G.coinsIn || 0) + endCoins.reduce((a, x) => a + x[1], 0), cOut = G.coinsOut || 0;
+    const coinLine = `<p class="coin-line">🪙 Coins this game: <b>+${cIn}</b> earned${endCoins.length ? ` (${endCoins.map(x => `${x[0]} +${x[1]}`).join(', ')} included)` : ''} · <b>−${cOut}</b> spent · balance <b data-coins>${coins.bal}</b></p>`;
     setTimeout(() => {
       openModal(`
         <div class="result-face">${face}</div>
@@ -1533,6 +1648,7 @@
           <tr><td>Tiles left (subtracted)</td><td>−${r.leftover[0]}</td><td>−${r.leftover[1]}</td></tr>
           <tr class="total"><td>Final score</td><td>${G.scores[0]}</td><td>${G.scores[1]}</td></tr>
         </table>
+        ${coinLine}
         <p class="rec-line"><span class="rl-a">Record vs ${esc(o.n)}:</span><span class="rl-b">${rec.w} won · ${rec.l} lost${rec.d ? ` · ${rec.d} drawn` : ''}</span></p>
         <div class="row"><button class="btn" data-a="board">See grid</button><button class="btn" data-a="menu">Menu</button><button class="btn primary" data-a="again">Rematch</button></div>`);
       $('#sheet').onclick = e => {
@@ -1555,7 +1671,7 @@
   // =====================================================================
   // v07c: the Word Vault mini-game (vault.js) shares the menu's modal, toasts, storage and avatar list
   window.CDUI = {
-    $, esc, store, toast, openModal, closeModal, APP_VER, AVATARS,
+    $, esc, store, toast, openModal, closeModal, APP_VER, AVATARS, coins, coinPill, COIN, // v08: coins shared with Word Vault
     showScreen, goHome: () => { showScreen('home'); renderHome(); },
     settings: () => settings
   };

@@ -4,8 +4,8 @@
    Level: 1 everyday · 2 common · 3 moderate · 4 advanced · 5 obscure
    Words are 2–7 letters, plus 11-letter words for Large grids (A–Z only). A repeated word adds an extra clue set (see above). */
 // Lexicon edition (JM, CD-24 other edits 1.1): its own number, separate from the game version. Add 1 whenever the word data or the Lexicon page changes.
-// L01 v07a · L02 v07b · L03 v07c · L04 v07d (wrapping cells) · L05 v07e (8-letter hint clues, edition number)
-self.LEXICON_VER = 'L05';
+// L01 v07a · L02 v07b · L03 v07c · L04 v07d (wrapping cells) · L05 v07e (8-letter hint clues, edition number) · L06 v08 (8-letter easy and hard hints)
+self.LEXICON_VER = 'L06';
 self.LEXICON_DATA = `
 # ---------- 2 letters ----------
 AD|Commercial|Promo|1
