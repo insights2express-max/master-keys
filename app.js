@@ -1,7 +1,7 @@
-/* Clue Duel — user interface (v08h: sound effects, off by default; scroll-free menu) */
+/* Clue Duel — user interface (v08i: Options boxes, new sounds, avatar pictures, final turn, timed-game blur) */
 'use strict';
 (() => {
-  const APP_VER = 'v08h'; // Project CP: shown as a pill beside the title and in the browser tab
+  const APP_VER = 'v08i'; // Project CP: shown as a pill beside the title and in the browser tab
   const E = window.Engine;
   const $ = (s, el = document) => el.querySelector(s);
   const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -73,9 +73,43 @@
       s.start(t); s.stop(t + d + 0.02);
     }
     const arp = (t, notes, gap, d, type, v) => notes.forEach((f, i) => tone(f, t + i * gap, d, type, v));
+    // v08i (JM CD-42: 1.5.2): a brass voice: two slightly detuned sawtooth waves through a filter that opens as the
+    // note swells (a trumpet), or that opens and closes on each note (a muted "wah" trombone). vib = vibrato depth.
+    function horn(f, t, d, v, o) {
+      o = o || {};
+      const g = ac.createGain(), flt = ac.createBiquadFilter();
+      flt.type = 'lowpass'; flt.Q.value = o.q || 1;
+      const lo = o.lo || 500, hi = o.hi || 2600, att = o.att || 0.03;
+      flt.frequency.setValueAtTime(lo, t);
+      if (o.wah) { flt.frequency.exponentialRampToValueAtTime(hi, t + Math.min(0.16, d * 0.4)); flt.frequency.exponentialRampToValueAtTime(lo, t + d); }
+      else flt.frequency.exponentialRampToValueAtTime(hi, t + Math.min(0.25, d * 0.5));
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(v, t + att);
+      g.gain.setValueAtTime(v, t + Math.max(att, d - 0.35));
+      g.gain.exponentialRampToValueAtTime(0.0001, t + d);
+      flt.connect(g); g.connect(out);
+      [0, 7].forEach(cents => {
+        const os = ac.createOscillator();
+        os.type = 'sawtooth'; os.frequency.setValueAtTime(f, t); os.detune.value = cents;
+        if (o.vib) {
+          const lfo = ac.createOscillator(), lg = ac.createGain();
+          lfo.frequency.value = o.vibHz || 5.5; lg.gain.setValueAtTime(0, t); lg.gain.linearRampToValueAtTime(f * o.vib, t + Math.min(0.5, d * 0.6));
+          lfo.connect(lg); lg.connect(os.frequency); lfo.start(t); lfo.stop(t + d + 0.05);
+        }
+        os.connect(flt); os.start(t); os.stop(t + d + 0.05);
+      });
+    }
+    // faint applause: many small claps (short bursts of filtered noise) that swell and fade over d seconds
+    function applause(t, d, v) {
+      for (let i = 0; i < 90; i++) {
+        const at = t + Math.random() * d, k = Math.sin(Math.PI * (at - t) / d); // louder in the middle
+        knock(at, 0.025 + Math.random() * 0.03, v * (0.35 + 0.65 * k) * (0.5 + Math.random() * 0.5), 900 + Math.random() * 1800);
+      }
+    }
     const FX = {
       key: t => knock(t, 0.035, 0.35, 2600),                                         // a typed letter (Word Vault)
-      land: t => { knock(t, 0.05, 0.6, 1500); tone(260, t, 0.07, 'sine', 0.25, 170); }, // your tile lands in a cell
+      // v08i (JM CD-42: 1.5.3): 5 semitones lower than v08h (× 0.749)
+      land: t => { knock(t, 0.05, 0.6, 1124); tone(194.8, t, 0.08, 'sine', 0.28, 127.4); }, // your tile lands in a cell
       opp: t => { knock(t, 0.045, 0.35, 1100); tone(200, t, 0.06, 'sine', 0.15, 140); }, // the rival pencils a tile in
       bounce: t => { tone(150, t, 0.16, 'triangle', 0.4, 95); tone(120, t + 0.12, 0.18, 'triangle', 0.3, 80); }, // wrong tile / not a word
       word: t => arp(t, [523.25, 659.25, 783.99, 1046.5], 0.075, 0.45, 'sine', 0.22),   // you finished a word
@@ -83,11 +117,22 @@
       row: t => arp(t, [440, 554.37], 0.06, 0.18, 'triangle', 0.15),                    // a Word Vault guess goes in
       coin: t => { tone(1318.5, t, 0.07, 'square', 0.05); tone(1975.5, t + 0.06, 0.28, 'square', 0.05); }, // coins earned
       spend: t => { tone(987.8, t, 0.06, 'triangle', 0.18); tone(659.3, t + 0.06, 0.14, 'triangle', 0.16); }, // coins spent
-      tick: t => tone(1050, t, 0.03, 'square', 0.05),                                 // last 10–6 seconds
-      tock: t => tone(1500, t, 0.045, 'square', 0.08),                                // last 5–1 seconds
+      // v08i (JM CD-42: 1.5.4): both 25 % louder; 10–6 s keeps its pitch; 5–1 s is a quick "tick-tock" pair each
+      // second: a new, higher tick, then the 10–6 s tone
+      tick: t => tone(1050, t, 0.03, 'square', 0.0625),                               // last 10–6 seconds
+      tock: t => { tone(1575, t, 0.035, 'square', 0.1); tone(1050, t + 0.13, 0.03, 'square', 0.0625); }, // last 5–1 seconds
       pass: t => { tone(440, t, 0.2, 'triangle', 0.25); tone(349.2, t + 0.17, 0.3, 'triangle', 0.25); }, // PASS banner
-      win: t => { arp(t, [523.25, 659.25, 783.99], 0.11, 0.3, 'triangle', 0.22); [523.25, 659.25, 783.99, 1046.5].forEach(f => tone(f, t + 0.36, 0.9, 'sine', 0.13)); },
-      lose: t => arp(t, [392, 329.6, 261.6], 0.16, 0.4, 'sine', 0.18),
+      // v08i (JM CD-42: 1.5.2): win = brass "Ta-DAAAH" (2.5 s) over faint applause
+      win: t => {
+        [392, 493.88, 587.33].forEach(f => horn(f, t, 0.17, 0.07, { lo: 700, hi: 2400 }));                       // "Ta"
+        [261.63, 523.25, 659.25, 783.99].forEach(f => horn(f, t + 0.2, 2.3, 0.065, { lo: 600, hi: 3000, att: 0.06, vib: 0.006 })); // "DAAAH"
+        applause(t + 0.25, 2.25, 0.09);
+      },
+      // loss = muted trombone "wah-wah-wah-waaah": three short falling notes, then a long wobbling one
+      lose: t => {
+        [[233.08, 0, 0.36], [220, 0.4, 0.36], [207.65, 0.8, 0.36]].forEach(([f, s, d]) => horn(f, t + s, d, 0.12, { wah: 1, lo: 320, hi: 1300, q: 4 }));
+        horn(196, t + 1.2, 1.3, 0.12, { wah: 1, lo: 300, hi: 1200, q: 4, vib: 0.025, vibHz: 6 });
+      },
       draw: t => arp(t, [440, 440], 0.16, 0.3, 'sine', 0.15),
       on: t => arp(t, [659.25, 987.8], 0.07, 0.15, 'sine', 0.18)                       // sound just turned on
     };
@@ -210,15 +255,30 @@
     // v08h (JM CD-41: 1.1): the folded Options row shows its five choices in one line
     const txt = id => { const s = $(id); return s.selectedIndex >= 0 ? s.options[s.selectedIndex].text : ''; };
     const tmr = txt('#timerSel').replace(/^Blitz · /, '').replace(/ per TURN$/, '/turn').replace(/ per GAME$/, '/game');
-    $('#optsSum').textContent = [txt('#handSel'), txt('#bonusSel') + ' bonus', txt('#picsSel') + ' pics', txt('#scoringSel'), tmr].join(' · ');
+    // v08i (JM CD-42: 1.1.2): two full rows of boxes, one box per option
+    const no = (s, w) => (s === 'Off' ? 'No ' : s + ' ') + w;
+    const box = s => `<span class="ob">${esc(s)}</span>`;
+    $('#optsSum').innerHTML = `<span class="ob-row">${[txt('#handSel'), no(txt('#picsSel'), 'pics'), tmr].map(box).join('')}</span>` +
+      `<span class="ob-row">${[no(txt('#bonusSel'), 'bonus'), txt('#scoringSel')].map(box).join('')}</span>`;
     $('#optsBox').open = !!settings.optsOpen;
-    $('#myAv').textContent = settings.avatar;
+    fitOpts();
+    $('#myAv').innerHTML = myAv();
     if (document.activeElement !== $('#myName')) $('#myName').value = settings.name || '';
     const saved = store.get('cd.save', null);
     $('#resumeBtn').hidden = !(saved && !saved.over);
     if (!$('#homeCoins').firstChild) $('#homeCoins').innerHTML = coinPill(); // v08
     renderCoins();
   }
+  // v08i: the option boxes use the full size (+50 %) where they fit, and shrink only as much as a narrow phone needs
+  function fitOpts() {
+    const sum = $('#optsSum');
+    if (!sum || $('#home').hidden || $('#optsBox').open) return;
+    let fs = 18.75;
+    sum.style.fontSize = fs + 'px';
+    const over = () => [...sum.children].some(r => r.scrollWidth > r.clientWidth + 1);
+    while (fs > 12 && over()) { fs -= 0.5; sum.style.fontSize = fs + 'px'; }
+  }
+  window.addEventListener('resize', fitOpts);
   function saveSettings() { store.set('cd.settings', settings); renderHome(); }
 
   $('#skillSel').addEventListener('change', e => { settings.skill = +e.target.value; saveSettings(); });
@@ -231,19 +291,56 @@
   $('#myName').addEventListener('input', e => { settings.name = e.target.value.slice(0, 14); store.set('cd.settings', settings); });
   $('#myName').addEventListener('keydown', e => { if (e.key === 'Enter') e.target.blur(); });
   $('#myAv').addEventListener('click', pickAvatar);
-  $('#optsBox').addEventListener('toggle', e => { if (!!settings.optsOpen !== e.target.open) { settings.optsOpen = e.target.open; store.set('cd.settings', settings); } }); // v08h: remembered
+  $('#optsBox').addEventListener('toggle', e => { if (!!settings.optsOpen !== e.target.open) { settings.optsOpen = e.target.open; store.set('cd.settings', settings); } fitOpts(); }); // v08h: remembered
   $('#howBtn').addEventListener('click', showHelp);
   $('#histBtn').addEventListener('click', () => showHistory()); // v08c (CD-30: 4.5)
   $('#startBtn').addEventListener('click', startNewGame);
   $('#resumeBtn').addEventListener('click', resumeGame);
 
+  // v08i (JM CD-42 add'l 1): Word Vault's longer icon list plus your own picture (shrunk to a 128 px square, kept on
+  // this device). The rivals' animals stay out, so you never look like your opponent.
+  const AV_MORE = ['🛡️', '🏆', '🥇', '🎖️', '🔮', '🧭', '🗺️', '🏰', '⚔️', '🕵️', '🐺', '🦅', '🐧', '🧠', '✨', '⚡', '🌟', '🎓', '✏️', '🖋️',
+    '🔍', '🧪', '🎹', '🎮', '🕹️', '🏝️', '🌋', '⛰️', '🍩', '🍓', '🍉', '🎃', '🔑', '🗝️', '🧩', '🎁'];
+  const AV_LIB = [...new Set(AVATARS.concat(AV_MORE))].filter(a => !OPP.some(o => o.a === a));
+  function myAv() { return settings.avatar === 'custom' && settings.avPic ? `<img class="av-img" src="${settings.avPic}" alt="">` : esc(settings.avatar); }
+  function shrinkPicture(file, done) {
+    const rd = new FileReader();
+    rd.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        const S = 128, cv = document.createElement('canvas'); cv.width = cv.height = S;
+        const k = Math.max(S / img.width, S / img.height), w = img.width * k, h = img.height * k; // fill the square, cropping the middle
+        cv.getContext('2d').drawImage(img, (S - w) / 2, (S - h) / 2, w, h);
+        let url = cv.toDataURL('image/png');
+        if (url.length > 60000) url = cv.toDataURL('image/jpeg', 0.85);
+        done(url);
+      };
+      img.onerror = () => toast('That picture could not be opened', 'bad');
+      img.src = rd.result;
+    };
+    rd.readAsDataURL(file);
+  }
   function pickAvatar() {
     openModal(`<h2>Choose your avatar</h2>
-      <div class="av-grid">${AVATARS.map(a => `<button type="button" data-av="${a}" class="${a === settings.avatar ? 'on' : ''}">${a}</button>`).join('')}</div>
+      <div class="vt-upl"><button type="button" class="btn" data-a="upload">📷 Upload your own picture</button>
+        ${settings.avPic ? `<button type="button" data-av="custom" class="vt-mine ${settings.avatar === 'custom' ? 'on' : ''}" title="Your picture"><img src="${settings.avPic}" alt="Your picture"></button>` : ''}
+        <input type="file" id="avFile" accept="image/*" hidden></div>
+      <div class="av-grid">${AV_LIB.map(a => `<button type="button" data-av="${a}" class="${a === settings.avatar ? 'on' : ''}">${a}</button>`).join('')}</div>
       <div class="row"><button class="btn" data-a="close">Cancel</button></div>`);
+    $('#avFile').addEventListener('change', e => {
+      const f = e.target.files && e.target.files[0]; if (!f) return;
+      shrinkPicture(f, url => {
+        const old = { avatar: settings.avatar, avPic: settings.avPic };
+        settings.avPic = url; settings.avatar = 'custom';
+        try { localStorage.setItem('cd.settings', JSON.stringify(settings)); } catch (err) { Object.assign(settings, old); toast('Not enough room to save that picture', 'bad'); return; }
+        $('#sheet').onclick = null;
+        renderHome(); closeModal(); toast('Your picture is set');
+      });
+    });
     $('#sheet').onclick = e => {
       const b = e.target.closest('[data-av],[data-a]');
       if (!b) return;
+      if (b.dataset.a === 'upload') { $('#avFile').click(); return; }
       $('#sheet').onclick = null;
       if (b.dataset.av) { settings.avatar = b.dataset.av; saveSettings(); }
       closeModal();
@@ -254,7 +351,7 @@
     $('#home').hidden = id !== 'home';
     $('#game').hidden = id !== 'game';
     $('#vault').hidden = id !== 'vault'; // v07c: Word Vault
-    if (id === 'home') { const vs = store.get('cd.vault.settings', {}); $('#vaultBtnName').textContent = (vs.name || '').trim() || 'Word Vault'; const ico = $('#vaultBtnIco'); if (vs.icon === 'custom' && vs.custom) ico.innerHTML = `<img src="${vs.custom}" alt="">`; else ico.textContent = vs.icon || '🔐'; }
+    if (id === 'home') { const vs = store.get('cd.vault.settings', {}); $('#vaultBtnName').textContent = (vs.name || '').trim() || 'Word Vault'; const ico = $('#vaultBtnIco'); if (vs.icon === 'custom' && vs.custom) ico.innerHTML = `<img src="${vs.custom}" alt="">`; else ico.textContent = vs.icon || '🔐'; fitOpts(); }
   }
 
   async function startNewGame() {
@@ -337,7 +434,7 @@
     $('#oppNm').textContent = `${opp().n} [${G.settings.skill}]`; // v08b (JM CD-27 add'l 1): the rival's Challenge Level
     $('#oppAv').textContent = opp().a;
     $('#myNm').textContent = myName();
-    $('#myAvTop').textContent = settings.avatar;
+    $('#myAvTop').innerHTML = myAv();
     setSheetOpen(false);
     setMore(false);
     render();
@@ -620,8 +717,10 @@
     const bonusName = { fixed: 'Fixed bonuses', floating: 'Floating bonuses', both: 'Fixed + floating bonuses', off: 'No bonuses' }[G.settings.bonus] || '';
     // v08: the coin balance leads the line, so a narrow screen trims the mode name, not the coins
     // v08h: two short lines (round · bag, then scoring), so the row also fits the 🔇 / 🔊 button on phones
-    $('#infoBar').innerHTML = `${coinPill()}<span class="ib-t"><span>Round ${r} · Bag ${G.bag.length}</span><span>${esc(M.name)}</span></span>`;
-    $('#infoSide').innerHTML = `<div class="info-coins">${coinPill()}</div><b>Round ${r}</b> · Bag ${G.bag.length}<br>${esc(M.name)} · ${esc(bonusName)}<br>${esc(timerLabel())}`;
+    // v08i (JM CD-43: 1.2a): "Round N" over "N in bag" on phones (the scoring name stays in ⚙ and on bigger screens)
+    $('#infoBar').innerHTML = `${coinPill()}<span class="ib-t"><span>Round ${r}</span><span>${G.bag.length} in bag</span></span>`;
+    $('#infoBar').title = `Round ${r} · ${G.bag.length} tiles not dealt yet · ${M.name}`;
+    $('#infoSide').innerHTML = `<div class="info-coins">${coinPill()}</div><b>Round ${r}</b> · ${G.bag.length} in bag<br>${esc(M.name)} · ${esc(bonusName)}<br>${esc(timerLabel())}`;
   }
 
   // The clock shown on the Pause button
@@ -703,7 +802,8 @@
     else if (repsOn()) msg = 'Click or tap anywhere to start your turn. Your clock waits.';
     else if (ui.pending.length) msg = 'Tiles are penciled in until you tap DONE: then wrong ones bounce back and cost points. Drag a tile to move it, or tap it to take it back.';
     else if (!G.hands[0].length) msg = 'No tiles left. Tap Pass.';
-    else msg = 'Your turn. Drag a tile onto the grid, or tap a tile then a cell. Tap a clue to read it; point at (or press and hold) a clue to zoom.';
+    else if (G.finalTurn === 0) msg = `FINAL TURN: ${opp().n} has played every tile. Play all you can; any tile left in your hand counts against you.`;
+    else msg ='Your turn. Drag a tile onto the grid, or tap a tile then a cell. Tap a clue to read it; point at (or press and hold) a clue to zoom.';
     bar.innerHTML = `<div class="cb-status">${esc(msg)}</div>`;
   }
 
@@ -803,7 +903,7 @@
   const signed = v => (v > 0 ? '+' + v : v < 0 ? '−' + Math.abs(v) : '0');
   function sheetHTML(p) {
     const win = roundWinners();
-    const name = p === 0 ? myName() : opp().n, av = p === 0 ? settings.avatar : opp().a;
+    const name = p === 0 ? myName() : opp().n, av = p === 0 ? myAv() : opp().a;
     const rows = (G.log || []).filter(e => e.p === p);
     let h = `<div class="ss-head"><span class="av">${av}</span><span class="nm">${esc(name)}</span><span class="tt">${G.scores[p]}</span></div>`;
     h += '<table class="ss"><thead><tr><th title="Round">Rd</th><th title="Letter points">Ltr</th><th title="Word points">Wd</th><th title="Bonuses: 2×, +5, +2, Full Hand">Bon</th><th title="Penalties: Wrong Cells (Hint, Place and +30s cost coins, not points)">Pen</th><th title="Turn subtotal">Turn</th></tr></thead><tbody>';
@@ -843,6 +943,14 @@
     renderSheets();
     if (!$('#game').hidden) layout();
     renderBoard();
+    veil();
+  }
+  // v08i (JM CD-42 add'l 7; CD-43: 4.1a): in TIMED games the grid, clue bar and hand blur whenever your clock is
+  // stopped by a turn report or the PASS banner, so the grid can't be studied off the clock. The rival's tiles
+  // landing stay sharp (you watch its moves); untimed games never blur.
+  function veil() {
+    const on = !!G && !G.over && E.timerOf(G.settings.timer).kind !== 'none' && repsOn() && (G.turn === 0 || !!ui.passHold);
+    $('#game').classList.toggle('veiled', on);
   }
 
   // =====================================================================
@@ -903,7 +1011,7 @@
     const cs = {};
     for (const x of items) if (x.c) cs[x.k] = (cs[x.k] || 0) + x.c;
     const coinTxt = Object.keys(cs).map(k => `${LBL[k] || k} ${cs[k] < 0 ? '−' + -cs[k] : '+' + cs[k]}`).join(' · ');
-    const name = e.p === 0 ? myName() : opp().n, av = e.p === 0 ? settings.avatar : opp().a;
+    const name = e.p === 0 ? myName() : opp().n, av = e.p === 0 ? myAv() : opp().a;
     return `<div class="tr-head"><span class="av">${av}</span><span class="nm">${esc(name)}</span><span class="rd">Round ${e.r}</span></div>`
       + `<div class="tr-row tot"><span class="l">TOTAL</span><span class="v">${signed(e.tot)}</span></div>${rows.join('')}`
       + (coinTxt ? `<div class="tr-coin">🪙 ${coinTxt}</div>` : '')
@@ -927,6 +1035,7 @@
     });
     $('#repOv').hidden = wide || !(reps.html[0] || reps.html[1]);
     if (wide) for (const id of ['#sheetYou', '#sheetOpp']) { const s = $(id); s.scrollTop = s.scrollHeight; } // keep the latest rows in view
+    veil();
   }
   function clearReports() {
     if (!repsOn()) return;
@@ -1059,7 +1168,7 @@
       <p>You and a computer rival take turns filling the same crossword with letter tiles. Every tile you place correctly scores, finishing words scores more, and the highest score wins.</p>
       <p class="help-note">The first sections follow the menu, top to bottom. Tap a heading to open it. Underlined names open their section.</p>
       ${sec('You', `
-        <li>Tap the face to choose your avatar.</li>
+        <li>Tap the face to choose your avatar from the icon list, or to upload your own picture (kept on this device).</li>
         <li>Type your name in the box beside it. It shows above your score and on the Scoreboard. Left empty, you're "You".</li>`)}
       ${sec('Opponent', `
         <li>Each ${go('Challenge Level')} has its own computer rival, from Benny Bear 🐻 at level 1 to Professor Hoot 🦉 at level 10. Change the level and your rival changes with it.</li>
@@ -1069,7 +1178,8 @@
       ${sec('Challenge Level', `
         <li>Runs from <b>1 · Gentle</b> to <b>10 · Ruthless</b>. It sets two things at once: your rival's skill and the puzzle's difficulty.</li>
         <li>The rival's skill rises gently from 1 to 7, then jumps at 8: levels 8–10 are the <b>Master</b> levels (see ${go('Opponent')}). The puzzle's difficulty rises steadily at every level.</li>
-        <li>As the level rises: words get longer and harder, the grid starts with fewer starter letters, and word and picture clues get trickier.</li>
+        <li>As the level rises: words get longer and harder, and word and picture clues get trickier.</li>
+        <li>Starter letters (gray, already on the grid) help new players: about a quarter of the letters at level 1, fewer at level 2, just 1–3 at level 3, and none from level 4. With fewer starters there are more tiles to play, so games run longer.</li>
         <li>Picture clues: at levels 1–5 the ${go('Clue Bar', 'clue bar')} names the kind of picture clue (see ${go('Clue Pics')}); from level 6 you work it out yourself.</li>
         <li>From level 5, word clues turn punny: double meanings and wordplay. A "?" means don't take it literally.</li>`)}
       ${sec('Grid Size', `
@@ -1187,7 +1297,8 @@
         <li>While a report is on screen the game waits: your clock stops the moment your rival finishes, and nothing can be played. <b>Click or tap anywhere</b> to close the reports and start your turn. That click does nothing else.</li>
         <li>The <b>Scoreboard</b> keeps every turn by round: letter points, word points, bonuses, penalties and the turn's total. Green marks the higher score in each round. On phones, tap ▸ Scoreboard to open it.</li>`)}
       ${sec('The End', `
-        <li>The game ends when the grid is full, by the <b>3 PASSES Rule</b> (${esc(PASS_RULE)}), or when a whole-game clock runs out.</li>
+        <li><b>Final turn:</b> once the bag is empty and either player places their last tile, the other player gets <b>one final turn</b> to play what they can. Then the game ends, and any tile still in a hand is subtracted from its owner's score.</li>
+        <li>The game also ends when the grid is full, by the <b>3 PASSES Rule</b> (${esc(PASS_RULE)}), or when a whole-game clock runs out.</li>
         <li>A yellow PASS banner warns you after the 1st pass; a red one after the 2nd. It says who passed and <b>holds the game until you tap</b> (your rival waits and your clock stops). After your tap it shrinks to one line until someone places a tile.</li>
         <li>The result window shows both scores, your record against this opponent, both players' play and your coins. Its buttons: <b>⚙ Settings</b>, <b>☰ Menu</b> and <b>Rematch</b>.</li>
         <li>Close it (✕, or tap outside it) to look at the finished grid. Your hand's row then becomes a <b>game-over bar</b> with <b>📊 Results</b> (opens the window again), <b>☰ Menu</b> and <b>Rematch</b>.</li>
@@ -1413,6 +1524,7 @@
   function afterTurn(over) {
     save();
     if (over) { render(); gameOver(); return; }
+    if (G.finalTurn === 1) toast(`You played every tile! ${opp().n} gets one final turn.`, '', 3200); // v08i
     ui.busy = true;
     render();
     runAiTurn();
@@ -1511,6 +1623,7 @@
     save();
     ui.busy = false;
     if (over) { render(); gameOver(); return; }
+    if (G.finalTurn === 0) toast(`${opp().n} played every tile. Your FINAL TURN: play all you can.`, 'opp', 3600); // v08i
     startHumanTurn();
   }
 
@@ -1658,6 +1771,24 @@
     window.addEventListener('pointerup', up);
     window.addEventListener('pointercancel', up);
   }
+
+  // v08i (JM CD-42 add'l 3): a two-finger drag could leave a tile stuck half in a cell (a leftover drag copy, or the
+  // hand's slide-apart offsets) until Pause redrew the screen. Now, once the last finger lifts, anything left over from
+  // a drag is swept away and the hand and grid are redrawn, just as Pause did.
+  function sweepDrags() {
+    if (drags.size) cancelDrag();
+    const left = document.querySelectorAll('.ghost, .tile.dragging, .tile.placeholder, .cell.drop');
+    const shifted = [...$('#rack').children].some(c => c.style.transform);
+    if (!left.length && !shifted) return;
+    document.querySelectorAll('.ghost').forEach(g => g.remove());
+    document.querySelectorAll('.cell.drop').forEach(d => d.classList.remove('drop'));
+    clearSortPreview();
+    ui.dragTiles.clear(); ui.dragCells.clear(); ui.dragging = false;
+    if (G) render();
+  }
+  const touchesDone = e => { if (!e.touches.length) setTimeout(sweepDrags, 80); }; // no finger is down: no drag can still be alive
+  document.addEventListener('touchend', touchesDone, { passive: true });
+  document.addEventListener('touchcancel', touchesDone, { passive: true });
 
   // Hand: tap to select, drag onto the grid to place, drag within the hand to sort
   $('#rack').addEventListener('pointerdown', e => {
@@ -2015,7 +2146,9 @@
     sound.play(r.winner === 0 ? 'win' : r.winner === 1 ? 'lose' : 'draw', 0.5); // v08h
     const title = r.winner === 0 ? `${myName() === 'You' ? 'You win' : myName() + ' wins'}!` : r.winner === 1 ? `${o.n} wins` : 'It\'s a draw';
     const st = G.stats;
-    const ended = r.complete ? 'The grid is complete.' : r.reason === 'clock' ? 'Your whole-game clock ran out.' : 'Three passes in a row ended the game (3 PASSES Rule).';
+    const ended = r.complete ? 'The grid is complete.' : r.reason === 'clock' ? 'Your whole-game clock ran out.'
+      : r.reason === 'out' ? `${G.outBy === 0 ? 'You' : o.n} played every tile, and ${G.outBy === 0 ? o.n : 'you'} had one final turn.`
+      : 'Three passes in a row ended the game (3 PASSES Rule).';
     // v08 coins at the end: whole-game clocks pay their speed coins once, here; a win pays +10.
     // v08b (CD-27: 2.3.1): the whole-game pay uses the turn-split cap (gameSpeedCoins); nothing if the clock ran out.
     const endCoins = [];

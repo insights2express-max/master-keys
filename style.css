@@ -1175,3 +1175,22 @@ select {
   .vt-top .icon-btn { width: 29px; height: 32px; font-size: 16px; }
   .vt-title { font-size: clamp(16px, 4.9vw, 24px); }
 }
+
+/* ===== v08i (JM CD-42: 1.1, 1.6, add'l 4; CD-43) ===== */
+/* Options row: a big bright-yellow chevron; the summary as two full rows of bordered boxes, one per option */
+.opts > summary { flex-wrap: wrap; align-items: center; row-gap: 8px; }
+.opts > summary .cec { font-size: 0; width: 0; height: 0; border-left: 14px solid #ffd60a; border-top: 9px solid transparent; border-bottom: 9px solid transparent; margin: 0 4px 0 2px; filter: drop-shadow(0 0 1px rgba(0, 0, 0, .5)); transition: transform .15s; }
+.opts > summary .lbl { font-size: 16px; }
+.opts .opts-sum { flex: 1 0 100%; display: flex; flex-direction: column; gap: 6px; font-size: 18.75px; color: var(--ink); font-weight: 400; line-height: 1.2; }
+.opts .opts-sum .ob-row { display: flex; gap: 6px; min-width: 0; }
+.opts .opts-sum .ob { flex: 1 1 auto; text-align: center; white-space: nowrap; padding: 5px 7px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); }
+/* Coin pill: the 🪙 on a navy circle, so it stands out from the gold; the count stays dark on gold everywhere (iPad dark mode) */
+.coin-pill > span { display: inline-flex; align-items: center; justify-content: center; width: 1.45em; height: 1.45em; border-radius: 50%; background: #1d3557; font-size: .9em; line-height: 1; }
+.coin-pill b, .gameinfo.side .coin-pill b { color: #3a2a00; }
+/* Your own picture as your avatar (JM CD-42 add'l 1): a round photo the size of the emoji it replaces */
+img.av-img { display: inline-block; width: 1.15em; height: 1.15em; border-radius: 50%; object-fit: cover; vertical-align: middle; }
+.me-av img.av-img { width: 1.3em; height: 1.3em; }
+/* Timed games: the grid, clue bar and hand blur while your clock is stopped by a report or the PASS banner (CD-42 add'l 7) */
+#game .board, #game .cluebar, #game .rack { transition: filter .2s; }
+#game.veiled .board, #game.veiled .cluebar, #game.veiled .rack { filter: blur(10px); }
+#game.veiled .cluebar, #game.veiled .rack { pointer-events: none; }

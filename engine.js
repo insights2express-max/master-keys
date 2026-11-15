@@ -1,4 +1,4 @@
-/* Clue Duel — game engine (v08e)
+/* Clue Duel — game engine (v08i: starter letters by level, final turn)
    Puzzle generator (arrow-word grid), tile bag, scoring modes, bonus squares and the computer opponent.
    No DOM code here: app.js handles everything the player sees. */
 'use strict';
@@ -463,7 +463,7 @@
         if (slots.some(s => !idx[s.cells.length])) continue;
         const res = fillSlots(slots, N, idx, rng, 2500, prefLevel, boost);
         if (!res) continue;
-        return buildPuzzle({ W, H, R, C, N, g, slots, res, idx, rng, skill, k, seed, attempt, pics: opts.pics, mode });
+        return buildPuzzle({ W, H, R, C, N, g, slots, res, idx, rng, skill, k, seed, attempt, pics: opts.pics, mode, size: opts.size });
       }
     }
     return null;
@@ -518,11 +518,13 @@
       s.cells.forEach(ci => cellSlots[ci].push(si));
       return { d: s.d, cells: s.cells, clueCell: s.clue, word: e.w, lvl: e.l, clue };
     });
-    // Starter letters already on the board (more at easy levels)
+    // Starter letters already on the board. v08i (JM CD-42 add'l 5; CD-43 add'l 2): helpers for new players only:
+    // about 25 % of the letters at level 1, 15 % at level 2, 1 / 2 / 3 letters at level 3 (Small / Medium / Large), none from level 4
     const letterCells = [];
     for (let i = 0; i < N; i++) if (cells[i].k === 'l') letterCells.push(i);
     const pre = new Set();
-    const revealN = Math.round(letterCells.length * (0.26 - 0.13 * k));
+    const revealN = skill === 1 ? Math.round(letterCells.length * 0.25) : skill === 2 ? Math.round(letterCells.length * 0.15)
+      : skill === 3 ? ({ S: 1, M: 2, L: 3 })[o.size] || 2 : 0;
     const order = shuffle(letterCells.slice(), rng);
     for (const ci of order) {
       if (pre.size >= revealN) break;
@@ -753,6 +755,14 @@
     refill(state, p);
     if (reason === 'clock') { finish(state, 'clock'); return true; }
     if (boardFull(state) || state.passes >= RULES.passLimit) { finish(state); return true; }
+    // v08i (JM CD-42 add'l 6; CD-43: 3.1a): as in the reference games, once the bag is empty and a player uses their
+    // last tile, the other player gets ONE final turn to play what they can; then the game ends (either player)
+    if (state.finalTurn === p) { finish(state, 'out'); return true; }
+    if (state.finalTurn == null && !state.bag.length && !state.hands[p].length) {
+      if (!state.hands[1 - p].length) { finish(state, 'out'); return true; }
+      state.finalTurn = 1 - p;
+      state.outBy = p;
+    }
     state.turn = 1 - p;
     state.turnNo++;
     rollBonuses(state);
@@ -807,6 +817,7 @@
     rng = rng || Math.random;
     const me = state.turn, opp = 1 - me, pz = state.pz;
     const P = aiParams(state.settings.skill);
+    if (state.finalTurn === me) { P.hold = false; P.lazy = 0; } // v08i: its final turn: play every tile it can
     const M = modeOf(state);
     if (M.tiles === 'chain') P.lazy *= 0.3;  // Combo Chain: long turns pay, so stop early less often
     const board = state.board.slice();

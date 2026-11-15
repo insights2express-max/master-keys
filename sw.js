@@ -1,6 +1,6 @@
 /* Clue Duel — service worker: caches the whole app so it plays offline.
    Bump CACHE whenever any file changes, so players get the update. */
-const CACHE = 'clue-duel-v08h-1'; // v08h: sound effects (off by default, 🔇 / 🔊), scroll-free menu (folded Options row, New Game + Word Vault side by side, icons in the corner)
+const CACHE = 'clue-duel-v08i-1'; // v08i: Options boxes, new win/lose sounds, avatar pictures, starter letters by level, final turn, timed-game blur, two-finger drag fix
 const ASSETS = [
   './',
   'index.html',

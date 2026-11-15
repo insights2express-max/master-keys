@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Grid Color Preview</title>
+<!-- Clue Duel · grid color schemes for JM to compare (RFI CD-43: 2.1 Y). A preview only: the game is unchanged. -->
+<style>
+  :root {
+    --bg: #ece6d8; --surface: #fbf8f1; --ink: #1f2933; --muted: #69727d; --line: #b9b19f;
+    --clue: #d3dbe4; --clue-ink: #22364a; --you: #2c6bd8; --opp: #d55d36;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --bg: #12181f; --surface: #1b232c; --ink: #e8edf2; --muted: #96a1ad; --line: #3a4552; --clue: #2a3542; --clue-ink: #d3dde8; color-scheme: dark; }
+  }
+  :root[data-theme="dark"] { --bg: #12181f; --surface: #1b232c; --ink: #e8edf2; --muted: #96a1ad; --line: #3a4552; --clue: #2a3542; --clue-ink: #d3dde8; color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 18px 16px 40px; }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  .sub { color: var(--muted); margin: 0 0 14px; }
+  .bar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 18px; }
+  .bar button { font: inherit; font-weight: 700; padding: 7px 14px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer; }
+  .bar button.on { background: var(--you); border-color: var(--you); color: #fff; }
+  .grid4 { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 14px; }
+  .card h2 { margin: 0; font-size: 18px; }
+  .card .tag { color: var(--muted); font-size: 13px; margin: 2px 0 10px; }
+  .card.rec { box-shadow: 0 0 0 3px var(--you); }
+  .rec-badge { display: inline-block; font-size: 11px; font-weight: 800; letter-spacing: .04em; color: #fff; background: var(--you); border-radius: 999px; padding: 1px 8px; margin-left: 6px; vertical-align: 2px; }
+  .board { display: grid; grid-template-columns: repeat(6, 1fr); gap: 2px; padding: 2px; background: #1c2630; border-radius: 6px; width: 100%; max-width: 330px; margin: 0 auto; }
+  .c { aspect-ratio: 1; position: relative; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: clamp(18px, 6vw, 26px); border-radius: 2px; }
+  .c.clue { background: var(--clue); color: var(--clue-ink); font-size: 9px; font-weight: 700; text-align: center; line-height: 1.1; padding: 2px; }
+  .c .bn { font-size: 15px; font-weight: 900; }
+  .c::before { content: ""; position: absolute; left: 16%; right: 16%; bottom: 3px; height: 0; border-radius: 2px; }
+  .key { display: grid; grid-template-columns: auto 1fr; gap: 5px 8px; align-items: center; font-size: 13px; margin-top: 12px; }
+  .key .sw { width: 26px; height: 26px; border-radius: 3px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; position: relative; }
+  .key .sw::before { content: ""; position: absolute; left: 16%; right: 16%; bottom: 2px; height: 0; border-radius: 2px; }
+  .note { margin-top: 10px; font-size: 13px; color: var(--muted); }
+
+  /* This turn's tile (same in every scheme): bright gold with a blue frame */
+  .p { background: linear-gradient(#ffd34d, #ff9f0a) !important; color: #1d1300 !important; box-shadow: inset 0 0 0 3px var(--you), inset 0 0 0 4px #fff !important; }
+
+  /* TODAY (v08i) */
+  .s0 .o { background: #fffdf8; }
+  .s0 .s { background: #ecefe9; color: #1f2933; }
+  .s0 .y { background: #d9e6fb; color: #1f2933; } .s0 .y::before { height: 3px; background: var(--you); }
+  .s0 .r { background: #fadfd3; color: #1f2933; } .s0 .r::before { height: 3px; background: var(--opp); }
+  .s0 .x { background: #fbefc4; color: #b98a06; } .s0 .f, .s0 .t { background: #d7efe1; color: #23824f; }
+
+  /* 2a TILES ON A BOARD: empty = dark recessed slot; filled = cream tile; owner = thick bar */
+  .sa .o, .sa .x, .sa .f, .sa .t { background: #5b6470; box-shadow: inset 0 2px 4px rgba(0, 0, 0, .55); }
+  .sa .s, .sa .y, .sa .r { background: linear-gradient(#fbf3de, #efe3c2); color: #2a1e05; box-shadow: inset 0 -3px 0 #cdb98a; }
+  .sa .y::before { height: 5px; background: var(--you); } .sa .r::before { height: 5px; background: var(--opp); }
+  .sa .x { color: #ffd24a; box-shadow: inset 0 0 0 2px #ffd24a, inset 0 2px 4px rgba(0, 0, 0, .55); }
+  .sa .f, .sa .t { color: #7fe0a6; box-shadow: inset 0 0 0 2px #46c37b, inset 0 2px 4px rgba(0, 0, 0, .55); }
+
+  /* 2b BOLD OWNERS: empty = white; filled = solid color with white letters; bonus = outline + badge */
+  .sb .o, .sb .x, .sb .f, .sb .t { background: #ffffff; }
+  .sb .s { background: #7d8692; color: #fff; }
+  .sb .y { background: #2c6bd8; color: #fff; }
+  .sb .r { background: #d55d36; color: #fff; }
+  .sb .x { color: #b98a06; box-shadow: inset 0 0 0 3px #e2b21c; }
+  .sb .f, .sb .t { color: #23824f; box-shadow: inset 0 0 0 3px #39a96b; }
+
+  /* 2c CALM NEUTRAL: empty = white; every filled cell the same gray; owner = bar only; bonus = badge on white */
+  .sc .o, .sc .x, .sc .f, .sc .t { background: #ffffff; }
+  .sc .s, .sc .y, .sc .r { background: #c9ced5; color: #1f2933; }
+  .sc .y::before { height: 5px; background: var(--you); } .sc .r::before { height: 5px; background: var(--opp); }
+  .sc .x { color: #b98a06; } .sc .f, .sc .t { color: #23824f; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Clue Duel · grid colors</h1>
+  <p class="sub">The same mid-game grid in today's colors and the three schemes from RFI CD-43. The game itself is unchanged. On a phone, scroll down to see all four.</p>
+  <div class="bar" role="group" aria-label="Light or dark">
+    <button type="button" data-t="auto" class="on">Match my device</button>
+    <button type="button" data-t="light">Light</button>
+    <button type="button" data-t="dark">Dark</button>
+  </div>
+  <div class="grid4" id="cards"></div>
+</div>
+<script>
+  // c = clue cell; o = empty; x / f / t = empty 2× / +5 / +2 bonus; s = starter letter; y = yours; r = rival's; p = this turn
+  const G = [
+    ['c:', 'c:SEAT', 'c:TAX', 'c:SKI', 'c:ASH', 'c:NEED'],
+    ['c:SOFT', 'y:S', 'o', 'x', 'r:A', 'o'],
+    ['c:TEA', 'o', 's:T', 'f', 'o', 'y:E'],
+    ['c:NOD', 'r:O', 'o', 'c:EGG', 'o', 's:N'],
+    ['c:SLED', 'p:L', 'o', 'o', 'r:D', 'o'],
+    ['c:INN', 's:I', 'y:N', 't', 'o', 'o'],
+    ['c:ORES', 'o', 'o', 'r:E', 'o', 'y:S']
+  ];
+  const S = [
+    { cls: 's0', name: 'Today (v08i)', tag: 'Five near-white shades: the empty cells are hard to spot.' },
+    { cls: 'sa', name: '2a · Tiles on a board', tag: 'Empty = dark slot. Filled = cream tile. A thick bar shows who played it.', rec: true },
+    { cls: 'sb', name: '2b · Bold owners', tag: 'Empty = white. Filled = solid color with white letters.' },
+    { cls: 'sc', name: '2c · Calm neutral', tag: 'Empty = white. Every filled cell the same gray; only the bar shows whose.' }
+  ];
+  const BN = { x: '2×', f: '+5', t: '+2' };
+  const cell = v => {
+    const [k, ch = ''] = v.split(':');
+    if (k === 'c') return `<div class="c clue">${ch}</div>`;
+    return `<div class="c ${k}">${BN[k] ? `<span class="bn">${BN[k]}</span>` : ch}</div>`;
+  };
+  const key = s => `<div class="key ${s.cls}">
+      <span class="sw o"></span><span>Empty cell</span>
+      <span class="sw s">T</span><span>Starter letter (levels 1–3)</span>
+      <span class="sw y">E</span><span>Your tile</span>
+      <span class="sw r">A</span><span>Rival's tile</span>
+      <span class="sw x" style="font-size:11px">2×</span><span>Bonus square (2×, +5, +2)</span>
+      <span class="sw p">L</span><span>Your tile this turn (unchanged)</span>
+    </div>`;
+  document.getElementById('cards').innerHTML = S.map(s => `<section class="card${s.rec ? ' rec' : ''}">
+      <h2>${s.name}${s.rec ? '<span class="rec-badge">MY BPA</span>' : ''}</h2><div class="tag">${s.tag}</div>
+      <div class="board ${s.cls}">${G.flat().map(cell).join('')}</div>${key(s)}</section>`).join('');
+  document.querySelector('.bar').addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    document.querySelectorAll('.bar button').forEach(x => x.classList.toggle('on', x === b));
+    if (b.dataset.t === 'auto') document.documentElement.removeAttribute('data-theme');
+    else document.documentElement.setAttribute('data-theme', b.dataset.t);
+  });
+</script>
+</body>
+</html>
