@@ -9,7 +9,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Clue Duel">
   <meta name="description" content="A head-to-head crossword tile game you can play offline.">
-  <title>Clue Duel · v08e</title>
+  <title>Clue Duel · v08f</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="icon" href="icons/icon-192.png" type="image/png" sizes="192x192">
@@ -23,7 +23,7 @@
       <header class="brand">
         <img class="logo" src="icons/icon.svg" alt="" width="64" height="64">
         <div>
-          <h1>Clue Duel <span class="vpill" id="verPill">v08e</span></h1>
+          <h1>Clue Duel <span class="vpill" id="verPill">v08f</span></h1>
           <p class="tag">Place your letters. Finish the words. Beat your rival.</p>
         </div>
       </header>
@@ -186,6 +186,8 @@
           <!-- v08b (JM, CD-27: 3.4.1): the key-size handle sits at the end of the button row (drag down = shorter keys) -->
           <div class="vt-grip" id="vtGrip" role="separator" aria-orientation="horizontal" aria-label="Drag down for shorter keys, up for taller" title="Key size: drag down for shorter keys, up for taller · double-click for the tallest"><span>⇕</span></div>
         </div>
+        <!-- v08f (JM CD-37: 2.1.1): after the word, the button row becomes this game-over bar -->
+        <div class="overbar" id="vtOver" hidden></div>
         <div class="vt-kb" id="vtKb"></div>
       </div>
     </div>
@@ -206,7 +208,8 @@
         <div class="pl-txt r"><div class="nm" id="oppNm">Opponent</div><div class="sc" id="scOpp">0</div></div>
         <span class="av" id="oppAv">🦊</span>
       </div>
-      <button class="icon-btn" id="helpBtn" type="button" aria-label="How To Play">?</button>
+      <!-- v08f (JM CD-37: 4.1): ⚙ settings beside ?, as in Word Vault -->
+      <div class="tb-btns"><button class="icon-btn" id="setBtn" type="button" aria-label="Clue Duel settings" title="Settings">⚙</button><button class="icon-btn" id="helpBtn" type="button" aria-label="How To Play">?</button></div>
     </header>
 
     <!-- v06c (JM, CD-18: 3.1a): on phones, ☰ and ? sit at the two ends of this row, so the clue bar above gets their width -->
@@ -214,6 +217,7 @@
       <button class="icon-btn mini" id="menuBtn2" type="button" aria-label="Menu">☰</button>
       <button class="sheet-toggle" id="sheetToggle" type="button" aria-expanded="false"><span class="cec" id="sheetCec">▸</span> Scoreboard</button>
       <span class="gameinfo bar" id="infoBar"></span>
+      <button class="icon-btn mini" id="setBtn2" type="button" aria-label="Clue Duel settings" title="Settings">⚙</button>
       <button class="icon-btn mini" id="helpBtn2" type="button" aria-label="How To Play">?</button>
       <div class="sheetpanel" id="sheetPanel" hidden></div>
     </div>
@@ -254,13 +258,16 @@
           <button class="btn act coinbtn" id="placeBtn" type="button" title="Place one of your tiles in a cell where it fits. Costs that tile's value in coins."><b>🎯</b><span>Place 🪙?</span></button>
           <button class="btn act coinbtn" id="checkBtn" type="button" title="Check the tiles you've penciled in this turn. Costs 5 coins, plus 5 for each wrong tile; wrong tiles go back to your hand with no point penalty."><b>☑️</b><span>Check 🪙5+</span></button>
           <button class="btn act coinbtn" id="timeBtn" type="button" title="Add 30 seconds to your clock. Costs 5 coins each time." hidden><b>⏱️</b><span>+30s 🪙5</span></button>
-          <button class="btn act" id="swapBtn" type="button"><b>🔄</b><span>Swap</span></button>
-          <button class="btn act" id="mixBtn" type="button"><b>🔀</b><span>Shuffle</span></button>
-          <button class="btn act" id="pauseBtn" type="button" title="Pause (P)"><b id="pauseIco">⏸️</b><span class="timer" id="timerTxt">∞</span></button>
+          <!-- v08f (JM CD-37: 4.2, 4.4): gray rounded game controls, as Word Vault's; Pause is the clock pill (⏸️ + time) -->
+          <button class="btn act ctlbtn" id="swapBtn" type="button"><b>🔄</b><span>Swap</span></button>
+          <button class="btn act ctlbtn" id="mixBtn" type="button"><b>🔀</b><span>Shuffle</span></button>
+          <button class="btn act ctlbtn clockpill" id="pauseBtn" type="button" title="Pause (P)"><b id="pauseIco">⏸️</b><span class="timer" id="timerTxt">∞</span></button>
         </div>
-        <button class="btn primary act" id="doneBtn" type="button"><b>✓</b><span id="doneTxt">Pass</span></button>
+        <button class="btn primary act" id="doneBtn" type="button"><b id="doneIco">✓</b><span id="doneTxt">Pass</span></button>
         <button class="btn act" id="moreBtn" type="button" aria-expanded="false" aria-controls="morePop" title="More buttons"><b>⋯</b><span>More</span></button>
       </div>
+      <!-- v08f (JM CD-37: 2.1.1): after the game, the hand's row becomes a game-over bar, so the next step is always in view -->
+      <div class="overbar" id="overBar" hidden></div>
     </div>
   </section>
 

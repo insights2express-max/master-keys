@@ -8,6 +8,8 @@
    v08d (CD-34: 1.1–1.2): coin buttons are blue, each icon on a white circle.
    v08e (CD-36: 1.1, 5.1, 5.3): icons on a navy circle; the result window matches Clue Duel's (one-line heading, tables side
    by side on wide screens, a pinned button bar; the Guesses-needed note opens from ⓘ).
+   v08f (CD-37): result buttons ⚙ Settings · ☰ Menu · Next word; ✕ / tap outside closes it and shows a game-over bar;
+   How To Play in collapsible sections; the clock is a gray pill like Clue Duel's.
    v07f (CD-25): no embossed text; played letters are black on green, yellow or red; typed (tentative) letters turn their key
    black on white; empty squares are dark glass "candy drops" in the slots of a glassy grid panel; a large > marks the
    active row, so the grid sits centered between it and the ✕; "Blitz · 30s per guess".
@@ -184,7 +186,7 @@
       <div class="vt-grid">${Object.keys(OPTS).map(k => `<label class="field"><span class="lbl">${LABEL[k]}</span><select data-k="${k}"></select></label>`).join('')}</div>
       <p class="opt-desc" id="vtSetDesc">${esc(DESC[vs.scoring])}</p>
       <p class="help-note">${R && !R.over ? 'Changes apply from the next word.' : ''}${busy ? ' Starting a new word now counts this one as not solved.' : ''}</p>
-      <div class="row"><button class="btn" data-a="close">Done</button><button class="btn primary" data-a="new">New word with these</button></div>`);
+      <div class="row"><button class="btn" data-a="close">Close</button><button class="btn primary" data-a="new">New word with these</button></div>`);
     document.querySelectorAll('#sheet select[data-k]').forEach(s => {
       fillSelect(s, OPTS[s.dataset.k], vs[s.dataset.k]);
       s.addEventListener('change', () => { setFrom(s.dataset.k, s.value); $('#vtSetDesc').textContent = DESC[vs.scoring]; });
@@ -396,6 +398,12 @@
     $('#vtReveal').classList.toggle('poor', UI.coins && UI.coins.bal < rc);
     $('#vtQuit').disabled = R.over;
     $('#vtHint').disabled = R.over;
+    // v08f (CD-37: 2.1.1): once the word is over, the button row becomes the game-over bar (same as Clue Duel's)
+    const over = !!(R.over && R.resHtml);
+    $('#vtPlay').classList.toggle('is-over', over);
+    $('#vtOver').hidden = !over;
+    $('#vtOver').innerHTML = over ? `<span class="ob-h">🏁 ${esc(R.resHead)}</span>
+      <span class="ob-btns"><button class="btn" type="button" data-ob="res">📊 Results</button><button class="btn" type="button" data-ob="menu">☰ Menu</button><button class="btn primary" type="button" data-ob="again">Next word</button></span>` : '';
     $('#vtHint span').textContent = R.hints ? 'Hint ✓' : `Hint 🪙${HINT_COINS}`;
     $('#vtHint').title = R.hints ? 'Show the clue again (free)' : `Show a clue for the word (${HINT_COINS} coins)`;
     $('#vtHint').classList.toggle('poor', !R.hints && UI.coins && UI.coins.bal < HINT_COINS);
@@ -697,44 +705,69 @@
       ${bars ? `<section><h3 class="res-h">🎯 Guesses needed</h3><div class="vt-dist">${bars}</div>
         <details class="res-info"><summary>ⓘ What do the bars mean?</summary><p class="vt-dist-note">Each row is a number of guesses (✗ = not solved). Its bar shows how many words you've solved in that many guesses, so a longer bar means it happens more often. The highlighted bar is this word.</p></details></section>` : ''}</div>`;
     addHistory(won ? `Solved ${w} in ${R.rows.length}/${R.tries}` : `${gaveUp ? 'Gave up' : 'Not solved'}: ${w}`, won ? `${sc.total} pts` : '—', body);
-    openModal(`${body}
-      <div class="row res-bar"><button class="btn" data-a="setup">⚙ Settings</button><button class="btn primary" data-a="again">Next word</button></div>`, 'res');
-    $('#modal').onclick = e => { if (e.target === $('#modal')) closeModal(); };
+    R.resHtml = body;
+    R.resHead = `${face} ${head} · ${w}`;
+    render(); // the game-over bar replaces the button row
+    openResult();
+  }
+  // v08f (JM CD-37: 2.1, 3.1): the same three buttons as Clue Duel's result: ⚙ Settings · ☰ Menu · Next word.
+  // ✕ or a tap outside closes it and shows the finished grid with its game-over bar (📊 Results reopens it).
+  function openResult() {
+    if (!R || !R.over || !R.resHtml) return;
+    openModal(`${R.resHtml}
+      <div class="row res-bar"><button class="btn" data-a="setup">⚙ Settings</button><button class="btn" data-a="menu">☰ Menu</button><button class="btn primary" data-a="again">Next word</button></div>`, 'res', { close: render });
     $('#sheet').onclick = e => {
       const b = e.target.closest('[data-a]'); if (!b) return;
       closeModal();
-      if (b.dataset.a === 'again') start(); else openSettings();
+      overAction(b.dataset.a);
     };
   }
+  function overAction(a) {
+    if (a === 'again') start();
+    else if (a === 'menu') $('#vtMenu').click();
+    else if (a === 'res') openResult();
+    else openSettings();
+  }
+  $('#vtOver').addEventListener('click', e => { const b = e.target.closest('[data-ob]'); if (b) overAction(b.dataset.ob); });
 
   // ---------- Help ----------
   function help() {
+    // v08f (JM CD-37: 5.1): the same collapsible sections (▸/▾, one open at a time) as Clue Duel's How To Play
+    const sec = UI.helpSec;
     openModal(`<h2>How To Play: ${esc(title())}</h2>
-      <ul class="vt-help">
+      <p class="help-note">Tap a heading to open it.</p>
+      <div class="vt-help">
+      ${sec('The Basics', `
         <li>Guess the hidden word. Type a word (on screen or your keyboard) and press <b>ENTER</b>. Every guess must be a real word of the right length.</li>
         <li>Each letter of your guess is then marked: <span class="vt-chip ok">green</span> right letter in the right spot, <span class="vt-chip in">yellow</span> in the word but in another spot, <span class="vt-chip no">red</span> not in the word. The keyboard keeps the best mark for each letter.</li>
         <li>Green letters carry into your next guess automatically, and typing starts at the first open square.</li>
+        <li>When the word is over, the result window opens. Close it (✕, or tap outside it) to see the finished grid; the bar under it has <b>📊 Results</b>, <b>☰ Menu</b> and <b>Next word</b>.</li>`)}
+      ${sec('Typing and the Keys', `
         <li>Tap a square (or use the ← → arrow keys) to choose where the next letter goes; the chosen square glows blue. The <b>Space bar</b> (on phones and tablets, the <b>␣</b> key at the end of the middle row) jumps to the next open square to the right (after the last one, back to the first). The orange <b>⌫</b> clears a letter, and <b>✕</b> at the end of the row clears the whole guess.</li>
+        <li><b>Key size:</b> the keys grow on their own to fill the space below the buttons, so fewer guesses (a shorter grid) give taller keys, up to twice the normal height. To make them shorter, drag the <b>⇕</b> handle at the right end of the button row down (drag up to raise them again); double-click (or double-tap) it for the tallest keys. Your choice is remembered on this device and follows the grid's size.</li>`)}
+      ${sec('The Buttons', `
+        <li>The buttons come in two groups: the <b>blue coin buttons</b> (🔎 Hint, 💡 Reveal) on the left, and the <b>gray round game buttons</b> (🆕 New Game, 🏳️ Give up) on the right. A coin button takes <b>two taps</b>: the first lights it up and shows "Tap again · 🪙N" for 3 seconds; the second tap buys. (Seeing a Hint again is free and needs one tap.)</li>
         <li><b>💡 Reveal</b> places one letter in its spot. Its price is that letter's share of the word: the whole word is worth <b>40 coins</b>, so one letter costs 40 ÷ the number of letters (rounded up). The button shows both, like <b>Reveal ¹⁄₅ 🪙8</b> for a 5-letter word: ¹⁄₄ 🪙10 · ¹⁄₅ 🪙8 · ¹⁄₆ 🪙7 · ¹⁄₇ 🪙6 · ¹⁄₈ 🪙5. A letter of a short word gives away more, so it costs more.</li>
         <li><b>🔎 Hint (🪙${HINT_COINS})</b> shows a clue for the word (sometimes with a picture) over the grid; tap anywhere to close it. It costs ${HINT_COINS} <b>coins</b>, not points. Once paid for, <b>Hint ✓</b> shows it again for free.</li>
         <li>The Hint follows the <b>Challenge Level</b>: at 1–3 it is direct and simple (mostly one word, like "Froth" for FOAM); at 4–7 you get a mix that grows trickier as the level rises; at 8–10 it is a <b>short, sly</b> hint of one to three words, like "Tree-hanger" for UNAU or "River horse"-style nicknames.</li>
-        <li><b>🪙 Coins</b> (one currency with Clue Duel; your balance shows beside the line above the grid): every word you solve pays <b>2 per letter</b> and <b>2 per guess to spare</b>. Timed rounds add <b>speed coins</b>: 1 for every second left on the clock when you solve it, up to 20 per letter. Untimed rounds pay no speed coins.</li>
-        <li><b>Key size:</b> the keys grow on their own to fill the space below the buttons, so fewer guesses (a shorter grid) give taller keys, up to twice the normal height. To make them shorter, drag the <b>⇕</b> handle at the right end of the button row down (drag up to raise them again); double-click (or double-tap) it for the tallest keys. Your choice is remembered on this device and follows the grid's size.</li>
-        <li><b>⏸️ Pause:</b> tap the clock. The grid is hidden until you tap anywhere. The clock counts down in timed games and counts up in untimed ones. In the last 10 seconds the grid's border flashes yellow, then red.</li>
+        <li><b>🆕 New Game</b> starts a fresh word. <b>🏳️ Give up</b> shows the word. Both ask first while the word is unfinished ("Keep playing" is the main button). Either one, once you've made a guess or used a Hint or Reveal, counts that word as not solved and breaks your streak. After every New Game, the word that just ended is shown over the new grid until you click or tap anywhere; the new word's clock starts then.</li>
+        <li><b>⏸️ Pause:</b> tap the clock. The grid is hidden until you tap anywhere. The clock counts down in timed games and counts up in untimed ones. In the last 10 seconds the grid's border flashes yellow, then red.</li>`)}
+      ${sec('Coins', `
+        <li><b>🪙 Coins</b> (one currency with Clue Duel; your balance shows beside the line above the grid): every word you solve pays <b>2 per letter</b> and <b>2 per guess to spare</b>. Timed rounds add <b>speed coins</b>: 1 for every second left on the clock when you solve it, up to 20 per letter. Untimed rounds pay no speed coins.</li>`)}
+      ${sec('Settings', `
         <li><b>Challenge Level</b> (1–10) sets how hard the vocabulary is: everyday words at 1–3, rarer ones as it rises.</li>
         <li><b>Letters</b> (4–8) and <b>Guesses</b> (5–10) set the word's length and how many tries you get.</li>
         <li><b>Timer:</b> the main game's choices. "Per GUESS" gives each guess its own clock (when it runs out, that guess is used up); "per WORD" times the whole round. The clock stops while a window is open or the app is hidden.</li>
         <li><b>Scoring</b> (only when you solve it): <b>Classic</b> scores the word's letter values (as in the main game) plus 2 per letter; <b>Flat</b> scores 2 per letter. Both add <b>+5</b> for every guess you didn't need and, in timed rounds, a time bonus (1 point per 5 seconds left, up to 30). (Hint and Reveal cost coins, not points.)</li>
-        <li><b>⚙ Settings</b> (in the header, or tap the line above the grid) change the game at any time; changes apply from the next word.</li>
-        <li>The buttons come in two groups: the <b>blue coin buttons</b> (🔎 Hint, 💡 Reveal) on the left, and the <b>gray round game buttons</b> (🆕 New Game, 🏳️ Give up) on the right. A coin button takes <b>two taps</b>: the first lights it up and shows "Tap again · 🪙N" for 3 seconds; the second tap buys. (Seeing a Hint again is free and needs one tap.)</li>
-        <li><b>🆕 New Game</b> starts a fresh word. <b>🏳️ Give up</b> shows the word. Both ask first while the word is unfinished ("Keep playing" is the main button). Either one, once you've made a guess or used a Hint or Reveal, counts that word as not solved and breaks your streak. After every New Game, the word that just ended is shown over the new grid until you click or tap anywhere; the new word's clock starts then.</li>
+        <li><b>⚙ Settings</b> (in the header, or tap the line above the grid) change the game at any time; changes apply from the next word.</li>`)}
+      ${sec('Your Stats', `
         <li>Your stats (played, solved %, streaks, best time, guesses needed) are kept on this device. Every finished word also goes into <b>📜 Game History</b> on the menu, where you can reopen its full result.</li>
-        <li><b>Guesses needed</b> (on the result window): one row for each number of guesses, from 1 up, plus ✗ for words not solved. The bar and its number show how many words you've solved in that many guesses, so your longest bar is your usual result. The highlighted bar is the word just played. On a computer, point at a row to see it in words.</li>
-        <li><b>Make it yours:</b> double-click (or double-tap) the title to rename the game, and tap the icon beside it to choose another or to upload your own picture. Both are remembered on this device.</li>
-      </ul>
-      <div class="row"><button class="btn primary" data-a="ok">Got it</button></div>`);
-    $('#modal').onclick = e => { if (e.target === $('#modal')) closeModal(); };
-    $('#sheet').onclick = e => { if (e.target.closest('[data-a]')) closeModal(); };
+        <li><b>Guesses needed</b> (on the result window): one row for each number of guesses, from 1 up, plus ✗ for words not solved. The bar and its number show how many words you've solved in that many guesses, so your longest bar is your usual result. The highlighted bar is the word just played. On a computer, point at a row to see it in words. Tap <b>ⓘ</b> under the bars to read this there.</li>`)}
+      ${sec('Make It Yours', `
+        <li>Double-click (or double-tap) the title to rename the game, and tap the icon beside it to choose another or to upload your own picture. Both are remembered on this device.</li>`)}
+      </div>
+      <div class="row"><button class="btn primary" data-a="ok">Close</button></div>`);
+    $('#sheet').onclick = e => { if (UI.helpClick(e)) return; if (e.target.closest('[data-a]')) closeModal(); };
   }
 
   // ---------- Name and icon ----------

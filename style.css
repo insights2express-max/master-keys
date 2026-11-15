@@ -1061,3 +1061,57 @@ select {
 .res-info { margin-top: 6px; }
 .res-info summary { cursor: pointer; font-size: 12px; font-weight: 800; color: var(--muted); list-style: none; }
 .res-info summary::-webkit-details-marker { display: none; }
+
+/* ===== v08f (JM CD-37: 1.4.1, 2.1–2.3, 3.1, 4.1–4.4, 5.1) ===== */
+/* Every info window: ✕ in the top-right corner; it stays in view while the window scrolls */
+.sheet-x {
+  position: sticky; top: -8px; float: right; z-index: 4; margin: -8px -8px 0 8px;
+  width: 34px; height: 34px; border-radius: 50%; border: 0; display: grid; place-items: center;
+  background: var(--btn); color: var(--ink); box-shadow: var(--shadow); font-size: 16px; font-weight: 900; line-height: 1; cursor: pointer;
+}
+.sheet-x:hover { background: var(--line); }
+
+/* Clue Duel header: ⚙ beside ? (phones: both sit at the right end of the Scoreboard row) */
+.tb-btns { grid-area: help; display: flex; gap: 6px; }
+@media not all and (min-width: 900px) and (min-height: 480px) { .tb-btns { display: none; } }
+
+/* Result window, Clue Duel (CD-37: 1.4.1): names beside their scores; a slimmer Record banner on one line plus
+   one line of numbers (won in the "you" blue, lost in the rival's red, a shade darker so they read on yellow);
+   the 🧩 Play heading sits in the table's header row */
+.res-big { align-items: center; gap: 18px; }
+.res-big div { display: flex; align-items: center; gap: 8px; }
+.res-big span { font-size: 17px; font-weight: 800; color: var(--ink); max-width: 9em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sheet .rec-line { font-size: 17px; line-height: 1.2; padding: 3px 10px; margin: 6px 0 2px; }
+.sheet .rec-line .rl-a { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sheet .rec-line .rl-b { font-size: 22px; }
+.sheet .rec-line .rl-b i { font-style: normal; }
+.sheet .rec-line .rl-b .w { color: #1a56c4; }
+.sheet .rec-line .rl-b .l { color: #b8360f; }
+.score-table.play-tbl th.res-h { margin: 0; text-align: left; padding: 6px 4px; font-size: 13px; }
+.res-cols > section > .play-tbl:first-child { margin-top: 6px; }
+
+/* After the game: the hand's row (Clue Duel) or the button row (Word Vault) becomes the game-over bar */
+.overbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px 12px; padding: 8px 10px 12px; }
+.overbar[hidden] { display: none; }
+.overbar .ob-h { font-weight: 900; text-align: center; }
+.overbar .ob-btns { display: flex; gap: 6px; }
+.overbar .btn { padding: 8px 12px; }
+.dock.is-over .rackbar, .dock.is-over .actions { display: none !important; }
+#vtPlay.is-over .vt-acts { display: none; }
+#vtPlay .overbar { padding: 6px 4px; }
+
+/* Game controls in Clue Duel (CD-37: 4.2): gray and rounded like Word Vault's; on wide screens a divider line
+   separates them from the blue coin buttons */
+.btn.ctlbtn { position: relative; }
+.dock:not(.compact) #swapBtn { margin-left: 12px; }
+.dock:not(.compact) #swapBtn::before { content: ''; position: absolute; left: -10px; top: 12%; bottom: 12%; border-left: 2px solid var(--line); }
+/* One clock-and-pause look in both games (CD-37: 4.4): a gray pill with ⏸️ and the time side by side */
+#pauseBtn.clockpill { flex-direction: row; align-items: center; gap: 5px; padding: 6px 12px; }
+#pauseBtn.clockpill b { font-size: 15px; }
+#pauseBtn.clockpill .timer { font-size: 17px; font-weight: 900; }
+.vt-clock { background: #e3e5e8; color: #2b3138; border-radius: 999px; box-shadow: inset 0 0 0 1.5px #b7bcc3; }
+@media (prefers-color-scheme: dark) { .vt-clock { background: #3a4048; color: #e8eaed; box-shadow: inset 0 0 0 1.5px #59616b; } }
+.vt-clock.on { background: #f5c518; color: #1f2933; }
+
+/* Word Vault's How To Play uses the shared collapsible sections (CD-37: 5.1) */
+.vt-help { padding: 0; }

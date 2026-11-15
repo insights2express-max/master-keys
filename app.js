@@ -1,7 +1,7 @@
 /* Clue Duel — user interface (v08d) */
 'use strict';
 (() => {
-  const APP_VER = 'v08e'; // Project CP: shown as a pill beside the title and in the browser tab
+  const APP_VER = 'v08f'; // Project CP: shown as a pill beside the title and in the browser tab
   const E = window.Engine;
   const $ = (s, el = document) => el.querySelector(s);
   const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -75,8 +75,7 @@
         <li><b>Solve a Word Vault word:</b> ${COIN.vaultLetter} per letter, ${COIN.vaultSpare} per guess to spare, plus speed coins in timed rounds (up to ${COIN.perTile} per letter).</li>
       </ul>
       ${coinData.log.length ? `<h3>Latest</h3><table class="score-table coin-log">${coinData.log.map(([t, n, w]) => `<tr><td>${esc(w)}<small> · ${when(t)}</small></td><td class="${n < 0 ? 'neg' : 'pos'}">${n < 0 ? '−' + -n : '+' + n}</td></tr>`).join('')}</table>` : ''}
-      <div class="row"><button class="btn primary" data-a="ok">OK</button></div>`);
-    $('#modal').onclick = e => { if (e.target === $('#modal')) closeModal(); };
+      <div class="row"><button class="btn primary" data-a="ok">Close</button></div>`);
     $('#sheet').onclick = e => { if (e.target.closest('[data-a]')) closeModal(); };
   }
   document.addEventListener('click', e => {
@@ -171,7 +170,7 @@
       const ok = await confirmBox('Start a new game?', 'Your unfinished game will be lost.', 'Start new', 'Cancel');
       if (!ok) return;
     }
-    openModal('<div class="loading">Building your puzzle…</div>');
+    openModal('<div class="loading">Building your puzzle…</div>', '', { close: false });
     await sleep(30); // let the message paint
     const g = E.newGame({ skill: settings.skill, size: settings.size, hand: settings.hand, timer: settings.timer, scoring: settings.scoring, bonus: settings.bonus, pics: settings.pics });
     closeModal();
@@ -635,6 +634,19 @@
     $('#checkBtn').classList.toggle('poor', coins.bal < checkNeed());
     $('#doneBtn').disabled = !mine;
     $('#doneBtn').classList.toggle('pass', !ui.pending.length); // v08e (CD-36: 2.1): orange while it says Pass
+    $('#doneIco').textContent = ui.pending.length ? '✓' : '⏭'; // v08f (CD-37: 4.3)
+    // v08f (CD-37: 2.1.1): once the game is over, the hand's row becomes the game-over bar
+    const over = !!(G && G.over && G.result);
+    $('#dock').classList.toggle('is-over', over);
+    $('#overBar').hidden = !over;
+    if (over && !$('#overBar').dataset.on) {
+      const r = G.result, o = opp();
+      const head = r.winner === 0 ? `🏆 ${myName() === 'You' ? 'You win' : esc(myName()) + ' wins'}` : r.winner === 1 ? `${o.a} ${esc(o.n)} wins` : '🤝 A draw';
+      $('#overBar').innerHTML = `<span class="ob-h">🏁 Game over · ${head} · ${G.scores[0]}–${G.scores[1]}</span>
+        <span class="ob-btns"><button class="btn" type="button" data-ob="res">📊 Results</button><button class="btn" type="button" data-ob="menu">☰ Menu</button><button class="btn primary" type="button" data-ob="again">Rematch</button></span>`;
+      $('#overBar').dataset.on = '1';
+    }
+    if (!over) { $('#overBar').innerHTML = ''; delete $('#overBar').dataset.on; }
     if (ui.pending.length) {
       // v08d (CD-34: 4.4): a tile count, not points (points would tell you which tiles are right)
       $('#doneTxt').textContent = `Done · ${ui.pending.length}`;
@@ -844,7 +856,20 @@
   }, true);
 
   // v08e: an optional class for the window (e.g. 'res' = a result window: wider on big screens, pinned button bar)
-  function openModal(html, cls) { $('#sheet').className = 'sheet' + (cls ? ' ' + cls : ''); $('#sheet').innerHTML = html; $('#sheet').scrollTop = 0; $('#modal').hidden = false; }
+  // v08f (JM CD-37: 2.1): every info window has a ✕ in its top-right corner and also closes on a tap outside it.
+  // opt.close: false = a question or a busy screen (no ✕, no outside tap); a function = runs after the window closes
+  // (e.g. a result window shows the finished grid and its game-over bar).
+  function openModal(html, cls, opt) {
+    opt = opt || {};
+    const can = opt.close !== false, sh = $('#sheet');
+    sh.className = 'sheet' + (cls ? ' ' + cls : '');
+    sh.innerHTML = (can ? '<button type="button" class="sheet-x" aria-label="Close" title="Close">✕</button>' : '') + html;
+    sh.scrollTop = 0;
+    const shut = () => { closeModal(); if (typeof opt.close === 'function') opt.close(); };
+    $('#modal').onclick = can ? (e => { if (e.target === $('#modal')) shut(); }) : null;
+    if (can) sh.querySelector('.sheet-x').addEventListener('click', e => { e.stopPropagation(); shut(); });
+    $('#modal').hidden = false;
+  }
   function closeModal() { $('#sheet').className = 'sheet'; $('#modal').hidden = true; $('#modal').onclick = null; $('#sheet').innerHTML = ''; $('#sheet').onclick = null; $('#sheet').onpointerdown = null; }
   // v08c (JM CD-30: 4.4): coin buttons take TWO taps. The first tap "arms" the button: it turns gold and reads
   // "Tap again · 🪙N" for 3 seconds; a second tap in that time buys. Anything else (time running out, another tap
@@ -911,7 +936,7 @@
 
   function confirmBox(title, text, yes, no) {
     return new Promise(res => {
-      openModal(`<h2>${esc(title)}</h2><p>${esc(text)}</p><div class="row"><button class="btn" data-a="no">${esc(no)}</button><button class="btn primary" data-a="yes">${esc(yes)}</button></div>`);
+      openModal(`<h2>${esc(title)}</h2><p>${esc(text)}</p><div class="row"><button class="btn" data-a="no">${esc(no)}</button><button class="btn primary" data-a="yes">${esc(yes)}</button></div>`, '', { close: false });
       $('#sheet').onclick = e => { const b = e.target.closest('[data-a]'); if (!b) return; closeModal(); res(b.dataset.a === 'yes'); };
     });
   }
@@ -1012,7 +1037,8 @@
         <li>In the last 10 seconds the grid's border flashes every second: <b>yellow</b> from 10 to 6, <b>red</b> from 5 to 1.</li>`)}
       ${sec('Resume Game', `
         <li><b>New Game</b> starts a fresh puzzle with the settings above.</li>
-        <li><b>Resume Game</b> appears when you have an unfinished game. Your game is saved after every turn and whenever you leave it (☰ in the upper-left corner of the game).</li>`)}
+        <li><b>Resume Game</b> appears when you have an unfinished game. Your game is saved after every turn and whenever you leave it (☰ in the upper-left corner of the game takes you straight to the menu).</li>
+        <li><b>⚙</b> beside <b>?</b> in the game (on a phone, at the right end of the Scoreboard row) shows this game's settings. Changes apply from your next game; <b>New game with these</b> starts one now.</li>`)}
       ${sec('Clue Bar', `
         <li>The clue bar sits at the top of the game, between the two scores (on a phone, on its own row just below them).</li>
         <li>Tap a clue in the grid to show it in the bar. Tap a white cell to show the word it belongs to; tap the same cell again to switch between its across and down words.</li>
@@ -1042,11 +1068,12 @@
         <li><b>🎯 Place (🪙?)</b>: puts one random tile from your hand into a cell where it fits. It costs that tile's value in coins (shown on the tile; 1 in modes without tile values), then scores like any tile you place. It's marked ✓ (known to fit).</li>
         <li><b>☑️ Check (🪙${R.checkBase}+)</b>: tests the tiles you've penciled in this turn. It costs ${R.checkBase} coins, plus ${R.checkPerWrong} for each wrong tile it finds. Wrong tiles go back to your hand with <b>no point penalty</b>; right ones get a ✓ (move one and it's unchecked again). Check needs <b>🪙${R.checkBase + R.checkPerWrong}</b> to start, then checks your tiles in the order you placed them. If it finds more wrong tiles than you can pay for, it takes your last coins for that tile and stops; any later tiles stay penciled in, unchecked.</li>
         <li>The coin buttons (💡 Hint, 🎯 Place, ☑️ Check, ⏱️ +30s) are <b>blue</b> (each icon on a navy circle) and sit together; on a phone they're the top row of ⋯ More.</li>
+        <li>The game buttons (🔄 Swap, 🔀 Shuffle and the ⏸️ clock) are <b>gray and rounded</b>, as in Word Vault.</li>
         <li><b>🔄 Swap</b>: trade some or all of your tiles for new ones from the bag. It ends your turn and counts as a pass.</li>
         <li><b>🔀 Shuffle</b>: mixes the order of your hand.</li>
         <li><b>⏸️ Pause</b> (or the P key) shows your clock in timed games. On a phone, tapping the clock under your score also pauses (and resumes) the game. It stops every clock and hides the grid, clues and hand; tap the PLAY PAUSED panel, ▶️, or P to resume. The game also pauses when you switch to another tab or app.</li>
         <li><b>⏱️ +30s (🪙${R.timeCost})</b> (timed games only): adds 30 seconds to your clock for ${R.timeCost} coins. Use it as often as you like. Bought time never pays speed coins.</li>
-        <li><b>✓ Done</b> (green) checks and banks this turn's tiles. It shows how many are penciled in, like <b>Done · 3</b> (not the points, which would give away which tiles are right). With nothing placed it turns <b>orange</b> and reads <b>Pass</b>: orange means "think first", since a pass is sometimes needed but never a gain.</li>`)}
+        <li><b>✓ Done</b> (green) checks and banks this turn's tiles. It shows how many are penciled in, like <b>Done · 3</b> (not the points, which would give away which tiles are right). With nothing placed it turns <b>orange</b> and reads <b>⏭ Pass</b>: orange means "think first", since a pass is sometimes needed but never a gain.</li>`)}
       ${sec('Bonuses', `
         <li><span class="chip x2">2×</span> doubles your turn's points from tiles and words. Each extra 2× in the same turn adds another double: 10 → 20 → 40 → 60.</li>
         <li><span class="chip p5">+${R.plusCell}</span> cells add ${R.plusCell} points, and <span class="chip p5">+${R.plus2Cell}</span> cells add ${R.plus2Cell} points. Both are added after doubling and are never doubled. +${R.plus2Cell} cells appear only with the Fixed or Both setting (see ${go('Bonus Squares')}).</li>
@@ -1060,7 +1087,9 @@
       ${sec('The End', `
         <li>The game ends when the grid is full, by the <b>3 PASSES Rule</b> (${esc(PASS_RULE)}), or when a whole-game clock runs out.</li>
         <li>A yellow PASS banner warns you after the 1st pass; a red one after the 2nd. It says who passed and <b>holds the game until you tap</b> (your rival waits and your clock stops). After your tap it shrinks to one line until someone places a tile.</li>
-        <li>The result screen shows both players' stats and your record against this opponent.</li>`)}
+        <li>The result window shows both scores, your record against this opponent, both players' play and your coins. Its buttons: <b>⚙ Settings</b>, <b>☰ Menu</b> and <b>Rematch</b>.</li>
+        <li>Close it (✕, or tap outside it) to look at the finished grid. Your hand's row then becomes a <b>game-over bar</b> with <b>📊 Results</b> (opens the window again), <b>☰ Menu</b> and <b>Rematch</b>.</li>
+        <li>Every window closes the same way: ✕ in its top-right corner, a tap outside it, or its <b>Close</b> button.</li>`)}
       ${sec('Coins', `
         <li><b>🪙 Coins</b> are one currency shared by Clue Duel and ${go('Word Vault')}. You start with <b>${COIN.start}</b>. Your balance shows on the menu, in the game's info line and above the Word Vault grid; tap it for details and your latest coins.</li>
         <li><b>Spend them on</b> 💡 Hint (${hintC}), 🎯 Place (the tile's value), ☑️ Check (${R.checkBase} + ${R.checkPerWrong} per wrong tile) and ⏱️ +30s (${R.timeCost}) in Clue Duel, and 🔎 Hint (5) and 💡 Reveal (40 ÷ the word's letters, like ¹⁄₅ 🪙8) in Word Vault. These cost coins, not points. Coin buttons are <b>blue</b>. Without enough coins the button is dimmed, and a tap tells you what it costs.</li>
@@ -1083,46 +1112,79 @@
       ${sec('Strategy', `
         <li>Don't rush. A word left with only one empty cell is a gift to your rival. Sometimes it pays to <b>hold</b> a tile until you can finish the word yourself.</li>
         <li>It is often smart to save 2× squares for big turns because they double everything else you score that turn. Beware: your opponent can "steal" the bonus squares in the early rounds to keep you from scoring big.</li>`)}
-      <div class="row"><button class="btn primary" data-a="ok">Got it</button></div>`);
+      <div class="row"><button class="btn primary" data-a="ok">Close</button></div>`);
+    // v07b (JM, CD-20: 3.3.1): a tap anywhere outside the How To Play panel closes it (v08f: openModal does this)
     const sheet = $('#sheet');
-    // v07b (JM, CD-20: 3.3.1): a tap anywhere outside the How To Play panel closes it, like "Got it"
-    $('#modal').onclick = e => { if (e.target === $('#modal')) closeModal(); };
+    sheet.onclick = e => { if (helpClick(e)) return; if (e.target.closest('[data-a]')) closeModal(); };
+  }
+  // v08f (JM CD-37: 5.1): How To Play sections, shared with Word Vault. helpSec() draws one closed section;
+  // helpClick() opens a tapped heading (closing the others) or follows a link to a section. Returns true if it acted.
+  const helpId = title => title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+  const helpSec = (title, body) => `<section class="help-sec" data-sec="${helpId(title)}"><button class="help-h" type="button" aria-expanded="false">${title}<span class="hc" aria-hidden="true">▸</span></button><div class="help-b"><div><ul>${body}</ul></div></div></section>`;
+  function helpClick(e) {
+    const sheet = $('#sheet');
     const openSec = (s, open) => {
       sheet.querySelectorAll('.help-sec.open').forEach(x => { x.classList.remove('open'); x.querySelector('.help-h').setAttribute('aria-expanded', 'false'); });
       if (open) { s.classList.add('open'); s.querySelector('.help-h').setAttribute('aria-expanded', 'true'); }
     };
-    sheet.onclick = e => {
-      const lk = e.target.closest('.help-link');
-      if (lk) {
-        e.preventDefault();
-        const s = sheet.querySelector(`.help-sec[data-sec="${lk.dataset.go}"]`);
-        if (!s) return;
-        // jump without the open/close animation, so the heading lands exactly at the top of the panel,
-        // then flash the heading so the eye finds it
-        sheet.classList.add('help-jump');
-        openSec(s, true);
-        sheet.scrollTop = s.getBoundingClientRect().top - sheet.getBoundingClientRect().top + sheet.scrollTop - 4;
-        void sheet.offsetHeight;
-        sheet.classList.remove('help-jump');
-        s.classList.remove('flash'); void s.offsetWidth; s.classList.add('flash');
-        setTimeout(() => s.classList.remove('flash'), 1300);
-        return;
-      }
-      const h = e.target.closest('.help-h');
-      if (h) { const s = h.parentElement; openSec(s, !s.classList.contains('open')); return; }
-      if (e.target.closest('[data-a]')) closeModal();
-    };
+    const lk = e.target.closest('.help-link');
+    if (lk) {
+      e.preventDefault();
+      const s = sheet.querySelector(`.help-sec[data-sec="${lk.dataset.go}"]`);
+      if (!s) return true;
+      // jump without the open/close animation, so the heading lands exactly at the top of the panel,
+      // then flash the heading so the eye finds it
+      sheet.classList.add('help-jump');
+      openSec(s, true);
+      sheet.scrollTop = s.getBoundingClientRect().top - sheet.getBoundingClientRect().top + sheet.scrollTop - 4;
+      void sheet.offsetHeight;
+      sheet.classList.remove('help-jump');
+      s.classList.remove('flash'); void s.offsetWidth; s.classList.add('flash');
+      setTimeout(() => s.classList.remove('flash'), 1300);
+      return true;
+    }
+    const h = e.target.closest('.help-h');
+    if (h) { const s = h.parentElement; openSec(s, !s.classList.contains('open')); return true; }
+    return false;
   }
   $('#helpBtn').addEventListener('click', () => { if (G && !G.over && E.timerOf(G.settings.timer).kind !== 'none') setPaused(true); showHelp(); });
   // v06c (CD-18: 3.1a): the phone copies of ☰ and ? in the Scoreboard row do exactly what the top-bar buttons do
   $('#helpBtn2').addEventListener('click', () => $('#helpBtn').click());
   $('#menuBtn2').addEventListener('click', () => $('#menuBtn').click());
 
-  $('#menuBtn').addEventListener('click', async () => {
-    if (G && G.over) { leaveGame(); return; }
-    const ok = await confirmBox('Leave this game?', 'Your game is saved. You can resume it from the menu.', 'Leave', 'Keep playing');
-    if (ok) leaveGame();
-  });
+  // v08f (JM CD-37: 2.3): ☰ leaves at once, as in Word Vault. The game is saved; Resume Game picks it up again.
+  $('#menuBtn').addEventListener('click', () => leaveGame());
+
+  // ⚙ Clue Duel settings (v08f, JM CD-37: 3.1, 4.1), like Word Vault's: in the game's header and on the result window.
+  // It opens with this game's settings. Changes become your settings for the next game (the menu shows them too);
+  // "New game with these" starts one now (asking first if a game is unfinished).
+  function gameSettings() {
+    if (G && !G.over && E.timerOf(G.settings.timer).kind !== 'none') setPaused(true);
+    const cur = Object.assign({}, settings, G ? G.settings : {});
+    const sizes = [...$('#sizeSeg').children].map(b => `<option value="${b.dataset.v}">${esc(b.textContent.trim())}</option>`).join('');
+    const F = [['skill', 'Challenge Level', $('#skillSel').innerHTML], ['size', 'Grid Size', sizes], ['hand', 'Letters in Hand', $('#handSel').innerHTML],
+      ['bonus', 'Bonus Squares', $('#bonusSel').innerHTML], ['pics', 'Clue Pics', $('#picsSel').innerHTML], ['scoring', 'Scoring', $('#scoringSel').innerHTML],
+      ['timer', 'Timer', $('#timerSel').innerHTML]];
+    const live = G && !G.over;
+    openModal(`<h2>⚙ Clue Duel settings</h2>
+      <div class="vt-grid">${F.map(([k, l, o]) => `<label class="field"><span class="lbl">${l}</span><select data-k="${k}">${o}</select></label>`).join('')}</div>
+      <p class="opt-desc" id="cdSetDesc"></p>
+      <p class="help-note">${live ? 'This game keeps its settings; changes apply from your next game. "New game with these" starts one now (this game is lost).' : 'Changes apply from your next game.'}</p>
+      <div class="row"><button class="btn" data-a="close">Close</button><button class="btn primary" data-a="new">New game with these</button></div>`);
+    const sels = [...document.querySelectorAll('#sheet select[data-k]')];
+    for (const s of sels) { s.value = String(cur[s.dataset.k]); if (s.selectedIndex < 0) s.selectedIndex = 0; }
+    const desc = () => { const v = sels.find(s => s.dataset.k === 'scoring').value; $('#cdSetDesc').textContent = (E.MODES[v] || E.MODES.classic).desc; };
+    const keep = () => { for (const s of sels) settings[s.dataset.k] = /^(skill|hand)$/.test(s.dataset.k) ? +s.value : s.value; saveSettings(); };
+    desc();
+    for (const s of sels) s.addEventListener('change', () => { keep(); desc(); });
+    $('#sheet').onclick = e => {
+      const b = e.target.closest('[data-a]'); if (!b) return;
+      closeModal();
+      if (b.dataset.a === 'new') { keep(); startNewGame(); }
+    };
+  }
+  $('#setBtn').addEventListener('click', gameSettings);
+  $('#setBtn2').addEventListener('click', gameSettings);
 
   // =====================================================================
   // Turn flow
@@ -1840,12 +1902,11 @@
     const resBody = `
         <div class="res-top"><span class="res-face">${face}</span><span class="res-title">${esc(title)}</span></div>
         <p class="res-sub">${ended}</p>
-        <div class="res-big"><div class="me"><b>${G.scores[0]}</b><span>${esc(myName())}</span></div><div class="them"><b>${G.scores[1]}</b><span>${esc(o.n)}</span></div></div>
-        <p class="rec-line"><span class="rl-a">📈 Record vs ${esc(o.n)}:</span><span class="rl-b">${rec.w} won · ${rec.l} lost${rec.d ? ` · ${rec.d} drawn` : ''}</span></p>
+        <div class="res-big"><div class="me"><span>${esc(myName())}</span><b>${G.scores[0]}</b></div><div class="them"><b>${G.scores[1]}</b><span>${esc(o.n)}</span></div></div>
+        <p class="rec-line"><span class="rl-a">Record vs ${esc(o.n)}:</span><span class="rl-b"><i class="w">${rec.w} won</i> · <i class="l">${rec.l} lost</i>${rec.d ? ` · ${rec.d} drawn` : ''}</span></p>
         <div class="res-cols"><section>
-        <h3 class="res-h">🧩 Play</h3>
-        <table class="score-table">
-          <tr><th></th><th>${esc(myName())}</th><th>${esc(o.n)}</th></tr>
+        <table class="score-table play-tbl">
+          <tr><th class="res-h">🧩 Play</th><th>${esc(myName())}</th><th>${esc(o.n)}</th></tr>
           <tr><td>Words finished</td><td>${st.words[0]}</td><td>${st.words[1]}</td></tr>
           <tr><td>Tiles placed</td><td>${st.placed[0]}</td><td>${st.placed[1]}</td></tr>
           <tr><td>Full Hand bonuses</td><td>${st.fullHands[0]}</td><td>${st.fullHands[1]}</td></tr>
@@ -1861,23 +1922,36 @@
       hist.add({ g: 'duel', win: r.winner === 0, title: `${r.winner === 0 ? 'Won' : r.winner === 1 ? 'Lost' : 'Drew'} vs ${o.n} [${G.settings.skill}]`,
         sub: [sz, timerLabel()].filter(Boolean).join(' · '), score: `${G.scores[0]}–${G.scores[1]}`, coins: net, html: resBody });
     }
-    setTimeout(() => {
-      openModal(`${resBody}
-        <div class="row res-bar"><button class="btn" data-a="board">See grid</button><button class="btn" data-a="menu">Menu</button><button class="btn primary" data-a="again">Rematch</button></div>`, 'res');
-      $('#sheet').onclick = e => {
-        const b = e.target.closest('[data-a]');
-        if (!b) return;
-        closeModal();
-        if (b.dataset.a === 'again') {
-          const s = G.settings;
-          Object.assign(settings, { skill: s.skill, size: s.size, hand: s.hand, timer: s.timer, scoring: s.scoring || 'classic', bonus: s.bonus || 'floating', pics: s.pics || 'some' });
-          startNewGame();
-        }
-        else if (b.dataset.a === 'menu') leaveGame();
-        else render();
-      };
-    }, 700);
+    ui.resBody = resBody;
+    render(); // the game-over bar replaces the hand
+    setTimeout(showResults, 700);
   }
+  // v08f (JM CD-37: 2.1, 3.1): the result window's buttons are ⚙ Settings · ☰ Menu · Rematch (the same three as Word
+  // Vault's). ✕ or a tap outside closes it and shows the finished grid with its game-over bar (📊 Results reopens it).
+  function showResults() {
+    if (!G || !G.over || !ui.resBody) return;
+    openModal(`${ui.resBody}
+      <div class="row res-bar"><button class="btn" data-a="set">⚙ Settings</button><button class="btn" data-a="menu">☰ Menu</button><button class="btn primary" data-a="again">Rematch</button></div>`, 'res', { close: render });
+    $('#sheet').onclick = e => {
+      const b = e.target.closest('[data-a]');
+      if (!b) return;
+      closeModal();
+      overAction(b.dataset.a);
+    };
+  }
+  function overAction(a) {
+    if (a === 'again') {
+      const s = G.settings;
+      Object.assign(settings, { skill: s.skill, size: s.size, hand: s.hand, timer: s.timer, scoring: s.scoring || 'classic', bonus: s.bonus || 'floating', pics: s.pics || 'some' });
+      saveSettings();
+      startNewGame();
+    }
+    else if (a === 'menu') leaveGame();
+    else if (a === 'set') gameSettings();
+    else if (a === 'res') showResults();
+    else render();
+  }
+  $('#overBar').addEventListener('click', e => { const b = e.target.closest('[data-ob]'); if (b) overAction(b.dataset.ob); });
 
   // =====================================================================
   // Boot
@@ -1886,6 +1960,7 @@
   window.CDUI = {
     $, esc, store, toast, openModal, closeModal, APP_VER, AVATARS, coins, coinPill, COIN, // v08: coins shared with Word Vault
     armTap, history: hist, // v08c: two-tap coin buttons; Game History shared with Word Vault
+    helpSec, helpClick, // v08f: How To Play sections shared with Word Vault
     showScreen, goHome: () => { showScreen('home'); renderHome(); },
     settings: () => settings
   };
