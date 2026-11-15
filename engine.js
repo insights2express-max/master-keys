@@ -1,4 +1,4 @@
-/* Clue Duel — game engine (v08d)
+/* Clue Duel — game engine (v08e)
    Puzzle generator (arrow-word grid), tile bag, scoring modes, bonus squares and the computer opponent.
    No DOM code here: app.js handles everything the player sees. */
 'use strict';
@@ -785,6 +785,7 @@
   // as before, and puzzle difficulty (words, clues, starter letters) is unchanged at every level. The curve is
   // flatter from 1 to 7, then jumps at 8, so 8–10 stand apart as the "Master" levels.
   const AI_SKILL = { 4: 3.4, 5: 3.8, 6: 4.2, 7: 4.6 };
+  const WRONG_BY_LEVEL = [0.15, 0.13, 0.11, 0.10, 0.09, 0.08, 0.07, 0.06, 0.05, 0.04];
   function aiSkill(skill) { return AI_SKILL[skill] || skill; }
   function aiParams(level) {
     const skill = aiSkill(level);
@@ -796,7 +797,9 @@
       hold: skill >= 4,                     // will deliberately hold tiles back
       plan: skill >= 3,                     // sees words it can finish itself this turn
       lazy: 0.4 * (1 - k),                  // chance to stop placing early
-      wrong: 0.15 * Math.pow(1 - k, 1.5)    // chance to try a wrong cell (penalty)
+      // v08e (JM CD-36: 4.1): chance per turn to pencil a tile into a wrong cell. Skill lowers it, but harder words
+      // keep a floor, so even the level-10 rival still slips now and then (15% at level 1 down to 4% at level 10)
+      wrong: WRONG_BY_LEVEL[level - 1] != null ? WRONG_BY_LEVEL[level - 1] : 0.15 * Math.pow(1 - k, 1.5)
     };
   }
 

@@ -1,6 +1,6 @@
 /* Clue Duel — service worker: caches the whole app so it plays offline.
    Bump CACHE whenever any file changes, so players get the update. */
-const CACHE = 'clue-duel-v08d-1'; // v08d: blue coin buttons + green Done, PASS banner holds, tiles checked at DONE, ☑️ Check
+const CACHE = 'clue-duel-v08e-1'; // v08e: navy icon circles, orange Pass, Check as far as you can pay, rival errors by level, pinned Results bar
 const ASSETS = [
   './',
   'index.html',

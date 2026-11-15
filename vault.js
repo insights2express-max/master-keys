@@ -6,6 +6,8 @@
    v08c (CD-30, CD-32): button groups (gold coin buttons | gray round game buttons); New Game and Give up ask first; coin buttons
    take two taps; finished words go into the shared Game History; levels 8–10 get SHORT hints (one to three words).
    v08d (CD-34: 1.1–1.2): coin buttons are blue, each icon on a white circle.
+   v08e (CD-36: 1.1, 5.1, 5.3): icons on a navy circle; the result window matches Clue Duel's (one-line heading, tables side
+   by side on wide screens, a pinned button bar; the Guesses-needed note opens from ⓘ).
    v07f (CD-25): no embossed text; played letters are black on green, yellow or red; typed (tentative) letters turn their key
    black on white; empty squares are dark glass "candy drops" in the slots of a glassy grid panel; a large > marks the
    active row, so the grid sits centered between it and the ✕; "Blitz · 30s per guess".
@@ -675,23 +677,28 @@
     // Guesses needed (CD-24: 1.2.1): one row per number of guesses; the bar's number = words solved in that many guesses
     const tip = k => { const n = stats.dist[k], wd = n === 1 ? 'word' : 'words'; return k === 'X' ? `Not solved: ${n} ${wd}` : `Solved in ${k} ${+k === 1 ? 'guess' : 'guesses'}: ${n} ${wd}`; };
     const bars = keys.map(k => `<div class="vt-bar" title="${tip(k)}"><span class="k">${k === 'X' ? '✗' : k}</span><span class="b${(won && +k === R.rows.length) || (!won && k === 'X') ? ' me' : ''}${k === 'X' ? ' x' : ''}" style="width:${Math.max(8, Math.round(100 * stats.dist[k] / maxN))}%">${stats.dist[k]}</span></div>`).join('');
+    // v08e (JM CD-36: 5.3, 5.3.1): the same layout as Clue Duel's result: a one-line heading (big emoji + title), pairs of
+    // tables side by side on wide screens, the Guesses-needed note behind ⓘ, and a button bar pinned to the bottom
+    const sec = s => s ? `<section>${s}</section>` : '';
+    const pts = won ? `<h3 class="res-h">🏅 Points</h3><table class="score-table vt-sc">${sc.rows.map(r => `<tr><td>${esc(r[0])}</td><td>${r[1] < 0 ? '−' + Math.abs(r[1]) : '+' + r[1]}</td></tr>`).join('')}<tr class="total"><td>Score</td><td>${sc.total}</td></tr></table>` : '';
+    const [face, head] = won ? ['🔓', 'Vault cracked!'] : gaveUp ? ['🏳️', 'You gave up'] : ['🔒', 'The Vault stays shut'];
     const body = `
-      <div class="vt-res-h">${won ? '🔓 Vault cracked!' : gaveUp ? '🏳️ You gave up' : '🔒 The Vault stays shut'}</div>
+      <div class="res-top"><span class="res-face">${face}</span><span class="res-title">${head}</span></div>
       <div class="vt-res-w">${w.split('').map(ch => `<span>${ch}</span>`).join('')}</div>
-      ${R.hint && R.hint.t ? `<p class="vt-res-c">Clue: ${esc(R.hint.t)}</p>` : ''}
-      ${won ? `<h3 class="res-h">🏅 Points</h3><table class="score-table vt-sc">${sc.rows.map(r => `<tr><td>${esc(r[0])}</td><td>${r[1] < 0 ? '−' + Math.abs(r[1]) : '+' + r[1]}</td></tr>`).join('')}<tr class="total"><td>Score</td><td>${sc.total}</td></tr></table>` : ''}
-      ${coinTable(sc.coins)}
+      ${R.hint && R.hint.t ? `<p class="res-sub">Clue: ${esc(R.hint.t)}</p>` : ''}
+      <div class="res-cols">${sec(pts)}${sec(coinTable(sc.coins))}</div>
+      <div class="res-cols"><section>
       <h3 class="res-h">📊 Your stats</h3>
       <div class="vt-res-stats">
         <div><b>${fmt(ms)}</b><span>Time</span></div><div><b>${stats.bestMs ? fmt(stats.bestMs) : '–'}</b><span>Best time</span></div>
         <div><b>${stats.played}</b><span>Played</span></div><div><b>${pct}%</b><span>Solved</span></div>
         <div><b>${stats.streak}</b><span>Streak</span></div><div><b>${stats.best}</b><span>Best streak</span></div>
-      </div>
-      ${bars ? `<h3>Guesses needed</h3><div class="vt-dist">${bars}</div>
-        <p class="vt-dist-note">Each row is a number of guesses (✗ = not solved). Its bar shows how many words you've solved in that many guesses, so a longer bar means it happens more often. The highlighted bar is this word.</p>` : ''}`;
+      </div></section>
+      ${bars ? `<section><h3 class="res-h">🎯 Guesses needed</h3><div class="vt-dist">${bars}</div>
+        <details class="res-info"><summary>ⓘ What do the bars mean?</summary><p class="vt-dist-note">Each row is a number of guesses (✗ = not solved). Its bar shows how many words you've solved in that many guesses, so a longer bar means it happens more often. The highlighted bar is this word.</p></details></section>` : ''}</div>`;
     addHistory(won ? `Solved ${w} in ${R.rows.length}/${R.tries}` : `${gaveUp ? 'Gave up' : 'Not solved'}: ${w}`, won ? `${sc.total} pts` : '—', body);
     openModal(`${body}
-      <div class="row"><button class="btn" data-a="setup">⚙ Settings</button><button class="btn primary" data-a="again">Next word</button></div>`);
+      <div class="row res-bar"><button class="btn" data-a="setup">⚙ Settings</button><button class="btn primary" data-a="again">Next word</button></div>`, 'res');
     $('#modal').onclick = e => { if (e.target === $('#modal')) closeModal(); };
     $('#sheet').onclick = e => {
       const b = e.target.closest('[data-a]'); if (!b) return;

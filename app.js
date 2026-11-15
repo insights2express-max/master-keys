@@ -1,7 +1,7 @@
 /* Clue Duel — user interface (v08d) */
 'use strict';
 (() => {
-  const APP_VER = 'v08d'; // Project CP: shown as a pill beside the title and in the browser tab
+  const APP_VER = 'v08e'; // Project CP: shown as a pill beside the title and in the browser tab
   const E = window.Engine;
   const $ = (s, el = document) => el.querySelector(s);
   const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -628,12 +628,13 @@
     $('#timeBtn').disabled = !mine;
     $('#swapBtn').disabled = !mine || !G.bag.length || !!ui.pending.length || !G.hands[0].length;
     $('#mixBtn').disabled = !G || G.over || G.hands[0].length < 2;
-    // v08d (JM CD-34: 4.1c): ☑️ Check tests your penciled tiles now. It costs 5, plus 5 for each wrong tile, so you
-    // need enough coins for the worst case (every unchecked tile wrong) before it can run.
+    // v08d (JM CD-34: 4.1c): ☑️ Check tests your penciled tiles now. It costs 5, plus 5 for each wrong tile.
+    // v08e (CD-36: 3.1): it needs only 🪙10 to start ("Check as far as you can pay")
     const unk = ui.pending.filter(p => !p.ok).length;
     $('#checkBtn').disabled = !mine || !unk;
-    $('#checkBtn').classList.toggle('poor', coins.bal < checkMax());
+    $('#checkBtn').classList.toggle('poor', coins.bal < checkNeed());
     $('#doneBtn').disabled = !mine;
+    $('#doneBtn').classList.toggle('pass', !ui.pending.length); // v08e (CD-36: 2.1): orange while it says Pass
     if (ui.pending.length) {
       // v08d (CD-34: 4.4): a tile count, not points (points would tell you which tiles are right)
       $('#doneTxt').textContent = `Done · ${ui.pending.length}`;
@@ -644,7 +645,7 @@
     }
     $('#swapBtn').title = 'Swap some or all of your tiles. Ends your turn and counts as a pass.';
   }
-  const checkMax = () => E.RULES.checkBase + E.RULES.checkPerWrong * ui.pending.filter(p => !p.ok).length;
+  const checkNeed = () => E.RULES.checkBase + E.RULES.checkPerWrong; // v08e: the base plus one wrong tile
 
   // ---------- 3 PASSES Rule warning ----------
   // v08d (JM CD-33 add'l 1; CD-34: 3.1–3.3): no pass pill. A new pass holds the game until you tap (the opponent
@@ -842,8 +843,9 @@
     if (Date.now() < reps.swallowUntil) { reps.swallowUntil = 0; e.stopPropagation(); e.preventDefault(); }
   }, true);
 
-  function openModal(html) { $('#sheet').innerHTML = html; $('#modal').hidden = false; }
-  function closeModal() { $('#modal').hidden = true; $('#modal').onclick = null; $('#sheet').innerHTML = ''; $('#sheet').onclick = null; $('#sheet').onpointerdown = null; }
+  // v08e: an optional class for the window (e.g. 'res' = a result window: wider on big screens, pinned button bar)
+  function openModal(html, cls) { $('#sheet').className = 'sheet' + (cls ? ' ' + cls : ''); $('#sheet').innerHTML = html; $('#sheet').scrollTop = 0; $('#modal').hidden = false; }
+  function closeModal() { $('#sheet').className = 'sheet'; $('#modal').hidden = true; $('#modal').onclick = null; $('#sheet').innerHTML = ''; $('#sheet').onclick = null; $('#sheet').onpointerdown = null; }
   // v08c (JM CD-30: 4.4): coin buttons take TWO taps. The first tap "arms" the button: it turns gold and reads
   // "Tap again · 🪙N" for 3 seconds; a second tap in that time buys. Anything else (time running out, another tap
   // elsewhere) disarms it. The label is drawn over the button (CSS ::after), so re-renders don't disturb it.
@@ -899,7 +901,7 @@
       if (it) {
         const h = all[+it.dataset.i]; if (!h) return;
         openModal(`<div class="hist-when">📜 ${when(h.t)}</div><div class="hist-res">${h.html || ''}</div>
-          <div class="row"><button class="btn" data-a="back">◂ History</button><button class="btn primary" data-a="close">Close</button></div>`);
+          <div class="row res-bar"><button class="btn" data-a="back">◂ History</button><button class="btn primary" data-a="close">Close</button></div>`, 'res');
         $('#sheet').onclick = ev => { const b = ev.target.closest('[data-a]'); if (!b) return; if (b.dataset.a === 'back') showHistory(f); else closeModal(); };
         return;
       }
@@ -1038,13 +1040,13 @@
         <li>Your hand and the buttons share the bottom row. On a phone, ✓ Done stays on the row and the other buttons open from <b>⋯ More</b>; in timed games your clock then shows under your score.</li>
         <li><b>💡 Hint (🪙${hintC})</b>: shows a cell where one of your tiles fits. It costs ${hintC} ${go('Coins', 'coins')}.</li>
         <li><b>🎯 Place (🪙?)</b>: puts one random tile from your hand into a cell where it fits. It costs that tile's value in coins (shown on the tile; 1 in modes without tile values), then scores like any tile you place. It's marked ✓ (known to fit).</li>
-        <li><b>☑️ Check (🪙${R.checkBase}+)</b>: tests the tiles you've penciled in this turn. It costs ${R.checkBase} coins, plus ${R.checkPerWrong} for each wrong tile it finds. Wrong tiles go back to your hand with <b>no point penalty</b>; right ones get a ✓ (move one and it's unchecked again). You need enough coins for the worst case (every unchecked tile wrong): with 3 unchecked tiles, ${R.checkBase + 3 * R.checkPerWrong}.</li>
-        <li>The coin buttons (💡 Hint, 🎯 Place, ☑️ Check, ⏱️ +30s) are <b>blue</b> and sit together; on a phone they're the top row of ⋯ More.</li>
+        <li><b>☑️ Check (🪙${R.checkBase}+)</b>: tests the tiles you've penciled in this turn. It costs ${R.checkBase} coins, plus ${R.checkPerWrong} for each wrong tile it finds. Wrong tiles go back to your hand with <b>no point penalty</b>; right ones get a ✓ (move one and it's unchecked again). Check needs <b>🪙${R.checkBase + R.checkPerWrong}</b> to start, then checks your tiles in the order you placed them. If it finds more wrong tiles than you can pay for, it takes your last coins for that tile and stops; any later tiles stay penciled in, unchecked.</li>
+        <li>The coin buttons (💡 Hint, 🎯 Place, ☑️ Check, ⏱️ +30s) are <b>blue</b> (each icon on a navy circle) and sit together; on a phone they're the top row of ⋯ More.</li>
         <li><b>🔄 Swap</b>: trade some or all of your tiles for new ones from the bag. It ends your turn and counts as a pass.</li>
         <li><b>🔀 Shuffle</b>: mixes the order of your hand.</li>
         <li><b>⏸️ Pause</b> (or the P key) shows your clock in timed games. On a phone, tapping the clock under your score also pauses (and resumes) the game. It stops every clock and hides the grid, clues and hand; tap the PLAY PAUSED panel, ▶️, or P to resume. The game also pauses when you switch to another tab or app.</li>
         <li><b>⏱️ +30s (🪙${R.timeCost})</b> (timed games only): adds 30 seconds to your clock for ${R.timeCost} coins. Use it as often as you like. Bought time never pays speed coins.</li>
-        <li><b>✓ Done</b> (green) checks and banks this turn's tiles. It shows how many are penciled in, like <b>Done · 3</b> (not the points, which would give away which tiles are right). With nothing placed it reads <b>Pass</b>.</li>`)}
+        <li><b>✓ Done</b> (green) checks and banks this turn's tiles. It shows how many are penciled in, like <b>Done · 3</b> (not the points, which would give away which tiles are right). With nothing placed it turns <b>orange</b> and reads <b>Pass</b>: orange means "think first", since a pass is sometimes needed but never a gain.</li>`)}
       ${sec('Bonuses', `
         <li><span class="chip x2">2×</span> doubles your turn's points from tiles and words. Each extra 2× in the same turn adds another double: 10 → 20 → 40 → 60.</li>
         <li><span class="chip p5">+${R.plusCell}</span> cells add ${R.plusCell} points, and <span class="chip p5">+${R.plus2Cell}</span> cells add ${R.plus2Cell} points. Both are added after doubling and are never doubled. +${R.plus2Cell} cells appear only with the Fixed or Both setting (see ${go('Bonus Squares')}).</li>
@@ -1560,30 +1562,43 @@
 
   // ☑️ Check (v08d, JM CD-34: 4.1c, 4.1.1): tests your penciled tiles now, before DONE. Costs 5, plus a 5-coin
   // "work fee" for each wrong tile it finds. Wrong tiles go back to your hand with no point penalty; right ones
-  // get a ✓ and stay penciled in (moving one makes it unchecked again). You need coins for the worst case.
+  // get a ✓ and stay penciled in (moving one makes it unchecked again).
+  // v08e (JM CD-36: 3.1): "Check as far as you can pay". It needs 🪙10 to start (the base + one wrong tile) and checks
+  // tiles in the order you placed them. A wrong tile it can't fully pay for takes your last coins, and Check stops
+  // there: later tiles stay penciled in, unchecked.
   $('#checkBtn').addEventListener('click', () => {
     if (!myTurn()) return;
     const unk = ui.pending.filter(p => !p.ok);
     if (!unk.length) { toast('Nothing to check: pencil in a tile first'); return; }
-    const max = checkMax();
-    if (coins.bal < max) {
-      toast(`Not enough coins: checking ${unk.length} tile${unk.length > 1 ? 's' : ''} can cost up to 🪙${max}, you have 🪙${coins.bal}`, 'bad', 3200);
+    const need = checkNeed();
+    if (coins.bal < need) {
+      toast(`Not enough coins: Check needs 🪙${need} to start, you have 🪙${coins.bal}`, 'bad', 3200);
       return;
     }
     if (!armTap($('#checkBtn'), `${E.RULES.checkBase}+`)) return; // second tap buys
-    const wrong = unk.filter(p => !E.fits(G, p.cell, p.ch));
-    const cost = E.RULES.checkBase + E.RULES.checkPerWrong * wrong.length;
+    const per = E.RULES.checkPerWrong;
+    let left = coins.bal - E.RULES.checkBase, cost = E.RULES.checkBase, n = 0;
+    const wrong = [], right = [];
+    for (; n < unk.length; n++) {
+      const p = unk[n];
+      if (E.fits(G, p.cell, p.ch)) { right.push(p); continue; }
+      const fee = Math.min(per, left);
+      wrong.push(p); cost += fee; left -= fee;
+      if (fee < per) { n++; break; } // out of coins: stop after this tile
+    }
+    const skipped = unk.length - n;
     if (!coins.spend(cost, 'Check')) return;
     coinItem('check', -cost);
-    for (const p of unk) if (!wrong.includes(p)) p.ok = true;
+    for (const p of right) p.ok = true;
     if (wrong.length) {
       ui.pending = ui.pending.filter(p => !wrong.includes(p));
       bounce(wrong);
     }
-    const okN = unk.length - wrong.length;
-    toast(wrong.length
+    const okN = right.length;
+    const stop = skipped ? ` · out of coins: ${skipped} tile${skipped > 1 ? 's' : ''} left unchecked` : '';
+    toast((wrong.length
       ? `☑️ ${wrong.map(p => p.ch).join(', ')} didn't fit (back in your hand)${okN ? ` · ${okN} OK` : ''} · 🪙−${cost}`
-      : `☑️ All ${okN} fit · 🪙−${cost}`, wrong.length ? 'bad' : 'you', 3000);
+      : `☑️ All ${okN} fit · 🪙−${cost}`) + stop, wrong.length ? 'bad' : 'you', skipped ? 4200 : 3000);
     save();
     render();
   });
@@ -1812,17 +1827,22 @@
     if (cs.hint) coinRows.push([`Hint ×${st.hints[0]}`, cs.hint]);
     if (cs.place) coinRows.push([`Place ×${(st.places || [0])[0]}`, cs.place]);
     if (cs.time) coinRows.push([`+30s ×${(st.time || [0])[0]}`, cs.time]);
+    // v08e: ☑️ Check was missing from this table (and from "This game"); its count comes from the turn log
+    if (cs.check) coinRows.push([`Check ×${(G.log || []).reduce((a, e) => a + (e.p === 0 ? (e.items || []).filter(x => x.k === 'check' && x.c).length : 0), 0)}`, cs.check]);
     const net = coinRows.reduce((a, x) => a + x[1], 0);
     const sg = v => (v < 0 ? '−' + -v : '+' + v);
     const coinTbl = `<h3 class="res-h">🪙 Coins</h3><table class="score-table coin-tbl">`
       + (coinRows.length ? coinRows.map(x => `<tr><td>${esc(x[0])}</td><td class="${x[1] < 0 ? 'neg' : 'pos'}">${sg(x[1])}</td></tr>`).join('') : '<tr><td>No coins earned or spent</td><td>0</td></tr>')
       + `<tr class="total"><td>This game ${sg(net)} · Balance</td><td data-coins>${coins.bal}</td></tr></table>`;
-    const helpRows = [[`Hints`, st.hints[0]], ['Place', (st.places || [0])[0]], ['+30s', (st.time || [0])[0]]].filter(x => x[1]);
+    // v08e (JM CD-36: 5.2, 5.3.1): the same layout as Word Vault's result. One-line heading; the Record right under the
+    // scores; no "Help you used" table (the Coins table already lists Hint ×N, Place ×N…); Play and Coins side by side
+    // on wide screens; the buttons on a bar pinned to the bottom of the window.
     const resBody = `
-        <div class="result-face">${face}</div>
-        <div class="result-title">${esc(title)}</div>
-        <p style="text-align:center;margin-top:0">${ended}</p>
+        <div class="res-top"><span class="res-face">${face}</span><span class="res-title">${esc(title)}</span></div>
+        <p class="res-sub">${ended}</p>
         <div class="res-big"><div class="me"><b>${G.scores[0]}</b><span>${esc(myName())}</span></div><div class="them"><b>${G.scores[1]}</b><span>${esc(o.n)}</span></div></div>
+        <p class="rec-line"><span class="rl-a">📈 Record vs ${esc(o.n)}:</span><span class="rl-b">${rec.w} won · ${rec.l} lost${rec.d ? ` · ${rec.d} drawn` : ''}</span></p>
+        <div class="res-cols"><section>
         <h3 class="res-h">🧩 Play</h3>
         <table class="score-table">
           <tr><th></th><th>${esc(myName())}</th><th>${esc(o.n)}</th></tr>
@@ -1832,11 +1852,8 @@
           <tr><td>Wrong cells</td><td>${st.wrong[0]}</td><td>${st.wrong[1]}</td></tr>
           <tr><td>Tiles left (subtracted)</td><td>−${r.leftover[0]}</td><td>−${r.leftover[1]}</td></tr>
           <tr class="total"><td>Final score</td><td>${G.scores[0]}</td><td>${G.scores[1]}</td></tr>
-        </table>
-        ${helpRows.length ? `<h3 class="res-h">💡 Help you used</h3><table class="score-table">${helpRows.map(x => `<tr><td>${x[0]}</td><td>${x[1]}×</td></tr>`).join('')}</table>` : ''}
-        ${coinTbl}
-        <h3 class="res-h">📈 Record</h3>
-        <p class="rec-line"><span class="rl-a">Record vs ${esc(o.n)}:</span><span class="rl-b">${rec.w} won · ${rec.l} lost${rec.d ? ` · ${rec.d} drawn` : ''}</span></p>`;
+        </table></section>
+        <section>${coinTbl}</section></div>`;
     // v08c (CD-30: 4.5): one History entry per finished game
     if (!G.histSaved) {
       G.histSaved = true;
@@ -1846,7 +1863,7 @@
     }
     setTimeout(() => {
       openModal(`${resBody}
-        <div class="row"><button class="btn" data-a="board">See grid</button><button class="btn" data-a="menu">Menu</button><button class="btn primary" data-a="again">Rematch</button></div>`);
+        <div class="row res-bar"><button class="btn" data-a="board">See grid</button><button class="btn" data-a="menu">Menu</button><button class="btn primary" data-a="again">Rematch</button></div>`, 'res');
       $('#sheet').onclick = e => {
         const b = e.target.closest('[data-a]');
         if (!b) return;
