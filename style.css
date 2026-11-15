@@ -1115,3 +1115,11 @@ select {
 
 /* Word Vault's How To Play uses the shared collapsible sections (CD-37: 5.1) */
 .vt-help { padding: 0; }
+
+/* ===== v08g (JM CD-38: 1.3.1; CD-39: 1.2a) ===== */
+/* Result window: each player's name and score sit together in a white frame, with a clear gap between the two */
+.res-big { gap: 28px; }
+.res-big > div { border: 2px solid #fff; border-radius: 12px; padding: 3px 12px; }
+@media (prefers-color-scheme: light) { .res-big > div { border-color: var(--ink); } }
+/* Done/Pass can show "Enter again to pass" over itself, like an armed coin button */
+#doneBtn { position: relative; }

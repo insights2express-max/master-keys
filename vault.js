@@ -10,6 +10,7 @@
    by side on wide screens, a pinned button bar; the Guesses-needed note opens from ⓘ).
    v08f (CD-37): result buttons ⚙ Settings · ☰ Menu · Next word; ✕ / tap outside closes it and shows a game-over bar;
    How To Play in collapsible sections; the clock is a gray pill like Clue Duel's.
+   v08g (CD-38 add'l 1): the ← → arrow keys wrap from one end of the row to the other.
    v07f (CD-25): no embossed text; played letters are black on green, yellow or red; typed (tentative) letters turn their key
    black on white; empty squares are dark glass "candy drops" in the slots of a glassy grid panel; a large > marks the
    active row, so the grid sits centered between it and the ✕; "Blitz · 30s per guess".
@@ -477,9 +478,10 @@
       return render();
     }
     if (k === 'ArrowLeft' || k === 'ArrowRight') {
-      const d = k === 'ArrowLeft' ? -1 : 1;
-      for (let i = R.sel + d; i >= 0 && i < R.len; i += d) if (editable(i)) { R.sel = i; break; }
-      if (R.sel < 0) R.sel = firstOpen(0);
+      // v08g (JM CD-38 add'l 1): the arrows wrap like the Space bar: → past the last open square jumps to the first,
+      // ← before the first jumps to the last (locked letters are skipped)
+      const d = k === 'ArrowLeft' ? -1 : 1, from = R.sel < 0 ? (d > 0 ? -1 : R.len) : R.sel;
+      for (let n = 1; n <= R.len; n++) { const j = ((from + d * n) % R.len + R.len) % R.len; if (editable(j)) { R.sel = j; break; } }
       return render();
     }
     if (k === 'Backspace') {
@@ -743,7 +745,7 @@
         <li>Green letters carry into your next guess automatically, and typing starts at the first open square.</li>
         <li>When the word is over, the result window opens. Close it (✕, or tap outside it) to see the finished grid; the bar under it has <b>📊 Results</b>, <b>☰ Menu</b> and <b>Next word</b>.</li>`)}
       ${sec('Typing and the Keys', `
-        <li>Tap a square (or use the ← → arrow keys) to choose where the next letter goes; the chosen square glows blue. The <b>Space bar</b> (on phones and tablets, the <b>␣</b> key at the end of the middle row) jumps to the next open square to the right (after the last one, back to the first). The orange <b>⌫</b> clears a letter, and <b>✕</b> at the end of the row clears the whole guess.</li>
+        <li>Tap a square (or use the ← → arrow keys, which wrap around from one end to the other) to choose where the next letter goes; the chosen square glows blue. The <b>Space bar</b> (on phones and tablets, the <b>␣</b> key at the end of the middle row) jumps to the next open square to the right (after the last one, back to the first). The orange <b>⌫</b> clears a letter, and <b>✕</b> at the end of the row clears the whole guess.</li>
         <li><b>Key size:</b> the keys grow on their own to fill the space below the buttons, so fewer guesses (a shorter grid) give taller keys, up to twice the normal height. To make them shorter, drag the <b>⇕</b> handle at the right end of the button row down (drag up to raise them again); double-click (or double-tap) it for the tallest keys. Your choice is remembered on this device and follows the grid's size.</li>`)}
       ${sec('The Buttons', `
         <li>The buttons come in two groups: the <b>blue coin buttons</b> (🔎 Hint, 💡 Reveal) on the left, and the <b>gray round game buttons</b> (🆕 New Game, 🏳️ Give up) on the right. A coin button takes <b>two taps</b>: the first lights it up and shows "Tap again · 🪙N" for 3 seconds; the second tap buys. (Seeing a Hint again is free and needs one tap.)</li>

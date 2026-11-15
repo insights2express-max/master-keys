@@ -1,7 +1,7 @@
 /* Clue Duel — user interface (v08d) */
 'use strict';
 (() => {
-  const APP_VER = 'v08f'; // Project CP: shown as a pill beside the title and in the browser tab
+  const APP_VER = 'v08g'; // Project CP: shown as a pill beside the title and in the browser tab
   const E = window.Engine;
   const $ = (s, el = document) => el.querySelector(s);
   const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -454,6 +454,7 @@
         const p = pend.get(i);
         cls.push('pending');
         if (p.ok) cls.push('chk'); // v08d: known to fit (☑️ Check or 🎯 Place)
+        if (ui.dragCells && ui.dragCells.has(i)) cls.push('dragging'); // v08g: still being dragged by a finger
         inner = `<span class="ch">${p.ch}</span>${vals ? `<span class="pv">${E.tileVal(G, p.ch)}</span>` : ''}${p.ok ? '<span class="okm">✓</span>' : ''}`;
       } else if (ui.aiPending && ui.aiPending.has(i)) {
         cls.push('aipend');
@@ -492,7 +493,7 @@
     let html = '';
     for (const t of hand) {
       if (used.has(t.id)) { html += '<div class="tile gap"></div>'; continue; }
-      html += `<div class="tile${ui.selTile === t.id ? ' sel' : ''}" data-id="${t.id}">${tileInner(t.ch)}</div>`;
+      html += `<div class="tile${ui.selTile === t.id ? ' sel' : ''}${ui.dragTiles && ui.dragTiles.has(t.id) ? ' dragging' : ''}" data-id="${t.id}">${tileInner(t.ch)}</div>`;
     }
     for (let k = hand.length; k < n; k++) html += '<div class="tile gap"></div>';
     rack.innerHTML = html;
@@ -1055,7 +1056,8 @@
         <li>Point at a clue with the mouse, or press and hold it on a touch screen, to see it enlarged across the grid.</li>
         <li>Some clues are pictures: see ${go('Clue Pics')}.</li>`)}
       ${sec('Your Turn', `
-        <li>Drag tiles from your hand onto the cells where they belong, or tap a tile and then a cell. Place as many as you like. This turn's tiles are bright orange with a blue frame.</li>
+        <li>Drag tiles from your hand onto the cells where they belong, or tap a tile and then a cell. Place as many as you like. This turn's tiles are bright orange with a blue frame.</li> 
+        <li>On a touch screen you can drag <b>two tiles at once</b>, one with each finger (handy on a tablet held in both hands).</li>
         <li><b>Tiles are only penciled in</b> until you tap ✓ Done, so a slip of the finger costs nothing: drag a tile you placed this turn to another cell, or back to your hand. Tapping it also takes it back.</li>
         <li>When you tap <b>Done</b>, every penciled tile is checked. Tiles in their correct cells lock in and score. Each tile in a wrong cell shakes, goes back to your hand and costs ${wrongMin} points (or the tile's value, if that is more). That check is final.</li>
         <li>Not sure? <b>☑️ Check</b> (see ${go('The Buttons')}) tests your penciled tiles before Done, for coins instead of points.</li>
@@ -1073,7 +1075,8 @@
         <li><b>🔀 Shuffle</b>: mixes the order of your hand.</li>
         <li><b>⏸️ Pause</b> (or the P key) shows your clock in timed games. On a phone, tapping the clock under your score also pauses (and resumes) the game. It stops every clock and hides the grid, clues and hand; tap the PLAY PAUSED panel, ▶️, or P to resume. The game also pauses when you switch to another tab or app.</li>
         <li><b>⏱️ +30s (🪙${R.timeCost})</b> (timed games only): adds 30 seconds to your clock for ${R.timeCost} coins. Use it as often as you like. Bought time never pays speed coins.</li>
-        <li><b>✓ Done</b> (green) checks and banks this turn's tiles. It shows how many are penciled in, like <b>Done · 3</b> (not the points, which would give away which tiles are right). With nothing placed it turns <b>orange</b> and reads <b>⏭ Pass</b>: orange means "think first", since a pass is sometimes needed but never a gain.</li>`)}
+        <li><b>✓ Done</b> (green) checks and banks this turn's tiles. It shows how many are penciled in, like <b>Done · 3</b> (not the points, which would give away which tiles are right). With nothing placed it turns <b>orange</b> and reads <b>⏭ Pass</b>: orange means "think first", since a pass is sometimes needed but never a gain.</li>
+        <li><b>Keyboard</b> (computers): <b>Enter</b> is ✓ Done. With nothing placed, press Enter <b>twice</b> within 3 seconds to pass (the button reads "Enter again to pass"). Enter also closes a waiting turn report or PASS banner. <b>P</b> pauses.</li>`)}
       ${sec('Bonuses', `
         <li><span class="chip x2">2×</span> doubles your turn's points from tiles and words. Each extra 2× in the same turn adds another double: 10 → 20 → 40 → 60.</li>
         <li><span class="chip p5">+${R.plusCell}</span> cells add ${R.plusCell} points, and <span class="chip p5">+${R.plus2Cell}</span> cells add ${R.plus2Cell} points. Both are added after doubling and are never doubled. +${R.plus2Cell} cells appear only with the Fixed or Both setting (see ${go('Bonus Squares')}).</li>
@@ -1257,6 +1260,24 @@
     if ((e.key === 'p' || e.key === 'P') && G && !$('#game').hidden && $('#modal').hidden && !/^(INPUT|SELECT|TEXTAREA)$/.test((e.target.tagName || ''))) {
       e.preventDefault();
       setPaused(!ui.paused);
+    }
+    // v08g (JM CD-38 add'l 2; CD-39: 1.1–1.3): Enter plays the game from the keyboard. It closes a waiting turn report
+    // or PASS banner; on your turn it is ✓ Done (tiles penciled in), and with nothing placed it takes TWO Enters within
+    // 3 seconds to pass (the button reads "Enter again to pass"). Enter never re-clicks the last button you used.
+    if (e.key === 'Enter' && G && !$('#game').hidden && $('#modal').hidden && e.target !== $('#clkTop')
+      && !/^(INPUT|SELECT|TEXTAREA)$/.test((e.target.tagName || ''))) {
+      e.preventDefault();
+      if (document.activeElement && document.activeElement !== document.body && document.activeElement.blur) document.activeElement.blur();
+      if (G.over || ui.paused) return;
+      if (repsOn()) { clearReports(); return; }
+      if (!myTurn()) return;
+      const db = $('#doneBtn');
+      if (ui.pending.length) { disarm(db); onDone(); return; }
+      if (db.classList.contains('armed')) { disarm(db); onDone(); return; }
+      document.querySelectorAll('.btn.armed').forEach(disarm);
+      db.dataset.arm = 'Enter again\nto pass';
+      db.classList.add('armed');
+      db._armT = setTimeout(() => disarm(db), ARM_MS);
     }
   });
   // Pause automatically when you switch to another tab or app
@@ -1448,19 +1469,30 @@
   // =====================================================================
   // Drag-and-drop (shared by the hand, placed tiles and the Swap popup)
   // =====================================================================
-  // Only one drag at a time. cancelDrag() drops it cleanly (used when a turn ends mid-drag:
-  // time-out, pause, leaving the game), so no tile is ever left stuck on screen (CD-6: 6.1.1).
-  let activeDrag = null;
+  // cancelDrag() drops every drag cleanly (used when a turn ends mid-drag: time-out, pause, leaving the game),
+  // so no tile is ever left stuck on screen (CD-6: 6.1.1).
+  // v08g (JM CD-38 add'l 3, CD-39: 2.1–2.2a): on touch screens two fingers can each drag a tile at the same time
+  // (opts.multi: hand and penciled tiles). Each drag follows its own finger (pointerId). A tile being dragged stays
+  // dimmed even if the hand or grid is redrawn (ui.dragTiles / ui.dragCells), and its drop still counts.
+  const drags = new Map(); // pointerId -> { abort, multi }
+  const MAX_DRAGS = 2;
+  ui.dragTiles = new Set(); ui.dragCells = new Set();
   function cancelDrag() {
-    if (activeDrag) activeDrag.abort();
-    activeDrag = null;
+    for (const d of [...drags.values()]) d.abort();
+    drags.clear();
     document.querySelectorAll('.ghost').forEach(g => g.remove());
     document.querySelectorAll('.drop').forEach(d => d.classList.remove('drop'));
+    ui.dragTiles.clear(); ui.dragCells.clear();
     ui.dragging = false;
   }
-  function drag(e, el, find, onDrop, onTap, onMove) {
+  function drag(e, el, find, onDrop, onTap, onMove, opts) {
+    opts = opts || {};
     e.preventDefault();
-    cancelDrag();
+    if (!opts.multi || [...drags.values()].some(d => !d.multi)) cancelDrag();
+    else {
+      if (drags.has(e.pointerId)) drags.get(e.pointerId).abort();
+      if (drags.size >= MAX_DRAGS) return;
+    }
     const sx = e.clientX, sy = e.clientY, pid = e.pointerId;
     const lift = e.pointerType === 'touch' ? 46 : 0;
     let ghost = null, over = null;
@@ -1476,6 +1508,9 @@
         place(ev.clientX, ev.clientY); // positioned before it appears, so it never flies in from a corner (CD-6: 9.1)
         document.body.appendChild(ghost);
         el.classList.add('dragging');
+        if (opts.tileId != null) ui.dragTiles.add(opts.tileId);
+        if (opts.cell != null) ui.dragCells.add(opts.cell);
+        me.moving = true;
         ui.dragging = true;
         closeZoom(true);
       }
@@ -1492,22 +1527,25 @@
       if (over) over.classList.remove('drop');
       if (ghost) ghost.remove();
       el.classList.remove('dragging', 'placeholder');
-      if (activeDrag === me) activeDrag = null;
+      if (opts.tileId != null) ui.dragTiles.delete(opts.tileId);
+      if (opts.cell != null) ui.dragCells.delete(opts.cell);
+      if (drags.get(pid) === me) drags.delete(pid);
+      ui.dragging = [...drags.values()].some(d => d.moving);
     };
     const up = ev => {
       if (ev.pointerId !== pid) return;
       const dragged = !!ghost;
       detach();
       if (dragged) {
-        ui.dragging = false;
         suppressClick();
-        // the tile may have gone away (e.g. the turn ended); then just redraw
-        if (!el.isConnected || !G || G.over) { if (G) render(); return; }
+        // the tile may have gone away (e.g. the turn ended); then just redraw. A two-finger drag's tile may have
+        // been redrawn by the other finger's drop: its drop still counts (the drop handlers check the tile by id)
+        if ((!opts.multi && !el.isConnected) || !G || G.over) { if (G) render(); return; }
         onDrop(ev.type === 'pointerup' ? at(ev.clientX, ev.clientY) : null);
       } else if (ev.type === 'pointerup' && onTap && el.isConnected) onTap();
     };
-    const me = { abort: detach };
-    activeDrag = me;
+    const me = { abort: detach, multi: !!opts.multi, moving: false };
+    drags.set(pid, me);
     // listen on the window, so the release is caught even if the tile was redrawn mid-drag
     window.addEventListener('pointermove', move);
     window.addEventListener('pointerup', up);
@@ -1529,7 +1567,8 @@
         reorderHand(id, ui.sortK);
       },
       () => { if (myTurn()) { ui.selTile = ui.selTile === id ? null : id; render(); } },
-      (x, y, over) => sortPreview(id, el, x, over));
+      (x, y, over) => sortPreview(id, el, x, over),
+      { multi: e.pointerType === 'touch', tileId: id });
   });
 
   // While sorting: the other tiles slide apart and a gold space marks where the tile will land (JM, CD-5: 2.1a)
@@ -1571,7 +1610,7 @@
     const el = e.target.closest('.cell.pending');
     if (!el || !myTurn()) return;
     const ci = +el.dataset.i;
-    drag(e, el, t => t.closest('.cell.let') || t.closest('#rack'), t => movePending(ci, t), null);
+    drag(e, el, t => t.closest('.cell.let') || t.closest('#rack'), t => movePending(ci, t), null, null, { multi: e.pointerType === 'touch', cell: ci });
   });
 
   $('#mixBtn').addEventListener('click', () => {
