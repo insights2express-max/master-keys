@@ -1,0 +1,21 @@
+{
+  "HOW TO EDIT": "Change a value on the right, keep the quote marks exactly as they are, then press Commit changes. New players start with these settings; anyone who has already played keeps their own. The allowed values are listed in ALLOWED VALUES below. A value that is not allowed is simply ignored.",
+  "skill": 3,
+  "size": "M",
+  "hand": 6,
+  "timer": "0",
+  "scoring": "classic",
+  "bonus": "floating",
+  "pics": "some",
+  "grid": "a",
+  "ALLOWED VALUES": {
+    "skill": "Challenge Level: 1 to 10 (no quote marks)",
+    "size": "Grid Size: S = Small, M = Medium, L = Large",
+    "hand": "Letters in Hand: 5, 6, 7 or 8 (no quote marks)",
+    "timer": "Timer: 0 = Untimed; per TURN t30 (Blitz), t60, t120, t180, t240, t300; per GAME g120, g180, g300, g600, g900 (seconds)",
+    "scoring": "Scoring: classic, flat, finisher (Word Finisher), combo (Combo Chain), bounty",
+    "bonus": "Bonus Squares: fixed, floating, both, off",
+    "pics": "Clue Pics: off, some, lots",
+    "grid": "Grid Colors: a = Board, a2 = Inked, a3 = Inked Blue, a4 = Painted, b = Bold"
+  }
+}

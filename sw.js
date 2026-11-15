@@ -1,6 +1,6 @@
 /* Clue Duel — service worker: caches the whole app so it plays offline.
    Bump CACHE whenever any file changes, so players get the update. */
-const CACHE = 'clue-duel-v08i-1'; // v08i: Options boxes, new win/lose sounds, avatar pictures, starter letters by level, final turn, timed-game blur, two-finger drag fix
+const CACHE = 'clue-duel-v08j-1'; // v08j: grid colors (5 schemes), final-play view, clock-out final turn, menu defaults (defaults.json), louder countdown, phone two-finger drag
 const ASSETS = [
   './',
   'index.html',
@@ -35,6 +35,8 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   const req = e.request;
   if (req.method !== 'GET' || new URL(req.url).origin !== location.origin) return;
+  // v08j: the owner's defaults file is always read fresh from the network (never cached), so edits reach players
+  if (new URL(req.url).pathname.endsWith('/defaults.json')) return;
   e.respondWith(
     caches.match(req, { ignoreSearch: true }).then(hit => {
       if (hit) return hit;

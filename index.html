@@ -9,7 +9,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Clue Duel">
   <meta name="description" content="A head-to-head crossword tile game you can play offline.">
-  <title>Clue Duel · v08i</title>
+  <title>Clue Duel · v08j</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="icon" href="icons/icon-192.png" type="image/png" sizes="192x192">
@@ -23,7 +23,7 @@
       <header class="brand">
         <img class="logo" src="icons/icon.svg" alt="" width="64" height="64">
         <div class="brand-txt">
-          <h1>Clue Duel <span class="vpill" id="verPill">v08i</span></h1>
+          <h1>Clue Duel <span class="vpill" id="verPill">v08j</span></h1>
           <p class="tag">Place your letters. Finish the words. Beat your rival.</p>
         </div>
         <!-- v08h (JM CD-41: 1.3, 1.4.1): sound, Game History and How To Play as small icons in the top corner -->
@@ -148,6 +148,15 @@
         </label>
       </div>
       <span class="opt-desc" id="scoringDesc"></span>
+      <!-- v08j (JM CD-45: 2.2a, 4.1c): grid colors (they change at once) and the defaults buttons -->
+      <label class="field gs-field">
+        <span class="lbl">Grid Colors</span>
+        <span class="gs-pick"><select id="gridSel"></select><span id="gridSample"></span></span>
+      </label>
+      <div class="def-row">
+        <button class="btn" id="saveDefBtn" type="button" title="Keep the Challenge Level, Grid Size and all these Options as your defaults">⭐ Save as my defaults</button>
+        <button class="btn" id="resetDefBtn" type="button" title="Bring back your saved defaults (or the app's, if you haven't saved any)">↺ Defaults</button>
+      </div>
         </div>
       </details>
 

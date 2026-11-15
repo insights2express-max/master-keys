@@ -1,4 +1,4 @@
-/* Clue Duel — game engine (v08i: starter letters by level, final turn)
+/* Clue Duel — game engine (v08j: whole-game clock-out gives the rival a final turn; v08i: starter letters by level, final turn)
    Puzzle generator (arrow-word grid), tile bag, scoring modes, bonus squares and the computer opponent.
    No DOM code here: app.js handles everything the player sees. */
 'use strict';
@@ -753,7 +753,19 @@
     if (state.turnItems) state.turnItems[p] = [];
     state.passes = placedCount > 0 ? 0 : state.passes + 1;
     refill(state, p);
-    if (reason === 'clock') { finish(state, 'clock'); return true; }
+    // v08j (JM CD-44 discussion 2; CD-45: 5.1a): when a whole-game clock runs out, that player's unconfirmed tiles don't
+    // count (the app returns them to the hand) and the OTHER player gets one final turn; then the game ends. So running
+    // the clock down after penciling tiles in no longer scores them or denies the rival its answer.
+    if (reason === 'clock') {
+      if (state.finalTurn != null || boardFull(state)) { finish(state, 'clock'); return true; }
+      state.finalTurn = 1 - p;
+      state.clockOut = p;
+      state.turn = 1 - p;
+      state.turnNo++;
+      rollBonuses(state);
+      return false;
+    }
+    if (state.finalTurn === p && state.clockOut != null) { finish(state, 'clock'); return true; }
     if (boardFull(state) || state.passes >= RULES.passLimit) { finish(state); return true; }
     // v08i (JM CD-42 add'l 6; CD-43: 3.1a): as in the reference games, once the bag is empty and a player uses their
     // last tile, the other player gets ONE final turn to play what they can; then the game ends (either player)

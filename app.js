@@ -1,7 +1,7 @@
-/* Clue Duel — user interface (v08i: Options boxes, new sounds, avatar pictures, final turn, timed-game blur) */
+/* Clue Duel — user interface (v08j: grid colors, final-play view, clock-out final turn, menu defaults, louder countdown, phone two-finger drag) */
 'use strict';
 (() => {
-  const APP_VER = 'v08i'; // Project CP: shown as a pill beside the title and in the browser tab
+  const APP_VER = 'v08j'; // Project CP: shown as a pill beside the title and in the browser tab
   const E = window.Engine;
   const $ = (s, el = document) => el.querySelector(s);
   const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -119,8 +119,8 @@
       spend: t => { tone(987.8, t, 0.06, 'triangle', 0.18); tone(659.3, t + 0.06, 0.14, 'triangle', 0.16); }, // coins spent
       // v08i (JM CD-42: 1.5.4): both 25 % louder; 10–6 s keeps its pitch; 5–1 s is a quick "tick-tock" pair each
       // second: a new, higher tick, then the 10–6 s tone
-      tick: t => tone(1050, t, 0.03, 'square', 0.0625),                               // last 10–6 seconds
-      tock: t => { tone(1575, t, 0.035, 'square', 0.1); tone(1050, t + 0.13, 0.03, 'square', 0.0625); }, // last 5–1 seconds
+      tick: t => tone(1050, t, 0.03, 'square', 0.09375),                              // last 10–6 seconds (v08j: +50 %)
+      tock: t => { tone(1575, t, 0.035, 'square', 0.15); tone(1050, t + 0.13, 0.03, 'square', 0.09375); }, // last 5–1 seconds (v08j: +50 %)
       pass: t => { tone(440, t, 0.2, 'triangle', 0.25); tone(349.2, t + 0.17, 0.3, 'triangle', 0.25); }, // PASS banner
       // v08i (JM CD-42: 1.5.2): win = brass "Ta-DAAAH" (2.5 s) over faint applause
       win: t => {
@@ -215,7 +215,39 @@
     if (G && !G.over && !$('#game').hidden && E.timerOf(G.settings.timer).kind !== 'none') setPaused(true);
     coinWindow();
   });
-  const settings = Object.assign({ skill: 3, size: 'M', hand: 6, timer: '0', scoring: 'classic', bonus: 'floating', pics: 'some', name: '', avatar: '🙂' }, store.get('cd.settings', {}));
+  // v08j (JM CD-44: 2.1; CD-45: 2.1a): GRID COLORS, five schemes (a CSS class on #board; looks only, never the rules)
+  const GRID_SCHEMES = [['a', 'Board'], ['a2', 'Inked'], ['a3', 'Inked Blue'], ['a4', 'Painted'], ['b', 'Bold']];
+  function gridCls(g) {
+    if (!GRID_SCHEMES.some(s => s[0] === g)) g = 'a';
+    return `board gs-${g}${g[0] === 'a' ? ' gs-slots' : ''}${g === 'a2' || g === 'a3' ? ' gs-ink' : ''}`;
+  }
+  const gridOpts = () => GRID_SCHEMES.map(([v, n]) => `<option value="${v}">${n}</option>`).join('');
+  // a five-cell sample: starter · yours · rival's · empty · this turn's tile
+  const gridSample = g => `<span class="${gridCls(g)} gs-sample" aria-hidden="true"><span class="cell let filled pre"><span class="ch">T</span></span><span class="cell let filled mine"><span class="ch">E</span></span><span class="cell let filled theirs"><span class="ch">A</span></span><span class="cell let"></span><span class="cell let pending"><span class="ch">L</span></span></span>`;
+
+  // v08j (JM CD-44 discussion 1; CD-45: 4.1c): MENU DEFAULTS in three layers.
+  //  1. FACTORY: built into the app.
+  //  2. OWNER: defaults.json beside the app (JM edits it on GitHub's website). New players start with it; it is fetched
+  //     on every visit, kept on the device (cd.ownerDefaults) and checked value by value (a typo is simply ignored).
+  //  3. MINE: ⭐ Save as my defaults (cd.myDefaults). ↺ Defaults brings back yours, or the app's if you never saved any.
+  // The menu still remembers your last choices (cd.settings), as before.
+  const FACTORY = { skill: 3, size: 'M', hand: 6, timer: '0', scoring: 'classic', bonus: 'floating', pics: 'some', grid: 'a' };
+  const DEF_KEYS = Object.keys(FACTORY);
+  function cleanDefaults(o) {
+    const out = {};
+    if (!o || typeof o !== 'object') return out;
+    const vals = id => { const s = document.querySelector(id); return s ? [...s.options].map(x => x.value) : []; };
+    const ok = { skill: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], size: ['S', 'M', 'L'], hand: [5, 6, 7, 8], timer: vals('#timerSel'), scoring: vals('#scoringSel'),
+      bonus: vals('#bonusSel'), pics: vals('#picsSel'), grid: GRID_SCHEMES.map(s => s[0]) };
+    for (const k of DEF_KEYS) {
+      if (!(k in o)) continue;
+      const v = k === 'skill' || k === 'hand' ? +o[k] : String(o[k]).trim();
+      if (ok[k].includes(v)) out[k] = v;
+    }
+    return out;
+  }
+  const ownerDefaults = () => cleanDefaults(store.get('cd.ownerDefaults', {}));
+  const settings = Object.assign({}, FACTORY, ownerDefaults(), { name: '', avatar: '🙂' }, store.get('cd.settings', {}));
   if (typeof settings.timer === 'number') settings.timer = settings.timer > 0 ? 't' + settings.timer : '0'; // v01 settings
   let G = null; // engine state of the current game
   const ui = {
@@ -252,6 +284,8 @@
     if ($('#timerSel').selectedIndex < 0) $('#timerSel').value = '0';
     $('#scoringSel').value = settings.scoring;
     $('#scoringDesc').textContent = (E.MODES[settings.scoring] || E.MODES.classic).desc;
+    $('#gridSel').value = GRID_SCHEMES.some(s => s[0] === settings.grid) ? settings.grid : 'a';
+    $('#gridSample').innerHTML = gridSample($('#gridSel').value);
     // v08h (JM CD-41: 1.1): the folded Options row shows its five choices in one line
     const txt = id => { const s = $(id); return s.selectedIndex >= 0 ? s.options[s.selectedIndex].text : ''; };
     const tmr = txt('#timerSel').replace(/^Blitz · /, '').replace(/ per TURN$/, '/turn').replace(/ per GAME$/, '/game');
@@ -288,6 +322,33 @@
   $('#picsSel').addEventListener('change', e => { settings.pics = e.target.value; saveSettings(); });
   $('#timerSel').addEventListener('change', e => { settings.timer = e.target.value; saveSettings(); });
   $('#scoringSel').addEventListener('change', e => { settings.scoring = e.target.value; saveSettings(); });
+  // v08j: grid colors and the defaults buttons, at the foot of the open Options panel
+  $('#gridSel').innerHTML = gridOpts();
+  $('#gridSel').addEventListener('change', e => { settings.grid = e.target.value; saveSettings(); });
+  $('#saveDefBtn').addEventListener('click', () => {
+    const d = {};
+    for (const k of DEF_KEYS) d[k] = settings[k];
+    store.set('cd.myDefaults', d);
+    toast('⭐ Saved as your defaults: ↺ Defaults brings them back', 'you', 2800);
+  });
+  $('#resetDefBtn').addEventListener('click', () => {
+    const mine = store.get('cd.myDefaults', null);
+    Object.assign(settings, FACTORY, ownerDefaults(), cleanDefaults(mine || {}));
+    saveSettings();
+    toast(mine ? '↺ Your defaults are back' : '↺ The app\'s defaults are back (you haven\'t saved your own yet)', '', 2800);
+  });
+  // the owner's defaults file (see FACTORY above); a brand-new player who hasn't changed anything starts with it at once
+  if (location.protocol.startsWith('http')) {
+    fetch('defaults.json?t=' + Date.now(), { cache: 'no-store' })
+      .then(r => (r.ok ? r.json() : null))
+      .then(o => {
+        if (!o) return;
+        const d = cleanDefaults(o);
+        store.set('cd.ownerDefaults', d);
+        if (!store.get('cd.settings', null)) { Object.assign(settings, d); if (!$('#home').hidden) renderHome(); }
+      })
+      .catch(() => { /* offline: keep the copy from the last visit */ });
+  }
   $('#myName').addEventListener('input', e => { settings.name = e.target.value.slice(0, 14); store.set('cd.settings', settings); });
   $('#myName').addEventListener('keydown', e => { if (e.key === 'Enter') e.target.blur(); });
   $('#myAv').addEventListener('click', pickAvatar);
@@ -623,6 +684,13 @@
     const pend = new Map(ui.pending.map(p => [p.cell, p]));
     const hl = new Set(ui.selSlot >= 0 ? pz.slots[ui.selSlot].cells : []);
     const last = new Set(G.lastMove ? G.lastMove.cells : []);
+    // v08j (JM CD-44 add'l 1; CD-45: 3.1a): once the game is over, the last play's tiles and the words they made glow
+    // until you open Results, so the final play can be seen properly
+    const fin = new Set();
+    if (G.over && !ui.resSeen && G.lastMove) {
+      for (const c of G.lastMove.cells) fin.add(c);
+      for (const w of (G.lastMove.score && G.lastMove.score.words) || []) for (const c of pz.slots[w.si].cells) fin.add(c);
+    }
     let html = '';
     const vals = E.showsValues(G);
     const plusTxt = '+' + E.RULES.plusCell;
@@ -668,9 +736,11 @@
       if (hl.has(i)) cls.push('hl');
       if (i === ui.hintCell) cls.push('hint');
       if (i === ui.pop) cls.push('popin');
+      if (fin.has(i)) cls.push('fin');
       html += `<div class="${cls.join(' ')}" data-i="${i}">${inner}</div>`;
     }
     $('#board').innerHTML = html;
+    $('#board').className = gridCls(settings.grid); // v08j: the chosen grid colors
     ui.pop = -1;
   }
 
@@ -835,12 +905,13 @@
     const over = !!(G && G.over && G.result);
     $('#dock').classList.toggle('is-over', over);
     $('#overBar').hidden = !over;
-    if (over && !$('#overBar').dataset.on) {
+    const obKey = over ? (ui.resSeen ? 'seen' : 'new') : ''; // v08j: the bar is redrawn once Results has been seen
+    if (over && $('#overBar').dataset.on !== obKey) {
       const r = G.result, o = opp();
       const head = r.winner === 0 ? `🏆 ${myName() === 'You' ? 'You win' : esc(myName()) + ' wins'}` : r.winner === 1 ? `${o.a} ${esc(o.n)} wins` : '🤝 A draw';
       $('#overBar').innerHTML = `<span class="ob-h">🏁 Game over · ${head} · ${G.scores[0]}–${G.scores[1]}</span>
-        <span class="ob-btns"><button class="btn" type="button" data-ob="res">📊 Results</button><button class="btn" type="button" data-ob="menu">☰ Menu</button><button class="btn primary" type="button" data-ob="again">Rematch</button></span>`;
-      $('#overBar').dataset.on = '1';
+        <span class="ob-btns">${ui.resSeen ? '<button class="btn" type="button" data-ob="res">📊 Results</button>' : '<button class="btn primary see-res" type="button" data-ob="res" title="Open the Results (Enter)">📊 See results ▸</button>'}<button class="btn" type="button" data-ob="menu">☰ Menu</button><button class="btn${ui.resSeen ? ' primary' : ''}" type="button" data-ob="again">Rematch</button></span>`;
+      $('#overBar').dataset.on = obKey;
     }
     if (!over) { $('#overBar').innerHTML = ''; delete $('#overBar').dataset.on; }
     if (ui.pending.length) {
@@ -1186,7 +1257,9 @@
         <li><b>Small</b> (5 × 6), <b>Medium</b> (6 × 7) or <b>Large</b> (7 × 11). Bigger grids mean more words, longer games and bigger scores.</li>`)}
       ${sec('Options', `
         <li>The five options you change least (${go('Letters in Hand')}, ${go('Bonus Squares')}, ${go('Clue Pics')}, ${go('Scoring')} and ${go('Timer')}) fold into one <b>▸ Options</b> row, so the menu fits on one screen. The row shows your choices in one line, like "6 letters · Floating bonus · Some pics · Classic · Untimed".</li>
-        <li>Tap it to open (▾) or close (▸) it. It stays the way you left it. ⚙ Settings in the game changes the same options.</li>`)}
+        <li>Tap it to open (▾) or close (▸) it. It stays the way you left it. ⚙ Settings in the game changes the same options.</li>
+        <li><b>Grid Colors</b> (at the foot of Options, and in ⚙): five looks for the grid. <b>Board</b> (the default): empty cells are dark slots and played tiles are cream, with a colored bar for whose they are. <b>Inked</b>: no bars; your letters are blue, your rival's red, starter letters black. <b>Inked Blue</b>: Inked, with this turn's tiles blue. <b>Painted</b>: solid blue and red tiles with white letters, light-gray starters. <b>Bold</b>: white empty cells and solid tiles. The change shows at once.</li>
+        <li>The menu remembers your last choices. <b>⭐ Save as my defaults</b> keeps the Challenge Level, Grid Size and all the Options as your own defaults; <b>↺ Defaults</b> brings them back after you try something different (or the app's defaults, if you haven't saved any).</li>`)}
       ${sec('Letters in Hand', `
         <li>How many tiles each player holds: 5 to 8. Your hand refills from the bag after every turn.</li>
         <li>More tiles give you more choices each turn. Fewer tiles make the <b>Full Hand</b> bonus easier to earn: place as many tiles in one turn as this setting (all 5 of 5, for example). See ${go('Bonuses')}.</li>`)}
@@ -1242,7 +1315,7 @@
       ${sec('Timer', `
         <li><b>Untimed</b>: take as long as you like.</li>
         <li><b>Per turn</b> (Blitz · 30 s per TURN, or 1 to 5 min per TURN): when it runs out, your turn ends and the tiles you penciled in are checked, as if you had tapped Done.</li>
-        <li><b>Whole game</b> (2 to 15 min per GAME): your clock runs only on your turns; when it reaches zero, the game ends.</li>
+        <li><b>Whole game</b> (2 to 15 min per GAME): your clock runs only on your turns. When it reaches zero, tiles you haven't confirmed with <b>Done</b> go back to your hand (they don't count), your rival gets <b>one final turn</b>, and the game ends.</li>
         <li>Clocks never run while a ${go('Turn Reports and The Scoreboard', 'turn report')} is waiting for your tap, or while the game is paused.</li>
         <li>In the last 10 seconds the grid's border flashes every second: <b>yellow</b> from 10 to 6, <b>red</b> from 5 to 1.</li>`)}
       ${sec('Resume Game', `
@@ -1298,9 +1371,10 @@
         <li>The <b>Scoreboard</b> keeps every turn by round: letter points, word points, bonuses, penalties and the turn's total. Green marks the higher score in each round. On phones, tap ▸ Scoreboard to open it.</li>`)}
       ${sec('The End', `
         <li><b>Final turn:</b> once the bag is empty and either player places their last tile, the other player gets <b>one final turn</b> to play what they can. Then the game ends, and any tile still in a hand is subtracted from its owner's score.</li>
-        <li>The game also ends when the grid is full, by the <b>3 PASSES Rule</b> (${esc(PASS_RULE)}), or when a whole-game clock runs out.</li>
+        <li>The game also ends when the grid is full, by the <b>3 PASSES Rule</b> (${esc(PASS_RULE)}), or when a whole-game clock runs out (after your rival's one final turn).</li>
         <li>A yellow PASS banner warns you after the 1st pass; a red one after the 2nd. It says who passed and <b>holds the game until you tap</b> (your rival waits and your clock stops). After your tap it shrinks to one line until someone places a tile.</li>
-        <li>The result window shows both scores, your record against this opponent, both players' play and your coins. Its buttons: <b>⚙ Settings</b>, <b>☰ Menu</b> and <b>Rematch</b>.</li>
+        <li>When the game ends, the grid stays on screen and the last play's tiles and words glow, so you can see the final play. <b>📊 See results</b> (or Enter) opens the result window.</li>
+        <li>The result window shows both scores, your record against this opponent, both players' play and your coins. Its buttons: <b>🔍 Grid</b> (look at the grid again), <b>⚙ Settings</b>, <b>☰ Menu</b> and <b>Rematch</b>.</li>
         <li>Close it (✕, or tap outside it) to look at the finished grid. Your hand's row then becomes a <b>game-over bar</b> with <b>📊 Results</b> (opens the window again), <b>☰ Menu</b> and <b>Rematch</b>.</li>
         <li>Every window closes the same way: ✕ in its top-right corner, a tap outside it, or its <b>Close</b> button.</li>`)}
       ${sec('Coins', `
@@ -1378,21 +1452,21 @@
   // "New game with these" starts one now (asking first if a game is unfinished).
   function gameSettings() {
     if (G && !G.over && E.timerOf(G.settings.timer).kind !== 'none') setPaused(true);
-    const cur = Object.assign({}, settings, G ? G.settings : {});
+    const cur = Object.assign({}, settings, G ? G.settings : {}, { grid: settings.grid }); // v08j: grid colors are yours, not the game's
     const sizes = [...$('#sizeSeg').children].map(b => `<option value="${b.dataset.v}">${esc(b.textContent.trim())}</option>`).join('');
     const F = [['skill', 'Challenge Level', $('#skillSel').innerHTML], ['size', 'Grid Size', sizes], ['hand', 'Letters in Hand', $('#handSel').innerHTML],
       ['bonus', 'Bonus Squares', $('#bonusSel').innerHTML], ['pics', 'Clue Pics', $('#picsSel').innerHTML], ['scoring', 'Scoring', $('#scoringSel').innerHTML],
-      ['timer', 'Timer', $('#timerSel').innerHTML]];
+      ['timer', 'Timer', $('#timerSel').innerHTML], ['grid', 'Grid Colors', gridOpts()]]; // v08j (CD-45: 2.2a)
     const live = G && !G.over;
     openModal(`<h2>⚙ Clue Duel settings</h2>
       <div class="vt-grid">${F.map(([k, l, o]) => `<label class="field"><span class="lbl">${l}</span><select data-k="${k}">${o}</select></label>`).join('')}</div>
       <p class="opt-desc" id="cdSetDesc"></p>
-      <p class="help-note">${live ? 'This game keeps its settings; changes apply from your next game. "New game with these" starts one now (this game is lost).' : 'Changes apply from your next game.'}</p>
+      <p class="help-note">${live ? 'This game keeps its settings; changes apply from your next game (Grid Colors change at once). "New game with these" starts one now (this game is lost).' : 'Changes apply from your next game (Grid Colors change at once).'}</p>
       <div class="row"><button class="btn" data-a="close">Close</button><button class="btn primary" data-a="new">New game with these</button></div>`);
     const sels = [...document.querySelectorAll('#sheet select[data-k]')];
     for (const s of sels) { s.value = String(cur[s.dataset.k]); if (s.selectedIndex < 0) s.selectedIndex = 0; }
     const desc = () => { const v = sels.find(s => s.dataset.k === 'scoring').value; $('#cdSetDesc').textContent = (E.MODES[v] || E.MODES.classic).desc; };
-    const keep = () => { for (const s of sels) settings[s.dataset.k] = /^(skill|hand)$/.test(s.dataset.k) ? +s.value : s.value; saveSettings(); };
+    const keep = () => { for (const s of sels) settings[s.dataset.k] = /^(skill|hand)$/.test(s.dataset.k) ? +s.value : s.value; saveSettings(); if (G && !$('#game').hidden) renderBoard(); };
     desc();
     for (const s of sels) s.addEventListener('change', () => { keep(); desc(); });
     $('#sheet').onclick = e => {
@@ -1440,18 +1514,20 @@
   }
   function stopTimer() { clearInterval(ui.timerId); ui.timerId = 0; }
 
-  // Whole-game clock reached zero: tiles you placed this turn still score, then the game ends
+  // Whole-game clock reached zero. v08j (JM CD-45: 5.1a): tiles you penciled in but never confirmed with DONE don't
+  // count (they go back to your hand), and the rival gets one final turn; then the game ends. (Before v08j they scored
+  // and the game ended at once, so running the clock down was a way to deny the rival its answer.)
   function clockOut() {
     if (!G || G.over || G.turn !== 0) return;
     closeZoom(true); cancelDrag();
-    const placements = ui.pending.slice();
+    const back = ui.pending.length;
     Object.assign(ui, { pending: [], selTile: null, hintCell: -1, selSlot: -1, selCell: -1 });
-    const n = judgeMine(placements);
-    logMyTurn(n);
-    E.endTurn(G, n, 'pass', 'clock');
+    logMyTurn(0);
+    const over = E.endTurn(G, 0, 'pass', 'clock');
     showReport(lastLog());
-    toast('Your clock ran out. Game over.', 'bad', 3000);
-    afterTurn(true);
+    if (!over) toast(`Your clock ran out.${back ? ` Your ${back} unconfirmed tile${back > 1 ? 's' : ''} went back to your hand.` : ''} ${opp().n} gets one final turn.`, 'bad', 4200);
+    else toast('Your clock ran out. Game over.', 'bad', 3000);
+    afterTurn(over);
   }
 
   // ---------- Pause (JM, CD-4 add'l 2; CD-5: 4.1a–4.3) ----------
@@ -1483,7 +1559,9 @@
       && !/^(INPUT|SELECT|TEXTAREA)$/.test((e.target.tagName || ''))) {
       e.preventDefault();
       if (document.activeElement && document.activeElement !== document.body && document.activeElement.blur) document.activeElement.blur();
-      if (G.over || ui.paused) return;
+      // v08j (CD-45: 3.1a): after the game, Enter closes the last report, then opens Results
+      if (G.over) { if (repsOn()) clearReports(); else if ($('#modal').hidden) showResults(); return; }
+      if (ui.paused) return;
       if (repsOn()) { clearReports(); return; }
       if (!myTurn()) return;
       const db = $('#doneBtn');
@@ -1524,7 +1602,7 @@
   function afterTurn(over) {
     save();
     if (over) { render(); gameOver(); return; }
-    if (G.finalTurn === 1) toast(`You played every tile! ${opp().n} gets one final turn.`, '', 3200); // v08i
+    if (G.finalTurn === 1 && G.clockOut == null) toast(`You played every tile! ${opp().n} gets one final turn.`, '', 3200); // v08i
     ui.busy = true;
     render();
     runAiTurn();
@@ -1789,6 +1867,17 @@
   const touchesDone = e => { if (!e.touches.length) setTimeout(sweepDrags, 80); }; // no finger is down: no drag can still be alive
   document.addEventListener('touchend', touchesDone, { passive: true });
   document.addEventListener('touchcancel', touchesDone, { passive: true });
+
+  // v08j (JM CD-44: 1.12.1; CD-45: 1.1c Android + Chrome, 1.2 Y): on phones one of two dragged tiles "fell off" its
+  // finger. Phone browsers take a finger away from the page (pointercancel, so the tile drops back) when they decide it
+  // is starting a browser gesture: a long press (Android's press-and-hold menu, which the hand never blocked; only the
+  // grid did), a pinch-zoom or a scroll. Now, while any tile is being dragged, those gestures are blocked for every finger.
+  const dragLive = () => drags.size > 0;
+  // (a second finger only: blocking the first finger's touchstart would also cancel ordinary taps)
+  document.addEventListener('touchstart', e => { if (dragLive() && e.touches.length > 1 && e.cancelable) e.preventDefault(); }, { passive: false });
+  document.addEventListener('touchmove', e => { if (dragLive() && e.cancelable) e.preventDefault(); }, { passive: false });
+  document.addEventListener('contextmenu', e => { if (dragLive() || e.target.closest('#rack, #board, .ghost')) e.preventDefault(); });
+  document.addEventListener('gesturestart', e => { if (dragLive()) e.preventDefault(); }); // iPhone / iPad pinch
 
   // Hand: tap to select, drag onto the grid to place, drag within the hand to sort
   $('#rack').addEventListener('pointerdown', e => {
@@ -2146,7 +2235,7 @@
     sound.play(r.winner === 0 ? 'win' : r.winner === 1 ? 'lose' : 'draw', 0.5); // v08h
     const title = r.winner === 0 ? `${myName() === 'You' ? 'You win' : myName() + ' wins'}!` : r.winner === 1 ? `${o.n} wins` : 'It\'s a draw';
     const st = G.stats;
-    const ended = r.complete ? 'The grid is complete.' : r.reason === 'clock' ? 'Your whole-game clock ran out.'
+    const ended = r.complete ? 'The grid is complete.' : r.reason === 'clock' ? (G.clockOut === 0 ? `Your whole-game clock ran out, and ${o.n} had one final turn.` : 'Your whole-game clock ran out.')
       : r.reason === 'out' ? `${G.outBy === 0 ? 'You' : o.n} played every tile, and ${G.outBy === 0 ? o.n : 'you'} had one final turn.`
       : 'Three passes in a row ended the game (3 PASSES Rule).';
     // v08 coins at the end: whole-game clocks pay their speed coins once, here; a win pays +10.
@@ -2203,15 +2292,18 @@
         sub: [sz, timerLabel()].filter(Boolean).join(' · '), score: `${G.scores[0]}–${G.scores[1]}`, coins: net, html: resBody });
     }
     ui.resBody = resBody;
+    // v08j (JM CD-44 add'l 1; CD-45: 3.1a): Results no longer opens by itself. The grid stays up with the final play
+    // glowing; the game-over bar's "📊 See results ▸" (or Enter) opens it.
+    ui.resSeen = false;
     render(); // the game-over bar replaces the hand
-    setTimeout(showResults, 700);
   }
   // v08f (JM CD-37: 2.1, 3.1): the result window's buttons are ⚙ Settings · ☰ Menu · Rematch (the same three as Word
   // Vault's). ✕ or a tap outside closes it and shows the finished grid with its game-over bar (📊 Results reopens it).
   function showResults() {
     if (!G || !G.over || !ui.resBody) return;
+    if (!ui.resSeen) { ui.resSeen = true; render(); } // the final-play glow ends once Results has been seen
     openModal(`${ui.resBody}
-      <div class="row res-bar"><button class="btn" data-a="set">⚙ Settings</button><button class="btn" data-a="menu">☰ Menu</button><button class="btn primary" data-a="again">Rematch</button></div>`, 'res', { close: render });
+      <div class="row res-bar"><button class="btn" data-a="grid" title="Close Results and look at the grid">🔍 Grid</button><button class="btn" data-a="set">⚙ Settings</button><button class="btn" data-a="menu">☰ Menu</button><button class="btn primary" data-a="again">Rematch</button></div>`, 'res', { close: render });
     $('#sheet').onclick = e => {
       const b = e.target.closest('[data-a]');
       if (!b) return;
