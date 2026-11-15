@@ -1,7 +1,7 @@
-/* Clue Duel — user interface (v08d) */
+/* Clue Duel — user interface (v08h: sound effects, off by default; scroll-free menu) */
 'use strict';
 (() => {
-  const APP_VER = 'v08g'; // Project CP: shown as a pill beside the title and in the browser tab
+  const APP_VER = 'v08h'; // Project CP: shown as a pill beside the title and in the browser tab
   const E = window.Engine;
   const $ = (s, el = document) => el.querySelector(s);
   const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -34,6 +34,92 @@
     del(k) { try { localStorage.removeItem(k); } catch (e) { /* ignore */ } }
   };
 
+  // ---------- Sound effects (v08h; JM CD-39: 3.1; CD-41: 1.4, 1.4.1) ----------
+  // Made in code with Web Audio (no sound files, so nothing to download and nothing to license). OFF by default:
+  // the 🔇 / 🔊 button (menu, both games' headers) turns them on or off, remembered on this device ('cd.sound').
+  // Soft, short sounds: tile lands, wrong tile thunk, word chime, coin clink, last-10-second ticks, PASS banner,
+  // win and lose. Shared with Word Vault through CDUI.sound.
+  const sound = (() => {
+    let on = store.get('cd.sound', false), ac = null, out = null, nbuf = null;
+    function ctx() {
+      if (!ac) {
+        const A = window.AudioContext || window.webkitAudioContext;
+        if (!A) return null;
+        try { ac = new A(); } catch (e) { return null; }
+        out = ac.createGain(); out.gain.value = 0.32; out.connect(ac.destination);
+      }
+      if (ac.state === 'suspended') { try { ac.resume(); } catch (e) { /* needs a tap first */ } }
+      return ac;
+    }
+    // one note: frequency f (sliding to f2), starting at t, lasting d seconds, at volume v
+    function tone(f, t, d, type, v, f2) {
+      const o = ac.createOscillator(), g = ac.createGain();
+      o.type = type || 'sine';
+      o.frequency.setValueAtTime(f, t);
+      if (f2) o.frequency.exponentialRampToValueAtTime(f2, t + d);
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(v, t + 0.01);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + d);
+      o.connect(g); g.connect(out);
+      o.start(t); o.stop(t + d + 0.03);
+    }
+    // a short burst of filtered noise: the "click" of a wooden tile
+    function knock(t, d, v, freq) {
+      if (!nbuf) { nbuf = ac.createBuffer(1, Math.round(ac.sampleRate * 0.2), ac.sampleRate); const ch = nbuf.getChannelData(0); for (let i = 0; i < ch.length; i++) ch[i] = Math.random() * 2 - 1; }
+      const s = ac.createBufferSource(), f = ac.createBiquadFilter(), g = ac.createGain();
+      s.buffer = nbuf; f.type = 'bandpass'; f.frequency.value = freq; f.Q.value = 1.2;
+      g.gain.setValueAtTime(v, t); g.gain.exponentialRampToValueAtTime(0.0001, t + d);
+      s.connect(f); f.connect(g); g.connect(out);
+      s.start(t); s.stop(t + d + 0.02);
+    }
+    const arp = (t, notes, gap, d, type, v) => notes.forEach((f, i) => tone(f, t + i * gap, d, type, v));
+    const FX = {
+      key: t => knock(t, 0.035, 0.35, 2600),                                         // a typed letter (Word Vault)
+      land: t => { knock(t, 0.05, 0.6, 1500); tone(260, t, 0.07, 'sine', 0.25, 170); }, // your tile lands in a cell
+      opp: t => { knock(t, 0.045, 0.35, 1100); tone(200, t, 0.06, 'sine', 0.15, 140); }, // the rival pencils a tile in
+      bounce: t => { tone(150, t, 0.16, 'triangle', 0.4, 95); tone(120, t + 0.12, 0.18, 'triangle', 0.3, 80); }, // wrong tile / not a word
+      word: t => arp(t, [523.25, 659.25, 783.99, 1046.5], 0.075, 0.45, 'sine', 0.22),   // you finished a word
+      oppword: t => arp(t, [392, 493.88], 0.09, 0.35, 'sine', 0.13),                    // the rival finished a word
+      row: t => arp(t, [440, 554.37], 0.06, 0.18, 'triangle', 0.15),                    // a Word Vault guess goes in
+      coin: t => { tone(1318.5, t, 0.07, 'square', 0.05); tone(1975.5, t + 0.06, 0.28, 'square', 0.05); }, // coins earned
+      spend: t => { tone(987.8, t, 0.06, 'triangle', 0.18); tone(659.3, t + 0.06, 0.14, 'triangle', 0.16); }, // coins spent
+      tick: t => tone(1050, t, 0.03, 'square', 0.05),                                 // last 10–6 seconds
+      tock: t => tone(1500, t, 0.045, 'square', 0.08),                                // last 5–1 seconds
+      pass: t => { tone(440, t, 0.2, 'triangle', 0.25); tone(349.2, t + 0.17, 0.3, 'triangle', 0.25); }, // PASS banner
+      win: t => { arp(t, [523.25, 659.25, 783.99], 0.11, 0.3, 'triangle', 0.22); [523.25, 659.25, 783.99, 1046.5].forEach(f => tone(f, t + 0.36, 0.9, 'sine', 0.13)); },
+      lose: t => arp(t, [392, 329.6, 261.6], 0.16, 0.4, 'sine', 0.18),
+      draw: t => arp(t, [440, 440], 0.16, 0.3, 'sine', 0.15),
+      on: t => arp(t, [659.25, 987.8], 0.07, 0.15, 'sine', 0.18)                       // sound just turned on
+    };
+    const last = {};
+    function play(name, delay) {
+      if (!on || document.hidden || !FX[name]) return;
+      const now = Date.now();
+      if (last[name] && now - last[name] < 45) return; // never stack the same sound
+      last[name] = now;
+      const a = ctx(); if (!a) return;
+      try { FX[name](a.currentTime + 0.01 + (delay || 0)); } catch (e) { /* ignore */ }
+    }
+    function paint() {
+      document.querySelectorAll('[data-snd]').forEach(b => {
+        b.textContent = on ? '🔊' : '🔇';
+        b.title = on ? 'Sound is on: tap to mute' : 'Sound is off: tap to turn it on';
+        b.setAttribute('aria-label', b.title);
+        b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      });
+    }
+    function set(v) { on = !!v; store.set('cd.sound', on); paint(); if (on) { ctx(); play('on'); } }
+    // browsers start audio only after a tap: wake it on the first tap when sound is on
+    document.addEventListener('pointerdown', () => { if (on) ctx(); }, true);
+    document.addEventListener('click', e => {
+      const b = e.target && e.target.closest && e.target.closest('[data-snd]');
+      if (!b) return;
+      set(!on);
+      toast(on ? '🔊 Sound on' : '🔇 Sound off', '', 1400);
+    });
+    return { play, set, paint, get on() { return on; } };
+  })();
+
   // ---------- Coins (v08; JM CD-13: 5a, 5.3.1; CD-18: 8.1; CD-26: 3.1): ONE currency for both games ----------
   // Spent on: Hint, Place and +30s in Clue Duel (instead of points), and Word Vault's Hint.
   // Earned by: speed (1 coin per second left on a timed clock, on turns that place tiles; never in untimed games),
@@ -52,6 +138,7 @@
       if (coinData.log.length > 12) coinData.log.length = 12;
       store.set('cd.coins', coinData);
       renderCoins();
+      sound.play(n > 0 ? 'coin' : 'spend'); // v08h
       return n;
     },
     // true when paid; otherwise a toast explains and nothing is spent
@@ -120,6 +207,11 @@
     if ($('#timerSel').selectedIndex < 0) $('#timerSel').value = '0';
     $('#scoringSel').value = settings.scoring;
     $('#scoringDesc').textContent = (E.MODES[settings.scoring] || E.MODES.classic).desc;
+    // v08h (JM CD-41: 1.1): the folded Options row shows its five choices in one line
+    const txt = id => { const s = $(id); return s.selectedIndex >= 0 ? s.options[s.selectedIndex].text : ''; };
+    const tmr = txt('#timerSel').replace(/^Blitz · /, '').replace(/ per TURN$/, '/turn').replace(/ per GAME$/, '/game');
+    $('#optsSum').textContent = [txt('#handSel'), txt('#bonusSel') + ' bonus', txt('#picsSel') + ' pics', txt('#scoringSel'), tmr].join(' · ');
+    $('#optsBox').open = !!settings.optsOpen;
     $('#myAv').textContent = settings.avatar;
     if (document.activeElement !== $('#myName')) $('#myName').value = settings.name || '';
     const saved = store.get('cd.save', null);
@@ -139,6 +231,7 @@
   $('#myName').addEventListener('input', e => { settings.name = e.target.value.slice(0, 14); store.set('cd.settings', settings); });
   $('#myName').addEventListener('keydown', e => { if (e.key === 'Enter') e.target.blur(); });
   $('#myAv').addEventListener('click', pickAvatar);
+  $('#optsBox').addEventListener('toggle', e => { if (!!settings.optsOpen !== e.target.open) { settings.optsOpen = e.target.open; store.set('cd.settings', settings); } }); // v08h: remembered
   $('#howBtn').addEventListener('click', showHelp);
   $('#histBtn').addEventListener('click', () => showHistory()); // v08c (CD-30: 4.5)
   $('#startBtn').addEventListener('click', startNewGame);
@@ -526,7 +619,8 @@
     const r = Math.ceil(G.turnNo / 2), M = E.modeOf(G);
     const bonusName = { fixed: 'Fixed bonuses', floating: 'Floating bonuses', both: 'Fixed + floating bonuses', off: 'No bonuses' }[G.settings.bonus] || '';
     // v08: the coin balance leads the line, so a narrow screen trims the mode name, not the coins
-    $('#infoBar').innerHTML = `${coinPill()} Round ${r} · Bag ${G.bag.length} · ${esc(M.name)}`;
+    // v08h: two short lines (round · bag, then scoring), so the row also fits the 🔇 / 🔊 button on phones
+    $('#infoBar').innerHTML = `${coinPill()}<span class="ib-t"><span>Round ${r} · Bag ${G.bag.length}</span><span>${esc(M.name)}</span></span>`;
     $('#infoSide').innerHTML = `<div class="info-coins">${coinPill()}</div><b>Round ${r}</b> · Bag ${G.bag.length}<br>${esc(M.name)} · ${esc(bonusName)}<br>${esc(timerLabel())}`;
   }
 
@@ -560,6 +654,7 @@
   function setTimerFlash(s) {
     if (s === flashSec) return;
     flashSec = s;
+    if (s >= 1 && s <= 10) sound.play(s > 5 ? 'tick' : 'tock'); // v08h: one tick a second in the last 10
     const b = $('#board');
     b.classList.remove('tf-y', 'tf-r', 'tf-a', 'tf-b');
     if (s >= 1 && s <= 10) b.classList.add(s > 5 ? 'tf-y' : 'tf-r', s % 2 ? 'tf-a' : 'tf-b');
@@ -666,7 +761,7 @@
   // Pills (toasts) move below the banner so they never cover it.
   function renderPassWarn() {
     const n = G && !G.over ? (G.passes || 0) : 0;
-    if (n > ui.passSeen) { ui.passHold = n; ui.passSeen = n; }
+    if (n > ui.passSeen) { ui.passHold = n; ui.passSeen = n; sound.play('pass', 0.15); }
     else if (n < ui.passSeen) { ui.passSeen = n; ui.passHold = 0; }
     if (!n) ui.passHold = 0;
     const e = n && G.log && G.log[G.log.length - 1];
@@ -818,6 +913,7 @@
     if (!e) return;
     reps.html[e.p] = reportHTML(e);
     reps.key[e.p]++;
+    if (e.words && e.words.length) sound.play(e.p === 0 ? 'word' : 'oppword', 0.2); // v08h: a finished word chimes
     renderReports();
   }
   function renderReports() {
@@ -978,6 +1074,9 @@
         <li>From level 5, word clues turn punny: double meanings and wordplay. A "?" means don't take it literally.</li>`)}
       ${sec('Grid Size', `
         <li><b>Small</b> (5 × 6), <b>Medium</b> (6 × 7) or <b>Large</b> (7 × 11). Bigger grids mean more words, longer games and bigger scores.</li>`)}
+      ${sec('Options', `
+        <li>The five options you change least (${go('Letters in Hand')}, ${go('Bonus Squares')}, ${go('Clue Pics')}, ${go('Scoring')} and ${go('Timer')}) fold into one <b>▸ Options</b> row, so the menu fits on one screen. The row shows your choices in one line, like "6 letters · Floating bonus · Some pics · Classic · Untimed".</li>
+        <li>Tap it to open (▾) or close (▸) it. It stays the way you left it. ⚙ Settings in the game changes the same options.</li>`)}
       ${sec('Letters in Hand', `
         <li>How many tiles each player holds: 5 to 8. Your hand refills from the bag after every turn.</li>
         <li>More tiles give you more choices each turn. Fewer tiles make the <b>Full Hand</b> bonus easier to earn: place as many tiles in one turn as this setting (all 5 of 5, for example). See ${go('Bonuses')}.</li>`)}
@@ -1037,7 +1136,7 @@
         <li>Clocks never run while a ${go('Turn Reports and The Scoreboard', 'turn report')} is waiting for your tap, or while the game is paused.</li>
         <li>In the last 10 seconds the grid's border flashes every second: <b>yellow</b> from 10 to 6, <b>red</b> from 5 to 1.</li>`)}
       ${sec('Resume Game', `
-        <li><b>New Game</b> starts a fresh puzzle with the settings above.</li>
+        <li><b>New Game</b> starts a fresh puzzle with the settings above. <b>🔐 Word Vault</b>, beside it, opens the word-guessing game.</li>
         <li><b>Resume Game</b> appears when you have an unfinished game. Your game is saved after every turn and whenever you leave it (☰ in the upper-left corner of the game takes you straight to the menu).</li>
         <li><b>⚙</b> beside <b>?</b> in the game (on a phone, at the right end of the Scoreboard row) shows this game's settings. Changes apply from your next game; <b>New game with these</b> starts one now.</li>`)}
       ${sec('Clue Bar', `
@@ -1109,9 +1208,14 @@
         <li>You choose the Challenge Level (vocabulary), the word's length (4–8 letters), the number of guesses (5–10), a timer and a scoring mode, and you can change them during play (⚙). Extras: 🔎 Hint (🪙5) shows a clue that gets trickier as the Challenge Level rises, 💡 Reveal places a letter (its coin price is that letter's share of the word: 40 ÷ letters, like ¹⁄₅ 🪙8), ✕ clears a guess, and tapping the clock pauses. Tap its <b>?</b> for the full rules.</li>
         <li>Make it yours: double-click its title to rename it, and tap the icon beside the title to change it or upload your own picture.</li>`)}
       ${sec('Game History', `
-        <li><b>📜 Game History</b> (on the menu, beside How To Play) lists your last 100 results from both games, newest first: the date, the settings, the score and the coins won or spent. A green edge marks a win, a red edge a loss.</li>
+        <li><b>📜 Game History</b> (the 📜 icon in the menu's top corner, beside ? How To Play) lists your last 100 results from both games, newest first: the date, the settings, the score and the coins won or spent. A green edge marks a win, a red edge a loss.</li>
         <li>Filter it by game (All, 🧩 Clue Duel, 🔐 Word Vault), and tap any result to see its full result window again; ◂ History goes back to the list.</li>
         <li>It's kept on this device only, like your stats and coins.</li>`)}
+      ${sec('Sound', `
+        <li>Sound effects are <b>off</b> until you turn them on. Tap <b>🔇</b> (top corner of the menu, and in both games' headers) to turn them on; it becomes <b>🔊</b>. Tap again to mute. Your choice is remembered on this device.</li>
+        <li>The sounds are short and soft: a click when a tile lands, a thunk when one doesn't fit, a chime when a word is finished, a clink for coins, a tick each second in the last 10, a two-note tone for a PASS, and a short tune when the game ends. Your device's own volume still applies.</li>`)}
+      ${sec('Offline', `
+        <li>Once it has loaded, the app plays offline: no connection needed. Your games, stats, coins and settings stay on this device.</li>`)}
       ${sec('Strategy', `
         <li>Don't rush. A word left with only one empty cell is a gift to your rival. Sometimes it pays to <b>hold</b> a tile until you can finish the word yourself.</li>
         <li>It is often smart to save 2× squares for big turns because they double everything else you score that turn. Beware: your opponent can "steal" the bonus squares in the early rounds to keep you from scoring big.</li>`)}
@@ -1302,6 +1406,7 @@
   function bounce(list, ms = 900) {
     const m = new Map(list.map(p => [p.cell, p.ch]));
     ui.flash = m;
+    sound.play('bounce'); // v08h
     setTimeout(() => { if (ui.flash === m) { ui.flash = null; if (G) render(); } }, ms);
   }
 
@@ -1390,6 +1495,7 @@
       ui.aiPending.set(step.cell, step.ch);
       ui.pop = step.cell;
       steps.push({ cell: step.cell, tileId: step.tileId, ch: step.ch });
+      sound.play('opp'); // v08h
       render();
       await nap(430);
       if (token !== ui.token) return;
@@ -1424,6 +1530,7 @@
     if (ui.selSlot < 0 || !G.pz.slots[ui.selSlot].cells.includes(ci)) ui.selSlot = G.pz.cellSlots[ci][0];
     ui.selCell = ci;
     ui.pop = ci;
+    sound.play('land'); // v08h
     render();
   }
 
@@ -1905,6 +2012,7 @@
     store.set('cd.stats', stats);
     const o = opp();
     const face = r.winner === 0 ? '🏆' : r.winner === 1 ? o.a : '🤝';
+    sound.play(r.winner === 0 ? 'win' : r.winner === 1 ? 'lose' : 'draw', 0.5); // v08h
     const title = r.winner === 0 ? `${myName() === 'You' ? 'You win' : myName() + ' wins'}!` : r.winner === 1 ? `${o.n} wins` : 'It\'s a draw';
     const st = G.stats;
     const ended = r.complete ? 'The grid is complete.' : r.reason === 'clock' ? 'Your whole-game clock ran out.' : 'Three passes in a row ended the game (3 PASSES Rule).';
@@ -2001,8 +2109,10 @@
     armTap, history: hist, // v08c: two-tap coin buttons; Game History shared with Word Vault
     helpSec, helpClick, // v08f: How To Play sections shared with Word Vault
     showScreen, goHome: () => { showScreen('home'); renderHome(); },
-    settings: () => settings
+    settings: () => settings,
+    sound // v08h: sound effects (and the 🔇 / 🔊 buttons) shared with Word Vault
   };
+  sound.paint();
   $('#vaultBtn').addEventListener('click', () => { if (window.WordVault) window.WordVault.open(); });
 
   renderHome();

@@ -11,6 +11,7 @@
    v08f (CD-37): result buttons ⚙ Settings · ☰ Menu · Next word; ✕ / tap outside closes it and shows a game-over bar;
    How To Play in collapsible sections; the clock is a gray pill like Clue Duel's.
    v08g (CD-38 add'l 1): the ← → arrow keys wrap from one end of the row to the other.
+   v08h (CD-41: 1.4): sound effects (off by default; 🔇 / 🔊 in the header): typed letters, guesses, not-a-word, ticks, solved / not solved.
    v07f (CD-25): no embossed text; played letters are black on green, yellow or red; typed (tentative) letters turn their key
    black on white; empty squares are dark glass "candy drops" in the slots of a glassy grid panel; a large > marks the
    active row, so the grid sits centered between it and the ✕; "Blitz · 30s per guess".
@@ -27,6 +28,7 @@
 'use strict';
 (function () {
   const UI = window.CDUI, E = window.Engine;
+  const snd = (n, d) => { if (UI.sound) UI.sound.play(n, d); }; // v08h
   if (!UI || !E) return;
   const { $, esc, store, toast, openModal, closeModal } = UI;
 
@@ -493,6 +495,7 @@
       if (!editable(R.sel)) R.sel = firstOpen(0);
       if (R.sel < 0) return;
       R.cells[R.sel].ch = k;
+      snd('key');
       const nx = firstOpen(R.sel + 1);
       if (nx >= 0) R.sel = nx; // otherwise stay on the square just typed
       render();
@@ -510,9 +513,9 @@
   }
   function submit() {
     const g = R.cells.map(c => c.ch).join('');
-    if (g.length < R.len) { toast(`Fill all ${R.len} squares`, 'bad'); shakeRow(); return; }
+    if (g.length < R.len) { toast(`Fill all ${R.len} squares`, 'bad'); shakeRow(); snd('bounce'); return; }
     words();
-    if (!GUESS[R.len].has(g)) { toast(`${g} isn't in the word list`, 'bad'); shakeRow(); return; }
+    if (!GUESS[R.len].has(g)) { toast(`${g} isn't in the word list`, 'bad'); shakeRow(); snd('bounce'); return; }
     addRow(g);
   }
   function addRow(g) {
@@ -523,6 +526,7 @@
     if (tm.kind === 'guess') R.left = tm.ms; // each guess gets a fresh clock
     if (g === R.a.w) return finish(true);
     if (R.rows.length >= R.tries) return finish(false);
+    snd('row');
     newRow();
     render();
   }
@@ -594,6 +598,7 @@
   function setFlash(s) {
     if (s === flashSec) return;
     flashSec = s;
+    if (s >= 1 && s <= 10) snd(s > 5 ? 'tick' : 'tock'); // v08h
     const b = $('#vtBoard');
     b.classList.remove('tf-y', 'tf-r', 'tf-a', 'tf-b');
     if (s >= 1 && s <= 10) b.classList.add(s > 5 ? 'tf-y' : 'tf-r', s % 2 ? 'tf-a' : 'tf-b');
@@ -641,6 +646,7 @@
       saveStats();
     } else recordLoss();
     render();
+    snd(won ? 'win' : 'lose', 0.1); // v08h
     if (won) { celebrate(); setTimeout(() => showResult(won, gaveUp, sc, ms), 2100); }
     else setTimeout(() => showResult(won, gaveUp, sc, ms), 400);
   }
@@ -767,6 +773,9 @@
         <li><b>Guesses needed</b> (on the result window): one row for each number of guesses, from 1 up, plus ✗ for words not solved. The bar and its number show how many words you've solved in that many guesses, so your longest bar is your usual result. The highlighted bar is the word just played. On a computer, point at a row to see it in words. Tap <b>ⓘ</b> under the bars to read this there.</li>`)}
       ${sec('Make It Yours', `
         <li>Double-click (or double-tap) the title to rename the game, and tap the icon beside it to choose another or to upload your own picture. Both are remembered on this device.</li>`)}
+      ${sec('Sound', `
+        <li>Sound effects are <b>off</b> until you tap <b>🔇</b> in the header (it becomes <b>🔊</b>); tap again to mute. The same switch covers Clue Duel and the menu.</li>
+        <li>You'll hear a soft click for each letter, a short tone when a guess goes in, a thunk for a word that isn't in the list, a clink for coins, a tick each second in the last 10, and a short tune when the word is solved or lost.</li>`)}
       </div>
       <div class="row"><button class="btn primary" data-a="ok">Close</button></div>`);
     $('#sheet').onclick = e => { if (UI.helpClick(e)) return; if (e.target.closest('[data-a]')) closeModal(); };
