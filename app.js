@@ -1,4 +1,6 @@
-/* Clue Duel — user interface (v08m: grid zoom (pinch, Ctrl + wheel, 🔍 focus, arrows, mini-map), reports wait for the red marks,
+/* Clue Duel — user interface (v08n: the 3D look (candy-drop tiles, wells, clue plaques, floating penciled tiles that settle
+   at Done, keycap buttons), arrow keys and Esc for zoom, "the Bot" in the game's wording;
+   v08m: grid zoom (pinch, Ctrl + wheel, 🔍 focus, arrows, mini-map), reports wait for the red marks,
    no "didn't fit" notices, gold win frame, hatched Scan cells, ⚙ New game fixed;
    v08L: ⏭ pass chip + held 2nd-pass notice, 🔦 Scan, pale crossing clues, Results after the
    wrong-tile bounce, notices away from the wrong word, bigger bonus badge, ⚙ fits phones, clue popup fits, Space pauses;
@@ -7,7 +9,7 @@
    v08j: grid colors, final-play view, clock-out final turn, menu defaults, phone two-finger drag) */
 'use strict';
 (() => {
-  const APP_VER = 'v08m'; // Project CP: shown as a pill beside the title and in the browser tab
+  const APP_VER = 'v08n'; // Project CP: shown as a pill beside the title and in the browser tab
   const E = window.Engine;
   const $ = (s, el = document) => el.querySelector(s);
   const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -19,10 +21,10 @@
     { n: 'Benny Bear', a: '🐻', b: 'Just here for the snacks. Places tiles wherever they fit.' },
     { n: 'Dotty Duckling', a: '🐥', b: 'Still learning. Misses plenty of chances.' },
     { n: 'Pip Penguin', a: '🐧', b: 'Waddles through the easy words first.' },
-    { n: 'Rosie Rabbit', a: '🐰', b: 'Quick, and starting to hold tiles back. Easygoing: rivals at levels 4–7 play gentler than their puzzles.' },
-    { n: 'Rusty Fox', a: '🦊', b: 'Sly. Hates leaving you an easy finish. Easygoing: rivals at levels 4–7 play gentler than their puzzles.' },
-    { n: 'Kiko Koala', a: '🐨', b: 'Calm and steady. Rarely wastes a tile. Easygoing: rivals at levels 4–7 play gentler than their puzzles.' },
-    { n: 'Luna Cat', a: '🐱', b: 'Waits patiently, then pounces on big words. Easygoing: rivals at levels 4–7 play gentler than their puzzles.' },
+    { n: 'Rosie Rabbit', a: '🐰', b: 'Quick, and starting to hold tiles back. Easygoing: Bots at levels 4–7 play gentler than their puzzles.' },
+    { n: 'Rusty Fox', a: '🦊', b: 'Sly. Hates leaving you an easy finish. Easygoing: Bots at levels 4–7 play gentler than their puzzles.' },
+    { n: 'Kiko Koala', a: '🐨', b: 'Calm and steady. Rarely wastes a tile. Easygoing: Bots at levels 4–7 play gentler than their puzzles.' },
+    { n: 'Luna Cat', a: '🐱', b: 'Waits patiently, then pounces on big words. Easygoing: Bots at levels 4–7 play gentler than their puzzles.' },
     { n: 'Otto Octopus', a: '🐙', b: 'Master level. Eight arms, almost no wasted moves.' },
     { n: 'Duchess Dragon', a: '🐉', b: 'Master level. Hoards letters like treasure.' },
     { n: 'Professor Hoot', a: '🦉', b: 'Master level. Knows every word. Misses nothing.' }
@@ -623,13 +625,7 @@
   // 🔍: whole grid ⇄ zoomed. From the whole grid, the next tap on the grid picks where to zoom (🔍 again: your last view).
   function zoomBtn() {
     if (!inGame()) return;
-    if (zm.z > 1) {
-      const v = viewFrac();
-      zm.last = { z: zm.z, cx: v.cx, cy: v.cy };
-      zm.pick = false;
-      setZoom(1, 0.5, 0.5);
-      return;
-    }
+    if (zm.z > 1) { zoomOut(); return; }
     if (!zoomable()) return;
     if (zm.pick) {
       zm.pick = false;
@@ -793,13 +789,23 @@
       setZoom(z, clamp01((a.x - br.left) / br.width), clamp01((a.y - br.top) / br.height), a.x, a.y);
     }, 60);
   }, { passive: false });
-  // keys: Z = 🔍, + and − zoom in and out, Esc cancels "tap where to zoom"
+  // keys: Z = 🔍, + and − (or ↑ and ↓) zoom in and out, ← and → slide a zoomed grid sideways, Esc leaves zoom
+  // (v08n, JM CD-53: 1.2.1.1–1.2.1.2: the arrow keys and Esc)
+  function zoomOut() { const v = viewFrac(); zm.last = { z: zm.z, cx: v.cx, cy: v.cy }; zm.pick = false; setZoom(1, 0.5, 0.5); }
   document.addEventListener('keydown', e => {
     if (e.repeat || e.ctrlKey || e.metaKey || e.altKey || !inGame() || !$('#modal').hidden || /^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName || '')) return;
     if (e.key === 'z' || e.key === 'Z') { e.preventDefault(); zoomBtn(); }
-    else if (e.key === '+' || e.key === '=') { e.preventDefault(); if (zoomable() || zm.z > 1) setZoom(zm.z * 1.3); }
-    else if (e.key === '-' || e.key === '_') { e.preventDefault(); if (zm.z > 1) setZoom(zm.z / 1.3); }
-    else if (e.key === 'Escape' && zm.pick) { zm.pick = false; zoomChrome(); }
+    else if ((e.key === 'ArrowUp' || e.key === 'ArrowDown') && e.shiftKey) { // v08n (CD-54: 1.2): Shift + ↑ / ↓ slide a zoomed grid up and down
+      e.preventDefault();
+      if (zm.z > 1) zoomer.scrollBy({ top: (e.key === 'ArrowUp' ? -1 : 1) * zoomer.clientHeight * 0.35, behavior: reduceMotion() ? 'auto' : 'smooth' });
+    }
+    else if (e.key === '+' || e.key === '=' || e.key === 'ArrowUp') { e.preventDefault(); zm.pick = false; if (zoomable() || zm.z > 1) setZoom(zm.z * 1.3); }
+    else if (e.key === '-' || e.key === '_' || e.key === 'ArrowDown') { e.preventDefault(); if (zm.z > 1) setZoom(zm.z / 1.3); }
+    else if ((e.key === 'ArrowLeft' || e.key === 'ArrowRight') && zm.z > 1) {
+      e.preventDefault();
+      zoomer.scrollBy({ left: (e.key === 'ArrowLeft' ? -1 : 1) * zoomer.clientWidth * 0.35, behavior: reduceMotion() ? 'auto' : 'smooth' });
+    }
+    else if (e.key === 'Escape' && (zm.pick || zm.z > 1)) { e.preventDefault(); if (zm.z > 1) zoomOut(); else { zm.pick = false; zoomChrome(); } }
   });
   // zoomed: a newly chosen cell is slid into view
   function zoomFollow() {
@@ -1004,6 +1010,7 @@
       if (ch) {
         cls.push('filled', G.owner[i] === 0 ? 'mine' : G.owner[i] === 1 ? 'theirs' : 'pre');
         if (last.has(i)) cls.push('last');
+        if (ui.settle && ui.settle.has(i)) cls.push('settle'); // v08n (CD-52: 6.2.1.1): a confirmed tile settles into its well
         inner = `<span class="ch">${ch}</span>`;
       } else if (pend.has(i)) {
         const p = pend.get(i);
@@ -1638,19 +1645,19 @@
     const modeH = (k, extra) => `<li class="help-sub"><b>${esc(E.MODES[k].name)}</b>${chip(k)}${extra || ''}</li>`;
     openModal(`
       <h2>How To Play <span class="chip">${APP_VER}</span></h2>
-      <p>You and a computer rival take turns filling the same crossword with letter tiles. Every tile you place correctly scores, finishing words scores more, and the highest score wins.</p>
+      <p>You and the Bot (a computer player) take turns filling the same crossword with letter tiles. Every tile you place correctly scores, finishing words scores more, and the highest score wins.</p>
       <p class="help-note">The first sections follow the menu, top to bottom. Tap a heading to open it. Underlined names open their section.</p>
       ${sec('You', `
         <li>Tap the face to choose your avatar from the icon list, or to upload your own picture (kept on this device).</li>
         <li>Type your name in the box beside it. It shows above your score and on the Scoreboard. Left empty, you're "You".</li>`)}
-      ${sec('Opponent', `
-        <li>Each ${go('Challenge Level')} has its own computer rival, from Benny Bear 🐻 at level 1 to Professor Hoot 🦉 at level 10. Change the level and your rival changes with it.</li>
-        <li>Rivals at levels 4–7 are <b>easygoing</b>: they play gentler than their puzzles, so the climb from 1 to 7 is gradual. Levels 8–10 are the <b>Master</b> levels, with a big step up in the rival's skill.</li>
-        <li>Under the rival's name is your <b>won–lost record</b> against them.</li>
-        <li>Point at the card with the mouse (or press and hold it on a touch screen) to read the rival's personality: how they like to play.</li>`)}
+      ${sec('Bot', `
+        <li>Each ${go('Challenge Level')} has its own Bot (a computer player), from Benny Bear 🐻 at level 1 to Professor Hoot 🦉 at level 10. Change the level and the Bot changes with it.</li>
+        <li>Bots at levels 4–7 are <b>easygoing</b>: they play gentler than their puzzles, so the climb from 1 to 7 is gradual. Levels 8–10 are the <b>Master</b> levels, with a big step up in the Bot's skill.</li>
+        <li>Under the Bot's name is your <b>won–lost record</b> against them.</li>
+        <li>Point at the card with the mouse (or press and hold it on a touch screen) to read the Bot's personality: how they like to play.</li>`)}
       ${sec('Challenge Level', `
-        <li>Runs from <b>1 · Gentle</b> to <b>10 · Ruthless</b>. It sets two things at once: your rival's skill and the puzzle's difficulty.</li>
-        <li>The rival's skill rises gently from 1 to 7, then jumps at 8: levels 8–10 are the <b>Master</b> levels (see ${go('Opponent')}). The puzzle's difficulty rises steadily at every level.</li>
+        <li>Runs from <b>1 · Gentle</b> to <b>10 · Ruthless</b>. It sets two things at once: the Bot's skill and the puzzle's difficulty.</li>
+        <li>The Bot's skill rises gently from 1 to 7, then jumps at 8: levels 8–10 are the <b>Master</b> levels (see ${go('Bot')}). The puzzle's difficulty rises steadily at every level.</li>
         <li>As the level rises: words get longer and harder, and word and picture clues get trickier.</li>
         <li>Starter letters (gray, already on the grid) help new players: about a quarter of the letters at level 1, fewer at level 2, just 1–3 at level 3, and none from level 4. With fewer starters there are more tiles to play, so games run longer.</li>
         <li>Picture clues: at levels 1–5 the ${go('Clue Bar', 'clue bar')} names the kind of picture clue (see ${go('Clue Pics')}); from level 6 you work it out yourself.</li>
@@ -1660,7 +1667,7 @@
       ${sec('Options', `
         <li>The five options you change least (${go('Letters in Hand')}, ${go('Bonus Squares')}, ${go('Clue Pics')}, ${go('Scoring')} and ${go('Timer')}) fold into one <b>▸ Options</b> row, so the menu fits on one screen. The row shows your choices in one line, like "6 letters · Floating bonus · Some pics · Classic · Untimed".</li>
         <li>Tap it to open (▾) or close (▸) it. It stays the way you left it. ⚙ Settings in the game changes the same options.</li>
-        <li><b>Grid Colors</b> (at the foot of Options, and in ⚙): five looks for the grid. <b>Board</b> (the default): empty cells are dark slots and played tiles are cream, with a colored bar for whose they are. <b>Inked</b>: no bars; your letters are blue, your rival's red, starter letters black. <b>Inked Blue</b>: Inked, with this turn's tiles blue. <b>Painted</b>: solid blue and red tiles with white letters, light-gray starters. <b>Bold</b>: white empty cells and solid tiles. The change shows at once.</li>
+        <li><b>Grid Colors</b> (at the foot of Options, and in ⚙): five looks for the grid. <b>Board</b> (the default): empty cells are dark slots and played tiles are cream, with a colored bar for whose they are. <b>Inked</b>: no bars; your letters are blue, the Bot's red, starter letters black. <b>Inked Blue</b>: Inked, with this turn's tiles blue. <b>Painted</b>: solid blue and red tiles with white letters, light-gray starters. <b>Bold</b>: white empty cells and solid tiles. The change shows at once.</li>
         <li>The menu remembers your last choices. <b>⭐ Save as my defaults</b> keeps the Challenge Level, Grid Size and all the Options as your own defaults; <b>↺ Defaults</b> brings them back after you try something different (or the app's defaults, if you haven't saved any).</li>`)}
       ${sec('Letters in Hand', `
         <li>How many tiles each player holds: 5 to 8. Your hand refills from the bag after every turn.</li>
@@ -1717,7 +1724,7 @@
       ${sec('Timer', `
         <li><b>Untimed</b>: take as long as you like.</li>
         <li><b>Per turn</b> (Blitz · 30 s per TURN, or 1 to 5 min per TURN): when it runs out, your turn ends and the tiles you penciled in are checked, as if you had tapped Done.</li>
-        <li><b>Whole game</b> (2 to 15 min per GAME): your clock runs only on your turns. When it reaches zero, tiles you haven't confirmed with <b>Done</b> go back to your hand (they don't count), your rival gets <b>one final turn</b>, and the game ends. The red notice stays until you tap.</li>
+        <li><b>Whole game</b> (2 to 15 min per GAME): your clock runs only on your turns. When it reaches zero, tiles you haven't confirmed with <b>Done</b> go back to your hand (they don't count), the Bot gets <b>one final turn</b>, and the game ends. The red notice stays until you tap.</li>
         <li>Clocks never run while a ${go('Turn Reports and The Scoreboard', 'turn report')} is waiting for your tap, or while the game is paused.</li>
         <li>In the last 10 seconds the grid's border flashes every second: <b>yellow</b> from 10 to 6, <b>red</b> from 5 to 1.</li>`)}
       ${sec('Resume Game', `
@@ -1745,9 +1752,9 @@
         <li><b>Tiles are only penciled in</b> until you tap ✓ Done, so a slip of the finger costs nothing: drag a tile you placed this turn to another cell, or back to your hand. Tapping it also takes it back.</li>
         <li>When you tap <b>Done</b>, every penciled tile is checked. Tiles in their correct cells lock in and score. Each tile in a wrong cell glows red and trembles, then bounces back to your hand and costs ${wrongMin} points (or the tile's value, if that is more). That check is final. Until you tap, its letter stays red in your hand and the wrong cell stays red and pulsing, so you can see the mistake (in a timed game that word stays sharp while the grid is blurred, and so does your hand). On a phone, your turn report waits until you tap away the red marks, so it never covers them (tap again to close it); on a wide screen it sits beside the grid. The report also says when the turn counts as a pass.</li>
         <li>Not sure? <b>☑️ Check</b> (see ${go('The Buttons')}) tests your penciled tiles before Done, for coins instead of points.</li>
-        <li>A turn in which every tile bounces places nothing, so it counts as a pass. Your rival plays by the same rules.</li>
+        <li>A turn in which every tile bounces places nothing, so it counts as a pass. The Bot plays by the same rules.</li>
         <li>Drag tiles inside your hand to sort them your way. A gold space shows where the tile will land.</li>
-        <li>Your hand refills from the bag after every turn as long as more tiles exist in the bag. Near the end of a game, your opponent may hold more tiles than you, requiring you to PASS until all tiles have been played (or three passes in a row have occurred to end the game).</li>`)}
+        <li>Your hand refills from the bag after every turn as long as more tiles exist in the bag. Near the end of a game, the Bot may hold more tiles than you, requiring you to PASS until all tiles have been played (or three passes in a row have occurred to end the game).</li>`)}
       ${sec('The Buttons', `
         <li>Your hand and the buttons share the bottom row. On a phone, ✓ Done stays on the row and the other buttons open from <b>⋯ More</b>; in timed games your clock then shows under your score.</li>
         <li><b>💡 Hint (🪙${hintC})</b>: shows a cell where one of your tiles fits. It costs ${hintC} ${go('Coins', 'coins')}.</li>
@@ -1761,7 +1768,8 @@
         <li><b>⏸️ Pause</b> (or the P key) shows your clock in timed games. On a phone, tapping the clock under your score also pauses (and resumes) the game. It stops every clock and hides the grid, clues and hand; tap the PLAY PAUSED panel, ▶️, or P to resume. The game also pauses when you switch to another tab or app.</li>
         <li><b>⏱️ +30s (🪙${R.timeCost})</b> (timed games only): adds 30 seconds to your clock for ${R.timeCost} coins. Use it as often as you like. Bought time never pays speed coins.</li>
         <li><b>✓ Done</b> (green) checks and banks this turn's tiles. It shows how many are penciled in, like <b>Done · 3</b> (not the points, which would give away which tiles are right). With nothing placed it turns <b>orange</b> and reads <b>⏭ Pass</b>: orange means "think first", since a pass is sometimes needed but never a gain.</li>
-        <li><b>Keyboard</b> (computers): <b>Enter</b> is ✓ Done. With nothing placed, press Enter <b>twice</b> within 3 seconds to pass (the button reads "Enter again to pass"). Enter also closes a waiting turn report or LAST CHANCE notice. <b>P</b> or <b>Space</b> pauses (press again to resume).</li>`)}
+        <li><b>Keyboard</b> (computers): <b>Enter</b> is ✓ Done. With nothing placed, press Enter <b>twice</b> within 3 seconds to pass (the button reads "Enter again to pass"). Enter also closes a waiting turn report or LAST CHANCE notice. <b>P</b> or <b>Space</b> pauses (press again to resume). <b>Z</b> is 🔍 zoom; <b>+</b> or <b>↑</b> zooms in, <b>−</b> or <b>↓</b> zooms out, <b>←</b> and <b>→</b> (or <b>Shift + ↑</b> and <b>Shift + ↓</b>) slide a zoomed grid, and <b>Esc</b> shows the whole grid again.</li>
+        <li><b>🔍 Zoom</b> (right end of the clue bar): tap it, then tap the part of the grid you want; it fills the view. Tap 🔍 again for the whole grid, and twice more to go back to your last view. You can also pinch the grid (phones) or hold Ctrl and roll the mouse wheel (computers). Zoomed, drag the grid to slide it, use the arrows at its edges, or tap the small map in the corner to jump.</li>`)}
       ${sec('Bonuses', `
         <li><span class="chip x2">2×</span> doubles your turn's points from tiles and words. Each extra 2× in the same turn adds another double: 10 → 20 → 40 → 60.</li>
         <li><span class="chip p5">+${R.plusCell}</span> cells add ${R.plusCell} points, and <span class="chip p5">+${R.plus2Cell}</span> cells add ${R.plus2Cell} points. Both are added after doubling and are never doubled. +${R.plus2Cell} cells appear only with the Fixed or Both setting (see ${go('Bonus Squares')}).</li>
@@ -1770,14 +1778,14 @@
         <li>Where bonus cells appear is set by ${go('Bonus Squares')}.</li>`)}
       ${sec('Turn Reports and The Scoreboard', `
         <li>After each turn, a report shows that player's TOTAL first, then a row for every word, bonus and penalty (+ added, − taken away). Coins spent or earned that turn show on a 🪙 line at the bottom; they never change the score. On wide screens it sits at the bottom of that player's Scoreboard column; on phones, at the bottom of the grid.</li>
-        <li>While a report is on screen the game waits: your clock stops the moment your rival finishes, and nothing can be played. <b>Click or tap anywhere</b> to close the reports and start your turn. That click does nothing else.</li>
+        <li>While a report is on screen the game waits: your clock stops the moment the Bot finishes, and nothing can be played. <b>Click or tap anywhere</b> to close the reports and start your turn. That click does nothing else.</li>
         <li>The <b>Scoreboard</b> keeps every turn by round: letter points, word points, bonuses, penalties and the turn's total. Green marks the higher score in each round. On phones, tap ▸ Scoreboard to open it.</li>`)}
       ${sec('The End', `
         <li><b>Final turn:</b> once the bag is empty and either player places their last tile, the other player gets <b>one final turn</b> to play what they can. Then the game ends, and any tile still in a hand is subtracted from its owner's score.</li>
-        <li>The game also ends when the grid is full, by the <b>3 PASSES Rule</b> (${esc(PASS_RULE)}), or when a whole-game clock runs out (after your rival's one final turn).</li>
-        <li>A <b>⏭ 1/3</b> counter in the grid's top-left corner (where the logo sits) counts passes in a row: yellow after the 1st pass, red after the 2nd. A pass is a ⏭ Pass, a 🔄 Swap, a turn where every tile bounced, or a turn clock that ran out. The 2nd pass also shows a red <b>LAST CHANCE</b> notice that says what caused it and <b>holds the game until you tap</b> (your rival waits and your clock stops). The counter goes away (and the logo comes back) once someone places a tile.</li>
+        <li>The game also ends when the grid is full, by the <b>3 PASSES Rule</b> (${esc(PASS_RULE)}), or when a whole-game clock runs out (after the Bot's one final turn).</li>
+        <li>A <b>⏭ 1/3</b> counter in the grid's top-left corner (where the logo sits) counts passes in a row: yellow after the 1st pass, red after the 2nd. A pass is a ⏭ Pass, a 🔄 Swap, a turn where every tile bounced, or a turn clock that ran out. The 2nd pass also shows a red <b>LAST CHANCE</b> notice that says what caused it and <b>holds the game until you tap</b> (the Bot waits and your clock stops). The counter goes away (and the logo comes back) once someone places a tile.</li>
         <li>When the game ends, the grid stays on screen and the last play's tiles and words glow, so you can see the final play. <b>📊 See results</b> (or Enter) opens the result window.</li>
-        <li>The result window shows both scores, your record against this opponent, both players' play and your coins. Its buttons: <b>🔍 Grid</b> (look at the grid again), <b>⚙ Settings</b>, <b>☰ Menu</b> and <b>Rematch</b>.</li>
+        <li>The result window shows both scores, your record against this Bot, both sides' play and your coins. Its buttons: <b>🔍 Grid</b> (look at the grid again), <b>⚙ Settings</b>, <b>☰ Menu</b> and <b>Rematch</b>.</li>
         <li>Close it (✕, or tap outside it) to look at the finished grid. Your hand's row then becomes a <b>game-over bar</b> with <b>📊 Results</b> (opens the window again), <b>☰ Menu</b> and <b>Rematch</b>.</li>
         <li>Every window closes the same way: ✕ in its top-right corner, a tap outside it, or its <b>Close</b> button.</li>`)}
       ${sec('Coins', `
@@ -1805,8 +1813,8 @@
       ${sec('Offline', `
         <li>Once it has loaded, the app plays offline: no connection needed. Your games, stats, coins and settings stay on this device.</li>`)}
       ${sec('Strategy', `
-        <li>Don't rush. A word left with only one empty cell is a gift to your rival. Sometimes it pays to <b>hold</b> a tile until you can finish the word yourself.</li>
-        <li>It is often smart to save 2× squares for big turns because they double everything else you score that turn. Beware: your opponent can "steal" the bonus squares in the early rounds to keep you from scoring big.</li>`)}
+        <li>Don't rush. A word left with only one empty cell is a gift to the Bot. Sometimes it pays to <b>hold</b> a tile until you can finish the word yourself.</li>
+        <li>It is often smart to save 2× squares for big turns because they double everything else you score that turn. Beware: the Bot can "steal" the bonus squares in the early rounds to keep you from scoring big.</li>`)}
       <div class="row"><button class="btn primary" data-a="ok">Close</button></div>`);
     // v07b (JM, CD-20: 3.3.1): a tap anywhere outside the How To Play panel closes it (v08f: openModal does this)
     const sheet = $('#sheet');
@@ -1990,6 +1998,14 @@
 
   // v08d (JM CD-34: 4.1c): your penciled tiles are checked when the turn ends. Right ones score; wrong ones shake,
   // go back to your hand and each costs the Wrong Cell penalty. Returns how many tiles stayed on the board.
+  // v08n (JM CD-52: 6.2.1.1; CD-54: 2.1): penciled tiles float above the grid; at Done the right ones settle into their
+  // wells (a short drop, about 0.35 s) so you can see which tiles are now confirmed
+  function settleTiles(cells) {
+    if (!cells.length || reduceMotion()) return;
+    const s = new Set(cells);
+    ui.settle = s;
+    setTimeout(() => { if (ui.settle === s) { ui.settle = null; if (G && !$('#game').hidden) renderBoard(); } }, 450);
+  }
   function judgeMine(placements) {
     if (!placements.length) return 0;
     const r = E.judge(G, 0, placements);
@@ -2104,6 +2120,7 @@
     const placements = ui.pending.slice();
     Object.assign(ui, { pending: [], selTile: null, hintCell: -1, selSlot: -1, selCell: -1 });
     const n = judgeMine(placements);
+    settleTiles(placements.filter(p => G.owner[p.cell] === 0).map(p => p.cell)); // v08n
     if (n) speedCoins(n);
     logMyTurn(n);
     const over = E.endTurn(G, n);
@@ -2194,6 +2211,7 @@
     }
     ui.aiPending = null;
     const r = E.judge(G, 1, steps);
+    settleTiles(r.right.map(p => p.cell)); // v08n: the Bot's right tiles settle too
     if (r.wrong.length) {
       bounce(r.wrong); // v08m (CD-52: 2.3a): no "didn't fit" notice; the Bot's turn report lists them
     }
