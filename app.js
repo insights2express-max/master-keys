@@ -1,7 +1,9 @@
-/* Clue Duel — user interface (v08j: grid colors, final-play view, clock-out final turn, menu defaults, louder countdown, phone two-finger drag) */
+/* Clue Duel — user interface (v08k: faster on phones, wrong tiles shown WordGrams-style until tapped, held clock-out notice,
+   no row / column highlight, only open bonus cells pulse, lighter slots + darker rival red, louder countdown;
+   v08j: grid colors, final-play view, clock-out final turn, menu defaults, phone two-finger drag) */
 'use strict';
 (() => {
-  const APP_VER = 'v08j'; // Project CP: shown as a pill beside the title and in the browser tab
+  const APP_VER = 'v08k'; // Project CP: shown as a pill beside the title and in the browser tab
   const E = window.Engine;
   const $ = (s, el = document) => el.querySelector(s);
   const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -119,8 +121,10 @@
       spend: t => { tone(987.8, t, 0.06, 'triangle', 0.18); tone(659.3, t + 0.06, 0.14, 'triangle', 0.16); }, // coins spent
       // v08i (JM CD-42: 1.5.4): both 25 % louder; 10–6 s keeps its pitch; 5–1 s is a quick "tick-tock" pair each
       // second: a new, higher tick, then the 10–6 s tone
-      tick: t => tone(1050, t, 0.03, 'square', 0.09375),                              // last 10–6 seconds (v08j: +50 %)
-      tock: t => { tone(1575, t, 0.035, 'square', 0.15); tone(1050, t + 0.13, 0.03, 'square', 0.09375); }, // last 5–1 seconds (v08j: +50 %)
+      // v08k (JM CD-46: 1.1; CD-47: 1.1b): the pair's first, higher note ("tick") ×2; its second note ("tock") and the
+      // 10–6 s click (the same note) ×1.5
+      tick: t => tone(1050, t, 0.03, 'square', 0.140625),                             // last 10–6 seconds
+      tock: t => { tone(1575, t, 0.035, 'square', 0.3); tone(1050, t + 0.13, 0.03, 'square', 0.140625); }, // last 5–1 seconds
       pass: t => { tone(440, t, 0.2, 'triangle', 0.25); tone(349.2, t + 0.17, 0.3, 'triangle', 0.25); }, // PASS banner
       // v08i (JM CD-42: 1.5.2): win = brass "Ta-DAAAH" (2.5 s) over faint applause
       win: t => {
@@ -488,7 +492,7 @@
   function enterGame(fresh) {
     ui.token++;
     checkPics();
-    Object.assign(ui, { pending: [], selTile: null, selSlot: -1, selCell: -1, busy: false, hintCell: -1, aiPending: null, flash: null, pop: -1, layoutKey: '', chainBroken: false, passHold: 0, passSeen: G.passes || 0 });
+    Object.assign(ui, { pending: [], selTile: null, selSlot: -1, selCell: -1, busy: false, hintCell: -1, aiPending: null, flash: null, wrong: null, pop: -1, layoutKey: '', chainBroken: false, passHold: 0, passSeen: G.passes || 0 });
     setPaused(false);
     showScreen('game');
     clearReports();
@@ -626,7 +630,14 @@
   // Type labels help only at Challenge Levels 1–5; from level 6 the tricky pictures stay tricky (JM, CD-7: 5.1.1)
   const picTag = s => (s.clue.pic && G && G.settings.skill < 6 && PIC_TAG[s.clue.pt]) || '';
   // How wide a picture clue is, in "emoji widths" (letters and + − signs count less)
+  const unitCache = new Map(); // v08k: measured once per picture
   function picUnits(pic) {
+    if (unitCache.has(pic)) return unitCache.get(pic);
+    const u = picUnits0(pic);
+    unitCache.set(pic, u);
+    return u;
+  }
+  function picUnits0(pic) {
     const parts = window.Intl && Intl.Segmenter ? [...new Intl.Segmenter().segment(pic)].map(x => x.segment) : Array.from(pic.replace(/️/g, ''));
     let u = 0;
     for (const s of parts) u += /^\s$/.test(s) ? 0.15 : /^[A-Za-z+−-]$/.test(s) ? 0.55 : 1;
@@ -682,7 +693,9 @@
   function renderBoard() {
     const pz = G.pz;
     const pend = new Map(ui.pending.map(p => [p.cell, p]));
-    const hl = new Set(ui.selSlot >= 0 ? pz.slots[ui.selSlot].cells : []);
+    // v08k (JM CD-46 add'l 2): placing a tile or choosing a word no longer tints the word's empty cells; only its
+    // clue cell lights up (clueCellHTML 'on'), so bonus squares and empty slots always look the same
+    const wr = ui.wrong; // v08k: your wrong tiles (WordGrams-style, see showWrong)
     const last = new Set(G.lastMove ? G.lastMove.cells : []);
     // v08j (JM CD-44 add'l 1; CD-45: 3.1a): once the game is over, the last play's tiles and the words they made glow
     // until you open Results, so the final play can be seen properly
@@ -691,13 +704,13 @@
       for (const c of G.lastMove.cells) fin.add(c);
       for (const w of (G.lastMove.score && G.lastMove.score.words) || []) for (const c of pz.slots[w.si].cells) fin.add(c);
     }
-    let html = '';
+    const parts = [];
     const vals = E.showsValues(G);
     const plusTxt = '+' + E.RULES.plusCell;
     const bTxt = b => (b === 'x2' ? '2×' : b === 'p2' ? '+' + E.RULES.plus2Cell : plusTxt); // v07a: +2 cells
     for (let i = 0; i < pz.N; i++) {
       const c = pz.cells[i];
-      if (c.k === 'c') { html += clueCellHTML(i, c); continue; }
+      if (c.k === 'c') { parts.push(clueCellHTML(i, c)); continue; }
       const cls = ['cell', 'let'];
       let inner = '';
       const ch = G.board[i];
@@ -717,7 +730,12 @@
       } else if (ui.aiPending && ui.aiPending.has(i)) {
         cls.push('aipend');
         inner = `<span class="ch">${ui.aiPending.get(i)}</span>`;
-      } else if (ui.flash && ui.flash.has(i)) { // v08d: wrong tiles shake as they bounce back (a Map: cell → letter)
+      } else if (wr && wr.cells.has(i)) {
+        // v08k (JM CD-47: 2.1.1.1): your wrong tile glows red and trembles in the cell (0.5 s), then flies back to your
+        // hand; the empty cell stays red, outlined and pulsing, until you tap
+        if (wr.phase === 'tremble') { cls.push('wrongtile'); inner = `<span class="ch">${wr.cells.get(i)}</span>`; }
+        else cls.push('wrongcell');
+      } else if (ui.flash && ui.flash.has(i)) { // v08d: the rival's wrong tiles shake as they bounce back (a Map: cell → letter)
         cls.push('wrongflash', 'shake');
         inner = `<span class="ch">${ui.flash.get(i)}</span>`;
       } else if (G.over) {
@@ -727,21 +745,36 @@
         cls.push('b-' + b);
         inner = `<span class="bn">${bTxt(b)}</span>`;
       }
-      if (b) { // bonus cells pulse before and after a tile lands
+      // v08k (JM CD-46 add'l 3): only bonus cells still open pulse (empty, or holding a tile penciled in this turn);
+      // once a tile is played there, only the corner number is left
+      if (b && ch) inner += `<span class="bdg">${bTxt(b)}</span>`;
+      else if (b && !(wr && wr.cells.has(i))) {
         cls.push('bz-' + b);
         if (fl && fl.n < G.turnNo) cls.push('fl-old');
         if (inner && !inner.includes('class="bn"')) inner += `<span class="bdg">${bTxt(b)}</span>`;
         inner += '<i class="glow"></i>';
       }
-      if (hl.has(i)) cls.push('hl');
       if (i === ui.hintCell) cls.push('hint');
       if (i === ui.pop) cls.push('popin');
       if (fin.has(i)) cls.push('fin');
-      html += `<div class="${cls.join(' ')}" data-i="${i}">${inner}</div>`;
+      parts.push(`<div class="${cls.join(' ')}" data-i="${i}">${inner}</div>`);
     }
-    $('#board').innerHTML = html;
-    $('#board').className = gridCls(settings.grid); // v08j: the chosen grid colors
+    // v08k (JM CD-46 add'l 1): only the cells that changed are redrawn. Rebuilding the whole grid on every tap was the
+    // biggest cost on phones (a Large grid with its clue pictures); it also restarted every pulse.
+    const board = $('#board');
+    if (ui.bPz !== pz || board.children.length !== parts.length) {
+      board.innerHTML = parts.join('');
+      ui.bPz = pz;
+    } else {
+      const kids = board.children;
+      for (let i = 0; i < parts.length; i++) if (ui.bHtml[i] !== parts[i]) kids[i].outerHTML = parts[i];
+    }
+    ui.bHtml = parts;
+    // v08j: the chosen grid colors (v08k: kept with the countdown's border flash, and only set when it changes)
+    const want = [gridCls(settings.grid), ...[...board.classList].filter(k => k.startsWith('tf-'))].join(' ');
+    if (board.className !== want) board.className = want;
     ui.pop = -1;
+    sharpWords();
   }
 
   function renderRack() {
@@ -753,7 +786,9 @@
     let html = '';
     for (const t of hand) {
       if (used.has(t.id)) { html += '<div class="tile gap"></div>'; continue; }
-      html += `<div class="tile${ui.selTile === t.id ? ' sel' : ''}${ui.dragTiles && ui.dragTiles.has(t.id) ? ' dragging' : ''}" data-id="${t.id}">${tileInner(t.ch)}</div>`;
+      // v08k: a tile that didn't fit keeps a red letter until you tap (hidden while it flies back from the grid)
+      const wr = ui.wrong && ui.wrong.tiles.has(t.id) ? (ui.wrong.flying.has(t.id) ? ' wrong flying' : ' wrong') : '';
+      html += `<div class="tile${ui.selTile === t.id ? ' sel' : ''}${ui.dragTiles && ui.dragTiles.has(t.id) ? ' dragging' : ''}${wr}" data-id="${t.id}">${tileInner(t.ch)}</div>`;
     }
     for (let k = hand.length; k < n; k++) html += '<div class="tile gap"></div>';
     rack.innerHTML = html;
@@ -1022,6 +1057,7 @@
   function veil() {
     const on = !!G && !G.over && E.timerOf(G.settings.timer).kind !== 'none' && repsOn() && (G.turn === 0 || !!ui.passHold);
     $('#game').classList.toggle('veiled', on);
+    sharpWords(); // v08k
   }
 
   // =====================================================================
@@ -1034,7 +1070,12 @@
     el.textContent = msg;
     box.appendChild(el);
     while (box.children.length > 3) box.firstChild.remove();
+    // v08k (JM CD-46: 1.8.1): ms = 0 holds the notice until the tap that closes the reports (with the PASS banner)
+    if (!ms) { el.classList.add('held'); return; }
     setTimeout(() => { el.classList.add('out'); setTimeout(() => el.remove(), 320); }, ms);
+  }
+  function dropHeld() {
+    document.querySelectorAll('#toasts .toast.held').forEach(el => { el.classList.remove('held'); el.classList.add('out'); setTimeout(() => el.remove(), 320); });
   }
   // ---------- Turn reports (JM, CD-7 add'l 3) ----------
   // Each player's report sits at the bottom of their Scoreboard column (on phones: over the bottom of the grid),
@@ -1072,7 +1113,7 @@
       if (xs.length) add(label(xs), -xs.reduce((a, x) => a + x.v, 0));
     };
     // v06: a Wrong Cell's cost depends on the tile, so the row names the letters (older saves have none)
-    grp('wrong', xs => (xs.length > 1 ? 'Wrong Cells' : 'Wrong Cell') + (xs.some(x => x.ch) ? ' ' + xs.map(x => x.ch).filter(Boolean).join(', ') : ''));
+    grp('wrong', xs => '✗ ' + (xs.length > 1 ? 'Wrong Cells' : 'Wrong Cell') + (xs.some(x => x.ch) ? ' ' + xs.map(x => x.ch).filter(Boolean).join(', ') : ''));
     grp('hint', xs => 'Hint' + xn(xs.length));
     grp('place', xs => 'Place ' + xs.map(x => x.ch).join(', '));
     grp('time', xs => '+30s' + xn(xs.length));
@@ -1109,7 +1150,8 @@
     veil();
   }
   function clearReports() {
-    if (!repsOn()) return;
+    const marks = clearWrong(); // v08k: red wrong-tile marks and held notices go with the same tap
+    if (!repsOn()) { if (marks && G && !$('#game').hidden) render(); return; }
     reps.html = [null, null];
     ui.passHold = 0;
     for (const id of ['#repYou', '#repYouN', '#repOpp', '#repOppN']) $(id).dataset.k = '';
@@ -1121,7 +1163,17 @@
   // A click or tap closes the reports and does nothing else (it never lands on a tile, cell or button underneath).
   // With the result screen open, the click goes through to it as usual.
   window.addEventListener('pointerdown', e => {
-    if (!repsOn() || !G || $('#game').hidden) return;
+    if (!G || $('#game').hidden) return;
+    // v08k: red wrong-tile marks or a held notice with no report up: this tap clears them and does nothing else
+    if (!repsOn()) {
+      if (!ui.wrong && !document.querySelector('#toasts .toast.held')) return;
+      clearReports();
+      if (!$('#modal').hidden) return;
+      reps.swallowUntil = Date.now() + 700;
+      e.stopPropagation(); e.preventDefault();
+      return;
+    }
+
     const modal = !$('#modal').hidden;
     clearReports();
     if (modal) return;
@@ -1315,7 +1367,7 @@
       ${sec('Timer', `
         <li><b>Untimed</b>: take as long as you like.</li>
         <li><b>Per turn</b> (Blitz · 30 s per TURN, or 1 to 5 min per TURN): when it runs out, your turn ends and the tiles you penciled in are checked, as if you had tapped Done.</li>
-        <li><b>Whole game</b> (2 to 15 min per GAME): your clock runs only on your turns. When it reaches zero, tiles you haven't confirmed with <b>Done</b> go back to your hand (they don't count), your rival gets <b>one final turn</b>, and the game ends.</li>
+        <li><b>Whole game</b> (2 to 15 min per GAME): your clock runs only on your turns. When it reaches zero, tiles you haven't confirmed with <b>Done</b> go back to your hand (they don't count), your rival gets <b>one final turn</b>, and the game ends. The red notice stays until you tap, together with the PASS banner.</li>
         <li>Clocks never run while a ${go('Turn Reports and The Scoreboard', 'turn report')} is waiting for your tap, or while the game is paused.</li>
         <li>In the last 10 seconds the grid's border flashes every second: <b>yellow</b> from 10 to 6, <b>red</b> from 5 to 1.</li>`)}
       ${sec('Resume Game', `
@@ -1341,7 +1393,7 @@
         <li>Drag tiles from your hand onto the cells where they belong, or tap a tile and then a cell. Place as many as you like. This turn's tiles are bright orange with a blue frame.</li> 
         <li>On a touch screen you can drag <b>two tiles at once</b>, one with each finger (handy on a tablet held in both hands).</li>
         <li><b>Tiles are only penciled in</b> until you tap ✓ Done, so a slip of the finger costs nothing: drag a tile you placed this turn to another cell, or back to your hand. Tapping it also takes it back.</li>
-        <li>When you tap <b>Done</b>, every penciled tile is checked. Tiles in their correct cells lock in and score. Each tile in a wrong cell shakes, goes back to your hand and costs ${wrongMin} points (or the tile's value, if that is more). That check is final.</li>
+        <li>When you tap <b>Done</b>, every penciled tile is checked. Tiles in their correct cells lock in and score. Each tile in a wrong cell glows red and trembles, then bounces back to your hand and costs ${wrongMin} points (or the tile's value, if that is more). That check is final. Until you tap, its letter stays red in your hand and the wrong cell stays red and pulsing, so you can see the mistake (in a timed game that word stays sharp while the grid is blurred).</li>
         <li>Not sure? <b>☑️ Check</b> (see ${go('The Buttons')}) tests your penciled tiles before Done, for coins instead of points.</li>
         <li>A turn in which every tile bounces places nothing, so it counts as a pass. Your rival plays by the same rules.</li>
         <li>Drag tiles inside your hand to sort them your way. A gold space shows where the tile will land.</li>
@@ -1363,7 +1415,7 @@
         <li><span class="chip x2">2×</span> doubles your turn's points from tiles and words. Each extra 2× in the same turn adds another double: 10 → 20 → 40 → 60.</li>
         <li><span class="chip p5">+${R.plusCell}</span> cells add ${R.plusCell} points, and <span class="chip p5">+${R.plus2Cell}</span> cells add ${R.plus2Cell} points. Both are added after doubling and are never doubled. +${R.plus2Cell} cells appear only with the Fixed or Both setting (see ${go('Bonus Squares')}).</li>
         <li><b>Full Hand</b>: place as many tiles in one turn as your ${go('Letters in Hand', '"Letters in Hand"')} setting (all 7 of 7, for example) to earn a +${R.fullHandBonus} point bonus. A tile put down with 🎯 Place counts. A Full Hand bonus is added after doubling and is never doubled. Near the end of the game, when the bag is empty and your hand holds fewer tiles than the setting, it can't be earned.</li>
-        <li>Bonus cells glow green and pulse at three speeds: +${R.plus2Cell} slowest, +${R.plusCell} slowly, 2× quickly. The bigger the bonus, the faster the pulse.</li>
+        <li>Bonus cells still open glow and pulse at three speeds: +${R.plus2Cell} slowest, +${R.plusCell} slowly, 2× quickly. The bigger the bonus, the faster the pulse. Once a tile is played there, the pulse stops and a small number in the corner shows the bonus it earned.</li>
         <li>Where bonus cells appear is set by ${go('Bonus Squares')}.</li>`)}
       ${sec('Turn Reports and The Scoreboard', `
         <li>After each turn, a report shows that player's TOTAL first, then a row for every word, bonus and penalty (+ added, − taken away). Coins spent or earned that turn show on a 🪙 line at the bottom; they never change the score. On wide screens it sits at the bottom of that player's Scoreboard column; on phones, at the bottom of the grid.</li>
@@ -1525,8 +1577,9 @@
     logMyTurn(0);
     const over = E.endTurn(G, 0, 'pass', 'clock');
     showReport(lastLog());
-    if (!over) toast(`Your clock ran out.${back ? ` Your ${back} unconfirmed tile${back > 1 ? 's' : ''} went back to your hand.` : ''} ${opp().n} gets one final turn.`, 'bad', 4200);
-    else toast('Your clock ran out. Game over.', 'bad', 3000);
+    // v08k (JM CD-46: 1.8.1): the notice stays until you tap, together with the PASS banner
+    if (!over) toast(`Your clock ran out.${back ? ` Your ${back} unconfirmed tile${back > 1 ? 's' : ''} went back to your hand.` : ''} ${opp().n} gets one final turn.`, 'bad', 0);
+    else toast('Your clock ran out. Game over.', 'bad', 0);
     afterTurn(over);
   }
 
@@ -1562,7 +1615,7 @@
       // v08j (CD-45: 3.1a): after the game, Enter closes the last report, then opens Results
       if (G.over) { if (repsOn()) clearReports(); else if ($('#modal').hidden) showResults(); return; }
       if (ui.paused) return;
-      if (repsOn()) { clearReports(); return; }
+      if (repsOn() || ui.wrong) { clearReports(); return; }
       if (!myTurn()) return;
       const db = $('#doneBtn');
       if (ui.pending.length) { disarm(db); onDone(); return; }
@@ -1585,11 +1638,90 @@
     if (!placements.length) return 0;
     const r = E.judge(G, 0, placements);
     if (r.wrong.length) {
-      bounce(r.wrong);
-      toast(`${r.wrong.map(p => p.ch).join(', ')} ${r.wrong.length > 1 ? 'didn\'t fit' : 'didn\'t fit'} · −${r.pen}`, 'bad', 2600);
+      showWrong(r.wrong, placements);
+      toast(`${r.wrong.map(p => p.ch).join(', ')} didn't fit · −${r.pen}`, 'bad', 0); // v08k: held until you tap
       if (navigator.vibrate) try { navigator.vibrate(60); } catch (e) { /* ignore */ }
     }
     return r.right.length;
+  }
+  // v08k (JM CD-46 add'l 4; CD-47: 2.1.1.1, WordGrams-style): a wrong tile glows red, its letter turns red and it
+  // trembles in the cell for 0.5 s; then it bounces back to its place in your hand (about 1 s in all). Until you tap
+  // anywhere, its letter stays red in your hand and the cell stays red inside, outlined and pulsing.
+  // ui.wrong = { cells: cell → letter, tile: cell → tileId, tiles, words (shown sharp above a timed game's blur), phase }
+  function showWrong(list, placements) {
+    const pcs = new Set(placements.map(p => p.cell)), words = new Set();
+    for (const p of list) {
+      const ss = G.pz.cellSlots[p.cell] || [];
+      // the word your tiles were building; a lone tile on a crossing shows both of its words (CD-47: 2.2.1)
+      const lined = ss.filter(si => G.pz.slots[si].cells.some(c => c !== p.cell && pcs.has(c)));
+      (lined.length ? lined : ss).forEach(si => words.add(si));
+    }
+    const w = ui.wrong = {
+      cells: new Map(list.map(p => [p.cell, p.ch])), tile: new Map(list.map(p => [p.cell, p.tileId])),
+      tiles: new Set(list.map(p => p.tileId)), words, phase: 'tremble', flying: new Set(reduceMotion() ? [] : list.map(p => p.tileId)) // hidden in the hand until it lands
+    };
+    sound.play('bounce'); // v08h
+    setTimeout(() => flyBack(w), reduceMotion() ? 0 : 500);
+  }
+  function flyBack(w) {
+    if (ui.wrong !== w || !G) return;
+    const board = $('#board');
+    const from = new Map([...w.cells.keys()].map(ci => [ci, board.children[ci] && board.children[ci].getBoundingClientRect()]));
+    w.phase = 'gone';
+    if ($('#game').hidden) w.flying.clear();
+    render();
+    if (!w.flying.size) return;
+    for (const [ci, r0] of from) {
+      const id = w.tile.get(ci), tEl = $(`#rack .tile[data-id="${id}"]`);
+      if (!r0 || !tEl) { w.flying.delete(id); continue; }
+      const r1 = tEl.getBoundingClientRect();
+      const g = document.createElement('div');
+      g.className = 'tile flyback';
+      g.innerHTML = `<span class="ch">${w.cells.get(ci)}</span>`;
+      Object.assign(g.style, { width: r1.width + 'px', height: r1.height + 'px', fontSize: getComputedStyle(tEl).fontSize });
+      document.body.appendChild(g);
+      // from the cell to the tile's place in the hand (transform-origin: top left)
+      const a = `translate(${r0.left}px, ${r0.top}px) scale(${r0.width / r1.width}, ${r0.height / r1.height})`;
+      const b = `translate(${r1.left}px, ${r1.top}px) scale(1, 1)`;
+      const done = () => { g.remove(); w.flying.delete(id); if (ui.wrong === w && G) renderRack(); };
+      if (g.animate) {
+        const an = g.animate([{ transform: a }, { transform: b }], { duration: 480, easing: 'cubic-bezier(.34, 1.45, .64, 1)', fill: 'forwards' });
+        an.onfinish = done; an.oncancel = done;
+      } else { g.style.transform = b; setTimeout(done, 480); }
+      setTimeout(() => { if (g.isConnected) done(); }, 1500); // never leave a copy behind
+    }
+    if (!w.flying.size) renderRack();
+  }
+  // the tap that closes the reports also clears the red marks (and the held notices)
+  function clearWrong() {
+    dropHeld();
+    if (!ui.wrong) return false;
+    ui.wrong = null;
+    document.querySelectorAll('.flyback').forEach(g => g.remove());
+    return true;
+  }
+  // v08k (CD-47: 2.2a, 2.2.1): in a timed game the grid blurs while a report is up (CD-43: 4.1a). The word(s) holding
+  // a wrong cell, with their clue cells, are copied sharp on top of the blur until you tap.
+  function sharpWords() {
+    let ov = $('#sharpOv');
+    const w = ui.wrong;
+    const on = !!(w && G && !$('#game').hidden && $('#game').classList.contains('veiled'));
+    if (!on) { if (ov) { ov.hidden = true; ov.innerHTML = ''; } return; }
+    if (!ov) { ov = document.createElement('div'); ov.id = 'sharpOv'; ov.className = 'sharp-ov'; $('#game').appendChild(ov); } // under the reports (z 15) and banners
+    const board = $('#board'), cells = new Set();
+    for (const si of w.words) { const s = G.pz.slots[si]; s.cells.forEach(c => cells.add(c)); cells.add(s.clueCell); }
+    const inner = document.createElement('div');
+    inner.className = [...board.classList].filter(k => !k.startsWith('tf-')).join(' ');
+    for (const ci of cells) {
+      const src = board.children[ci];
+      if (!src) continue;
+      const r = src.getBoundingClientRect(), cp = src.cloneNode(true);
+      Object.assign(cp.style, { position: 'fixed', left: r.left + 'px', top: r.top + 'px', width: r.width + 'px', height: r.height + 'px', margin: 0 });
+      inner.appendChild(cp);
+    }
+    ov.innerHTML = '';
+    ov.appendChild(inner);
+    ov.hidden = false;
   }
   // Wrong tiles shake in their cells for a moment, then the cells clear
   function bounce(list, ms = 900) {
@@ -1718,11 +1850,25 @@
     ui.pending.push({ cell: ci, tileId, ch: t.ch, ok: !!ok });
     ui.selTile = null;
     if (ui.hintCell === ci) ui.hintCell = -1;
-    if (ui.selSlot < 0 || !G.pz.slots[ui.selSlot].cells.includes(ci)) ui.selSlot = G.pz.cellSlots[ci][0];
+    ui.selSlot = pickSlot(ci);
     ui.selCell = ci;
     ui.pop = ci;
     sound.play('land'); // v08h
     render();
+  }
+
+  // v08k (JM CD-46 add'l 2.2): which word's clue lights up when a tile lands on cell ci. Before, it was always the
+  // Across word, so a Down clue never lit. Now: the word your penciled tiles line up in; then the word you had chosen;
+  // then the word closer to complete (Across on a tie).
+  function pickSlot(ci) {
+    const ss = G.pz.cellSlots[ci] || [];
+    if (ss.length < 2) return ss.length ? ss[0] : -1;
+    const pc = new Set(ui.pending.map(p => p.cell).filter(c => c !== ci));
+    const lined = ss.map(si => G.pz.slots[si].cells.filter(c => pc.has(c)).length);
+    if (lined[0] !== lined[1]) return ss[lined[0] > lined[1] ? 0 : 1];
+    if (ss.includes(ui.selSlot)) return ui.selSlot;
+    const full = ss.map(si => { const cs = G.pz.slots[si].cells; return cs.filter(c => G.board[c] || pc.has(c)).length / cs.length; });
+    return ss[full[1] > full[0] ? 1 : 0];
   }
 
   // Move a tile penciled in this turn: to another cell (it is unchecked again there) or back to the hand
@@ -1797,8 +1943,19 @@
     try { el.setPointerCapture(pid); } catch (err) { /* ignore */ }
     const at = (x, y) => { const t = document.elementFromPoint(x, y - lift); return t ? find(t) : null; };
     const place = (x, y, up2) => { ghost.style.transform = `translate(${x - 29}px, ${y - 29 - lift - (up2 || 0)}px)`; };
+    // v08k (JM CD-46 add'l 1): phones send up to 120 finger moves a second; the cell under the finger is now looked up
+    // once per screen refresh (the latest position wins), not on every move
+    let raf = 0, tmo = 0, lastEv = null;
+    const unsched = () => { if (raf) cancelAnimationFrame(raf); if (tmo) clearTimeout(tmo); raf = tmo = 0; };
     const move = ev => {
       if (ev.pointerId !== pid) return;
+      lastEv = ev;
+      if (!raf) { raf = requestAnimationFrame(step); tmo = setTimeout(step, 60); } // (the timer only if no refresh comes)
+    };
+    const step = () => {
+      unsched();
+      const ev = lastEv;
+      if (!ev || drags.get(pid) !== me) return;
       if (!ghost && Math.hypot(ev.clientX - sx, ev.clientY - sy) > 8) {
         ghost = el.cloneNode(true);
         ghost.className = 'tile ghost';
@@ -1819,6 +1976,7 @@
       place(ev.clientX, ev.clientY, onMove && onMove(ev.clientX, ev.clientY - lift, over));
     };
     const detach = () => {
+      unsched();
       window.removeEventListener('pointermove', move);
       window.removeEventListener('pointerup', up);
       window.removeEventListener('pointercancel', up);
@@ -1832,6 +1990,7 @@
     };
     const up = ev => {
       if (ev.pointerId !== pid) return;
+      if (raf) step(); // a quick flick: catch up on the last move first
       const dragged = !!ghost;
       detach();
       if (dragged) {
@@ -1873,9 +2032,16 @@
   // is starting a browser gesture: a long press (Android's press-and-hold menu, which the hand never blocked; only the
   // grid did), a pinch-zoom or a scroll. Now, while any tile is being dragged, those gestures are blocked for every finger.
   const dragLive = () => drags.size > 0;
+  // v08k (JM CD-46 add'l 1): these two blocking touch listeners now sit only on the hand and the grid, where tiles are
+  // dragged (and nothing scrolls anyway). In v08j they sat on the whole page, so Chrome made every tap and swipe
+  // anywhere wait for the game first (part of the lag).
   // (a second finger only: blocking the first finger's touchstart would also cancel ordinary taps)
-  document.addEventListener('touchstart', e => { if (dragLive() && e.touches.length > 1 && e.cancelable) e.preventDefault(); }, { passive: false });
-  document.addEventListener('touchmove', e => { if (dragLive() && e.cancelable) e.preventDefault(); }, { passive: false });
+  const tStart = e => { if (dragLive() && e.touches.length > 1 && e.cancelable) e.preventDefault(); };
+  const tMove = e => { if (dragLive() && e.cancelable) e.preventDefault(); };
+  for (const el of [$('#rack'), $('#board')]) {
+    el.addEventListener('touchstart', tStart, { passive: false });
+    el.addEventListener('touchmove', tMove, { passive: false });
+  }
   document.addEventListener('contextmenu', e => { if (dragLive() || e.target.closest('#rack, #board, .ghost')) e.preventDefault(); });
   document.addEventListener('gesturestart', e => { if (dragLive()) e.preventDefault(); }); // iPhone / iPad pinch
 
@@ -1958,7 +2124,7 @@
     coinItem('hint', -cost);
     ui.hintCell = h.cell;
     ui.selTile = h.tileId;
-    ui.selSlot = G.pz.cellSlots[h.cell][0];
+    ui.selSlot = pickSlot(h.cell);
     ui.selCell = h.cell;
     toast(`Hint · 🪙−${cost}. Tap the glowing cell to place it.`);
     save();
@@ -2335,7 +2501,8 @@
     helpSec, helpClick, // v08f: How To Play sections shared with Word Vault
     showScreen, goHome: () => { showScreen('home'); renderHome(); },
     settings: () => settings,
-    sound // v08h: sound effects (and the 🔇 / 🔊 buttons) shared with Word Vault
+    sound, // v08h: sound effects (and the 🔇 / 🔊 buttons) shared with Word Vault
+    _render: () => render(), _G: () => G // v08k: for timing checks only
   };
   sound.paint();
   $('#vaultBtn').addEventListener('click', () => { if (window.WordVault) window.WordVault.open(); });

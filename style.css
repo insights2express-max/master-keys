@@ -1270,3 +1270,60 @@ img.av-img { display: inline-block; width: 1.15em; height: 1.15em; border-radius
   .sheet .res-bar { gap: 5px; }
   .sheet .res-bar .btn { padding-left: 7px; padding-right: 7px; font-size: 14px; }
 }
+
+/* ===== v08k (JM CD-46: 1.1, 1.8.1, add'l 1–5; CD-47: 1.1b, 2.1–2.3) ===== */
+/* LAG (add'l 1): the bonus pulse now fades a fixed glow in and out (opacity, drawn once and moved by the graphics chip)
+   instead of redrawing a blurred glow on every frame; and the empty slots use a crisp inner line, not a blurred shadow */
+.cell .glow {
+  box-shadow: inset 0 0 0 3px rgba(46, 160, 67, 1), inset 0 0 calc(var(--cell) * .4) rgba(46, 160, 67, .7);
+  animation: glowfade 2.6s ease-in-out infinite; opacity: .4;
+}
+@keyframes glowfade { 0%, 100% { opacity: .4; } 50% { opacity: 1; } }
+.cell.fl-old .glow { animation-name: glowfadeOld; }
+@keyframes glowfadeOld { 0%, 100% { opacity: .18; } 50% { opacity: .45; } }
+
+/* COLORS (add'l 5): empty gray slots 25 % lighter (#5b6470 → #848b94); the rival's red 25 % darker in every scheme
+   (tiles #d55d36 → #a04629, Board's bar likewise, Inked letters #b3261e → #861d17) */
+.board.gs-slots .cell.let:where(:not(.filled, .pending, .aipend, .wrongflash, .wrongtile, .wrongcell)) { background: #848b94; color: #f4f6f8; box-shadow: inset 0 2px 0 rgba(0, 0, 0, .38); }
+.board.gs-slots .cell.b-x2 { box-shadow: inset 0 0 0 2px #ffd24a, inset 0 2px 0 rgba(0, 0, 0, .38); }
+.board.gs-slots .cell.b-p5, .board.gs-slots .cell.b-p2 { box-shadow: inset 0 0 0 2px #46c37b, inset 0 2px 0 rgba(0, 0, 0, .38); }
+@media (prefers-color-scheme: dark) {
+  .board.gs-slots .cell.let:where(:not(.filled, .pending, .aipend, .wrongflash, .wrongtile, .wrongcell)) { box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .38), inset 0 2px 0 rgba(0, 0, 0, .38); }
+  .board.gs-slots .cell.b-x2 { box-shadow: inset 0 0 0 2px #ffd24a, inset 0 2px 0 rgba(0, 0, 0, .38); }
+  .board.gs-slots .cell.b-p5, .board.gs-slots .cell.b-p2 { box-shadow: inset 0 0 0 2px #46c37b, inset 0 2px 0 rgba(0, 0, 0, .38); }
+}
+/* the bonus numbers keep a dark outline so they still read on the lighter gray; letters shown at the game's end are dark */
+.board.gs-slots .cell .bn { -webkit-text-stroke: 1px rgba(18, 24, 31, .9); }
+.board.gs-slots .cell.reveal { color: #1f262e; }
+.board .cell.theirs::before, .gs-sample .cell.theirs::before { background: #a04629; }
+.board.gs-a4 .cell.filled.theirs, .board.gs-b .cell.filled.theirs { background: #a04629; }
+.board.gs-ink .cell.filled.theirs { color: #861d17; }
+
+/* WRONG TILES (add'l 4; CD-47: 2.1.1.1, WordGrams-style): red glow, red letter, a 0.5 s tremble in the cell; then the tile
+   bounces back to the hand (.flyback) with its letter still red (.tile.wrong); the cell stays red and pulsing until a tap */
+.board[class] .cell.wrongtile {
+  background: linear-gradient(var(--tile-top), var(--tile-bot)); color: #d32f2f; z-index: 3;
+  box-shadow: inset 0 0 0 3px #ff2d2d, 0 0 14px 4px rgba(255, 45, 45, .9);
+  animation: tremble .5s linear;
+}
+@keyframes tremble {
+  0%, 100% { transform: none; } 12% { transform: translate(-2px, 1px) rotate(-4deg); } 25% { transform: translate(2px, -1px) rotate(4deg); }
+  37% { transform: translate(-2px, -1px) rotate(-3deg); } 50% { transform: translate(2px, 1px) rotate(3deg); } 62% { transform: translate(-1px, 1px) rotate(-2deg); }
+  75% { transform: translate(1px, -1px) rotate(2deg); } 87% { transform: translate(-1px, 0) rotate(-1deg); }
+}
+.board[class] .cell.wrongcell {
+  background: #e53935; color: #fff; z-index: 2;
+  box-shadow: inset 0 0 0 3px #b71c1c, 0 0 0 2px #ff1744, 0 0 10px 2px rgba(255, 23, 68, .85);
+  animation: wrongpulse 1s ease-in-out infinite;
+}
+@keyframes wrongpulse { 50% { opacity: .5; } }
+.tile.wrong .ch { color: #d32f2f; }
+.tile.flying { visibility: hidden; }
+.tile.flyback {
+  position: fixed; left: 0; top: 0; z-index: 96; pointer-events: none; margin: 0; transform-origin: 0 0; transition: none;
+  color: #d32f2f; box-shadow: inset 0 -4px 0 var(--tile-edge), 0 0 12px 3px rgba(255, 45, 45, .85);
+}
+/* in a timed game the word(s) holding a wrong cell are copied sharp above the blurred grid until you tap (CD-47: 2.2.1) */
+.sharp-ov { position: fixed; inset: 0; pointer-events: none; z-index: 14; }
+.sharp-ov > .board { display: contents; }
+.sharp-ov .cell { box-sizing: border-box; }
