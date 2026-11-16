@@ -1,4 +1,5 @@
-/* Clue Duel — game engine (v08j: whole-game clock-out gives the rival a final turn; v08i: starter letters by level, final turn)
+/* Clue Duel — game engine (v08o: each side has its own whole-game clock; when one runs out, the other plays on alone;
+   v08j: whole-game clock-out gives the rival a final turn; v08i: starter letters by level, final turn)
    Puzzle generator (arrow-word grid), tile bag, scoring modes, bonus squares and the computer opponent.
    No DOM code here: app.js handles everything the player sees. */
 'use strict';
@@ -571,7 +572,8 @@
       fb: {},                                  // live floating bonuses: cell -> { b: 'x2' | 'p5', n: turn it appeared }
       ub: {},                                  // floating bonuses already used: cell -> 'x2' | 'p5'
       bv: bountyValues(pz),                    // Bounty letter values for this grid
-      clock: tm.kind === 'game' ? tm.secs * 1000 : 0  // whole-game clock (ms left, yours only)
+      clock: tm.kind === 'game' ? tm.secs * 1000 : 0,  // whole-game clock (ms left): the Player's
+      bclock: tm.kind === 'game' ? tm.secs * 1000 : 0  // v08o (JM CD-52: 5.1): the Bot's own whole-game clock, the same length
     };
   }
 
@@ -752,20 +754,31 @@
     state.turnPen[p] = 0;
     if (state.turnItems) state.turnItems[p] = [];
     state.passes = placedCount > 0 ? 0 : state.passes + 1;
-    refill(state, p);
-    // v08j (JM CD-44 discussion 2; CD-45: 5.1a): when a whole-game clock runs out, that player's unconfirmed tiles don't
-    // count (the app returns them to the hand) and the OTHER player gets one final turn; then the game ends. So running
-    // the clock down after penciling tiles in no longer scores them or denies the rival its answer.
+    if (reason !== 'clock') refill(state, p); // v08o: a side whose clock ran out takes no more tiles (the bag is for the side playing on)
+    // v08o (JM CD-52: 5.2): each side has its own whole-game clock. When one runs out, that side's unconfirmed tiles don't
+    // count (the app returns them to the hand) and it STOPS: the other side plays on alone, turn after turn, until it
+    // finishes (its hand and the bag are empty), the grid is full, it passes 3 times in a row, or its own clock runs out.
+    // The side that ran out keeps its hand penalty. (v08j-v08n gave the other side only one final turn, so running out
+    // on purpose while ahead could stop a comeback.)
     if (reason === 'clock') {
-      if (state.finalTurn != null || boardFull(state)) { finish(state, 'clock'); return true; }
-      state.finalTurn = 1 - p;
+      const o = 1 - p;
+      if (state.clockOut != null || boardFull(state)) { finish(state, 'clock'); return true; } // both clocks are out
       state.clockOut = p;
-      state.turn = 1 - p;
+      state.finalTurn = null;
+      state.passes = 0;
+      if (!state.hands[o].length && !state.bag.length) { finish(state, 'clock'); return true; }
+      state.turn = o;
       state.turnNo++;
       rollBonuses(state);
       return false;
     }
-    if (state.finalTurn === p && state.clockOut != null) { finish(state, 'clock'); return true; }
+    if (state.clockOut != null) { // playing on alone
+      if (boardFull(state) || state.passes >= RULES.passLimit || (!state.hands[p].length && !state.bag.length)) { finish(state, 'clock'); return true; }
+      state.turn = p;
+      state.turnNo++;
+      rollBonuses(state);
+      return false;
+    }
     if (boardFull(state) || state.passes >= RULES.passLimit) { finish(state); return true; }
     // v08i (JM CD-42 add'l 6; CD-43: 3.1a): as in the reference games, once the bag is empty and a player uses their
     // last tile, the other player gets ONE final turn to play what they can; then the game ends (either player)
@@ -829,7 +842,7 @@
     rng = rng || Math.random;
     const me = state.turn, opp = 1 - me, pz = state.pz;
     const P = aiParams(state.settings.skill);
-    if (state.finalTurn === me) { P.hold = false; P.lazy = 0; } // v08i: its final turn: play every tile it can
+    if (state.finalTurn === me || state.clockOut === opp) { P.hold = false; P.lazy = 0; } // v08i: its final turn (v08o: or playing on alone): play every tile it can
     const M = modeOf(state);
     if (M.tiles === 'chain') P.lazy *= 0.3;  // Combo Chain: long turns pay, so stop early less often
     const board = state.board.slice();

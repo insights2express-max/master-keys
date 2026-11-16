@@ -1483,3 +1483,6 @@ img.av-img { display: inline-block; width: 1.15em; height: 1.15em; border-radius
 #game .btn { border-bottom: 4px solid rgba(0, 0, 0, .28); }
 #game .btn:active:not(:disabled) { transform: translateY(3px); border-bottom-color: rgba(0, 0, 0, .06); }
 @media (prefers-reduced-motion: reduce) { #board .cell.let.settle { animation: none; } }
+
+/* ===== v08o (JM CD-52: 5.1–5.3): the Bot's whole-game clock beside its name (gray and struck through once it runs out) ===== */
+.pl .clk.out { color: var(--muted); text-decoration: line-through; }

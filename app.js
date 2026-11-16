@@ -1,4 +1,6 @@
-/* Clue Duel — user interface (v08n: the 3D look (candy-drop tiles, wells, clue plaques, floating penciled tiles that settle
+/* Clue Duel — user interface (v08o: the Bot's own whole-game clock, the other side plays on alone when a clock runs out,
+   "N min each (whole game)";
+   v08n: the 3D look (candy-drop tiles, wells, clue plaques, floating penciled tiles that settle
    at Done, keycap buttons), arrow keys and Esc for zoom, "the Bot" in the game's wording;
    v08m: grid zoom (pinch, Ctrl + wheel, 🔍 focus, arrows, mini-map), reports wait for the red marks,
    no "didn't fit" notices, gold win frame, hatched Scan cells, ⚙ New game fixed;
@@ -9,7 +11,7 @@
    v08j: grid colors, final-play view, clock-out final turn, menu defaults, phone two-finger drag) */
 'use strict';
 (() => {
-  const APP_VER = 'v08n'; // Project CP: shown as a pill beside the title and in the browser tab
+  const APP_VER = 'v08o'; // Project CP: shown as a pill beside the title and in the browser tab
   const E = window.Engine;
   const $ = (s, el = document) => el.querySelector(s);
   const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -299,7 +301,7 @@
     $('#gridSample').innerHTML = gridSample($('#gridSel').value);
     // v08h (JM CD-41: 1.1): the folded Options row shows its five choices in one line
     const txt = id => { const s = $(id); return s.selectedIndex >= 0 ? s.options[s.selectedIndex].text : ''; };
-    const tmr = txt('#timerSel').replace(/^Blitz · /, '').replace(/ per TURN$/, '/turn').replace(/ per GAME$/, '/game');
+    const tmr = txt('#timerSel').replace(/^Blitz · /, '').replace(/ per TURN$/, '/turn').replace(/ min each \(whole game\)$/, ' min each');
     // v08i (JM CD-42: 1.1.2): two full rows of boxes, one box per option
     const no = (s, w) => (s === 'Off' ? 'No ' : s + ' ') + w;
     const box = s => `<span class="ob">${esc(s)}</span>`;
@@ -833,7 +835,9 @@
     dock.classList.toggle('compact', compact);
     $('#game').classList.toggle('compact', compact);
     if (!compact) setMore(false);
-    $('#clkTop').hidden = !compact || E.timerOf(G.settings.timer).kind === 'none';
+    const tk = E.timerOf(G.settings.timer).kind;
+    $('#clkTop').hidden = tk === 'none' || (!compact && tk !== 'game'); // v08o: with whole-game clocks both clocks show beside the names
+    renderOppClock();
     // v06c (JM, CD-18: 1.1): when tiles are narrow (under 48 px, on any device) and they show point values,
     // tiles grow taller and the value sits centered under the letter instead of crowding its corner
     const rack = $('#rack');
@@ -1106,7 +1110,7 @@
   function timerLabel() {
     const t = E.timerOf(G.settings.timer);
     if (t.kind === 'turn') return t.secs === 30 ? 'Blitz · 30 s per TURN' : `${t.secs / 60} min per TURN`; // v08b: always "per"
-    if (t.kind === 'game') return `${t.secs / 60} min per GAME`;
+    if (t.kind === 'game') return `${t.secs / 60} min each (whole game)`; // v08o (CD-52: 5.3)
     return 'Untimed';
   }
   function renderInfo() {
@@ -1142,6 +1146,7 @@
       const ms = tm.kind === 'game' ? G.clock : ui.left;
       if (ms > 0 && ms <= 10000) fs = Math.ceil(ms / 1000);
     }
+    renderOppClock(); // v08o
     setTimerFlash(fs);
   }
   // Last 10 seconds of a timed turn or game: the grid's border flashes once a second,
@@ -1203,10 +1208,11 @@
     if (G.over) msg = 'Game over. Tap any clue to review the words.';
     else if (ui.passHold) msg = 'LAST CHANCE: read the red notice, then click or tap anywhere to continue. The game waits.';
     else if (repsHeld() && reps.html.some(Boolean)) msg = 'Red marks: tiles that didn\x27t fit. Click or tap anywhere to see the turn report.'; // v08m (CD-52: 2.2b)
-    else if (G.turn === 1) msg = `${opp().n} is thinking…`;
+    else if (G.turn === 1) msg = G.clockOut === 0 ? `Your clock ran out: ${opp().n} plays on alone until it finishes.` : `${opp().n} is thinking…`; // v08o
     else if (repsOn()) msg = 'Click or tap anywhere to start your turn. Your clock waits.';
     else if (ui.pending.length) msg = 'Tiles are penciled in until you tap DONE: then wrong ones bounce back and cost points. Drag a tile to move it, or tap it to take it back.';
     else if (!G.hands[0].length) msg = 'No tiles left. Tap Pass.';
+    else if (G.clockOut === 1 && !ui.pending.length) msg = `${opp().n}'s clock ran out: you play on alone until you finish (your clock keeps running).`; // v08o
     else if (G.finalTurn === 0) msg = `FINAL TURN: ${opp().n} has played every tile. Play all you can; any tile left in your hand counts against you.`;
     else msg ='Your turn. Drag a tile onto the grid, or tap a tile then a cell. Tap a clue to read it; point at (or press and hold) a clue to zoom.';
     bar.innerHTML = `<div class="cb-status">${esc(msg)}</div>`;
@@ -1282,6 +1288,7 @@
     if (e.kind === 'swap') return `${nm} swapped`;
     if ((e.items || []).some(x => x.k === 'wrong')) return me ? 'Every tile bounced' : `Every tile ${nm} placed bounced`;
     if (me && G.clockOut === 0) return 'Your clock ran out';
+    if (!me && G.clockOut === 1) return `${nm}'s clock ran out`; // v08o
     return `${nm} passed`;
   }
   function passChip() {
@@ -1724,7 +1731,8 @@
       ${sec('Timer', `
         <li><b>Untimed</b>: take as long as you like.</li>
         <li><b>Per turn</b> (Blitz · 30 s per TURN, or 1 to 5 min per TURN): when it runs out, your turn ends and the tiles you penciled in are checked, as if you had tapped Done.</li>
-        <li><b>Whole game</b> (2 to 15 min per GAME): your clock runs only on your turns. When it reaches zero, tiles you haven't confirmed with <b>Done</b> go back to your hand (they don't count), the Bot gets <b>one final turn</b>, and the game ends. The red notice stays until you tap.</li>
+        <li><b>Whole game</b> (2 to 15 min <b>each</b>): you and the Bot each have your own clock of the same length, and each runs only on its own turns. The Bot's clock (beside its name) counts down while it plays: higher levels think faster, and at lower levels it sometimes runs out.</li>
+        <li>When a side's clock reaches zero, tiles it hasn't confirmed with <b>Done</b> don't count, and it <b>stops</b>: the other side <b>plays on alone</b>, turn after turn, until its hand and the bag are empty, the grid is full, it passes 3 times in a row, or its own clock runs out. Tiles left in the hand of the side that ran out count against it. The red notice stays until you tap.</li>
         <li>Clocks never run while a ${go('Turn Reports and The Scoreboard', 'turn report')} is waiting for your tap, or while the game is paused.</li>
         <li>In the last 10 seconds the grid's border flashes every second: <b>yellow</b> from 10 to 6, <b>red</b> from 5 to 1.</li>`)}
       ${sec('Resume Game', `
@@ -1782,7 +1790,7 @@
         <li>The <b>Scoreboard</b> keeps every turn by round: letter points, word points, bonuses, penalties and the turn's total. Green marks the higher score in each round. On phones, tap ▸ Scoreboard to open it.</li>`)}
       ${sec('The End', `
         <li><b>Final turn:</b> once the bag is empty and either player places their last tile, the other player gets <b>one final turn</b> to play what they can. Then the game ends, and any tile still in a hand is subtracted from its owner's score.</li>
-        <li>The game also ends when the grid is full, by the <b>3 PASSES Rule</b> (${esc(PASS_RULE)}), or when a whole-game clock runs out (after the Bot's one final turn).</li>
+        <li>The game also ends when the grid is full, by the <b>3 PASSES Rule</b> (${esc(PASS_RULE)}), or after a whole-game clock runs out and the other side has played on alone to the end.</li>
         <li>A <b>⏭ 1/3</b> counter in the grid's top-left corner (where the logo sits) counts passes in a row: yellow after the 1st pass, red after the 2nd. A pass is a ⏭ Pass, a 🔄 Swap, a turn where every tile bounced, or a turn clock that ran out. The 2nd pass also shows a red <b>LAST CHANCE</b> notice that says what caused it and <b>holds the game until you tap</b> (the Bot waits and your clock stops). The counter goes away (and the logo comes back) once someone places a tile.</li>
         <li>When the game ends, the grid stays on screen and the last play's tiles and words glow, so you can see the final play. <b>📊 See results</b> (or Enter) opens the result window.</li>
         <li>The result window shows both scores, your record against this Bot, both sides' play and your coins. Its buttons: <b>🔍 Grid</b> (look at the grid again), <b>⚙ Settings</b>, <b>☰ Menu</b> and <b>Rematch</b>.</li>
@@ -1930,7 +1938,7 @@
   function stopTimer() { clearInterval(ui.timerId); ui.timerId = 0; }
 
   // Whole-game clock reached zero. v08j (JM CD-45: 5.1a): tiles you penciled in but never confirmed with DONE don't
-  // count (they go back to your hand), and the rival gets one final turn; then the game ends. (Before v08j they scored
+  // count (they go back to your hand). v08o (CD-52: 5.2): you stop, and the Bot plays on alone until it finishes. (Before v08j they scored
   // and the game ended at once, so running the clock down was a way to deny the rival its answer.)
   function clockOut() {
     if (!G || G.over || G.turn !== 0) return;
@@ -1941,7 +1949,7 @@
     const over = E.endTurn(G, 0, 'pass', 'clock');
     showReport(lastLog());
     // v08k (JM CD-46: 1.8.1): the notice stays until you tap, together with the PASS banner
-    if (!over) toast(`Your clock ran out.${back ? ` Your ${back} unconfirmed tile${back > 1 ? 's' : ''} went back to your hand.` : ''} ${opp().n} gets one final turn.`, 'bad', 0);
+    if (!over) toast(`Your clock ran out.${back ? ` Your ${back} unconfirmed tile${back > 1 ? 's' : ''} went back to your hand.` : ''} ${opp().n} plays on alone until it finishes; tiles left in your hand count against you.`, 'bad', 0); // v08o (CD-52: 5.2)
     else toast('Your clock ran out. Game over.', 'bad', 0);
     afterTurn(over);
   }
@@ -2108,6 +2116,7 @@
     save();
     if (over) { render(); gameOver(); return; }
     if (G.finalTurn === 1 && G.clockOut == null) toast(`You played every tile! ${opp().n} gets one final turn.`, '', 3200); // v08i
+    if (G.turn === 0) { startHumanTurn(); return; } // v08o: the Bot's clock ran out, so you play on alone
     ui.busy = true;
     render();
     runAiTurn();
@@ -2188,6 +2197,60 @@
     return { total: Math.min(total, left), share: Math.round(share / 1000), turns: turns.length };
   }
 
+  // =====================================================================
+  // v08o (JM CD-51 strategic 1; CD-52: 5.1–5.3): the Bot's own whole-game clock
+  // Same length as yours. Each Bot turn spends "thinking time" from it, on paper (nobody waits): a share of the clock
+  // per tile it places, times its level's pace and a little chance. Higher levels think faster; at levels 1–7 the
+  // clock runs out now and then (simulated: about 1 game in 7 at level 1, 1 in 10 at 2–3, a few in 100 at 4–7, almost
+  // never at 8–10).
+  // =====================================================================
+  const BOT_PACE = [0.86, 0.84, 0.81, 0.77, 0.75, 0.73, 0.71, 0.55, 0.5, 0.45]; // share of its clock it expects to use, by level
+  const gauss = () => { let u = 0, v = 0; while (!u) u = Math.random(); while (!v) v = Math.random(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); };
+  const botTimed = () => !!G && E.timerOf(G.settings.timer).kind === 'game';
+  function botThinkMs(tiles) {
+    const T = E.timerOf(G.settings.timer).secs * 1000;
+    if (!G.bt) { // set once per game: the clock's share per tile (the Bot places about half the open cells) and its mood
+      let open = 0;
+      for (let i = 0; i < G.pz.N; i++) if (G.pz.cells[i].k !== 'c' && !G.board[i]) open++;
+      G.bt = { tile: T / Math.max(4, (open + tiles) / 2), mood: Math.max(0.8, Math.min(1.2, 1 + gauss() * 0.08)) };
+    }
+    const pace = BOT_PACE[Math.max(1, Math.min(10, G.settings.skill)) - 1];
+    const luck = Math.exp(gauss() * 0.33 - 0.054); // averages 1
+    return Math.round(G.bt.tile * Math.max(0.6, tiles) * pace * G.bt.mood * luck);
+  }
+  // Spends this turn's thinking time; the clock beside the Bot's name counts down while it plays. True if it ran out.
+  function botClockTurn(tiles) {
+    if (!botTimed() || G.clockOut === 1) return false;
+    if (G.bclock == null) G.bclock = E.timerOf(G.settings.timer).secs * 1000;
+    const from = G.bclock, to = Math.max(0, from - botThinkMs(tiles));
+    G.bclock = to;
+    ui.bAnim = { from, to, t0: Date.now(), dur: 400 + tiles * 430 };
+    clearInterval(ui.bAnimT);
+    ui.bAnimT = setInterval(() => { renderOppClock(); if (!ui.bAnim || Date.now() - ui.bAnim.t0 > ui.bAnim.dur) { ui.bAnim = null; clearInterval(ui.bAnimT); renderOppClock(); } }, 200);
+    return to <= 0;
+  }
+  function renderOppClock() {
+    const el = $('#clkOpp');
+    if (!G || !botTimed()) { el.hidden = true; return; }
+    el.hidden = false;
+    const a = ui.bAnim, ms = a ? a.from - (a.from - a.to) * Math.min(1, (Date.now() - a.t0) / a.dur) : (G.bclock != null ? G.bclock : E.timerOf(G.settings.timer).secs * 1000);
+    el.textContent = G.clockOut === 1 ? '⏱ 0:00' : '⏱ ' + fmtClock(ms);
+    el.classList.toggle('out', G.clockOut === 1);
+  }
+  // The Bot's clock reached zero during its turn: its penciled tiles don't count, and you play on alone
+  function botClockOut(n) {
+    G.bclock = 0;
+    const over = E.endTurn(G, 0, 'pass', 'clock');
+    showReport(lastLog());
+    save();
+    ui.busy = false;
+    sound.play('bounce');
+    if (!over) toast(`${opp().n}'s clock ran out.${n ? ` Its ${n} penciled tile${n > 1 ? 's' : ''} didn't count.` : ''} You play on alone until you finish (your clock keeps running).`, 'opp', 0);
+    else toast(`${opp().n}'s clock ran out. Game over.`, 'opp', 0);
+    if (over) { render(); gameOver(); return; }
+    startHumanTurn();
+  }
+
   async function runAiTurn() {
     const token = ui.token;
     ui.busy = true;
@@ -2196,6 +2259,9 @@
     await nap(650 + Math.random() * 650);
     if (token !== ui.token) return;
     const plan = E.aiPlan(G);
+    // v08o (JM CD-52: 5.1): with a whole-game clock the Bot spends "thinking time" from its own clock (on paper: nobody
+    // waits). If this turn would use more than it has left, its clock runs out: the tiles it pencils in don't count.
+    const bOut = botClockTurn(plan.length);
     // v08d: the opponent pencils its tiles in too (a careless one may slip a tile into a wrong cell);
     // they are checked at its DONE, by the same rule as yours
     const steps = [];
@@ -2210,6 +2276,7 @@
       if (token !== ui.token) return;
     }
     ui.aiPending = null;
+    if (bOut) { botClockOut(steps.length); return; }
     const r = E.judge(G, 1, steps);
     settleTiles(r.right.map(p => p.cell)); // v08n: the Bot's right tiles settle too
     if (r.wrong.length) {
@@ -2221,6 +2288,7 @@
     ui.busy = false;
     if (over) { render(); gameOver(); return; }
     if (G.finalTurn === 0) toast(`${opp().n} played every tile. Your FINAL TURN: play all you can.`, 'opp', 3600); // v08i
+    if (G.turn === 1) { runAiTurn(); return; } // v08o: your clock ran out, so the Bot plays on alone
     startHumanTurn();
   }
 
@@ -2831,7 +2899,7 @@
     sound.play(r.winner === 0 ? 'win' : r.winner === 1 ? 'lose' : 'draw', 0.5); // v08h
     const title = r.winner === 0 ? `${myName() === 'You' ? 'You win' : myName() + ' wins'}!` : r.winner === 1 ? `${o.n} wins` : 'It\'s a draw';
     const st = G.stats;
-    const ended = r.complete ? 'The grid is complete.' : r.reason === 'clock' ? (G.clockOut === 0 ? `Your whole-game clock ran out, and ${o.n} had one final turn.` : 'Your whole-game clock ran out.')
+    const ended = r.complete ? 'The grid is complete.' : r.reason === 'clock' ? (G.clock <= 0 && G.bclock === 0 ? 'Both whole-game clocks ran out.' : G.clockOut === 0 ? `Your whole-game clock ran out, and ${o.n} played on alone to the end.` : `${o.n}'s whole-game clock ran out, and you played on alone to the end.`)
       : r.reason === 'out' ? `${G.outBy === 0 ? 'You' : o.n} played every tile, and ${G.outBy === 0 ? o.n : 'you'} had one final turn.`
       : 'Three passes in a row ended the game (3 PASSES Rule).';
     // v08 coins at the end: whole-game clocks pay their speed coins once, here; a win pays +10.

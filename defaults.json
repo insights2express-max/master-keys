@@ -12,7 +12,7 @@
     "skill": "Challenge Level: 1 to 10 (no quote marks)",
     "size": "Grid Size: S = Small, M = Medium, L = Large",
     "hand": "Letters in Hand: 5, 6, 7 or 8 (no quote marks)",
-    "timer": "Timer: 0 = Untimed; per TURN t30 (Blitz), t60, t120, t180, t240, t300; per GAME g120, g180, g300, g600, g900 (seconds)",
+    "timer": "Timer: 0 = Untimed; per TURN t30 (Blitz), t60, t120, t180, t240, t300; each side, whole game (N min each) g120, g180, g300, g600, g900 (seconds)",
     "scoring": "Scoring: classic, flat, finisher (Word Finisher), combo (Combo Chain), bounty",
     "bonus": "Bonus Squares: fixed, floating, both, off",
     "pics": "Clue Pics: off, some, lots",
