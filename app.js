@@ -1,11 +1,13 @@
-/* Clue Duel — user interface (v08L: ⏭ pass chip + held 2nd-pass notice, 🔦 Scan, pale crossing clues, Results after the
+/* Clue Duel — user interface (v08m: grid zoom (pinch, Ctrl + wheel, 🔍 focus, arrows, mini-map), reports wait for the red marks,
+   no "didn't fit" notices, gold win frame, hatched Scan cells, ⚙ New game fixed;
+   v08L: ⏭ pass chip + held 2nd-pass notice, 🔦 Scan, pale crossing clues, Results after the
    wrong-tile bounce, notices away from the wrong word, bigger bonus badge, ⚙ fits phones, clue popup fits, Space pauses;
    v08k: faster on phones, wrong tiles shown WordGrams-style until tapped, held clock-out notice,
    no row / column highlight, only open bonus cells pulse, lighter slots + darker rival red, louder countdown;
    v08j: grid colors, final-play view, clock-out final turn, menu defaults, phone two-finger drag) */
 'use strict';
 (() => {
-  const APP_VER = 'v08L'; // Project CP: shown as a pill beside the title and in the browser tab
+  const APP_VER = 'v08m'; // Project CP: shown as a pill beside the title and in the browser tab
   const E = window.Engine;
   const $ = (s, el = document) => el.querySelector(s);
   const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -494,6 +496,7 @@
 
   function enterGame(fresh) {
     ui.token++;
+    resetZoom(); // v08m: every game starts with the whole grid
     checkPics();
     Object.assign(ui, { pending: [], selTile: null, selSlot: -1, selCell: -1, busy: false, hintCell: -1, repAt: 0, aiPending: null, flash: null, wrong: null, pop: -1, layoutKey: '', chainBroken: false, passHold: 0, passSeen: G.passes || 0 });
     setPaused(false);
@@ -541,7 +544,11 @@
     const h = wrap.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
     const R = G.pz.R, C = G.pz.C, frame = 4; // 2px border on each side + 1px lines between cells
     // v04: the cap is 120 px (was 76), so the grid fills big monitors too (JM, CD-8: 2.1.1)
-    const cell = Math.max(18, Math.floor(Math.min((w - frame - (C - 1)) / C, (h - frame - (R - 1)) / R, 120)));
+    const base = Math.max(18, Math.floor(Math.min((w - frame - (C - 1)) / C, (h - frame - (R - 1)) / R, 120)));
+    ui.baseCell = base;
+    // v08m: zoomed, the cells are drawn bigger (crisp, not a scaled picture) and the grid scrolls inside #zoomer
+    const zf = Math.min(zm.z, zMax());
+    const cell = zf > 1 ? Math.round(base * zf) : base;
     const key = `${cell}:${C}`;
     if (key === ui.layoutKey) return false;
     ui.layoutKey = key;
@@ -554,6 +561,257 @@
   if (window.ResizeObserver) new ResizeObserver(relayout).observe($('#boardwrap'));
   let resizeT = 0;
   window.addEventListener('resize', () => { clearTimeout(resizeT); closeZoom(true); resizeT = setTimeout(() => { fitDock(); relayout(); renderReports(); }, 80); });
+
+  // =====================================================================
+  // v08m (JM CD-49 add'l 1; CD-50: 6.1c, 6.2; CD-52: 1.1): grid zoom, Clue Duel only.
+  // Free zoom: pinch (phones) or Ctrl + mouse wheel / trackpad pinch (computers); the point under your fingers (or
+  // the pointer) stays put. Zoomed, drag the grid to slide it. Focus zoom: 🔍 (or Z), then tap the part of the grid to
+  // zoom into. 🔍 while zoomed shows the whole grid again; 🔍 🔍 brings back your last view. Zoomed, edge arrows
+  // slide the view and a mini-map shows where you are (tap or drag on it to jump). The cells are redrawn bigger, so
+  // text stays crisp. + and − keys zoom in and out.
+  // =====================================================================
+  const ZOOM_CELL = 110; // the largest zoomed cell (px): big enough to read two clues in one clue cell
+  const zm = { z: 1, last: null, pick: false, fadeT: 0, wheelT: 0, wz: 0, wa: null, sel: '' };
+  const zoomer = $('#zoomer');
+  const zoomBtnEl = $('#zoomBtn'); // kept by reference: the clue bar redraws its contents and re-adds it
+  const zMax = () => Math.max(1, Math.min(3, ZOOM_CELL / (ui.baseCell || ZOOM_CELL)));
+  const inGame = () => !!G && !$('#game').hidden;
+  const zoomable = () => inGame() && zMax() >= 1.25; // also after the game, to review the words
+  const clamp01 = v => Math.max(0, Math.min(1, v));
+  // the part of the grid you can see (all of it unless zoomed)
+  function visBoardRect() {
+    const br = $('#board').getBoundingClientRect();
+    if (zm.z <= 1) return br;
+    const zr = zoomer.getBoundingClientRect();
+    const left = Math.max(br.left, zr.left), top = Math.max(br.top, zr.top), right = Math.min(br.right, zr.right), bottom = Math.min(br.bottom, zr.bottom);
+    return { left, top, right, bottom, width: right - left, height: bottom - top };
+  }
+  // where on the grid (0–1 across and down) the middle of the view is
+  function viewFrac() {
+    const zr = zoomer.getBoundingClientRect(), br = $('#board').getBoundingClientRect();
+    return { cx: clamp01((zr.left + zr.width / 2 - br.left) / br.width), cy: clamp01((zr.top + zr.height / 2 - br.top) / br.height) };
+  }
+  // zoom to z, putting grid point (fx, fy) at screen point (ax, ay) (default: the middle of the view)
+  function setZoom(z, fx, fy, ax, ay) {
+    if (!inGame()) return;
+    z = Math.max(1, Math.min(zMax(), z));
+    if (z < 1.05) z = 1;
+    const zr = zoomer.getBoundingClientRect();
+    if (fx == null) { const v = viewFrac(); fx = v.cx; fy = v.cy; }
+    if (ax == null) { ax = zr.left + zr.width / 2; ay = zr.top + zr.height / 2; }
+    zm.z = z;
+    zoomer.classList.toggle('on', z > 1);
+    ui.layoutKey = '';
+    closeZoom(true);
+    layout();
+    renderBoard();
+    const br = $('#board').getBoundingClientRect();
+    zoomer.scrollLeft += br.left + fx * br.width - ax;
+    zoomer.scrollTop += br.top + fy * br.height - ay;
+    zoomChrome(true);
+  }
+  function centerOn(fx, fy, smooth) {
+    const zr = zoomer.getBoundingClientRect(), br = $('#board').getBoundingClientRect();
+    zoomer.scrollTo({ left: zoomer.scrollLeft + br.left + fx * br.width - (zr.left + zr.width / 2), top: zoomer.scrollTop + br.top + fy * br.height - (zr.top + zr.height / 2), behavior: smooth && !reduceMotion() ? 'smooth' : 'auto' });
+  }
+  function resetZoom() {
+    Object.assign(zm, { z: 1, pick: false, sel: '' });
+    zoomer.classList.remove('on', 'picking');
+    zoomer.scrollLeft = 0; zoomer.scrollTop = 0;
+    $('#board').style.transform = '';
+  }
+  // 🔍: whole grid ⇄ zoomed. From the whole grid, the next tap on the grid picks where to zoom (🔍 again: your last view).
+  function zoomBtn() {
+    if (!inGame()) return;
+    if (zm.z > 1) {
+      const v = viewFrac();
+      zm.last = { z: zm.z, cx: v.cx, cy: v.cy };
+      zm.pick = false;
+      setZoom(1, 0.5, 0.5);
+      return;
+    }
+    if (!zoomable()) return;
+    if (zm.pick) {
+      zm.pick = false;
+      if (zm.last) { setZoom(zm.last.z, 0.5, 0.5); centerOn(zm.last.cx, zm.last.cy); zoomChrome(true); } else zoomChrome();
+      return;
+    }
+    zm.pick = true;
+    zoomChrome();
+  }
+  // the 🔍 button, the edge arrows, the "tap where to zoom" note and the mini-map follow the zoom
+  function zoomChrome(wake) {
+    const on = zm.z > 1 && inGame();
+    const b = zoomBtnEl;
+    b.hidden = !(on || zoomable());
+    b.classList.toggle('on', on || zm.pick);
+    $('#cluebar').classList.toggle('has-z', !b.hidden);
+    b.title = on ? 'Show the whole grid (Z)' : zm.pick ? 'Tap the grid where you want to zoom in (🔍 again: your last view)' : 'Zoom in: then tap the part of the grid you want (Z). Or pinch / Ctrl + mouse wheel.';
+    zoomer.classList.toggle('picking', zm.pick && !on);
+    $('#zoomPick').hidden = !(zm.pick && !on);
+    const L = zoomer.scrollLeft, T = zoomer.scrollTop;
+    const mx = zoomer.scrollWidth - zoomer.clientWidth, my = zoomer.scrollHeight - zoomer.clientHeight;
+    for (const a of document.querySelectorAll('.zarrow')) {
+      const d = a.dataset.d;
+      a.hidden = !on || (d === 'l' ? L < 2 : d === 'r' ? L > mx - 2 : d === 'u' ? T < 2 : T > my - 2);
+    }
+    drawMini(on, wake);
+  }
+  function drawMini(on, wake) {
+    const cv = $('#miniMap');
+    if (!on || !G) { cv.hidden = true; return; }
+    const R = G.pz.R, C = G.pz.C;
+    const k = Math.max(3, Math.floor((innerWidth < 700 ? 84 : 120) / Math.max(R, C)));
+    const dpr = Math.min(3, window.devicePixelRatio || 1);
+    const W = C * k, H = R * k;
+    if (cv.width !== Math.round(W * dpr) || cv.height !== Math.round(H * dpr)) { cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); cv.style.width = W + 'px'; cv.style.height = H + 'px'; }
+    const g = cv.getContext('2d');
+    g.setTransform(dpr, 0, 0, dpr, 0, 0);
+    g.fillStyle = '#1c2630'; g.fillRect(0, 0, W, H);
+    const kids = $('#board').children;
+    for (let i = 0; i < R * C; i++) {
+      const el = kids[i];
+      if (!el) continue;
+      const c = el.classList;
+      g.fillStyle = c.contains('clue') ? '#3a4552' : c.contains('pending') ? '#4f8df5' : c.contains('aipend') ? '#ff8a3d'
+        : c.contains('filled') || el.querySelector('.ch') ? '#efe2b8' : '#8c96a1';
+      g.fillRect((i % C) * k + 0.5, Math.floor(i / C) * k + 0.5, k - 1, k - 1);
+    }
+    const zr = zoomer.getBoundingClientRect(), br = $('#board').getBoundingClientRect();
+    const x0 = clamp01((zr.left - br.left) / br.width) * W, x1 = clamp01((zr.right - br.left) / br.width) * W;
+    const y0 = clamp01((zr.top - br.top) / br.height) * H, y1 = clamp01((zr.bottom - br.top) / br.height) * H;
+    g.lineWidth = 2; g.strokeStyle = '#ffd60a';
+    g.strokeRect(x0 + 1, y0 + 1, Math.max(4, x1 - x0 - 2), Math.max(4, y1 - y0 - 2));
+    cv.hidden = false;
+    if (wake) {
+      cv.classList.remove('fade');
+      clearTimeout(zm.fadeT);
+      zm.fadeT = setTimeout(() => cv.classList.add('fade'), 2500);
+    }
+  }
+  zoomBtnEl.addEventListener('click', e => { e.stopPropagation(); zoomBtn(); });
+  zoomer.addEventListener('scroll', () => zoomChrome(true), { passive: true });
+  for (const a of document.querySelectorAll('.zarrow')) a.addEventListener('click', e => {
+    e.stopPropagation();
+    const d = a.dataset.d, sx = zoomer.clientWidth * 0.7, sy = zoomer.clientHeight * 0.7;
+    zoomer.scrollBy({ left: d === 'l' ? -sx : d === 'r' ? sx : 0, top: d === 'u' ? -sy : d === 'd' ? sy : 0, behavior: reduceMotion() ? 'auto' : 'smooth' });
+  });
+  // the mini-map: tap or drag on it to move the view there
+  $('#miniMap').addEventListener('pointerdown', e => {
+    e.stopPropagation(); e.preventDefault();
+    const cv = $('#miniMap');
+    const go = ev => { const r = cv.getBoundingClientRect(); centerOn(clamp01((ev.clientX - r.left) / r.width), clamp01((ev.clientY - r.top) / r.height)); };
+    go(e);
+    const mv = ev => go(ev);
+    const up = () => { window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', up); suppressClick(); };
+    window.addEventListener('pointermove', mv);
+    window.addEventListener('pointerup', up);
+    window.addEventListener('pointercancel', up);
+  });
+  // pinch, drag-to-slide and the focus tap
+  const zpts = new Map();
+  let zpan = null, zpinch = null;
+  zoomer.addEventListener('pointerdown', e => {
+    if (!inGame()) return;
+    if (zm.pick) {
+      e.stopPropagation(); e.preventDefault();
+      const br = $('#board').getBoundingClientRect();
+      zm.pick = false;
+      const z = zm.last ? zm.last.z : Math.min(zMax(), 2.2);
+      setZoom(z, clamp01((e.clientX - br.left) / br.width), clamp01((e.clientY - br.top) / br.height));
+      suppressClick();
+      return;
+    }
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    if (e.target.closest('.cell.pending') || ui.dragging) return; // penciled tiles drag as before
+    zpts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (zpts.size === 2 && e.pointerType === 'touch' && (zm.z > 1 || zoomable())) {
+      const [p, q] = [...zpts.values()];
+      const m = { x: (p.x + q.x) / 2, y: (p.y + q.y) / 2 };
+      const br = $('#board').getBoundingClientRect();
+      zpinch = { z0: zm.z, d0: Math.max(20, Math.hypot(p.x - q.x, p.y - q.y)), m0: m, m, zNow: zm.z, fx: (m.x - br.left) / br.width, fy: (m.y - br.top) / br.height, ox: m.x - br.left, oy: m.y - br.top };
+      zpan = null;
+      clearTimeout(zoom.timer); zoom.timer = 0; closeZoom(true);
+      return;
+    }
+    if (zpts.size === 1 && zm.z > 1) zpan = { id: e.pointerId, x0: e.clientX, y0: e.clientY, L0: zoomer.scrollLeft, T0: zoomer.scrollTop, moved: false };
+  }, true);
+  window.addEventListener('pointermove', e => {
+    if (zpts.has(e.pointerId)) zpts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (zpinch && zpts.size >= 2) {
+      const [p, q] = [...zpts.values()];
+      const m = { x: (p.x + q.x) / 2, y: (p.y + q.y) / 2 };
+      const z = Math.max(1, Math.min(zMax(), zpinch.z0 * Math.hypot(p.x - q.x, p.y - q.y) / zpinch.d0));
+      zpinch.zNow = z; zpinch.m = m;
+      const bd = $('#board');
+      bd.style.transformOrigin = `${zpinch.ox}px ${zpinch.oy}px`;
+      bd.style.transform = `translate(${m.x - zpinch.m0.x}px, ${m.y - zpinch.m0.y}px) scale(${z / zpinch.z0})`;
+      return;
+    }
+    if (zpan && e.pointerId === zpan.id) {
+      const dx = e.clientX - zpan.x0, dy = e.clientY - zpan.y0;
+      if (!zpan.moved && Math.hypot(dx, dy) < 8) return;
+      if (!zpan.moved) { zpan.moved = true; clearTimeout(zoom.timer); zoom.timer = 0; closeZoom(true); }
+      zoomer.scrollLeft = zpan.L0 - dx; zoomer.scrollTop = zpan.T0 - dy;
+    }
+    // dragging a tile near the edge of a zoomed grid slides the view
+    if (ui.dragging && zm.z > 1) {
+      const zr = zoomer.getBoundingClientRect(), E2 = 30, sp = 10;
+      if (e.clientX > zr.left - 20 && e.clientX < zr.right + 20 && e.clientY > zr.top - 20 && e.clientY < zr.bottom + 20) {
+        const dx = e.clientX < zr.left + E2 ? -sp : e.clientX > zr.right - E2 ? sp : 0;
+        const dy = e.clientY < zr.top + E2 ? -sp : e.clientY > zr.bottom - E2 ? sp : 0;
+        if (dx || dy) zoomer.scrollBy(dx, dy);
+      }
+    }
+  });
+  const zEnd = e => {
+    zpts.delete(e.pointerId);
+    if (zpinch && zpts.size < 2) {
+      const p = zpinch; zpinch = null;
+      $('#board').style.transform = '';
+      if (Math.abs(p.zNow - p.z0) > 0.02 || Math.hypot(p.m.x - p.m0.x, p.m.y - p.m0.y) > 4) setZoom(p.zNow, p.fx, p.fy, p.m.x, p.m.y);
+      suppressClick();
+      zpts.clear();
+    }
+    if (zpan && e.pointerId === zpan.id) { if (zpan.moved) suppressClick(); zpan = null; }
+  };
+  window.addEventListener('pointerup', zEnd);
+  window.addEventListener('pointercancel', zEnd);
+  // Ctrl + mouse wheel (and a trackpad pinch, which arrives as one) zooms at the pointer; the plain wheel scrolls
+  zoomer.addEventListener('wheel', e => {
+    if (!e.ctrlKey || !inGame()) return;
+    e.preventDefault();
+    if (zm.z <= 1 && !zoomable()) return;
+    zm.pick = false;
+    const f = Math.exp(-e.deltaY * (e.deltaMode ? 0.06 : 0.0025));
+    zm.wz = Math.max(1, Math.min(zMax(), (zm.wz || zm.z) * f));
+    zm.wa = { x: e.clientX, y: e.clientY };
+    if (!zm.wheelT) zm.wheelT = setTimeout(() => {
+      zm.wheelT = 0;
+      const br = $('#board').getBoundingClientRect(), a = zm.wa;
+      const z = zm.wz; zm.wz = 0;
+      setZoom(z, clamp01((a.x - br.left) / br.width), clamp01((a.y - br.top) / br.height), a.x, a.y);
+    }, 60);
+  }, { passive: false });
+  // keys: Z = 🔍, + and − zoom in and out, Esc cancels "tap where to zoom"
+  document.addEventListener('keydown', e => {
+    if (e.repeat || e.ctrlKey || e.metaKey || e.altKey || !inGame() || !$('#modal').hidden || /^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName || '')) return;
+    if (e.key === 'z' || e.key === 'Z') { e.preventDefault(); zoomBtn(); }
+    else if (e.key === '+' || e.key === '=') { e.preventDefault(); if (zoomable() || zm.z > 1) setZoom(zm.z * 1.3); }
+    else if (e.key === '-' || e.key === '_') { e.preventDefault(); if (zm.z > 1) setZoom(zm.z / 1.3); }
+    else if (e.key === 'Escape' && zm.pick) { zm.pick = false; zoomChrome(); }
+  });
+  // zoomed: a newly chosen cell is slid into view
+  function zoomFollow() {
+    if (zm.z <= 1 || !G) return;
+    const key = ui.selCell + ':' + ui.selSlot;
+    if (key === zm.sel) return;
+    zm.sel = key;
+    const ci = ui.selCell >= 0 ? ui.selCell : ui.selSlot >= 0 ? G.pz.slots[ui.selSlot].cells[0] : -1;
+    const el = ci >= 0 ? $('#board').children[ci] : null;
+    if (el) el.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: reduceMotion() ? 'auto' : 'smooth' });
+  }
+
 
   // ---------- Bottom row (JM, CD-8: 2.1.1.1; CD-9: 2.1) ----------
   // Hand and buttons always share one row. If that would squeeze the tiles below 40 px (phones), the row becomes
@@ -780,7 +1038,7 @@
         if (inner && !inner.includes('class="bn"')) inner += `<span class="bdg">${bTxt(b)}</span>`;
         inner += '<i class="glow"></i>';
       }
-      if (i === ui.hintCell || (scan && scan.has(i) && !pend.has(i))) cls.push('hint'); // v08L: 🔦 Scan cells glow too
+      if (i === ui.hintCell || (scan && scan.has(i) && !pend.has(i))) cls.push(i === ui.hintCell ? 'hint' : 'scan'); // v08m (CD-52: 4.1a): 🔦 Scan cells are hatched, not pulsing
       if (i === ui.pop) cls.push('popin');
       if (fin.has(i)) cls.push('fin');
       parts.push(`<div class="${cls.join(' ')}" data-i="${i}">${inner}</div>`);
@@ -801,6 +1059,7 @@
     if (board.className !== want) board.className = want;
     ui.pop = -1;
     sharpWords();
+    zoomChrome(); zoomFollow(); // v08m
   }
 
   function renderRack() {
@@ -917,7 +1176,14 @@
       + `<span class="cb-stat"><span class="cb-pat">[${letters}]</span><span class="cb-n">${got.length} / ${s.cells.length}</span>${sp ? `<span class="cb-pts">${sp.v} ${sp.t}</span>` : ''}</span></div>`;
   }
 
+  // v08m: the 🔍 zoom button sits at the right end of the clue bar (it never covers the grid)
   function renderClueBar() {
+    renderClueBar0();
+    const bar = $('#cluebar'), zb = zoomBtnEl;
+    if (zb.parentNode !== bar) bar.appendChild(zb);
+    bar.classList.toggle('has-z', !zb.hidden);
+  }
+  function renderClueBar0() {
     const bar = $('#cluebar');
     if (ui.selSlot >= 0) {
       const alt = altSlot();
@@ -929,6 +1195,7 @@
     let msg;
     if (G.over) msg = 'Game over. Tap any clue to review the words.';
     else if (ui.passHold) msg = 'LAST CHANCE: read the red notice, then click or tap anywhere to continue. The game waits.';
+    else if (repsHeld() && reps.html.some(Boolean)) msg = 'Red marks: tiles that didn\x27t fit. Click or tap anywhere to see the turn report.'; // v08m (CD-52: 2.2b)
     else if (G.turn === 1) msg = `${opp().n} is thinking…`;
     else if (repsOn()) msg = 'Click or tap anywhere to start your turn. Your clock waits.';
     else if (ui.pending.length) msg = 'Tiles are penciled in until you tap DONE: then wrong ones bounce back and cost points. Drag a tile to move it, or tap it to take it back.';
@@ -972,6 +1239,7 @@
     const over = !!(G && G.over && G.result);
     $('#dock').classList.toggle('is-over', over);
     $('#overBar').hidden = !over;
+    if (over) $('#overBar').style.setProperty('--gw', Math.round(Math.min($('#board').getBoundingClientRect().width, $('#boardwrap').clientWidth - 8)) + 'px'); // v08m (CD-51 add'l 1): the win report is as wide as the grid
     const obKey = over ? (ui.resSeen ? 'seen' : 'new') : ''; // v08j: the bar is redrawn once Results has been seen
     if (over && $('#overBar').dataset.on !== obKey) {
       const r = G.result, o = opp();
@@ -1035,7 +1303,7 @@
   function wrongHalf() {
     const w = ui.wrong;
     if (!w || !G) return '';
-    const board = $('#board'), br = board.getBoundingClientRect();
+    const board = $('#board'), br = visBoardRect(); // v08m
     let top = Infinity, bot = -Infinity;
     for (const si of w.words) {
       const s = G.pz.slots[si];
@@ -1176,7 +1444,7 @@
         if (e.wd) add('Words', e.wd);
         if (e.bon) add('Bonuses', e.bon);
       }
-    } else rows.push(`<div class="tr-row"><span class="l">${e.kind === 'swap' ? 'Swapped' : 'Passed'}</span><span class="v">0</span></div>`);
+    } else rows.push(`<div class="tr-row"><span class="l">${e.kind === 'swap' ? 'Swapped' : (e.items || []).some(x => x.k === 'wrong') ? 'No tile fit · counts as a pass' : 'Passed'}</span><span class="v">0</span></div>`); // v08m (CD-52: 2.3a)
     const items = e.items || [];
     // point rows: only items that cost points (v08: Hint, Place and +30s cost coins; older saves still show their points)
     const grp = (k, label) => {
@@ -1207,16 +1475,21 @@
     if (e.words && e.words.length) sound.play(e.p === 0 ? 'word' : 'oppword', 0.2); // v08h: a finished word chimes
     renderReports();
   }
+  const isWide = () => getComputedStyle($('#sideYou')).display !== 'none';
+  // v08m (JM CD-52: 2.2b): on phones the turn reports wait while red wrong-tile marks are up, so they never cover the
+  // wrong word: the 1st tap clears the marks and shows the reports, the 2nd closes them. (Wide screens show the
+  // reports beside the grid, so one tap still does both there.)
+  const repsHeld = () => !!ui.wrong && !isWide();
   function renderReports() {
-    const wide = getComputedStyle($('#sideYou')).display !== 'none';
+    const wide = isWide(), hold = !wide && !!ui.wrong;
     [['#repYou', '#repYouN'], ['#repOpp', '#repOppN']].forEach(([w, n], p) => {
       const h = reps.html[p];
       const on = wide ? $(w) : $(n), off = wide ? $(n) : $(w);
       off.hidden = true;
-      on.hidden = !h;
+      on.hidden = !h || hold;
       if (h && on.dataset.k !== String(reps.key[p])) { on.innerHTML = h; on.dataset.k = String(reps.key[p]); }
     });
-    $('#repOv').hidden = wide || !(reps.html[0] || reps.html[1]);
+    $('#repOv').hidden = wide || hold || !(reps.html[0] || reps.html[1]);
     if (wide) for (const id of ['#sheetYou', '#sheetOpp']) { const s = $(id); s.scrollTop = s.scrollHeight; } // keep the latest rows in view
     veil();
     placeToasts(); // v08L
@@ -1224,6 +1497,8 @@
   }
   function clearReports() {
     const marks = clearWrong(); // v08k: red wrong-tile marks and held notices go with the same tap
+    // v08m (CD-52: 2.2b): a phone's 1st tap only clears the marks; the reports that waited for them now show
+    if (marks && reps.html.some(Boolean) && !isWide()) { renderReports(); if (G && !$('#game').hidden) render(); return; }
     if (!repsOn()) { if (marks && G && !$('#game').hidden) render(); return; }
     reps.html = [null, null];
     ui.passHold = 0;
@@ -1468,7 +1743,7 @@
         <li>Drag tiles from your hand onto the cells where they belong, or tap a tile and then a cell. Place as many as you like. This turn's tiles are bright orange with a blue frame.</li> 
         <li>On a touch screen you can drag <b>two tiles at once</b>, one with each finger (handy on a tablet held in both hands).</li>
         <li><b>Tiles are only penciled in</b> until you tap ✓ Done, so a slip of the finger costs nothing: drag a tile you placed this turn to another cell, or back to your hand. Tapping it also takes it back.</li>
-        <li>When you tap <b>Done</b>, every penciled tile is checked. Tiles in their correct cells lock in and score. Each tile in a wrong cell glows red and trembles, then bounces back to your hand and costs ${wrongMin} points (or the tile's value, if that is more). That check is final. Until you tap, its letter stays red in your hand and the wrong cell stays red and pulsing, so you can see the mistake (in a timed game that word stays sharp while the grid is blurred, and so does your hand). Your turn report appears once the tiles are back in your hand.</li>
+        <li>When you tap <b>Done</b>, every penciled tile is checked. Tiles in their correct cells lock in and score. Each tile in a wrong cell glows red and trembles, then bounces back to your hand and costs ${wrongMin} points (or the tile's value, if that is more). That check is final. Until you tap, its letter stays red in your hand and the wrong cell stays red and pulsing, so you can see the mistake (in a timed game that word stays sharp while the grid is blurred, and so does your hand). On a phone, your turn report waits until you tap away the red marks, so it never covers them (tap again to close it); on a wide screen it sits beside the grid. The report also says when the turn counts as a pass.</li>
         <li>Not sure? <b>☑️ Check</b> (see ${go('The Buttons')}) tests your penciled tiles before Done, for coins instead of points.</li>
         <li>A turn in which every tile bounces places nothing, so it counts as a pass. Your rival plays by the same rules.</li>
         <li>Drag tiles inside your hand to sort them your way. A gold space shows where the tile will land.</li>
@@ -1476,7 +1751,7 @@
       ${sec('The Buttons', `
         <li>Your hand and the buttons share the bottom row. On a phone, ✓ Done stays on the row and the other buttons open from <b>⋯ More</b>; in timed games your clock then shows under your score.</li>
         <li><b>💡 Hint (🪙${hintC})</b>: shows a cell where one of your tiles fits. It costs ${hintC} ${go('Coins', 'coins')}.</li>
-        <li><b>🔦 Scan (🪙${SCAN_PER_TILE} per tile)</b>: lights one cell for <b>each</b> tile still in your hand (tiles you have already penciled in don't count), so 5 tiles cost 🪙${5 * SCAN_PER_TILE}: cheaper than a Hint per tile. Only the cells glow; you work out which tile goes where. Once per turn.</li>
+        <li><b>🔦 Scan (🪙${SCAN_PER_TILE} per tile)</b>: stripes one empty cell for <b>each</b> tile still in your hand (tiles you have already penciled in don't count), so 5 tiles cost 🪙${5 * SCAN_PER_TILE}: cheaper than a Hint per tile. Only the cells are striped; you work out which tile goes where. Once per turn.</li>
         <li><b>🎯 Place (🪙?)</b>: puts one random tile from your hand into a cell where it fits. It costs that tile's value in coins (shown on the tile; 1 in modes without tile values), then scores like any tile you place. It's marked ✓ (known to fit).</li>
         <li><b>☑️ Check (🪙${R.checkBase}+)</b>: tests the tiles you've penciled in this turn. It costs ${R.checkBase} coins, plus ${R.checkPerWrong} for each wrong tile it finds. Wrong tiles go back to your hand with <b>no point penalty</b>; right ones get a ✓ (move one and it's unchecked again). Check needs <b>🪙${R.checkBase + R.checkPerWrong}</b> to start, then checks your tiles in the order you placed them. If it finds more wrong tiles than you can pay for, it takes your last coins for that tile and stops; any later tiles stay penciled in, unchecked.</li>
         <li>The coin buttons (💡 Hint, 🎯 Place, ☑️ Check, ⏱️ +30s) are <b>blue</b> (each icon on a navy circle) and sit together; on a phone they're the top row of ⋯ More.</li>
@@ -1596,13 +1871,15 @@
     const sels = [...document.querySelectorAll('#sheet select[data-k]')];
     for (const s of sels) { s.value = String(cur[s.dataset.k]); if (s.selectedIndex < 0) s.selectedIndex = 0; }
     const desc = () => { const v = sels.find(s => s.dataset.k === 'scoring').value; $('#cdSetDesc').textContent = (E.MODES[v] || E.MODES.classic).desc; };
-    const keep = () => { for (const s of sels) settings[s.dataset.k] = /^(skill|hand)$/.test(s.dataset.k) ? +s.value : s.value; saveSettings(); if (G && !$('#game').hidden) renderBoard(); $('#cdGridSample').innerHTML = gridSample(settings.grid); };
+    const keep = () => { for (const s of sels) settings[s.dataset.k] = /^(skill|hand)$/.test(s.dataset.k) ? +s.value : s.value; saveSettings(); if (G && !$('#game').hidden) renderBoard(); const smp = $('#cdGridSample'); if (smp) smp.innerHTML = gridSample(settings.grid); };
     desc();
     for (const s of sels) s.addEventListener('change', () => { keep(); desc(); });
     $('#sheet').onclick = e => {
       const b = e.target.closest('[data-a]'); if (!b) return;
+      // v08m (JM CD-51 strategic 3): save the choices BEFORE the window closes (v08L refreshed the gone sample first and stopped)
+      if (b.dataset.a === 'new') keep();
       closeModal();
-      if (b.dataset.a === 'new') { keep(); startNewGame(); }
+      if (b.dataset.a === 'new') startNewGame();
     };
   }
   $('#setBtn').addEventListener('click', gameSettings);
@@ -1718,8 +1995,7 @@
     const r = E.judge(G, 0, placements);
     if (r.wrong.length) {
       showWrong(r.wrong, placements);
-      // v08k: held until you tap. v08L (CD-49: 1.3.1): it says when the turn counts as a pass
-      toast(`${r.wrong.map(p => p.ch).join(', ')} didn't fit · −${r.pen}${r.right.length ? '' : ' · counts as a pass'}`, 'bad', 0);
+      // v08m (JM CD-51 add'l 2; CD-52: 2.3a): no "didn't fit" notice: the turn report says it (and "counts as a pass")
       if (navigator.vibrate) try { navigator.vibrate(60); } catch (e) { /* ignore */ }
     }
     return r.right.length;
@@ -1796,6 +2072,7 @@
       const src = board.children[ci];
       if (!src) continue;
       const r = src.getBoundingClientRect(), cp = src.cloneNode(true);
+      if (zm.z > 1) { const zr = zoomer.getBoundingClientRect(); if (r.right < zr.left || r.left > zr.right || r.bottom < zr.top || r.top > zr.bottom) continue; } // v08m: off-view cells stay hidden
       Object.assign(cp.style, { position: 'fixed', left: r.left + 'px', top: r.top + 'px', width: r.width + 'px', height: r.height + 'px', margin: 0 });
       inner.appendChild(cp);
     }
@@ -1918,8 +2195,7 @@
     ui.aiPending = null;
     const r = E.judge(G, 1, steps);
     if (r.wrong.length) {
-      bounce(r.wrong);
-      toast(`${opp().n}'s ${r.wrong.map(p => p.ch).join(', ')} didn't fit · −${r.pen}`, 'opp', 2600);
+      bounce(r.wrong); // v08m (CD-52: 2.3a): no "didn't fit" notice; the Bot's turn report lists them
     }
     const over = E.endTurn(G, r.right.length);
     showReport(lastLog());
@@ -2238,7 +2514,7 @@
     if (!coins.spend(cost, 'Scan')) return;
     coinItem('scan', -cost);
     G.scan = { t: G.turnNo, cells: [...plan.cells] }; // kept in the save, so a reload keeps the glow
-    toast(`🔦 Scan · 🪙−${cost}. ${plan.cells.size} glowing cell${plan.cells.size > 1 ? 's' : ''}: one for each tile in your hand.`, '', 3200);
+    toast(`🔦 Scan · 🪙−${cost}. ${plan.cells.size} striped cell${plan.cells.size > 1 ? 's' : ''}: one for each tile in your hand.`, '', 3200);
     save();
     render();
   });
@@ -2420,7 +2696,7 @@
     if (!el || ui.dragging || !G) return;
     const s = G.pz.slots[si];
     const z = $('#zoom'), ln = $('#traceLine');
-    const br = $('#board').getBoundingClientRect(), cr = el.getBoundingClientRect();
+    const br = visBoardRect(), cr = el.getBoundingClientRect(); // v08m: the part of the grid on screen
     let cx = br.left + br.width / 2;
     let cy = br.top + br.height / 2;
     const fx = cr.left + cr.width / 2, fy = cr.top + cr.height / 2;
@@ -2523,6 +2799,7 @@
   // =====================================================================
   function gameOver() {
     stopTimer(); setTimerFlash(0);
+    resetZoom(); ui.layoutKey = ''; layout(); // v08m: the whole grid at the end
     closeZoom(true); cancelDrag();
     store.del('cd.save');
     const r = G.result;

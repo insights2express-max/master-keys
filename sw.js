@@ -1,6 +1,6 @@
 /* Clue Duel — service worker: caches the whole app so it plays offline.
    Bump CACHE whenever any file changes, so players get the update. */
-const CACHE = 'clue-duel-v08L-1'; // v08L: ⏭ pass chip, 🔦 Scan, pale crossing clues, Results after the wrong-tile bounce, ⚙ fits phones, clue popup fits, Space pauses. v08k: faster on phones, WordGrams-style wrong tiles, held clock-out notice, no row highlight, open-bonus pulse, new colors, louder countdown. v08j: grid colors (5 schemes), final-play view, clock-out final turn, menu defaults (defaults.json), louder countdown, phone two-finger drag
+const CACHE = 'clue-duel-v08m-1'; // v08m: grid zoom (pinch, Ctrl + wheel, 🔍 focus, arrows, mini-map), reports wait for the red marks, no "didn't fit" notices, gold win frame, hatched Scan cells, ⚙ New game fixed. v08L: ⏭ pass chip, 🔦 Scan, pale crossing clues, Results after the wrong-tile bounce, ⚙ fits phones, clue popup fits, Space pauses. v08k: faster on phones, WordGrams-style wrong tiles, held clock-out notice, no row highlight, open-bonus pulse, new colors, louder countdown. v08j: grid colors (5 schemes), final-play view, clock-out final turn, menu defaults (defaults.json), louder countdown, phone two-finger drag
 const ASSETS = [
   './',
   'index.html',

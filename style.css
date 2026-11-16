@@ -1374,3 +1374,58 @@ img.av-img { display: inline-block; width: 1.15em; height: 1.15em; border-radius
   .cd-gridpick .gs-sample { grid-template-columns: repeat(5, 18px); }
   .cd-gridpick .gs-sample .cell { width: 18px; height: 18px; font-size: 11px; }
 }
+
+/* v08m (JM CD-51, CD-52) */
+/* your hand stays at full strength while red wrong-tile marks are up, even during the Bot's turn (CD-52: 2.1) */
+#game.wrongs .rack .tile, #game.wrongs .rack.off .tile:not(.gap) { opacity: 1; filter: none; }
+/* 🔦 Scan cells: a static hatch, no pulse and no color change (CD-51: 1.4.1.1; CD-52: 4.1a) */
+#board .cell.let.scan {
+  background-image: repeating-linear-gradient(45deg, rgba(20, 24, 30, .45) 0 calc(var(--cell) * .045), transparent calc(var(--cell) * .045) calc(var(--cell) * .16));
+}
+/* the win report: as wide as the grid, in a gold frame; the buttons sit under it (CD-51 add'l 1, 1.1; CD-52: 3.1b) */
+#overBar { flex-direction: column; gap: 8px; }
+#overBar .ob-h {
+  box-sizing: border-box; width: var(--gw, auto); max-width: 100%; padding: 8px 12px; font-size: 17px;
+  border: 3px solid #d4a72c; border-radius: 12px; box-shadow: 0 0 10px rgba(212, 167, 44, .35);
+}
+/* grid zoom (CD-50: 6.1c): the grid sits in #zoomer, which scrolls when zoomed; the finger never drives the page */
+.zoomer { position: absolute; inset: 0; padding: inherit; display: grid; place-items: center; overflow: hidden; touch-action: none; }
+.zoomer.on { overflow: auto; place-items: start; overscroll-behavior: contain; scrollbar-width: none; }
+.zoomer.on::-webkit-scrollbar { display: none; }
+.zoomer.on > .board { margin: auto; }
+.zoomer.picking { cursor: zoom-in; }
+.zoomer.picking > .board { outline: 3px dashed #4fc3f7; outline-offset: 2px; }
+.zarrow {
+  position: absolute; z-index: 6; border: 0; padding: 0; cursor: pointer; display: grid; place-items: center;
+  width: 26px; height: 46px; border-radius: 10px; background: rgba(20, 26, 34, .62); color: #fff;
+  font-size: 26px; font-weight: 900; line-height: 1; box-shadow: 0 1px 4px rgba(0, 0, 0, .35);
+}
+.zarrow[hidden] { display: none; }
+.zarrow[data-d="l"] { left: 2px; top: 50%; transform: translateY(-50%); }
+.zarrow[data-d="r"] { right: 2px; top: 50%; transform: translateY(-50%); }
+.zarrow[data-d="u"] { top: 2px; left: 50%; transform: translateX(-50%) rotate(90deg); }
+.zarrow[data-d="d"] { bottom: 2px; left: 50%; transform: translateX(-50%) rotate(90deg); }
+.minimap {
+  position: absolute; z-index: 7; top: 8px; right: 8px; border-radius: 4px; cursor: pointer; touch-action: none;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, .8), 0 3px 10px rgba(0, 0, 0, .45); opacity: .95; transition: opacity .4s;
+}
+.minimap[hidden] { display: none; }
+.minimap.fade { opacity: 0; pointer-events: none; }
+.zpick {
+  position: absolute; z-index: 7; top: 8px; left: 50%; transform: translateX(-50%); pointer-events: none; white-space: nowrap;
+  background: rgba(20, 26, 34, .88); color: #fff; font-size: 13px; font-weight: 800; padding: 6px 14px; border-radius: 999px;
+  box-shadow: 0 0 0 2px #4fc3f7;
+}
+.zpick[hidden] { display: none; }
+/* the 🔍 button at the right end of the clue bar */
+.cluebar.has-z { position: relative; padding-right: 44px; }
+.zbtn {
+  position: absolute; right: 6px; top: 50%; transform: translateY(-50%); width: 34px; height: 34px; border-radius: 50%;
+  border: 0; padding: 0; cursor: pointer; font-size: 17px; font-family: var(--emoji, inherit); line-height: 1;
+  background: var(--surface, #fff); box-shadow: 0 1px 4px rgba(0, 0, 0, .3); display: grid; place-items: center;
+}
+.zbtn[hidden] { display: none; }
+.zbtn.on { background: #4fc3f7; box-shadow: 0 0 0 2px #0277bd, 0 1px 4px rgba(0, 0, 0, .3); }
+@media (max-width: 700px) { .cluebar.has-z { padding-right: 38px; } .zbtn { width: 30px; height: 30px; font-size: 15px; right: 4px; } }
+/* the clue bar's "tap to see the turn report" note stays readable while the red marks are up (it shows no clue then) */
+#game.veiled.wrongs .cluebar { filter: none; }
