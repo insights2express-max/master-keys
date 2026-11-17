@@ -1,4 +1,5 @@
-/* Clue Duel — user interface (v08q: Screen setting with Night (Charcoal), ⚙ "Changes now" / "From your next game", Letters in Hand 4–8 and changeable mid-game (next round), Full Hand +2 per tile, bigger hub, DONE under the hand on upright tablets, word progress on the clue card, drawn pictures, 1-letter picture captions;
+/* Clue Duel — user interface (v08r: mirrored top boxes (the Bot gets a per-TURN clock, names centered), long settings line wraps;
+   v08q: Screen setting with Night (Charcoal), ⚙ "Changes now" / "From your next game", Letters in Hand 4–8 and changeable mid-game (next round), Full Hand +2 per tile, bigger hub, DONE under the hand on upright tablets, word progress on the clue card, drawn pictures, 1-letter picture captions;
    v08p: new top band (no clue bar; clocks by the scores, hub of buttons), floating turn messages, tap a clue for its card, orange ? and bars for missing letters and words, the Bot waits for your tap after red marks, the Bot's 2-second finish after your clock runs out, wide screens: names over avatars, wings for the buttons, big DONE under the grid;
    v08o: the Bot's own whole-game clock, the other side plays on alone when a clock runs out,
    "N min each (whole game)";
@@ -13,7 +14,7 @@
    v08j: grid colors, final-play view, clock-out final turn, menu defaults, phone two-finger drag) */
 'use strict';
 (() => {
-  const APP_VER = 'v08q'; // Project CP: shown as a pill beside the title and in the browser tab
+  const APP_VER = 'v08r'; // Project CP: shown as a pill beside the title and in the browser tab
   const E = window.Engine;
   const $ = (s, el = document) => el.querySelector(s);
   const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -1222,8 +1223,10 @@
     else txt = 'Pause';
     t.textContent = txt;
     // v08p: the clock by your score always shows time (never "Resume" or "Done")
-    const ctxt = tm.kind === 'game' ? fmtClock(G.clock) : tm.kind === 'turn' ? (G.turn === 0 && !ui.busy && !G.over ? fmtClock(ui.left) : '–') : '';
-    if (tm.kind !== 'none') { const ck = $('#clkTop'); ck.textContent = '⏱ ' + ctxt; ck.classList.toggle('low', low && !ui.paused); }
+    // v08r (CD-63: 1.1a): in per-TURN games, a side's clock not running shows its full turn time, dimmed (both sides alike)
+    const myRun = G.turn === 0 && !ui.busy && !G.over && !repsOn();
+    const ctxt = tm.kind === 'game' ? fmtClock(G.clock) : tm.kind === 'turn' ? fmtClock(myRun ? ui.left : tm.secs * 1000) : '';
+    if (tm.kind !== 'none') { const ck = $('#clkTop'); ck.textContent = '⏱ ' + ctxt; ck.classList.toggle('low', low && !ui.paused); ck.classList.toggle('idle', tm.kind === 'turn' && !myRun); }
     btn.classList.toggle('low', low && !ui.paused);
     btn.classList.toggle('on', ui.paused);
     $('#pauseIco').textContent = ui.paused ? '▶️' : '⏸️';
@@ -2058,6 +2061,7 @@
   function save() { if (G) store.set('cd.save', G); }
 
   function startHumanTurn() {
+    ui.bTurn0 = 0; // v08r: the Bot's per-TURN clock stops (renderOppClock clears its ticker)
     ui.pending = [];
     ui.selTile = null;
     ui.hintCell = -1; cancelDrag();
@@ -2387,6 +2391,18 @@
   }
   function renderOppClock() {
     const el = $('#clkOpp');
+    // v08r (JM CD-62: 1.2.1; CD-63: 1.1a): per-TURN games give the Bot a matching clock too (mirrored top boxes): its full
+    // turn time, dimmed while waiting, counting down during its thinking pause
+    const tk = G ? E.timerOf(G.settings.timer) : null;
+    if (G && tk.kind === 'turn') {
+      el.hidden = false;
+      const run = G.turn === 1 && !G.over && !!ui.bTurn0;
+      el.textContent = '⏱ ' + fmtClock(run ? Math.max(0, tk.secs * 1000 - (Date.now() - ui.bTurn0)) : tk.secs * 1000);
+      el.classList.toggle('idle', !run); el.classList.remove('out');
+      if (!run && ui.bTurnT) { clearInterval(ui.bTurnT); ui.bTurnT = 0; }
+      return;
+    }
+    el.classList.remove('idle');
     if (!G || !botTimed()) { el.hidden = true; return; }
     el.hidden = false;
     const a = ui.bAnim, ms = a ? a.from - (a.from - a.to) * Math.min(1, (Date.now() - a.t0) / a.dur) : (G.bclock != null ? G.bclock : E.timerOf(G.settings.timer).secs * 1000);
@@ -2451,6 +2467,8 @@
     const token = ui.token;
     if (G.clockOut === 0) { botSpeedRun(); return; } // v08p: your clock ran out: the Bot finishes in one 2 s sweep
     ui.busy = true;
+    // v08r: the Bot's per-TURN clock runs while it thinks
+    if (E.timerOf(G.settings.timer).kind === 'turn') { ui.bTurn0 = Date.now(); clearInterval(ui.bTurnT); ui.bTurnT = setInterval(renderOppClock, 250); }
     ui.selSlot = -1; ui.selCell = -1; cancelDrag();
     render();
     await nap(650 + Math.random() * 650);

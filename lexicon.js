@@ -4,8 +4,8 @@
    Level: 1 everyday · 2 common · 3 moderate · 4 advanced · 5 obscure
    Words are 2–7 letters, plus 11-letter words for Large grids (A–Z only). A repeated word adds an extra clue set (see above). */
 // Lexicon edition (JM, CD-24 other edits 1.1): its own number, separate from the game version. Add 1 whenever the word data or the Lexicon page changes.
-// L01 v07a · L02 v07b · L03 v07c · L04 v07d (wrapping cells) · L05 v07e (8-letter hint clues, edition number) · L06 v08 (8-letter easy and hard hints) · L07 (editor page: Status, Comments, Edit Mode + Copy Edits, advanced search; "/" in 23 Word Vault clues) · L08 v08b (58 country-code clues "Madrid URL" style, JM CD-27; Word Vault tricky hints) · L09 (JM's first Copy Edits, CD-29: ZAR clues, EXCITE added ON-DECK; ";" separates alternative clues, one picked at random) · L10 v08q (JM's Copy Edits, CD-59 + CD-60: 28 clue changes, "on an exchange board" / "on a bag tag" / "on a T-shirt tag" dropped, EXCITE active, new 1-letter clues, T pictures, drawn ICEBERG picture "@iceberg"; the Lexicon page gives each 1-letter row its own key)
-self.LEXICON_VER = 'L10';
+// L01 v07a · L02 v07b · L03 v07c · L04 v07d (wrapping cells) · L05 v07e (8-letter hint clues, edition number) · L06 v08 (8-letter easy and hard hints) · L07 (editor page: Status, Comments, Edit Mode + Copy Edits, advanced search; "/" in 23 Word Vault clues) · L08 v08b (58 country-code clues "Madrid URL" style, JM CD-27; Word Vault tricky hints) · L09 (JM's first Copy Edits, CD-29: ZAR clues, EXCITE added ON-DECK; ";" separates alternative clues, one picked at random) · L10 v08q (JM's Copy Edits, CD-59 + CD-60: 28 clue changes, "on an exchange board" / "on a bag tag" / "on a T-shirt tag" dropped, EXCITE active, new 1-letter clues, T pictures, drawn ICEBERG picture "@iceberg"; the Lexicon page gives each 1-letter row its own key) · L11 v08r (CD-62: 2.1a: 1-letter answers have one clue per row, so F, K and X's new ";" clues became separate rows; page: missing-letter marks drawn as in the game + "Missing-letter clues" filter)
+self.LEXICON_VER = 'L11';
 self.LEXICON_DATA = `
 # ---------- 2 letters ----------
 AD|Commercial|Promo|1
@@ -3620,7 +3620,9 @@ F|Failing grade|1
 F|Sixth letter|1
 F|°_, in USA|2
 F|Fluorine|3
-F|Old-school degrees; Old-fash temp; N.A. temps|2
+F|Old-school degrees|2
+F|Old-fash temp|2
+F|N.A. temps|2
 G|_IRAFFE|1
 G|Seventh letter|1
 G|Sounds like "gee!"|2
@@ -3646,7 +3648,8 @@ K|J_L|1
 K|A thousand (as in 5_)|2
 K|Potassium|3
 K|Strikeout, on a baseball scorecard|3
-K|Half-OK; Lazy fine|2
+K|Half-OK|2
+K|Lazy fine|2
 L|_OLLIPOP|1
 L|Large T-shirt|1
 L|Twelfth letter|1
@@ -3707,7 +3710,8 @@ X|Marks the spot|1|❌
 X|Roman 10|2
 X|Kiss, at the end of a note|2
 X|Unknown, in algebra|3
-X|Cancel; Close|2
+X|Cancel|2
+X|Close|2
 Y|_OGURT|1
 Y|_O-YO|1
 Y|Sounds like "why?"|1
