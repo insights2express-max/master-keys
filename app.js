@@ -1,4 +1,5 @@
-/* Clue Duel — user interface (v08o: the Bot's own whole-game clock, the other side plays on alone when a clock runs out,
+/* Clue Duel — user interface (v08p: new top band (no clue bar; clocks by the scores, hub of buttons), floating turn messages, tap a clue for its card, orange ? and bars for missing letters and words, the Bot waits for your tap after red marks, the Bot's 2-second finish after your clock runs out, wide screens: names over avatars, wings for the buttons, big DONE under the grid;
+   v08o: the Bot's own whole-game clock, the other side plays on alone when a clock runs out,
    "N min each (whole game)";
    v08n: the 3D look (candy-drop tiles, wells, clue plaques, floating penciled tiles that settle
    at Done, keycap buttons), arrow keys and Esc for zoom, "the Bot" in the game's wording;
@@ -11,7 +12,7 @@
    v08j: grid colors, final-play view, clock-out final turn, menu defaults, phone two-finger drag) */
 'use strict';
 (() => {
-  const APP_VER = 'v08o'; // Project CP: shown as a pill beside the title and in the browser tab
+  const APP_VER = 'v08p'; // Project CP: shown as a pill beside the title and in the browser tab
   const E = window.Engine;
   const $ = (s, el = document) => el.querySelector(s);
   const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -549,6 +550,11 @@
     const R = G.pz.R, C = G.pz.C, frame = 4; // 2px border on each side + 1px lines between cells
     // v04: the cap is 120 px (was 76), so the grid fills big monitors too (JM, CD-8: 2.1.1)
     const base = Math.max(18, Math.floor(Math.min((w - frame - (C - 1)) / C, (h - frame - (R - 1)) / R, 120)));
+    // v08p (JM iPad 1.5.1): on wide screens the grid area is only as tall as a width-limited grid needs, so the hand
+    // sits right under the grid and the two are centered together (the spare height goes above and below them)
+    const bw = Math.max(18, Math.floor(Math.min((w - frame - (C - 1)) / C, 120)));
+    const mh = getComputedStyle($('#sideYou')).display !== 'none' ? Math.ceil(bw * R + frame + (R - 1) + parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom)) + 'px' : '';
+    if (wrap.style.maxHeight !== mh) wrap.style.maxHeight = mh;
     ui.baseCell = base;
     // v08m: zoomed, the cells are drawn bigger (crisp, not a scaled picture) and the grid scrolls inside #zoomer
     const zf = Math.min(zm.z, zMax());
@@ -824,8 +830,24 @@
   // ---------- Bottom row (JM, CD-8: 2.1.1.1; CD-9: 2.1) ----------
   // Hand and buttons always share one row. If that would squeeze the tiles below 40 px (phones), the row becomes
   // tiles + Done + ⋯ More, and the other buttons open from More; your clock then shows under your score.
+  // v08p (JM iPad 1.5.3; CD-57: 4.4a): on wide screens (tablets, computers) Swap / Shuffle / Pause stack at the foot of
+  // the left wing and the coin buttons at the foot of the right wing; the hand and a big DONE stay under the grid.
+  // On phones they go back into the ⋯ More pop-up.
+  const CTL_ORDER = ['hintBtn', 'scanBtn', 'placeBtn', 'checkBtn', 'timeBtn', 'swapBtn', 'mixBtn', 'pauseBtn'];
+  function placeControls() {
+    const wide = getComputedStyle($('#sideYou')).display !== 'none', pop = $('#morePop');
+    for (const id of CTL_ORDER) {
+      const b = $('#' + id);
+      const dest = !wide ? pop : b.classList.contains('coinbtn') ? $('#wingR') : $('#wingL');
+      if (b.parentNode !== dest) dest.appendChild(b);
+    }
+    $('#game').classList.toggle('wide', wide);
+  }
+  // v08p (CD-57: 1.2): on phones, tap either score for the Scoreboard
+  for (const id of ['#plYou', '#plOpp']) $(id).addEventListener('click', e => { if (!G || e.target.closest('#clkTop') || isWide()) return; setSheetOpen(!ui.sheetOpen); });
   function fitDock() {
     if (!G || $('#game').hidden) return;
+    placeControls(); // v08p
     const dock = $('#dock');
     dock.classList.remove('compact');
     const n = G.settings.hand, cs = getComputedStyle(dock);
@@ -836,7 +858,7 @@
     $('#game').classList.toggle('compact', compact);
     if (!compact) setMore(false);
     const tk = E.timerOf(G.settings.timer).kind;
-    $('#clkTop').hidden = tk === 'none' || (!compact && tk !== 'game'); // v08o: with whole-game clocks both clocks show beside the names
+    $('#clkTop').hidden = tk === 'none'; // v08p (JM CD-56 add'l 1.1.1, iPad 1.1.1): your clock always shows beside your score in a timed game
     renderOppClock();
     // v06c (JM, CD-18: 1.1): when tiles are narrow (under 48 px, on any device) and they show point values,
     // tiles grow taller and the value sits centered under the letter instead of crowding its corner
@@ -955,7 +977,7 @@
       const s = G.pz.slots[si];
       const body = s.clue.pic
         ? `<span class="pic" style="font-size:${picFont(s.clue.pic, split)}px">${s.clue.pic}</span>`
-        : `<span class="ct" style="font-size:${clueFont(s.clue.t, split, d)}px">${esc(s.clue.t)}</span>`;
+        : `<span class="ct" style="font-size:${clueFont(s.clue.t, split, d)}px">${clueMarks(s.clue.t)}</span>`;
       const cls = ['cl', 'cl-' + d];
       if (slotDone(s)) cls.push('solved');
       if (ui.lit && ui.lit.on.has(si)) cls.push('on'); // v08L (CD-50: 3.1b): bright, or pale for crossing words
@@ -982,6 +1004,11 @@
     for (const si of on) pale.delete(si);
     return { on, pale };
   }
+  // v08p (JM CD-56 add'l 1.2; CD-57: 2.1c, 2.2.1): a missing letter ("_") shows as a bold orange "?"; a missing word
+  // ("___") as a thick orange bar. On a lit (yellow) clue cell both turn deep orange so they don't wash out (2.2.2.1).
+  function clueMarks(t) {
+    return esc(t).replace(/_{2,}/g, '<span class="mw" aria-label="missing word"></span>').replace(/_/g, '<span class="ml" aria-label="missing letter">?</span>');
+  }
   function renderBoard() {
     const pz = G.pz;
     ui.lit = litSlots(); // v08L
@@ -1007,7 +1034,7 @@
       if (c.k === 'c') { parts.push(clueCellHTML(i, c)); continue; }
       const cls = ['cell', 'let'];
       let inner = '';
-      const ch = G.board[i];
+      const ch = ui.hide && ui.hide.has(i) ? '' : G.board[i]; // v08p: the Bot's speed-run tiles appear one by one
       // the bonus on this cell: waiting (fixed or floating), or already used
       const b = ch ? E.bonusUsed(G, i) : E.bonusAt(G, i);
       const fl = !ch && G.fb && G.fb[i];
@@ -1122,6 +1149,7 @@
     $('#infoBar').innerHTML = `${coinPill()}<span class="ib-t"><span>Round ${r}</span><span>${G.bag.length} in bag</span></span>`;
     $('#infoBar').title = `Round ${r} · ${G.bag.length} tiles not dealt yet · ${M.name}`;
     $('#infoSide').innerHTML = `<div class="info-coins">${coinPill()}</div><b>Round ${r}</b> · ${G.bag.length} in bag<br>${esc(M.name)} · ${esc(bonusName)}<br>${esc(timerLabel())}`;
+    $('#hubSet').textContent = `${M.name} · ${bonusName} · ${timerLabel().replace(/ \(whole game\)$/, '')}`; // v08p (CD-57: 4.3): this game's settings, wide screens
   }
 
   // The clock shown on the Pause button
@@ -1136,7 +1164,9 @@
     else if (tm.kind === 'turn') { txt = G.turn === 0 && !ui.busy ? fmtClock(ui.left) : '–'; low = G.turn === 0 && ui.left <= 10000; }
     else txt = 'Pause';
     t.textContent = txt;
-    if (tm.kind !== 'none') { const ck = $('#clkTop'); ck.textContent = '⏱ ' + txt; ck.classList.toggle('low', low && !ui.paused); }
+    // v08p: the clock by your score always shows time (never "Resume" or "Done")
+    const ctxt = tm.kind === 'game' ? fmtClock(G.clock) : tm.kind === 'turn' ? (G.turn === 0 && !ui.busy && !G.over ? fmtClock(ui.left) : '–') : '';
+    if (tm.kind !== 'none') { const ck = $('#clkTop'); ck.textContent = '⏱ ' + ctxt; ck.classList.toggle('low', low && !ui.paused); }
     btn.classList.toggle('low', low && !ui.paused);
     btn.classList.toggle('on', ui.paused);
     $('#pauseIco').textContent = ui.paused ? '▶️' : '⏸️';
@@ -1188,12 +1218,29 @@
       + `<span class="cb-stat"><span class="cb-pat">[${letters}]</span><span class="cb-n">${got.length} / ${s.cells.length}</span>${sp ? `<span class="cb-pts">${sp.v} ${sp.t}</span>` : ''}</span></div>`;
   }
 
-  // v08m: the 🔍 zoom button sits at the right end of the clue bar (it never covers the grid)
+  // v08p: 🔍 sits in the hub's button row (it used to sit at the end of the clue bar)
   function renderClueBar() {
     renderClueBar0();
-    const bar = $('#cluebar'), zb = zoomBtnEl;
-    if (zb.parentNode !== bar) bar.appendChild(zb);
-    bar.classList.toggle('has-z', !zb.hidden);
+    const slot = $('#zoomSlot'), zb = zoomBtnEl;
+    if (zb.parentNode !== slot) slot.appendChild(zb);
+  }
+  // v08p (CD-57: 1.3a): the floating message ("pill") at the top of #toasts
+  const msgS = { t: '', timer: 0, seen: new Set() };
+  function showMsg(t, hold, key) {
+    let el = $('#msgPill');
+    if (!el) { el = document.createElement('div'); el.id = 'msgPill'; el.className = 'toast msg gone'; $('#toasts').prepend(el); }
+    if (el.parentNode.firstChild !== el) el.parentNode.prepend(el);
+    if (key && msgS.seen.has(key) && msgS.t !== t) return; // a tip already shown (and faded) stays gone
+    if (t === msgS.t) return;
+    msgS.t = t; clearTimeout(msgS.timer);
+    if (key) msgS.seen.add(key);
+    if (!t) { el.classList.add('out'); msgS.timer = setTimeout(() => el.classList.add('gone'), 320); return; }
+    el.textContent = t;
+    el.classList.remove('out', 'gone');
+    el.classList.toggle('hold', !!hold);
+    el.style.animation = 'none'; void el.offsetWidth; el.style.animation = '';
+    placeToasts();
+    if (!hold) msgS.timer = setTimeout(() => { el.classList.add('out'); msgS.timer = setTimeout(() => el.classList.add('gone'), 320); }, 4000);
   }
   function renderClueBar0() {
     const bar = $('#cluebar');
@@ -1204,18 +1251,20 @@
       bar.innerHTML = both.map(si => clueLine(si, si === ui.selSlot)).join('');
       return;
     }
-    let msg;
+    // v08p (JM CD-57: 1.3a, 1.5): no clue bar. The message floats over the grid, in the half away from any red marks.
+    // Most fade after 4 s; the ones you must act on (hold) stay while they apply. Tips show once (turn / game).
+    let msg = '', hold = false, key = '';
     if (G.over) msg = 'Game over. Tap any clue to review the words.';
-    else if (ui.passHold) msg = 'LAST CHANCE: read the red notice, then click or tap anywhere to continue. The game waits.';
-    else if (repsHeld() && reps.html.some(Boolean)) msg = 'Red marks: tiles that didn\x27t fit. Click or tap anywhere to see the turn report.'; // v08m (CD-52: 2.2b)
-    else if (G.turn === 1) msg = G.clockOut === 0 ? `Your clock ran out: ${opp().n} plays on alone until it finishes.` : `${opp().n} is thinking…`; // v08o
-    else if (repsOn()) msg = 'Click or tap anywhere to start your turn. Your clock waits.';
-    else if (ui.pending.length) msg = 'Tiles are penciled in until you tap DONE: then wrong ones bounce back and cost points. Drag a tile to move it, or tap it to take it back.';
-    else if (!G.hands[0].length) msg = 'No tiles left. Tap Pass.';
-    else if (G.clockOut === 1 && !ui.pending.length) msg = `${opp().n}'s clock ran out: you play on alone until you finish (your clock keeps running).`; // v08o
-    else if (G.finalTurn === 0) msg = `FINAL TURN: ${opp().n} has played every tile. Play all you can; any tile left in your hand counts against you.`;
-    else msg ='Your turn. Drag a tile onto the grid, or tap a tile then a cell. Tap a clue to read it; point at (or press and hold) a clue to zoom.';
-    bar.innerHTML = `<div class="cb-status">${esc(msg)}</div>`;
+    else if (ui.passHold) { msg = 'LAST CHANCE: read the red notice, then tap anywhere to continue.'; hold = true; }
+    else if (ui.wrong && (ui.botWait || repsHeld())) { msg = 'Red marks: tiles that didn\x27t fit. Tap anywhere to continue.'; hold = true; } // v08p (CD-57: 3.1)
+    else if (G.turn === 1) msg = G.clockOut === 0 ? `Your clock ran out: ${opp().n} places the rest of its tiles.` : `${opp().n} is thinking…`; // v08o
+    else if (repsOn()) msg = 'Tap anywhere to start your turn. Your clock waits.';
+    else if (ui.pending.length) { msg = 'Penciled in until DONE. Drag a tile to move it, or tap it to take it back.'; key = 'pend:' + ui.token; }
+    else if (!G.hands[0].length) { msg = 'No tiles left. Tap Pass.'; hold = true; }
+    else if (G.clockOut === 1) { msg = `${opp().n}'s clock ran out: you play on alone (your clock keeps running).`; key = 'solo:' + ui.token; } // v08o
+    else if (G.finalTurn === 0) { msg = `FINAL TURN: ${opp().n} has played every tile. Play all you can.`; hold = true; }
+    else { msg = 'Your turn.'; key = 'turn:' + ui.token + ':' + G.turnNo; }
+    showMsg(msg, hold, key);
   }
 
   function renderActions() {
@@ -1251,6 +1300,7 @@
     // v08f (CD-37: 2.1.1): once the game is over, the hand's row becomes the game-over bar
     const over = !!(G && G.over && G.result);
     $('#dock').classList.toggle('is-over', over);
+    $('#game').classList.toggle('is-over', over); // v08p: the wing buttons hide too
     $('#overBar').hidden = !over;
     if (over) $('#overBar').style.setProperty('--gw', Math.round(Math.min($('#board').getBoundingClientRect().width, $('#boardwrap').clientWidth - 8)) + 'px'); // v08m (CD-51 add'l 1): the win report is as wide as the grid
     const obKey = over ? (ui.resSeen ? 'seen' : 'new') : ''; // v08j: the bar is redrawn once Results has been seen
@@ -1345,7 +1395,7 @@
       box.style.bottom = '';
       const rr = !ov.hidden ? [...ov.children].filter(c => !c.hidden).map(c => c.getBoundingClientRect()) : [];
       box.style.top = rr.length ? Math.round(Math.max(...rr.map(r => r.bottom)) + 6) + 'px' : '';
-    } else { box.style.top = ''; box.style.bottom = ''; }
+    } else { box.style.bottom = ''; box.style.top = !$('#game').hidden ? Math.round($('#boardwrap').getBoundingClientRect().top + 8) + 'px' : ''; } // v08p: just inside the top of the grid
   }
   window.addEventListener('resize', () => { if (G && !$('#game').hidden) placeToasts(); });
 
@@ -1422,7 +1472,7 @@
     el.className = 'toast ' + kind;
     el.textContent = msg;
     box.appendChild(el);
-    while (box.children.length > 3) box.firstChild.remove();
+    while (box.querySelectorAll('.toast:not(.msg)').length > 3) box.querySelector('.toast:not(.msg)').remove(); // v08p: the message pill stays
     // v08k (JM CD-46: 1.8.1): ms = 0 holds the notice until the tap that closes the reports (with the PASS banner)
     if (!ms) { el.classList.add('held'); return; }
     setTimeout(() => { el.classList.add('out'); setTimeout(() => el.remove(), 320); }, ms);
@@ -1511,6 +1561,11 @@
   }
   function clearReports() {
     const marks = clearWrong(); // v08k: red wrong-tile marks and held notices go with the same tap
+    if (ui.botWait) { // v08p: the tap that clears your red marks lets the Bot play
+      const bw = ui.botWait; ui.botWait = null;
+      if (bw.tok === ui.token && G) { render(); showReport(lastLog()); afterTurn(bw.over); }
+      return;
+    }
     // v08m (CD-52: 2.2b): a phone's 1st tap only clears the marks; the reports that waited for them now show
     if (marks && reps.html.some(Boolean) && !isWide()) { renderReports(); if (G && !$('#game').hidden) render(); return; }
     if (!repsOn()) { if (marks && G && !$('#game').hidden) render(); return; }
@@ -1667,7 +1722,7 @@
         <li>The Bot's skill rises gently from 1 to 7, then jumps at 8: levels 8–10 are the <b>Master</b> levels (see ${go('Bot')}). The puzzle's difficulty rises steadily at every level.</li>
         <li>As the level rises: words get longer and harder, and word and picture clues get trickier.</li>
         <li>Starter letters (gray, already on the grid) help new players: about a quarter of the letters at level 1, fewer at level 2, just 1–3 at level 3, and none from level 4. With fewer starters there are more tiles to play, so games run longer.</li>
-        <li>Picture clues: at levels 1–5 the ${go('Clue Bar', 'clue bar')} names the kind of picture clue (see ${go('Clue Pics')}); from level 6 you work it out yourself.</li>
+        <li>Picture clues: at levels 1–5 the ${go('Clue Cards', 'clue card')} names the kind of picture clue (see ${go('Clue Pics')}); from level 6 you work it out yourself.</li>
         <li>From level 5, word clues turn punny: double meanings and wordplay. A "?" means don't take it literally.</li>`)}
       ${sec('Grid Size', `
         <li><b>Small</b> (5 × 6), <b>Medium</b> (6 × 7) or <b>Large</b> (7 × 11). Bigger grids mean more words, longer games and bigger scores.</li>`)}
@@ -1697,7 +1752,7 @@
             <li><b>Sounds like</b> (🌻 = FLOUR), from level 7.</li>
             <li><b>Letter math</b> (🐻 − B + P = PEAR), from level 8.</li>
           </ul></li>
-        <li>At levels 1–5 the ${go('Clue Bar', 'clue bar')} names the kind; from level 6 you're on your own.</li>`)}
+        <li>At levels 1–5 the ${go('Clue Cards', 'clue card')} names the kind; from level 6 you're on your own.</li>`)}
       ${sec('Scoring', `
         <li>Pick one of five scoring modes. The modes differ only in how tiles and words score. Everything else is the same in every mode:</li>
         <li class="help-sub"><b>In every mode</b></li>
@@ -1732,26 +1787,24 @@
         <li><b>Untimed</b>: take as long as you like.</li>
         <li><b>Per turn</b> (Blitz · 30 s per TURN, or 1 to 5 min per TURN): when it runs out, your turn ends and the tiles you penciled in are checked, as if you had tapped Done.</li>
         <li><b>Whole game</b> (2 to 15 min <b>each</b>): you and the Bot each have your own clock of the same length, and each runs only on its own turns. The Bot's clock (beside its name) counts down while it plays: higher levels think faster, and at lower levels it sometimes runs out.</li>
-        <li>When a side's clock reaches zero, tiles it hasn't confirmed with <b>Done</b> don't count, and it <b>stops</b>: the other side <b>plays on alone</b>, turn after turn, until its hand and the bag are empty, the grid is full, it passes 3 times in a row, or its own clock runs out. Tiles left in the hand of the side that ran out count against it. The red notice stays until you tap.</li>
+        <li>When a side's clock reaches zero, tiles it hasn't confirmed with <b>Done</b> don't count, and it <b>stops</b>, and tiles left in its hand count against it. If <b>your</b> clock runs out, the Bot places all the tiles it can (from its hand and the bag) in <b>one quick 2-second sweep</b>, and the game ends. If <b>the Bot's</b> clock runs out, you <b>play on alone</b>, turn after turn, until your hand and the bag are empty, the grid is full, you pass 3 times in a row, or your own clock runs out. The red notice stays until you tap.</li>
         <li>Clocks never run while a ${go('Turn Reports and The Scoreboard', 'turn report')} is waiting for your tap, or while the game is paused.</li>
         <li>In the last 10 seconds the grid's border flashes every second: <b>yellow</b> from 10 to 6, <b>red</b> from 5 to 1.</li>`)}
       ${sec('Resume Game', `
         <li><b>New Game</b> starts a fresh puzzle with the settings above. <b>🔐 Word Vault</b>, beside it, opens the word-guessing game.</li>
-        <li><b>Resume Game</b> appears when you have an unfinished game. Your game is saved after every turn and whenever you leave it (☰ in the upper-left corner of the game takes you straight to the menu).</li>
-        <li><b>⚙</b> beside <b>?</b> in the game (on a phone, at the right end of the Scoreboard row) shows this game's settings. Changes apply from your next game; <b>New game with these</b> starts one now.</li>`)}
-      ${sec('Clue Bar', `
-        <li>The clue bar sits at the top of the game, between the two scores (on a phone, on its own row just below them).</li>
-        <li>Tap a clue in the grid to show it in the bar. Tap a white cell to show the word it belongs to; tap the same cell again to switch between its across and down words.</li>
-        <li>When a cell sits in two words, or a clue cell holds two clues, the bar shows both on two lines: across (→) on top, down (↓) below. The word you are working on is highlighted; tap the other line to switch to it.</li>
-        <li>Each line shows the clue, then the letters found so far with blanks for the rest, like [C _ T _], how many are found (2 / 4), and what the found letters are worth in this game's ${go('Scoring', 'scoring mode')}. In Word Finisher it shows what the word will score when finished; Combo Chain shows no points here.</li>
-        <li>At ${go('Challenge Level', 'Challenge Levels')} 1–5, a tricky picture clue also shows its kind, like "sounds like" (see ${go('Clue Pics')}). From level 6 there are no labels.</li>
-        <li>With no clue chosen, the bar shows whose turn it is and what to do next.</li>`)}
+        <li><b>Resume Game</b> appears when you have an unfinished game. Your game is saved after every turn and whenever you leave it (☰, between the two scores, takes you straight to the menu).</li>
+        <li><b>⚙</b> (among the buttons between the two scores) shows this game's settings. Changes apply from your next game; <b>New game with these</b> starts one now.</li>`)}
+      ${sec('Clue Cards', `
+        <li>Tap a clue in the grid (or point at it with a mouse) to see it enlarged on a clue card, with how many letters it has. Tap it again, or anywhere else, to close the card. Press and hold a clue to see the card only while you hold.</li>
+        <li>In a clue, an orange <b style="color:#ff7a00">?</b> stands for a missing letter (like ?IRAFFE), and a thick orange bar for a missing word (like "Band-▬").</li>
+        <li>At ${go('Challenge Level', 'Challenge Levels')} 1–5, a tricky picture clue's card also shows its kind, like "sounds like" (see ${go('Clue Pics')}). From level 6 there are no labels.</li>
+        <li>Short messages (whose turn it is, red marks, clocks) appear for a few seconds just inside the top of the grid. The ones you must act on stay until they no longer apply.</li>`)}
       ${sec('The Grid', `
         <li>Gray CLUE CELLS hold the clues, and every one of them holds at least one. The orange arrow points to where the answer starts: ▶ runs right, ▼ runs down.</li>
         <li>The <b>top row</b> holds one clue per cell, for the word below it (▼). The <b>left column</b> holds one clue per cell, for the word to its right (▶).</li>
         <li>Every clue cell <b>inside</b> the grid holds two clues: the across clue on top (▶) and the down clue below (▼). Only clue cells in the <b>bottom row</b> (across only) or the <b>right column</b> (down only) hold one.</li>
         <li>Some answers are just 1 or 2 letters. A 1-letter clue may be a fill-in like ZEBR_ (A), a Roman numeral, a compass point or a T-shirt size.</li>
-        <li>Tap a clue or a white cell to read it at the top: see ${go('Clue Bar')}.</li>
+        <li>Tap a clue to read it on its card: see ${go('Clue Cards')}.</li>
         <li>Point at a clue with the mouse, or press and hold it on a touch screen, to see it enlarged across the grid.</li>
         <li>Some clues are pictures: see ${go('Clue Pics')}.</li>`)}
       ${sec('Your Turn', `
@@ -1777,7 +1830,7 @@
         <li><b>⏱️ +30s (🪙${R.timeCost})</b> (timed games only): adds 30 seconds to your clock for ${R.timeCost} coins. Use it as often as you like. Bought time never pays speed coins.</li>
         <li><b>✓ Done</b> (green) checks and banks this turn's tiles. It shows how many are penciled in, like <b>Done · 3</b> (not the points, which would give away which tiles are right). With nothing placed it turns <b>orange</b> and reads <b>⏭ Pass</b>: orange means "think first", since a pass is sometimes needed but never a gain.</li>
         <li><b>Keyboard</b> (computers): <b>Enter</b> is ✓ Done. With nothing placed, press Enter <b>twice</b> within 3 seconds to pass (the button reads "Enter again to pass"). Enter also closes a waiting turn report or LAST CHANCE notice. <b>P</b> or <b>Space</b> pauses (press again to resume). <b>Z</b> is 🔍 zoom; <b>+</b> or <b>↑</b> zooms in, <b>−</b> or <b>↓</b> zooms out, <b>←</b> and <b>→</b> (or <b>Shift + ↑</b> and <b>Shift + ↓</b>) slide a zoomed grid, and <b>Esc</b> shows the whole grid again.</li>
-        <li><b>🔍 Zoom</b> (right end of the clue bar): tap it, then tap the part of the grid you want; it fills the view. Tap 🔍 again for the whole grid, and twice more to go back to your last view. You can also pinch the grid (phones) or hold Ctrl and roll the mouse wheel (computers). Zoomed, drag the grid to slide it, use the arrows at its edges, or tap the small map in the corner to jump.</li>`)}
+        <li><b>🔍 Zoom</b> (among the buttons between the two scores): tap it, then tap the part of the grid you want; it fills the view. Tap 🔍 again for the whole grid, and twice more to go back to your last view. You can also pinch the grid (phones) or hold Ctrl and roll the mouse wheel (computers). Zoomed, drag the grid to slide it, use the arrows at its edges, or tap the small map in the corner to jump.</li>`)}
       ${sec('Bonuses', `
         <li><span class="chip x2">2×</span> doubles your turn's points from tiles and words. Each extra 2× in the same turn adds another double: 10 → 20 → 40 → 60.</li>
         <li><span class="chip p5">+${R.plusCell}</span> cells add ${R.plusCell} points, and <span class="chip p5">+${R.plus2Cell}</span> cells add ${R.plus2Cell} points. Both are added after doubling and are never doubled. +${R.plus2Cell} cells appear only with the Fixed or Both setting (see ${go('Bonus Squares')}).</li>
@@ -1790,7 +1843,7 @@
         <li>The <b>Scoreboard</b> keeps every turn by round: letter points, word points, bonuses, penalties and the turn's total. Green marks the higher score in each round. On phones, tap ▸ Scoreboard to open it.</li>`)}
       ${sec('The End', `
         <li><b>Final turn:</b> once the bag is empty and either player places their last tile, the other player gets <b>one final turn</b> to play what they can. Then the game ends, and any tile still in a hand is subtracted from its owner's score.</li>
-        <li>The game also ends when the grid is full, by the <b>3 PASSES Rule</b> (${esc(PASS_RULE)}), or after a whole-game clock runs out and the other side has played on alone to the end.</li>
+        <li>The game also ends when the grid is full, by the <b>3 PASSES Rule</b> (${esc(PASS_RULE)}), or after a whole-game clock runs out and the other side has finished.</li>
         <li>A <b>⏭ 1/3</b> counter in the grid's top-left corner (where the logo sits) counts passes in a row: yellow after the 1st pass, red after the 2nd. A pass is a ⏭ Pass, a 🔄 Swap, a turn where every tile bounced, or a turn clock that ran out. The 2nd pass also shows a red <b>LAST CHANCE</b> notice that says what caused it and <b>holds the game until you tap</b> (the Bot waits and your clock stops). The counter goes away (and the logo comes back) once someone places a tile.</li>
         <li>When the game ends, the grid stays on screen and the last play's tiles and words glow, so you can see the final play. <b>📊 See results</b> (or Enter) opens the result window.</li>
         <li>The result window shows both scores, your record against this Bot, both sides' play and your coins. Its buttons: <b>🔍 Grid</b> (look at the grid again), <b>⚙ Settings</b>, <b>☰ Menu</b> and <b>Rematch</b>.</li>
@@ -1949,7 +2002,7 @@
     const over = E.endTurn(G, 0, 'pass', 'clock');
     showReport(lastLog());
     // v08k (JM CD-46: 1.8.1): the notice stays until you tap, together with the PASS banner
-    if (!over) toast(`Your clock ran out.${back ? ` Your ${back} unconfirmed tile${back > 1 ? 's' : ''} went back to your hand.` : ''} ${opp().n} plays on alone until it finishes; tiles left in your hand count against you.`, 'bad', 0); // v08o (CD-52: 5.2)
+    if (!over) toast(`Your clock ran out.${back ? ` Your ${back} unconfirmed tile${back > 1 ? 's' : ''} went back to your hand.` : ''} ${opp().n} now places all the tiles it can in one quick sweep; tiles left in your hand count against you.`, 'bad', 0); // v08o (CD-52: 5.2)
     else toast('Your clock ran out. Game over.', 'bad', 0);
     afterTurn(over);
   }
@@ -2136,7 +2189,13 @@
     // v08L (JM CD-49: 1.6.1.3): with wrong tiles, the turn report (and the timed blur) waits about 1 s, until they
     // have trembled and bounced back to your hand, so the whole routine can be seen
     const wait = ui.wrong && !reduceMotion() ? 1000 : 0;
-    if (!wait) { showReport(lastLog()); afterTurn(over); return; }
+    // v08p (JM CD-56 add'l 1.3.1; CD-57: 3.1): with red marks up, the Bot waits. Your tap clears them; only then does the
+    // Bot play (its tiles animate), and the turn reports follow as usual. No clock runs meanwhile.
+    const go = () => {
+      if (ui.wrong) { ui.botWait = { over, tok: ui.token }; ui.busy = true; save(); render(); return; }
+      showReport(lastLog()); afterTurn(over);
+    };
+    if (!wait) { go(); return; }
     ui.repAt = Date.now() + wait;
     ui.busy = true;
     save();
@@ -2145,8 +2204,7 @@
     setTimeout(() => {
       ui.repAt = 0;
       if (tok !== ui.token || !G) return;
-      showReport(lastLog());
-      afterTurn(over);
+      go();
     }, wait);
   }
   $('#doneBtn').addEventListener('click', onDone);
@@ -2251,8 +2309,49 @@
     startHumanTurn();
   }
 
+  // v08p (JM CD-57 add'l 1): once your whole-game clock has run out, the Bot no longer plays on turn by turn. All of its
+  // remaining turns are worked out at once (hand and bag tiles, same rules), then its new tiles appear across the grid
+  // in one 2-second sweep and the game ends. Its own clock is not charged for this.
+  async function botSpeedRun() {
+    const token = ui.token;
+    ui.busy = true;
+    ui.selSlot = -1; ui.selCell = -1; cancelDrag();
+    render();
+    await nap(700);
+    if (token !== ui.token || !G) return;
+    const before = G.board.slice();
+    let over = false, guard = 0;
+    while (!over && G.turn === 1 && guard++ < 300) {
+      const plan = E.aiPlan(G);
+      const r = E.judge(G, 1, plan.map(s => ({ cell: s.cell, tileId: s.tileId, ch: s.ch })));
+      over = E.endTurn(G, r.right.length);
+    }
+    const fresh = [];
+    for (let i = 0; i < G.board.length; i++) if (G.board[i] && !before[i]) fresh.push(i);
+    save();
+    // reveal row by row, top-left to bottom-right, over 2 s in all
+    ui.hide = new Set(fresh);
+    render();
+    const step = fresh.length ? 2000 / fresh.length : 0;
+    let lastSnd = 0;
+    for (const ci of fresh) {
+      await nap(step);
+      if (token !== ui.token || !G) { ui.hide = null; return; }
+      ui.hide.delete(ci);
+      ui.pop = ci;
+      if (Date.now() - lastSnd > 90) { sound.play('opp'); lastSnd = Date.now(); }
+      render();
+    }
+    ui.hide = null;
+    settleTiles(fresh);
+    ui.busy = false;
+    if (over || G.over) { render(); gameOver(); return; }
+    if (G.turn === 0) { startHumanTurn(); return; }
+    render(); gameOver();
+  }
   async function runAiTurn() {
     const token = ui.token;
+    if (G.clockOut === 0) { botSpeedRun(); return; } // v08p: your clock ran out: the Bot finishes in one 2 s sweep
     ui.busy = true;
     ui.selSlot = -1; ui.selCell = -1; cancelDrag();
     render();
@@ -2341,7 +2440,17 @@
   $('#board').addEventListener('click', e => {
     if (!G || clickSuppressed()) return;
     const cl = e.target.closest('.cl');
-    if (cl) { const si = +cl.dataset.s; ui.selSlot = ui.selSlot === si && ui.selCell < 0 ? -1 : si; ui.selCell = -1; render(); return; }
+    if (cl) {
+      const si = +cl.dataset.s;
+      ui.selSlot = ui.selSlot === si && ui.selCell < 0 ? -1 : si; ui.selCell = -1; render();
+      // v08p (CD-57: 1.4): a tap opens the clue's enlarged card (a 2nd tap on it, or a tap elsewhere, closes it).
+      // With a mouse, pointing already opened it: the click leaves it open.
+      const was = zoom.tapSi; zoom.tapSi = -1;
+      if (zoom.open && zoom.si === si && !zoom.tap) return;
+      if (was === si) { closeZoom(); return; }
+      openZoom(si); zoom.tap = true; zoom.tapSi = -1;
+      return;
+    }
     const el = e.target.closest('.cell.let');
     if (!el) return;
     const i = +el.dataset.i;
@@ -2773,7 +2882,9 @@
   // Hover-zoom: enlarged CLUE WORD / CLUE PIC at the grid's center,
   // with a trace line from its CLUE CELL (and back again on close)
   // =====================================================================
-  const zoom = { si: -1, wait: -1, timer: 0, open: false, geo: null, gen: 0, held: false };
+  const zoom = { si: -1, wait: -1, timer: 0, open: false, geo: null, gen: 0, held: false, tap: false, tapSi: -1 };
+  // v08p: a card opened by a tap closes at the next tap anywhere outside the grid's clue cells
+  window.addEventListener('pointerdown', e => { if (zoom.open && zoom.tap && !e.target.closest('#board .cl')) closeZoom(); }, true);
   function clEl(si) { return $(`#board .cl[data-s="${si}"]`); }
   function stopAnims(el) { if (el.getAnimations) el.getAnimations().forEach(a => a.cancel()); }
 
@@ -2794,7 +2905,7 @@
     else {
       const longest = Math.max(...s.clue.t.split(/\s+/).map(w => w.length));
       const f = Math.max(18, Math.min(84, inner / (longest * 0.64), Math.max(br.height * 0.2, 40)));
-      body = `<div class="z-word" style="font-size:${Math.round(f)}px">${esc(s.clue.t)}</div>`;
+      body = `<div class="z-word" style="font-size:${Math.round(f)}px">${clueMarks(s.clue.t)}</div>`;
     }
     const ztag = picTag(s) ? picTag(s) + ' · ' : '';
     // Caption: a taller band with larger, pure-white text (JM, CD-7: 6.2)
@@ -2826,14 +2937,14 @@
       ln.animate([{ strokeDashoffset: len }, { strokeDashoffset: 0 }], { duration: 240 * k, fill: 'forwards', easing: 'ease-out' });
       z.animate([{ transform: away, opacity: 0 }, { transform: 'translate(-50%, -50%)', opacity: 1 }], { duration: 300 * k, delay: 110 * k, fill: 'both', easing: 'cubic-bezier(.2,.8,.2,1)' });
     } else ln.style.strokeDashoffset = 0;
-    Object.assign(zoom, { open: true, si, geo: { away, len } });
+    Object.assign(zoom, { open: true, si, geo: { away, len }, tap: false });
     zoom.gen++;
   }
 
   function closeZoom(instant) {
     clearTimeout(zoom.timer); zoom.timer = 0; zoom.wait = -1;
     if (!zoom.open) return;
-    zoom.open = false; zoom.si = -1;
+    zoom.open = false; zoom.si = -1; zoom.tap = false;
     const z = $('#zoom'), ln = $('#traceLine');
     const { away, len } = zoom.geo;
     const my = ++zoom.gen;
@@ -2864,6 +2975,7 @@
     const cl = e.target.closest('.cl');
     if (!cl) return;
     const si = +cl.dataset.s, sx = e.clientX, sy = e.clientY;
+    zoom.tapSi = zoom.open && zoom.tap ? zoom.si : -1; // v08p: a 2nd tap on the same clue closes its card
     closeZoom(true);
     zoom.held = false;
     zoom.timer = setTimeout(() => { zoom.timer = 0; zoom.held = true; openZoom(si); if (navigator.vibrate) try { navigator.vibrate(15); } catch (err) { /* ignore */ } }, 450);
@@ -2899,7 +3011,7 @@
     sound.play(r.winner === 0 ? 'win' : r.winner === 1 ? 'lose' : 'draw', 0.5); // v08h
     const title = r.winner === 0 ? `${myName() === 'You' ? 'You win' : myName() + ' wins'}!` : r.winner === 1 ? `${o.n} wins` : 'It\'s a draw';
     const st = G.stats;
-    const ended = r.complete ? 'The grid is complete.' : r.reason === 'clock' ? (G.clock <= 0 && G.bclock === 0 ? 'Both whole-game clocks ran out.' : G.clockOut === 0 ? `Your whole-game clock ran out, and ${o.n} played on alone to the end.` : `${o.n}'s whole-game clock ran out, and you played on alone to the end.`)
+    const ended = r.complete ? 'The grid is complete.' : r.reason === 'clock' ? (G.clock <= 0 && G.bclock === 0 ? 'Both whole-game clocks ran out.' : G.clockOut === 0 ? `Your whole-game clock ran out, and ${o.n} placed the rest of its tiles in one sweep.` : `${o.n}'s whole-game clock ran out, and you played on alone to the end.`)
       : r.reason === 'out' ? `${G.outBy === 0 ? 'You' : o.n} played every tile, and ${G.outBy === 0 ? o.n : 'you'} had one final turn.`
       : 'Three passes in a row ended the game (3 PASSES Rule).';
     // v08 coins at the end: whole-game clocks pay their speed coins once, here; a win pays +10.

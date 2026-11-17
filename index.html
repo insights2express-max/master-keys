@@ -9,7 +9,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Clue Duel">
   <meta name="description" content="A head-to-head crossword tile game you can play offline.">
-  <title>Clue Duel · v08o</title>
+  <title>Clue Duel · v08p</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="icon" href="icons/icon-192.png" type="image/png" sizes="192x192">
@@ -23,7 +23,7 @@
       <header class="brand">
         <img class="logo" src="icons/icon.svg" alt="" width="64" height="64">
         <div class="brand-txt">
-          <h1>Clue Duel <span class="vpill" id="verPill">v08o</span></h1>
+          <h1>Clue Duel <span class="vpill" id="verPill">v08p</span></h1>
           <p class="tag">Place your letters. Finish the words. Beat the Bot.</p>
         </div>
         <!-- v08h (JM CD-41: 1.3, 1.4.1): sound, Game History and How To Play as small icons in the top corner -->
@@ -219,30 +219,31 @@
 
   <!-- ===== Game ===== -->
   <section id="game" class="screen" hidden>
+    <!-- v08p (JM CD-56 add'l 1.1, iPad 1.1–1.4; CD-57: 1.1, 4.2–4.3): no clue bar. Each side: name over avatar + score,
+         with its clock toward the center; the hub between them holds coins · Round · bag, this game's settings (wide
+         screens) and ☰ 🔍 🔇 ⚙ ?. Turn messages float over the grid (#toasts). -->
     <header class="topbar">
-      <button class="icon-btn" id="menuBtn" type="button" aria-label="Menu">☰</button>
       <div class="pl you" id="plYou">
-        <span class="av" id="myAvTop">🙂</span>
-        <div class="pl-txt"><div class="nm" id="myNm">You</div><div class="clk" id="clkTop" role="button" tabindex="0" title="Tap to pause" hidden></div><div class="sc" id="scYou">0</div></div>
+        <div class="nm" id="myNm">You</div>
+        <div class="pl-row"><span class="av" id="myAvTop">🙂</span><div class="sc" id="scYou">0</div><div class="clk" id="clkTop" role="button" tabindex="0" title="Tap to pause" hidden></div></div>
       </div>
-      <!-- On wide screens the clue bar sits here, between the two scores; on phones it drops to its own row -->
-      <div class="cluebar" id="cluebar" aria-live="polite"></div>
+      <div class="hub" id="hub">
+        <div class="hub-info"><span class="gameinfo bar" id="infoBar"></span><span class="hub-set" id="hubSet"></span></div>
+        <div class="hub-btns"><button class="icon-btn" id="menuBtn" type="button" aria-label="Menu">☰</button><span class="zslot" id="zoomSlot"></span><button class="icon-btn snd-btn" data-snd type="button">🔇</button><button class="icon-btn" id="setBtn" type="button" aria-label="Clue Duel settings" title="Settings">⚙</button><button class="icon-btn" id="helpBtn" type="button" aria-label="How To Play">?</button></div>
+      </div>
       <div class="pl opp" id="plOpp">
-        <div class="pl-txt r"><div class="nm" id="oppNm">Bot</div><div class="clk" id="clkOpp" title="The Bot's whole-game clock" hidden></div><div class="sc" id="scOpp">0</div></div>
-        <span class="av" id="oppAv">🦊</span>
+        <div class="nm" id="oppNm">Bot</div>
+        <div class="pl-row"><div class="clk" id="clkOpp" title="The Bot's whole-game clock" hidden></div><div class="sc" id="scOpp">0</div><span class="av" id="oppAv">🦊</span></div>
       </div>
-      <!-- v08f (JM CD-37: 4.1): ⚙ settings beside ?, as in Word Vault -->
-      <div class="tb-btns"><button class="icon-btn snd-btn" data-snd type="button">🔇</button><button class="icon-btn" id="setBtn" type="button" aria-label="Clue Duel settings" title="Settings">⚙</button><button class="icon-btn" id="helpBtn" type="button" aria-label="How To Play">?</button></div>
+      <div class="cluebar" id="cluebar" aria-live="polite" hidden></div>
     </header>
 
-    <!-- v06c (JM, CD-18: 3.1a): on phones, ☰ and ? sit at the two ends of this row, so the clue bar above gets their width -->
+    <!-- v08p: the Scoreboard drops down from here on phones (tap either score); the old row's buttons stay hidden -->
     <div class="sheetbar" id="sheetbar">
-      <button class="icon-btn mini" id="menuBtn2" type="button" aria-label="Menu">☰</button>
-      <button class="sheet-toggle" id="sheetToggle" type="button" aria-expanded="false"><span class="cec" id="sheetCec">▸</span> Scoreboard</button>
-      <span class="gameinfo bar" id="infoBar"></span>
-      <button class="icon-btn mini snd-btn" data-snd type="button">🔇</button>
-      <button class="icon-btn mini" id="setBtn2" type="button" aria-label="Clue Duel settings" title="Settings">⚙</button>
-      <button class="icon-btn mini" id="helpBtn2" type="button" aria-label="How To Play">?</button>
+      <button class="icon-btn mini" id="menuBtn2" type="button" aria-label="Menu" hidden>☰</button>
+      <button class="sheet-toggle" id="sheetToggle" type="button" aria-expanded="false" hidden><span class="cec" id="sheetCec">▸</span> Scoreboard</button>
+      <button class="icon-btn mini" id="setBtn2" type="button" aria-label="Clue Duel settings" title="Settings" hidden>⚙</button>
+      <button class="icon-btn mini" id="helpBtn2" type="button" aria-label="How To Play" hidden>?</button>
       <div class="sheetpanel" id="sheetPanel" hidden></div>
     </div>
     <div class="passwarn bar" id="passWarnBar" role="alert" hidden></div>
@@ -252,7 +253,9 @@
         <div class="passwarn" id="passWarnSide" hidden></div>
         <div class="sheetwrap" id="sheetYou"></div>
         <div class="turnrep you" id="repYou" hidden></div>
+        <div class="wing" id="wingL"></div>
       </aside>
+      <div class="midcol" id="midcol">
       <div class="boardwrap" id="boardwrap">
         <!-- v08m (CD-50: 6.1c): the grid scrolls inside #zoomer when zoomed; arrows, mini-map and the "tap where" note sit over it -->
         <div class="zoomer" id="zoomer"><div id="board" class="board"></div></div>
@@ -268,13 +271,6 @@
           </div>
         </div>
       </div>
-      <aside class="side opp" id="sideOpp">
-        <div class="gameinfo side" id="infoSide"></div>
-        <div class="sheetwrap" id="sheetOpp"></div>
-        <div class="turnrep opp" id="repOpp" hidden></div>
-      </aside>
-    </div>
-
     <!-- Hand and buttons share ONE row at every screen size (JM, CD-8: 2.1.1.1). Buttons are only as wide as their text.
          When the row is too narrow (phones), the buttons inside #morePop move into a pop-up opened by ⋯ More (CD-9: 2.1). -->
     <div class="dock" id="dock">
@@ -297,6 +293,14 @@
       </div>
       <!-- v08f (JM CD-37: 2.1.1): after the game, the hand's row becomes a game-over bar, so the next step is always in view -->
       <div class="overbar" id="overBar" hidden></div>
+    </div>
+      </div>
+      <aside class="side opp" id="sideOpp">
+        <div class="gameinfo side" id="infoSide"></div>
+        <div class="sheetwrap" id="sheetOpp"></div>
+        <div class="turnrep opp" id="repOpp" hidden></div>
+        <div class="wing" id="wingR"></div>
+      </aside>
     </div>
   </section>
 

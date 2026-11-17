@@ -1486,3 +1486,120 @@ img.av-img { display: inline-block; width: 1.15em; height: 1.15em; border-radius
 
 /* ===== v08o (JM CD-52: 5.1–5.3): the Bot's whole-game clock beside its name (gray and struck through once it runs out) ===== */
 .pl .clk.out { color: var(--muted); text-decoration: line-through; }
+
+/* =====================================================================
+   v08p (JM CD-56 add'l 1.1, iPad 1.1–1.5; CD-57: 1.1–1.5, 4.1a–4.5): no clue bar. Top band: each side's name over
+   its avatar + score, with its clock toward the center; the hub between them. Turn messages float over the grid.
+   Wide screens (tablets, computers): Swap / Shuffle / Pause at the foot of the left wing, coin buttons at the foot of
+   the right wing, the hand and a big DONE right under the grid.
+   ===================================================================== */
+.topbar { display: grid !important; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) !important; grid-template-areas: none !important; align-items: center; gap: 6px; padding: 6px 8px 4px; }
+.topbar > .cluebar { display: none !important; }
+.topbar .pl { display: grid; grid-template-columns: auto auto auto; align-items: center; justify-items: center; column-gap: 8px; row-gap: 2px; padding: 4px 6px; min-width: 0; }
+.topbar .pl.you { justify-self: end; }
+.topbar .pl.opp { justify-self: start; }
+.topbar .pl-row { display: contents; }
+.topbar .pl .nm { grid-row: 1; max-width: none; text-align: center; }
+.topbar .pl.you .nm { grid-column: 1 / 3; }
+.topbar .pl.opp .nm { grid-column: 2 / 4; }
+.topbar .pl .av, .topbar .pl .sc, .topbar .pl .clk { grid-row: 2; }
+.topbar .pl .sc { margin-top: 0; }
+.topbar .pl .clk { font-size: 18px; font-weight: 900; padding: 3px 9px; border-radius: 10px; background: var(--surface); box-shadow: var(--shadow); line-height: 1.15; }
+.topbar .pl .clk[hidden] { display: none; }
+.topbar .pl .clk.out { color: var(--muted); text-decoration: line-through; }
+.hub { display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 0; }
+.hub-info { display: flex; flex-direction: column; align-items: center; gap: 1px; min-width: 0; max-width: 100%; }
+.hub .gameinfo.bar { margin: 0; display: flex; align-items: center; justify-content: center; }
+.hub .gameinfo.bar .ib-t { flex-direction: row; gap: 0; font-size: 12px; }
+.hub .gameinfo.bar .ib-t > span + span::before { content: ' · '; white-space: pre; }
+.hub-set { font-size: 12px; font-weight: 600; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; display: none; }
+.hub-btns { display: flex; align-items: center; gap: 6px; }
+.hub-btns .icon-btn { display: inline-grid; place-items: center; }
+.zslot:empty, .zslot:has(> .zbtn[hidden]) { display: none; }
+.zslot .zbtn { position: static; transform: none; width: 38px; height: 38px; border-radius: 10px; }
+.sheetbar { padding: 0 !important; min-height: 0; }
+.sheetbar > :not(.sheetpanel) { display: none !important; }
+.gameinfo.side { display: none !important; }
+.topbar .pl.you, .topbar .pl.opp { cursor: default; }
+/* turn messages */
+.toast.msg { background: rgba(31, 41, 51, .92); }
+.toast.msg.hold { box-shadow: 0 0 0 2px #ffd43b, 0 6px 18px rgba(0, 0, 0, .25); }
+.toast.gone { display: none; }
+/* the grid and the hand share the middle column */
+.midcol { flex: 1; min-width: 0; min-height: 0; display: flex; flex-direction: column; }
+.midcol > .boardwrap { flex: 1 1 auto; }
+.midcol > .dock { flex: none; }
+.wing { display: none; }
+
+/* phones (and narrow tablets): clock over score, no names or avatars; ☰ 🔍 🔇 ⚙ ? over coins · Round · bag */
+@media not all and (min-width: 900px) and (min-height: 480px) {
+  .topbar { grid-template-columns: auto minmax(0, 1fr) auto !important; gap: 4px; padding: 6px 6px 4px; }
+  .topbar .pl { grid-template-columns: auto; column-gap: 0; padding: 2px 3px; cursor: pointer !important; }
+  .topbar .pl.you, .topbar .pl.opp { justify-self: center; }
+  .topbar .pl .nm, .topbar .pl .av { display: none; }
+  .topbar .pl .clk { grid-row: 1; grid-column: 1; font-size: 19px; padding: 2px 8px; }
+  .topbar .pl .sc { grid-row: 2; grid-column: 1; }
+  .hub { gap: 5px; }
+  .hub-btns { order: -1; gap: 5px; }
+  .hub-btns .icon-btn, .zslot .zbtn { width: 36px; height: 36px; font-size: 17px; }
+}
+@media (max-width: 380px) {
+  .hub-btns { gap: 3px; }
+  .hub-btns .icon-btn, .zslot .zbtn { width: 32px; height: 32px; font-size: 15px; }
+  .topbar .pl .clk { font-size: 17px; padding: 2px 6px; }
+}
+
+/* wide screens: tablets and computers (CD-57: 4.1a) */
+@media (min-width: 900px) and (min-height: 480px) {
+  .topbar { padding: 8px 12px 6px; gap: 14px; align-items: end; }
+  .topbar .pl { column-gap: 10px; padding: 4px 10px 6px; }
+  .topbar .pl .nm { font-size: 20px; font-weight: 800; color: var(--ink); line-height: 1.15; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; justify-self: stretch; }
+  .topbar .pl .av { font-size: 50px; line-height: 1; }
+  .topbar .pl .av img.av-img { width: 1em; height: 1em; }
+  .topbar .pl .clk { font-size: clamp(26px, 2.6vw, 34px); padding: 4px 14px; border-radius: 12px; }
+  .hub { align-self: center; gap: 5px; padding: 6px 12px; border-radius: 14px; background: var(--surface); box-shadow: var(--shadow); }
+  .hub .gameinfo.bar .ib-t { font-size: 14px; color: var(--ink); }
+  .hub-set { display: block; }
+  .midcol { justify-content: center; }
+  .side { padding-top: 8px; }
+  .side .sheetwrap { flex: 1 1 auto; min-height: 60px; }
+  .wing { display: flex; flex-direction: column; gap: 6px; margin-top: auto; padding-top: 2px; }
+  .wing .btn { width: 100%; justify-content: center; margin: 0 !important; min-height: 46px; }
+  .wing .btn::before { display: none !important; }
+  .wing .btn[hidden] { display: none; }
+  #game.is-over .wing { display: none; }
+  #game.paused .wing .btn:not(#pauseBtn) { opacity: .4; pointer-events: none; }
+  .dock { gap: 16px; padding: 8px 10px 10px; }
+  .dock .rackbar { flex: 0 1 calc(var(--n, 6) * 66px); }
+  #moreBtn { display: none !important; }
+  /* CD-57: 4.5 + 4.5.1: about 2.5 tiles wide, as tall as a tile, the same size whatever its label */
+  #doneBtn { width: 156px; min-width: 156px; height: 60px; flex: none; justify-content: center; border-radius: 14px; }
+  #doneBtn b { font-size: 22px; }
+  #doneBtn span, #doneTxt { font-size: 21px !important; }
+}
+@media (min-width: 900px) and (min-height: 480px) and (prefers-color-scheme: dark) {
+  .topbar .pl .nm { color: #fff; } /* JM iPad 1.3: pure white bold names (dark mode; near-black in light mode) */
+}
+/* v08p (CD-57: 2.1c, 2.2.1, 2.2.2.1): missing letters and missing words in clues */
+.ml { color: #ff7a00; font-weight: 900; -webkit-text-stroke: 0; }
+.mw { display: inline-block; width: 1.9em; height: max(3px, .15em); margin: 0 .12em; border-radius: 2px; background: #ff7a00; vertical-align: -.08em; }
+.cl.on .ml { color: #a33a00; }
+.cl.on .mw { background: #a33a00; }
+.zoom .ml { color: #ff9a3d; }
+.zoom .mw { background: #ff9a3d; }
+.topbar > * { grid-area: auto !important; grid-row: 1 !important; }
+.topbar > .pl.you { grid-column: 1 !important; }
+.topbar > .hub { grid-column: 2 !important; }
+.topbar > .pl.opp { grid-column: 3 !important; }
+#plYou { grid-column: 1 !important; } #plOpp { grid-column: 3 !important; } #menuBtn { grid-area: auto; }
+.hub-btns #menuBtn, .hub-btns #helpBtn { display: inline-grid !important; grid-area: auto; }
+@media not all and (min-width: 900px) and (min-height: 480px) { .topbar .pl .sc { font-size: 30px; min-width: 44px; text-align: center; } }
+@media (min-width: 900px) and (min-height: 480px) {
+  .wing .btn { font-size: 15px; gap: 8px; }
+  .wing .btn b { font-size: 20px; }
+  .wing .btn span { font-size: 15px !important; }
+}
+@media (min-width: 900px) and (min-height: 480px) {
+  .wing .btn { flex-direction: row !important; align-items: center; min-height: 44px; height: auto; padding: 6px 10px; }
+  .side { overflow: hidden; }
+}
