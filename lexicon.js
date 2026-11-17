@@ -4,11 +4,11 @@
    Level: 1 everyday · 2 common · 3 moderate · 4 advanced · 5 obscure
    Words are 2–7 letters, plus 11-letter words for Large grids (A–Z only). A repeated word adds an extra clue set (see above). */
 // Lexicon edition (JM, CD-24 other edits 1.1): its own number, separate from the game version. Add 1 whenever the word data or the Lexicon page changes.
-// L01 v07a · L02 v07b · L03 v07c · L04 v07d (wrapping cells) · L05 v07e (8-letter hint clues, edition number) · L06 v08 (8-letter easy and hard hints) · L07 (editor page: Status, Comments, Edit Mode + Copy Edits, advanced search; "/" in 23 Word Vault clues) · L08 v08b (58 country-code clues "Madrid URL" style, JM CD-27; Word Vault tricky hints) · L09 (JM's first Copy Edits, CD-29: ZAR clues, EXCITE added ON-DECK; ";" separates alternative clues, one picked at random) · L10 v08q (JM's Copy Edits, CD-59 + CD-60: 28 clue changes, "on an exchange board" / "on a bag tag" / "on a T-shirt tag" dropped, EXCITE active, new 1-letter clues, T pictures, drawn ICEBERG picture "@iceberg"; the Lexicon page gives each 1-letter row its own key) · L11 v08r (CD-62: 2.1a: 1-letter answers have one clue per row, so F, K and X's new ";" clues became separate rows; page: missing-letter marks drawn as in the game + "Missing-letter clues" filter)
-self.LEXICON_VER = 'L11';
+// L01 v07a · L02 v07b · L03 v07c · L04 v07d (wrapping cells) · L05 v07e (8-letter hint clues, edition number) · L06 v08 (8-letter easy and hard hints) · L07 (editor page: Status, Comments, Edit Mode + Copy Edits, advanced search; "/" in 23 Word Vault clues) · L08 v08b (58 country-code clues "Madrid URL" style, JM CD-27; Word Vault tricky hints) · L09 (JM's first Copy Edits, CD-29: ZAR clues, EXCITE added ON-DECK; ";" separates alternative clues, one picked at random) · L10 v08q (JM's Copy Edits, CD-59 + CD-60: 28 clue changes, "on an exchange board" / "on a bag tag" / "on a T-shirt tag" dropped, EXCITE active, new 1-letter clues, T pictures, drawn ICEBERG picture "@iceberg"; the Lexicon page gives each 1-letter row its own key) · L11 v08r (CD-62: 2.1a: 1-letter answers have one clue per row, so F, K and X's new ";" clues became separate rows; page: missing-letter marks drawn as in the game + "Missing-letter clues" filter) · L12 v08s (JM's Copy Edits CD-64 + CD-65: 34 changes, sorted Literal = plain / Indirect = figurative; page: permanent edit record, Reviewed ticks, Wordplay column, Claude drafts)
+self.LEXICON_VER = 'L12';
 self.LEXICON_DATA = `
 # ---------- 2 letters ----------
-AD|Commercial|Promo|1
+AD|Commercial; Selling|Promo|1
 AH|"I see!"|Sound of realization|1
 AM|Morning hours|Before noon, on clocks|1
 AN|Article before a vowel|Indefinite little word|1
@@ -69,7 +69,7 @@ EG|For example|"Say," in short|2
 IE|That is|"That is"|3
 ET|"___ cetera"|Latin "and"|3
 PM|Afternoon|Prime Minister|1
-AC|Air conditioning|Cool unit|2
+AC|Air conditioning|Cool unit; Cool!; Chillin'|2
 VR|Virtual reality|Goggles tech|2|🥽
 MD|Doctor|Physician|2
 RN|Nurse|Hospital pro|3
@@ -118,10 +118,10 @@ EW|"Gross!"|Yuck!|1|🤢
 HM|Pondering sound|"Let me think..."|2
 SH|"Quiet!"|Library sound|2
 # ---------- 3 letters ----------
-ACE|Top card|Serve no one returns|1
-ACT|Perform on stage|Bill passed into law|1
-ADD|Sum up|Tack on|1
-AGE|Years lived|Era|1
+ACE|Top card|Serve no one returns; Best-in-class|1
+ACT|Perform on stage; Pretend|Bill becomes law|1
+ADD|Sum up|Tack on; Anti-minus; Minus x -1|1
+AGE|Years lived; Period|Era|1
 AGO|In the past|Back then|1
 AID|Help|Band-___|1
 AIM|Point at a target|Goal|1
@@ -470,8 +470,8 @@ ZEN|Calm|Meditation school|2
 ZIP|Fasten|Zero|1|🤐
 ZOO|Animal park|Madhouse|1
 ABS|Stomach muscles|Six-pack|2
-ADO|Fuss|Much ___ about nothing|2
-AFT|Toward the stern|Rear, at sea|3
+ADO|Fuss; Bother; Trouble|Much ___ about nothing|2
+AFT|Toward the stern|Rear, at sea; Sailor's 6; 6 o'clock|3
 AHA|"Got it!"|Eureka|1|💡
 ALP|Swiss peak|Mountain|2|🏔️
 ALT|Keyboard key|Other, in tech|3
@@ -578,9 +578,9 @@ TSK|Disapproving sound|Tut|3
 # ---------- 4 letters ----------
 ABLE|Capable|Competent|1
 ACHE|Pain|Yearn|1
-ACID|Sour substance|Biting, as wit|2|🧪
+ACID|Sour substance; Low pH; Sulfuric|Biting, as wit|2|🧪
 ACRE|Land measure|Farm unit|1
-AGED|Old|Matured, like cheese|1
+AGED|Old|Matured|1
 AIDE|Assistant|Helper|2
 AIRY|Breezy|Light and spacious|2
 ALOE|Soothing plant|Gel plant|2
@@ -1260,7 +1260,7 @@ YOGA|Mindful stretch|Asana practice|1|🧘
 ZERO|Nothing|Nil|1|0️⃣
 ZONE|Area|Region|1
 ABET|Aid a crime|Egg on|3
-ADZE|Woodworking ax|Shaping blade|5
+ADZE|Woodworking ax|Shaping blade; Strange ax|5
 ALEE|Away from wind|Sheltered side|5
 ANON|Soon, old-style|Shortly, poetically|4
 ARID|Very dry|Parched|2
@@ -1387,7 +1387,7 @@ STOA|Greek portico|Colonnade|5
 TSAR|Czar|Russian ruler|4
 UNAU|Two-toed sloth|Sloth|5
 ERNE|Sea eagle|Eagle|5
-AEON|Very long time|Age|4
+AEON|Very long time; Epoch; Era|Age|4
 ONUS|Burden|Responsibility|4
 EDEN|Paradise|Garden|2
 IRIS|Eye part|Flower|2
@@ -1395,15 +1395,15 @@ AGUE|Fever|Chills|5
 # ---------- 5 letters ----------
 ABOUT|Approximately|Regarding|1
 ABOVE|Over|Overhead|1
-ACORN|Oak nut|Oak seed|1|🌰
-ACTOR|Performer|Thespian|1
-ADAPT|Adjust|Modify|1
+ACORN|Oak nut|Oak seed; Squirrel fav|1|🌰
+ACTOR|Performer|Thespian; Shakespearean|1
+ADAPT|Adjust; Flex; Bend|Modify|1
 ADMIT|Confess|Let in|1
 ADOPT|Take in|Embrace|1
-ADULT|Grown-up|Mature|1
-AFTER|Later|Behind|1
-AGAIN|Once more|Anew|1
-AGENT|Spy|Representative|1
+ADULT|Grown-up|Mature; 18+|1
+AFTER|Later; Subsequent|Behind|1
+AGAIN|Once more|Anew; >once|1
+AGENT|Spy; Rep; Proxy|Representative|2
 AGREE|Concur|Accept|1
 AHEAD|In front|Forward|1
 ALARM|Alert|Fear|1|🚨
@@ -1955,12 +1955,12 @@ YOUNG|Youthful|New|1
 YOUTH|Teen|Juvenile|1
 ZEBRA|Striped horse|Crosswalk|1|🦓
 ABHOR|Hate|Loathe|4
-ACRID|Pungent|Bitter|4
+ACRID|Pungent; Harsh|Bitter; Like the smell of rot|4
 ADAGE|Saying|Proverb|3
-ADEPT|Skilled|Expert|3
-ADORN|Decorate|Embellish|3
-AEGIS|Protection|Sponsorship|5
-AGILE|Nimble|Spry|3
+ADEPT|Skilled; Talented|Expert|3
+ADORN|Decorate; Enhance|Embellish; Makeup|3
+AEGIS|Protection; Shielding|Sponsorship|5
+AGILE|Nimble; Athletic; Flexible|Spry|3
 AGLOW|Shining|Radiant|4
 ALOFT|In the air|Overhead|4
 AMBLE|Stroll|Saunter|3
@@ -2325,9 +2325,9 @@ WIZARD|Sorcerer|Genius|1|🧙
 YELLOW|Lemon color|Cowardly|1|🟨
 ZIPPER|Fastener|Slide fastener|1
 ABJECT|Wretched|Hopeless|4
-ACUMEN|Shrewdness|Insight|4
+ACUMEN|Shrewdness|Insight; Biz wiz|4
 ADROIT|Skillful|Deft|5
-AGHAST|Horrified|Appalled|4
+AGHAST|Horrified; Speechless|Appalled|4
 ALLURE|Charm|Appeal|3
 ARCANE|Obscure|Mysterious|4
 ASTUTE|Shrewd|Sharp|4
@@ -2393,8 +2393,8 @@ ZEALOT|Fanatic|Extremist|4
 ZENITH|Peak|Summit|4
 # ---------- 7 letters ----------
 ABILITY|Skill|Talent|1
-ACROBAT|Gymnast|Tumbler|1|🤸
-ADDRESS|Location|Speech|1
+ACROBAT|Gymnast|Tumbler; PDF reader; Adobe viewer|1|🤸
+ADDRESS|Location|Speech; House ID|1
 AIRPORT|Airfield|Terminal|1|🛫
 ANIMATE|Bring to life|Enliven|2
 ANTENNA|Aerial|Feeler|1
@@ -2935,7 +2935,7 @@ SUPERPOWERS|Heroes' special abilities|Flying and X-ray vision, e.g.|1
 TRANSFORMER|Thing that changes shape|Robot that becomes a truck|2
 # ---------- v05 additions (JM CD-10: 7.1.1.1) ----------
 # Easy 2-letter answers: they let the 'full' grid style fill more clue cells (levels 1–2)
-AB|Stomach muscle|Six-pack unit|2
+AB|Stomach muscle|Six-pack|2
 AK|Alaska|Juneau's state|2
 AL|Alabama|Montgomery's state|2
 AP|Big news agency|Advanced Placement|2
@@ -3329,7 +3329,7 @@ CR|Chromium|Shiny-bumper metal|2
 NI|Nickel|Coin metal that sticks to magnets|1
 CU|Copper|Electric-wire metal|1
 ZN|Zinc|Sunscreen metal|1
-AG|Silver|Second-place metal|1
+AG|Silver|Second-place metal; Gold's little brother|1
 AU|Gold|First-place metal|1
 HG|Mercury|Old-thermometer metal|2
 SN|Tin|Tin-can metal|2
@@ -3588,11 +3588,11 @@ EXCITE|Energize; Activate; Agitate|Light one's fire|2||4
 self.LETTER_DATA = `
 A|ZEBR_|1
 A|PIZZ_|1
-A|Top school grade|1
+A|Top grade|1
 A|First letter|1
 A|Blood type|1|🅰️
 A|Vitamin in carrots|2
-A|Musical note before B|3
+A|Note before B|3
 B|_ANANA|1
 B|Grade after A|1
 B|Blood type|1|🅱️
