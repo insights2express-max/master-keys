@@ -1,4 +1,5 @@
-/* Clue Duel — game engine (v08o: each side has its own whole-game clock; when one runs out, the other plays on alone;
+/* Clue Duel — game engine (v08q: 4-letter hands, Letters in Hand changes at the next round (setHandNext / roundStart), Full Hand = 2 points per tile, letter clues with ";" choices and picture captions;
+   v08o: each side has its own whole-game clock; when one runs out, the other plays on alone;
    v08j: whole-game clock-out gives the rival a final turn; v08i: starter letters by level, final turn)
    Puzzle generator (arrow-word grid), tile bag, scoring modes, bonus squares and the computer opponent.
    No DOM code here: app.js handles everything the player sees. */
@@ -7,7 +8,7 @@
   // ---------- Letter values (rarer letters are worth more) ----------
   const VAL = { A: 1, B: 3, C: 3, D: 2, E: 1, F: 4, G: 2, H: 4, I: 1, J: 8, K: 5, L: 1, M: 3, N: 1, O: 1, P: 3, Q: 10, R: 1, S: 1, T: 1, U: 1, V: 4, W: 4, X: 8, Y: 4, Z: 10 };
   const SIZES = { S: [5, 6], M: [6, 7], L: [7, 11] }; // [columns, rows] of the playable area
-  const RULES = { wrongPenalty: 2, hintCost: 3, fullHandBonus: 10, perLetterWordBonus: 2, plusCell: 5, plus2Cell: 2, passLimit: 3, timeCost: 5, timeAdd: 30000, checkBase: 5, checkPerWrong: 5 };
+  const RULES = { wrongPenalty: 2, hintCost: 3, fullHandBonus: 10, fullHandPerTile: 2, perLetterWordBonus: 2, plusCell: 5, plus2Cell: 2, passLimit: 3, timeCost: 5, timeAdd: 30000, checkBase: 5, checkPerWrong: 5 };
 
   // ---------- Scoring modes (JM, CD-2: 2.1–2.5) ----------
   // tiles: what a placed tile scores · word: what finishing a word scores
@@ -487,8 +488,9 @@
       // harder levels lean toward the harder clues
       const pick = skill >= 7 && rng() < 0.6 ? opts.slice().sort((a, b) => b.l - a.l)[0] : opts[Math.floor(rng() * opts.length)];
       usedLC.add(pick.t);
+      if (pick.t.includes(';')) return { t: oneClue(pick.t, rng), hard: pick.l >= 2 }; // v08q: letter clues with ";" choices (CD-60: 2.3)
       return pick.p && o.pics !== 'off' && rng() < (PIC_RATE[o.pics] != null ? PIC_RATE[o.pics] : PIC_RATE.some) + 0.2
-        ? { t: pick.t, pic: pick.p, pt: 'lit', hard: false } : { t: pick.t, hard: pick.l >= 2 };
+        ? { t: pick.t, pic: pick.p, pt: 'lit', hard: false, cap: /_/.test(pick.t) } : { t: pick.t, hard: pick.l >= 2 }; // v08q: "_OMATO" + 🍅 keeps its fill-in
     };
     const outSlots = slots.map((s, si) => {
       const e = idx[s.cells.length].list[res.assign[si]];
@@ -555,7 +557,7 @@
     const bag = [];
     for (let i = 0; i < pz.N; i++) if (pz.cells[i].k === 'l' && !board[i]) bag.push({ id: nextId++, ch: pz.cells[i].s });
     shuffle(bag, rng);
-    const hand = Math.min(8, Math.max(5, settings.hand | 0 || 6));
+    const hand = Math.min(8, Math.max(4, settings.hand | 0 || 6)); // v08q (CD-58 add'l 4): 4 letters too
     const hands = [[], []];
     for (let n = 0; n < hand; n++) for (let p = 0; p < 2; p++) if (bag.length) hands[p].push(bag.pop());
     const scoring = MODES[settings.scoring] ? settings.scoring : 'classic';
@@ -644,7 +646,7 @@
     const p5 = np5 * M.plus;                          // added after doubling, never doubled
     const p2 = np2 * RULES.plus2Cell;                 // v07a: +2 cells, also added after doubling
     const full = placements.length > 0 && placements.length >= state.settings.hand;
-    const fullPts = full ? M.full : 0;                // added after doubling, never doubled
+    const fullPts = full ? fullBonus(state) : 0;      // added after doubling, never doubled (v08q: 2 per tile in the hand setting)
     return { letters: raw, raw, base, nx2, x2, np5, p5, np2, p2, words, wordPts, full, fullPts, total: base + x2 + p5 + p2 + fullPts };
   }
 
@@ -698,6 +700,28 @@
     const t = state.hands[player].find(x => x.id === h.tileId);
     return { cell: h.cell, tileId: h.tileId, ch: t.ch, cost: tileVal(state, t.ch) };
   }
+
+  // v08q (JM CD-58 add'l 3, 3.1; CD-59: 1.1a): Letters in Hand can change during a game. The new size waits for the
+  // next full round (a round starts on each odd turn number). A smaller hand sends random tiles from each hand back
+  // into the bag (reshuffled); a bigger one draws from the bag. A side whose whole-game clock ran out draws nothing.
+  function setHandNext(state, n) {
+    n = Math.min(8, Math.max(4, n | 0));
+    if (n === state.settings.hand) delete state.handNext; else state.handNext = n;
+  }
+  function roundStart(state) {
+    if (state.handNext == null || state.turnNo % 2 !== 1) return;
+    const from = state.settings.hand, to = state.handNext;
+    delete state.handNext;
+    state.settings.hand = to;
+    for (const p of [0, 1]) {
+      const h = state.hands[p];
+      while (h.length > to) state.bag.push(h.splice(Math.floor(Math.random() * h.length), 1)[0]);
+    }
+    shuffle(state.bag, Math.random);
+    for (const p of [0, 1]) if (state.clockOut !== p) refill(state, p);
+    state.handChanged = { from, to, r: Math.ceil(state.turnNo / 2) };
+  }
+  const fullBonus = state => RULES.fullHandPerTile * state.settings.hand; // v08q (CD-59: 1.3.1; CD-60: 1.1a)
 
   function refill(state, player) {
     const h = state.hands[player];
@@ -768,14 +792,14 @@
       state.passes = 0;
       if (!state.hands[o].length && !state.bag.length) { finish(state, 'clock'); return true; }
       state.turn = o;
-      state.turnNo++;
+      state.turnNo++; roundStart(state);
       rollBonuses(state);
       return false;
     }
     if (state.clockOut != null) { // playing on alone
       if (boardFull(state) || state.passes >= RULES.passLimit || (!state.hands[p].length && !state.bag.length)) { finish(state, 'clock'); return true; }
       state.turn = p;
-      state.turnNo++;
+      state.turnNo++; roundStart(state);
       rollBonuses(state);
       return false;
     }
@@ -789,7 +813,7 @@
       state.outBy = p;
     }
     state.turn = 1 - p;
-    state.turnNo++;
+    state.turnNo++; roundStart(state);
     rollBonuses(state);
     return false;
   }
@@ -924,6 +948,6 @@
   }
 
   global.Engine = { VAL, SIZES, RULES, MODES, lexicon, generate, newGame, scoreMove, commit, judge, penalize, autoPlace, refill, swapHand, swapSome, endTurn, finish, hint, fits, aiPlan, aiParams, wordValue, boardFull,
-    modeOf, showsValues, tileVal, letterPts, penaltyOf, timerOf, bonusAt, bonusUsed, rollBonuses, pics: picIndex, wordplay: wordplayIndex, PIC_MIN, oneClue
+    modeOf, showsValues, tileVal, letterPts, penaltyOf, timerOf, bonusAt, bonusUsed, rollBonuses, pics: picIndex, wordplay: wordplayIndex, PIC_MIN, oneClue, setHandNext, fullBonus
   };
 })(typeof self !== 'undefined' ? self : this);

@@ -4,8 +4,8 @@
    Level: 1 everyday · 2 common · 3 moderate · 4 advanced · 5 obscure
    Words are 2–7 letters, plus 11-letter words for Large grids (A–Z only). A repeated word adds an extra clue set (see above). */
 // Lexicon edition (JM, CD-24 other edits 1.1): its own number, separate from the game version. Add 1 whenever the word data or the Lexicon page changes.
-// L01 v07a · L02 v07b · L03 v07c · L04 v07d (wrapping cells) · L05 v07e (8-letter hint clues, edition number) · L06 v08 (8-letter easy and hard hints) · L07 (editor page: Status, Comments, Edit Mode + Copy Edits, advanced search; "/" in 23 Word Vault clues) · L08 v08b (58 country-code clues "Madrid URL" style, JM CD-27; Word Vault tricky hints) · L09 (JM's first Copy Edits, CD-29: ZAR clues, EXCITE added ON-DECK; ";" separates alternative clues, one picked at random)
-self.LEXICON_VER = 'L09';
+// L01 v07a · L02 v07b · L03 v07c · L04 v07d (wrapping cells) · L05 v07e (8-letter hint clues, edition number) · L06 v08 (8-letter easy and hard hints) · L07 (editor page: Status, Comments, Edit Mode + Copy Edits, advanced search; "/" in 23 Word Vault clues) · L08 v08b (58 country-code clues "Madrid URL" style, JM CD-27; Word Vault tricky hints) · L09 (JM's first Copy Edits, CD-29: ZAR clues, EXCITE added ON-DECK; ";" separates alternative clues, one picked at random) · L10 v08q (JM's Copy Edits, CD-59 + CD-60: 28 clue changes, "on an exchange board" / "on a bag tag" / "on a T-shirt tag" dropped, EXCITE active, new 1-letter clues, T pictures, drawn ICEBERG picture "@iceberg"; the Lexicon page gives each 1-letter row its own key)
+self.LEXICON_VER = 'L10';
 self.LEXICON_DATA = `
 # ---------- 2 letters ----------
 AD|Commercial|Promo|1
@@ -2588,7 +2588,7 @@ BEEHIVE|Bee home|Tall hairdo|2
 BOOKEND|Shelf support|Book stopper|2
 SANDBOX|Kids' play pit|Test area|1
 EGGCUP|Breakfast holder|Boiled-egg stand|2
-ICEBOX|Old fridge|Cold storage|2
+ICEBOX|Old fridge|Cold storage|2|🧊
 EARWAX|Ear buildup|Cerumen|2
 FISHNET|Mesh catch|Stocking style|2
 MOONLIT|Lit by the moon|Like a night stroll|2
@@ -2630,7 +2630,7 @@ SWEATER|Knit top|Cozy pullover|1|🧶
 MITTENS|Warm hand covers|Gloves without fingers|1|🧤
 SLIPPER|Soft house shoe|Cinderella's glass shoe|1
 SNEAKER|Running shoe|Gym shoe|1|👟
-BUTTONS|Shirt fasteners|Things on a remote|1
+BUTTONS|Shirt fasteners|Remote things|1
 POCKETS|Places in pants|Spots for keys|1
 PUMPKIN|Big orange squash|Jack-o'-lantern|1|🎃
 LETTUCE|Salad leaf|Green in a burger|1|🥬
@@ -2640,14 +2640,14 @@ LEMONS|Sour yellow fruits|Lemonade fruits|1|🍋
 PEANUTS|Ballpark snack|Nuts in shells|1|🥜
 NOODLES|Pasta strands|Soup strands|1|🍜
 PRETZEL|Twisted snack|Salty knot|1|🥨
-ICEBERG|Floating ice mountain|Titanic's foe|1|🧊
+ICEBERG|Floating ice mountain|Titanic's foe|1|@iceberg
 CANYON|Deep valley|Grand ___|1
 RIVERS|Flowing waters|Streams|1
 OCEANS|Big seas|Atlantic and Pacific|1|🌊
 PLANETS|Worlds in space|Mars and Venus|1
 COMPASS|Direction finder|North pointer|1|🧭
 LANTERN|Carried light|Camping lamp|1|🏮
-BLOSSOM|Flower|Bloom on a tree|1
+BLOSSOM|Flower|Tree bloom|1
 SHADOWS|Dark shapes from light|Things that follow you|1
 MARBLES|Small glass balls|Rolling toys|1
 YOGURT|Creamy dairy snack|Cup with fruit|1
@@ -2732,14 +2732,14 @@ BINDER|Ring notebook|Three-ring holder|1
 RULERS|Measuring sticks|Kings|1
 RIDDLE|Puzzle question|Brain teaser|1
 MYSTERY|Puzzle to solve|Whodunit|1
-EXPLORE|Search new places|Go on an expedition|1
+EXPLORE|Search new places|Expedition time!; Adventure; Wild ride; Safari; Dr. Livingstone|1
 CAMPING|Sleeping in tents|Outdoor trip|1|🏕️
 HIKING|Trail walking|Mountain walking|1|🥾
 FISHING|Angling|Casting a line|1|🎣
 SKIING|Gliding on snow|Slope sport|1|⛷️
 SURFING|Riding waves|Beach board sport|1|🏄
 BOWLING|Pins game|Strike sport|1|🎳
-GOLFER|Club swinger|Person on a green|1
+GOLFER|Club swinger|Swing-sport; 9 or 18; Tee-time; Fore!; Irons and woods; Putter|1
 TROPHY|Prize cup|Winner's award|1|🏆
 MEDALS|Olympic prizes|Gold, silver and bronze|1|🏅
 WINNER|Champ|Victor|1
@@ -2779,7 +2779,7 @@ VOLLEYBALLS|Balls hit over a high net|Beach-game balls|1|🏐
 PLAYGROUNDS|Parks with swings and slides|Recess spots|1
 SCHOOLHOUSE|Building for classes|Old one-room learning place|1|🏫
 THUNDERBOLT|Lightning strike|Flash from a storm|1|⚡
-FIREFIGHTER|Person who puts out blazes|Hose handler on a red truck|1|🧑‍🚒
+FIREFIGHTER|Person who puts out blazes|Hose handler; Red truck rider; Blaze-master; Pole-slider; 4-alarmist|1|🧑‍🚒
 FINGERNAILS|They grow at your fingertips|Things clipped or painted|1|💅
 GRANDMOTHER|Mom's or dad's mother|Granny|1|👵
 GRANDFATHER|Mom's or dad's father|Grandpa|1|👴
@@ -2924,7 +2924,7 @@ BREADSTICKS|Long crunchy snacks|Italian dinner sticks|1|🥖
 CHOCOLATIER|Candy maker who works with cocoa|Truffle crafter|3
 SWEETPOTATO|Orange root veggie|Thanksgiving casserole veggie|1|🍠
 NIGHTLIGHTS|Bedroom glow lamps|Kid's lamps for the dark|1
-HOUSEPLANTS|Indoor greenery|Potted pals on a windowsill|1|🪴
+HOUSEPLANTS|Indoor greenery|Potted pals; Sill-sitters; CO2-lovers; Green = grow|1|🪴
 WATERINGCAN|Gardener's sprinkling pot|Spout pot for plants|1
 HOMECOMINGS|Returns home|Fall school dances|2
 HOUSEKEEPER|Home caretaker|Maid|2
@@ -2947,7 +2947,7 @@ BB|Tiny air-gun pellet|Small round shot|2
 BC|Before Christ, on dates|Vancouver's province|2
 CA|California|Golden State|1
 CB|Trucker's radio|"Breaker, breaker" device|2
-CC|Copy line on an email|Extra-recipients field|2
+CC|Copy line on an email|Extra-recipients field; Courtesy email|2
 CO|Colorado|Company|2
 CT|Connecticut|Hartford's state|2
 CV|Job résumé|Career summary|2
@@ -3039,7 +3039,7 @@ WK|Week|Seven days|1
 WV|West Virginia|Mountain State|2
 WY|Wyoming|Cheyenne's state|2
 XO|Hugs-and-kisses sign-off|Love, in a note|1
-XS|Extra small, on a tag|Tiniest shirt size|1
+XS|Extra small T-shirt|Tiniest shirt size|1
 YA|Young adult, as a book section|Teen-fiction label|2
 YD|Yard|Three feet|2
 YR|Year|12 months|1
@@ -3189,7 +3189,7 @@ BUBBLE|Soapy sphere|Gum blower's creation|1|🫧
 CANVAS|Painter's cloth|Tent fabric|2
 COBWEB|Old spider's web|Dusty corner decor|2
 COMEDY|Funny show|Laughs|1
-COTTON|Fabric from a fluffy plant|T-shirt material|1
+COTTON|Fabric from a fluffy plant|T-shirt fabric|1
 DAGGER|Short knife|Deadly look|2|🗡️
 DOLLAR|Hundred cents|Greenback|1|💵
 FABRIC|Cloth|Material|1
@@ -3421,42 +3421,42 @@ ZA|South Africa URL|Cape Town URL|2||2-4
 AE|United Arab Emirates URL|Dubai URL|2||2-4
 QA|Qatar URL|Doha URL|2||2-4
 # Currency codes, Challenge Level 4 and up
-USD|U.S. dollar's code|Greenback, on an exchange board|3||4
+USD|U.S. dollar's code|Greenback|3||4
 EUR|Euro's code|Currency board letters for Paris or Rome|3||4
-GBP|British pound's code|Sterling, on an exchange board|3||4
-JPY|Japanese yen's code|Tokyo money, on an exchange board|3||4
-CNY|Chinese yuan's code|Beijing money, on an exchange board|3||4
-INR|Indian rupee's code|Mumbai money, on an exchange board|3||4
-CAD|Canadian dollar's code|Loonie, on an exchange board|3||4
-AUD|Australian dollar's code|Aussie money, on an exchange board|3||4
-CHF|Swiss franc's code|Zurich money, on an exchange board|3||4
-MXN|Mexican peso's code|Peso, on an exchange board|3||4
-BRL|Brazilian real's code|Rio money, on an exchange board|3||4
-KRW|South Korean won's code|Seoul money, on an exchange board|3||4
-ZAR|S. African rand; Money in S. Africa; S. African currency|Rand, on FOREX; S. African cash|3||4
-SEK|Swedish krona's code|Stockholm money, on an exchange board|3||4
-NOK|Norwegian krone's code|Oslo money, on an exchange board|3||4
-DKK|Danish krone's code|Copenhagen money, on an exchange board|3||4
-NZD|New Zealand dollar's code|Kiwi money, on an exchange board|3||4
-SGD|Singapore dollar's code|Lion City money, on an exchange board|3||4
-HKD|Hong Kong dollar's code|Kowloon money, on an exchange board|3||4
-TRY|Turkish lira's code|Istanbul money, on an exchange board|3||4
-THB|Thai baht's code|Bangkok money, on an exchange board|3||4
-PLN|Polish zloty's code|Warsaw money, on an exchange board|3||4
-AED|UAE dirham's code|Dubai money, on an exchange board|3||4
+GBP|British pound's code|Sterling; UK's money; Royal coin; U.K. cash|3||4
+JPY|Japanese yen's code|Tokyo money; Japanese cash|3||4
+CNY|Chinese yuan's code|Beijing money|3||4
+INR|Indian rupee's code|Mumbai money; Indian cash|3||4
+CAD|Canadian dollar's code|Loonie|3||4
+AUD|Australian dollar's code|Aussie money; Money down under; G'day mate money|3||4
+CHF|Swiss franc's code|Zurich money|3||4
+MXN|Mexican peso's code|Peso|3||4
+BRL|Brazilian real's code|Rio money|3||4
+KRW|South Korean won's code|Seoul money; Korean cash; We won|3||4
+ZAR|S. African rand; Money in S. Africa; S. African currency|Rand; S. African cash|3||4
+SEK|Swedish krona's code|Stockholm money|3||4
+NOK|Norwegian krone's code|Oslo money|3||4
+DKK|Danish krone's code|Copenhagen money|3||4
+NZD|New Zealand dollar's code|Kiwi money|3||4
+SGD|Singapore dollar's code|Lion City money|3||4
+HKD|Hong Kong dollar's code|Kowloon money; HK cash|3||4
+TRY|Turkish lira's code|Istanbul money|3||4
+THB|Thai baht's code|Bangkok money|3||4
+PLN|Polish zloty's code|Warsaw money|3||4
+AED|UAE dirham's code|Dubai money; Dubai cash|3||4
 # Airport codes, Challenge Level 7 and up
 LAX|Los Angeles airport code|Bag tag for Hollywood trips|4||7
 JFK|New York's biggest airport code|Bag tag for Queens arrivals|4||7
 LHR|London Heathrow code|Bag tag for Big Ben trips|4||7
 CDG|Paris airport code|Bag tag for Eiffel Tower trips|4||7
 ORD|Chicago O'Hare code|Bag tag for Windy City trips|4||7
-ATL|Atlanta airport code|World's busiest airport, on a bag tag|4||7
+ATL|Atlanta airport code|World's busiest airport; Peachy planes|4||7
 DFW|Dallas-Fort Worth code|Bag tag for Texas trips|4||7
 DEN|Denver airport code|Bag tag for Mile High City trips|4||7
 SFO|San Francisco airport code|Bag tag for Golden Gate trips|4||7
 SEA|Seattle airport code|Bag tag for Space Needle trips|4||7
 MIA|Miami airport code|Bag tag for South Beach trips|4||7
-BOS|Boston airport code|Bag tag for Fenway trips|4||7
+BOS|Boston airport code|Fenway bag tag; Pahk the cahr|4||7
 LAS|Vegas airport code|Bag tag for Strip trips|4||7
 MCO|Orlando airport code|Bag tag for theme-park trips|4||7
 YYZ|Toronto airport code|Bag tag for CN Tower trips|4||7
@@ -3580,7 +3580,7 @@ VIAL|Little bottle|Lab tube|3
 CAMEO|Brief role|Walk-on part|3
 OCEAN|Big sea|The deep blue|1
 # ---------- Lexicon L09: JM's Copy Edits (CD-29: 1.8). Status ON-DECK = not in the games yet ----------
-EXCITE|Energize; Activate; Agitate|Light one's fire|2||4|ON-DECK
+EXCITE|Energize; Activate; Agitate|Light one's fire|2||4
 `;
 
 /* v04 (JM, CD-9: 1.1): clues for 1-letter answers, which let every clue cell hold a clue.
@@ -3618,8 +3618,9 @@ E|Vitamin in nuts and seeds|3
 F|_LAMINGO|1
 F|Failing grade|1
 F|Sixth letter|1
-F|°_, on a US weather map|2
+F|°_, in USA|2
 F|Fluorine|3
+F|Old-school degrees; Old-fash temp; N.A. temps|2
 G|_IRAFFE|1
 G|Seventh letter|1
 G|Sounds like "gee!"|2
@@ -3641,17 +3642,18 @@ J|Tenth letter|1
 J|Sounds like a blue bird|3
 K|_ANGAROO|1
 K|_OALA|1
-K|Eleventh letter|1
+K|J_L|1
 K|A thousand (as in 5_)|2
 K|Potassium|3
 K|Strikeout, on a baseball scorecard|3
+K|Half-OK; Lazy fine|2
 L|_OLLIPOP|1
-L|Large, on a T-shirt tag|1
+L|Large T-shirt|1
 L|Twelfth letter|1
 L|Roman 50|2
 L|Shape of a carpenter's square|3
 M|_USHROOM|1
-M|Medium, on a T-shirt tag|1
+M|Medium T-shirt|1
 M|Metro sign letter|1|Ⓜ️
 M|Roman 1000|2
 M|Thirteenth letter|1
@@ -3677,14 +3679,14 @@ R|_AINBOW|1
 R|A pirate's favorite letter|2
 R|Movie rating for adults|3
 S|_NAKE|1
-S|Small, on a T-shirt tag|1
+S|Small T-shirt|1
 S|South|1
 S|Shape of a winding road|2
 S|Plural ending|3
-T|_OMATO|1
-T|_IGER|1
-T|Sounds like a hot drink|2
-T|Shape of a T-shirt|2
+T|_OMATO|1|🍅
+T|_IGER|1|🐯
+T|Sounds like a hot drink|2|🍵
+T|Shape of a T-shirt|2|👕
 T|Golf peg, by sound|3
 U|_MBRELLA|1
 U|___-turn|1
@@ -3701,10 +3703,11 @@ W|Twenty-third letter|1
 W|Double-U|2
 W|Tungsten|3
 X|_YLOPHONE|1
-X|Marks the spot on a treasure map|1|❌
+X|Marks the spot|1|❌
 X|Roman 10|2
 X|Kiss, at the end of a note|2
 X|Unknown, in algebra|3
+X|Cancel; Close|2
 Y|_OGURT|1
 Y|_O-YO|1
 Y|Sounds like "why?"|1

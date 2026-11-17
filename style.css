@@ -1603,3 +1603,81 @@ img.av-img { display: inline-block; width: 1.15em; height: 1.15em; border-radius
   .wing .btn { flex-direction: row !important; align-items: center; min-height: 44px; height: auto; padding: 6px 10px; }
   .side { overflow: hidden; }
 }
+
+/* =====================================================================
+   v08q (JM CD-58 add'l 1, 2; CD-58: 2.2; CD-59: 1.4a, 2.1c, 2.2, 2.3b; CD-60: 2.5a, 2.6)
+   ===================================================================== */
+/* add'l 2: the top-center group as large as it fits, never touching the scores or clocks */
+.topbar .hub { --hb: clamp(30px, calc((100vw - 186px) / 5.8), 44px); }
+.hub-btns { gap: calc(var(--hb) * .2) !important; }
+.hub-btns .icon-btn, .zslot .zbtn { width: var(--hb) !important; height: var(--hb) !important; font-size: calc(var(--hb) * .48) !important; }
+@media not all and (min-width: 900px) and (min-height: 480px) {
+  .hub .gameinfo.bar .ib-t { font-size: 14px; }
+  .topbar { column-gap: 8px !important; }
+}
+@media (min-width: 900px) and (min-height: 480px) {
+  .topbar { gap: 24px !important; }
+  .topbar .hub { --hb: 48px; gap: 7px; padding: 8px 18px; }
+  .hub .gameinfo.bar .ib-t { font-size: 18px; }
+  .hub-set { font-size: 15px; }
+  /* add'l 1: each side's turn report keeps its colored ring (the side column clipped its grid-side edge) */
+  .side .turnrep { margin: 4px 5px 8px !important; }
+}
+/* CD-59: 1.4a: on upright tablets the hand uses the grid's full width (tiles up to grid-cell size) and DONE sits
+   centered under it; sideways screens and computers keep DONE beside the hand */
+@media (min-width: 900px) and (min-height: 480px) and (orientation: portrait) {
+  .dock { flex-direction: column; align-items: center; gap: 10px !important; }
+  .dock .rackbar { flex: none !important; width: 100%; max-width: none; padding: 6px 4px 0; }
+  .dock .rack { gap: 8px; max-width: calc(var(--n) * (var(--tcell, 62px) + 8px)); }
+  .dock .actions { justify-content: center; }
+}
+/* CD-58: 2.2.1: the word's progress at the foot of the clue card */
+.z-prog { margin: 0 -18px; padding: 2px 14px 14px; background: #1b2633; border-top: 1px solid rgba(255, 255, 255, .18); font-size: clamp(16px, 2vw, 22px); font-weight: 700; text-align: center; color: #fff; white-space: nowrap; }
+.z-prog .zp-pat { letter-spacing: .04em; }
+.z-prog i { font-style: normal; }
+.z-prog i.bl { color: #ff9a3d; }
+.z-prog i.rv { color: #9fd3ff; }
+/* CD-60: 2.5a: drawn pictures (no emoji for them) */
+.pic svg.art, .z-pic svg.art, .cb-pic svg.art { width: 1em; height: 1em; display: inline-block; vertical-align: middle; }
+/* CD-60: 2.6: a 1-letter picture keeps its fill-in under it (🍅 over "?OMATO") */
+.cl:has(.pcap) { flex-direction: column; gap: 0; }
+.pcap { display: block; line-height: 1.05; font-weight: 700; white-space: nowrap; }
+/* CD-59: 1.2 YwC: ⚙ sections */
+.cd-sec { margin: 12px 0 4px; font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--line); padding-bottom: 3px; }
+#sheet h2 + .cd-sec { margin-top: 4px; }
+
+/* ===== CD-59: 2.1c, 2.2, 2.3b: Screen = Night (Charcoal). Dark rules are switched on by applyScreen(); these
+   colors sit on top. Grays everywhere; color stays only in the owner bars, scores and clocks. One fixed grid look. ===== */
+html[data-screen="night"] {
+  --bg: #121212; --surface: #1c1c1c; --ink: #a6a6a6; --muted: #6a6a6a; --line: #2e2e2e;
+  --clue: #202020; --clue-ink: #969696; --clue-dim: #181818; --cellbg: #2e2e2e; --letter: #cdcdcd;
+  --you: #5a7ea6; --you-bg: #232b33; --opp: #a6675a; --opp-bg: #332522; --pre-bg: #383838;
+  --x2: #a08530; --x2-bg: #2c2717; --p5: #3f8a5e; --p5-bg: #1b2a21; --hl: #34321f; --sel: #8a7428; --bad: #a84444;
+  --tile-top: #3a3a3a; --tile-bot: #2c2c2c; --tile-edge: #1a1a1a; --tile-ink: #cdcdcd;
+  --btn: #262626; --btn-ink: #bdbdbd; --primary: #3d5878; --primary-ink: #d0d0d0;
+  --shine: radial-gradient(ellipse 80% 40% at 50% 20%, rgba(255, 255, 255, .12), rgba(255, 255, 255, .03) 66%, rgba(255, 255, 255, 0) 70%);
+  --shade: linear-gradient(rgba(0, 0, 0, 0) 56%, rgba(0, 0, 0, .25));
+  --drop3d: inset 0 -3px 0 rgba(0, 0, 0, .35), inset 0 1px 0 rgba(255, 255, 255, .08);
+  color-scheme: dark;
+}
+html[data-screen="night"] body { background: var(--bg); color: var(--ink); }
+html[data-screen="night"] #board.gs-slots { background: #0b0b0b; border-color: #0b0b0b; }
+html[data-screen="night"] #board.gs-slots .cell.let:where(:not(.filled, .pending, .aipend, .wrongflash, .wrongtile, .wrongcell)) { background: #151515; color: #8a8a8a; box-shadow: inset 0 0 0 1px #262626, inset 0 3px 0 rgba(0, 0, 0, .5); }
+html[data-screen="night"] #board.gs-slots .cell.let.filled, html[data-screen="night"] :is(#board, #sharpOv) .gs-slots .cell.let.filled { background-image: var(--shine), var(--shade), linear-gradient(#363636, #2b2b2b); color: #d0d0d0; }
+html[data-screen="night"] #board .cell.clue { background: var(--clue); color: var(--clue-ink); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06), inset 0 -2px 0 rgba(0, 0, 0, .5); }
+html[data-screen="night"] #board .cl.on { background: var(--hl); color: #d2c896; }
+html[data-screen="night"] #board .cl.pale { background: #262519; }
+html[data-screen="night"] #board.gs-slots .cell.b-x2 .bn { color: #b39a45; }
+html[data-screen="night"] #board.gs-slots .cell.let.b-x2:where(:not(.filled, .pending, .aipend, .wrongflash, .wrongtile, .wrongcell)) { box-shadow: inset 0 0 0 2px #8a7428, inset 0 3px 0 rgba(0, 0, 0, .5); }
+html[data-screen="night"] #board.gs-slots .cell.let:is(.b-p5, .b-p2):where(:not(.filled, .pending, .aipend, .wrongflash, .wrongtile, .wrongcell)) { box-shadow: inset 0 0 0 2px #2f6b48, inset 0 3px 0 rgba(0, 0, 0, .5); }
+html[data-screen="night"] #board .cell.let.pending { background-image: var(--shine), linear-gradient(#6e5a2a, #5a4820); color: #e6d6a8; box-shadow: inset 0 0 0 2px var(--you), inset 0 -4px 0 #3a2e14, 0 4px 6px rgba(0, 0, 0, .6); }
+html[data-screen="night"] .ml { color: #b8661f; }
+html[data-screen="night"] .mw { background: #b8661f; }
+html[data-screen="night"] .topbar .pl .nm { color: #b8b8b8 !important; }
+/* buttons, pills and notices drawn in fixed bright colors: dimmed */
+html[data-screen="night"] :is(.btn, .icon-btn, .zbtn, .toast, .coin-pill, .vpill, .turnrep, .ob, .pcorner, .tr-coin) { filter: brightness(.72) saturate(.6); }
+html[data-screen="night"] :is(.pic, .z-pic, .cb-pic) { filter: brightness(.75) saturate(.7); }
+.zoom:has(.z-prog) .z-sub { padding-bottom: 8px; }
+html[data-screen="night"] .pl .sc { background: #262626; box-shadow: inset 0 0 0 1px #3a3a3a; -webkit-text-stroke: 0; }
+html[data-screen="night"] .topbar .pl .clk { background: #1c1c1c; color: #b0b0b0; }
+html[data-screen="night"] .z-sub, html[data-screen="night"] .z-prog { background: #1a1a1a; color: #c8c8c8; }

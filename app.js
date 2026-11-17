@@ -1,4 +1,5 @@
-/* Clue Duel — user interface (v08p: new top band (no clue bar; clocks by the scores, hub of buttons), floating turn messages, tap a clue for its card, orange ? and bars for missing letters and words, the Bot waits for your tap after red marks, the Bot's 2-second finish after your clock runs out, wide screens: names over avatars, wings for the buttons, big DONE under the grid;
+/* Clue Duel — user interface (v08q: Screen setting with Night (Charcoal), ⚙ "Changes now" / "From your next game", Letters in Hand 4–8 and changeable mid-game (next round), Full Hand +2 per tile, bigger hub, DONE under the hand on upright tablets, word progress on the clue card, drawn pictures, 1-letter picture captions;
+   v08p: new top band (no clue bar; clocks by the scores, hub of buttons), floating turn messages, tap a clue for its card, orange ? and bars for missing letters and words, the Bot waits for your tap after red marks, the Bot's 2-second finish after your clock runs out, wide screens: names over avatars, wings for the buttons, big DONE under the grid;
    v08o: the Bot's own whole-game clock, the other side plays on alone when a clock runs out,
    "N min each (whole game)";
    v08n: the 3D look (candy-drop tiles, wells, clue plaques, floating penciled tiles that settle
@@ -12,7 +13,7 @@
    v08j: grid colors, final-play view, clock-out final turn, menu defaults, phone two-finger drag) */
 'use strict';
 (() => {
-  const APP_VER = 'v08p'; // Project CP: shown as a pill beside the title and in the browser tab
+  const APP_VER = 'v08q'; // Project CP: shown as a pill beside the title and in the browser tab
   const E = window.Engine;
   const $ = (s, el = document) => el.querySelector(s);
   const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -239,20 +240,44 @@
   // a five-cell sample: starter · yours · rival's · empty · this turn's tile
   const gridSample = g => `<span class="${gridCls(g)} gs-sample" aria-hidden="true"><span class="cell let filled pre"><span class="ch">T</span></span><span class="cell let filled mine"><span class="ch">E</span></span><span class="cell let filled theirs"><span class="ch">A</span></span><span class="cell let"></span><span class="cell let pending"><span class="ch">L</span></span></span>`;
 
+  // v08q (JM CD-58 discussion 2; CD-59: 2.1c, 2.2, 2.3b): SCREEN = Auto (follows the device) / Light / Dark / Night.
+  // The style sheet's light/dark rules are written as "prefers-color-scheme" blocks; Light and Dark switch those
+  // blocks on or off from here, and Night is Dark plus the Charcoal colors (html[data-screen="night"] in style.css).
+  const SCREENS = ['auto', 'light', 'dark', 'night'];
+  let schemeRules = null;
+  function applyScreen(v) {
+    if (!SCREENS.includes(v)) v = 'auto';
+    if (!schemeRules) {
+      schemeRules = [];
+      const walk = rules => { for (const r of rules) { if (r.media && /prefers-color-scheme/.test(r.media.mediaText)) schemeRules.push([r, r.media.mediaText]); else if (r.cssRules) walk(r.cssRules); } };
+      for (const sh of document.styleSheets) { try { walk(sh.cssRules); } catch (e) { /* another site's sheet */ } }
+    }
+    const dark = v === 'dark' || v === 'night';
+    for (const [r, txt] of schemeRules) {
+      let t = txt;
+      if (v !== 'auto') t = txt.replace(/\(\s*prefers-color-scheme:\s*dark\s*\)/g, dark ? '(min-width: 0px)' : '(max-width: 0px)')
+        .replace(/\(\s*prefers-color-scheme:\s*light\s*\)/g, dark ? '(max-width: 0px)' : '(min-width: 0px)');
+      if (r.media.mediaText !== t) { try { r.media.mediaText = t; } catch (e) { /* old browser: Auto only */ } }
+    }
+    document.documentElement.dataset.screen = v;
+    const m = document.querySelector('meta[name="theme-color"]');
+    if (m) m.content = v === 'night' ? '#121212' : '#2b3a4a';
+  }
+
   // v08j (JM CD-44 discussion 1; CD-45: 4.1c): MENU DEFAULTS in three layers.
   //  1. FACTORY: built into the app.
   //  2. OWNER: defaults.json beside the app (JM edits it on GitHub's website). New players start with it; it is fetched
   //     on every visit, kept on the device (cd.ownerDefaults) and checked value by value (a typo is simply ignored).
   //  3. MINE: ⭐ Save as my defaults (cd.myDefaults). ↺ Defaults brings back yours, or the app's if you never saved any.
   // The menu still remembers your last choices (cd.settings), as before.
-  const FACTORY = { skill: 3, size: 'M', hand: 6, timer: '0', scoring: 'classic', bonus: 'floating', pics: 'some', grid: 'a' };
+  const FACTORY = { skill: 3, size: 'M', hand: 6, timer: '0', scoring: 'classic', bonus: 'floating', pics: 'some', grid: 'a', screen: 'auto' };
   const DEF_KEYS = Object.keys(FACTORY);
   function cleanDefaults(o) {
     const out = {};
     if (!o || typeof o !== 'object') return out;
     const vals = id => { const s = document.querySelector(id); return s ? [...s.options].map(x => x.value) : []; };
-    const ok = { skill: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], size: ['S', 'M', 'L'], hand: [5, 6, 7, 8], timer: vals('#timerSel'), scoring: vals('#scoringSel'),
-      bonus: vals('#bonusSel'), pics: vals('#picsSel'), grid: GRID_SCHEMES.map(s => s[0]) };
+    const ok = { skill: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], size: ['S', 'M', 'L'], hand: [4, 5, 6, 7, 8], timer: vals('#timerSel'), scoring: vals('#scoringSel'),
+      bonus: vals('#bonusSel'), pics: vals('#picsSel'), grid: GRID_SCHEMES.map(s => s[0]), screen: SCREENS };
     for (const k of DEF_KEYS) {
       if (!(k in o)) continue;
       const v = k === 'skill' || k === 'hand' ? +o[k] : String(o[k]).trim();
@@ -263,6 +288,7 @@
   const ownerDefaults = () => cleanDefaults(store.get('cd.ownerDefaults', {}));
   const settings = Object.assign({}, FACTORY, ownerDefaults(), { name: '', avatar: '🙂' }, store.get('cd.settings', {}));
   if (typeof settings.timer === 'number') settings.timer = settings.timer > 0 ? 't' + settings.timer : '0'; // v01 settings
+  applyScreen(settings.screen); // v08q
   let G = null; // engine state of the current game
   const ui = {
     pending: [], selTile: null, selSlot: -1, selCell: -1, busy: false, hintCell: -1, timerId: 0, cell: 40, token: 0,
@@ -300,6 +326,7 @@
     $('#scoringDesc').textContent = (E.MODES[settings.scoring] || E.MODES.classic).desc;
     $('#gridSel').value = GRID_SCHEMES.some(s => s[0] === settings.grid) ? settings.grid : 'a';
     $('#gridSample').innerHTML = gridSample($('#gridSel').value);
+    $('#screenSel').value = SCREENS.includes(settings.screen) ? settings.screen : 'auto'; // v08q
     // v08h (JM CD-41: 1.1): the folded Options row shows its five choices in one line
     const txt = id => { const s = $(id); return s.selectedIndex >= 0 ? s.options[s.selectedIndex].text : ''; };
     const tmr = txt('#timerSel').replace(/^Blitz · /, '').replace(/ per TURN$/, '/turn').replace(/ min each \(whole game\)$/, ' min each');
@@ -339,6 +366,7 @@
   // v08j: grid colors and the defaults buttons, at the foot of the open Options panel
   $('#gridSel').innerHTML = gridOpts();
   $('#gridSel').addEventListener('change', e => { settings.grid = e.target.value; saveSettings(); });
+  $('#screenSel').addEventListener('change', e => { settings.screen = e.target.value; saveSettings(); applyScreen(settings.screen); });
   $('#saveDefBtn').addEventListener('click', () => {
     const d = {};
     for (const k of DEF_KEYS) d[k] = settings[k];
@@ -845,6 +873,17 @@
   }
   // v08p (CD-57: 1.2): on phones, tap either score for the Scoreboard
   for (const id of ['#plYou', '#plOpp']) $(id).addEventListener('click', e => { if (!G || e.target.closest('#clkTop') || isWide()) return; setSheetOpen(!ui.sheetOpen); });
+  // v08q (JM CD-58 add'l 2): the hub's buttons as large as the room between the two scoreboards allows, with a clear
+  // gap on each side (never touching a score or clock): 30–44 px on phones, up to 48 px on tablets and computers
+  function fitHub() {
+    const tb = $('.topbar'), hub = $('#hub'), you = $('#plYou'), op = $('#plOpp');
+    if (!tb || !hub || !you || !op) return;
+    const wide = getComputedStyle($('#sideYou')).display !== 'none';
+    const cs = getComputedStyle(tb);
+    const room = tb.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - you.offsetWidth - op.offsetWidth
+      - 2 * (wide ? 30 : 12) - (wide ? 36 : 0);
+    hub.style.setProperty('--hb', Math.max(28, Math.min(wide ? 48 : 44, room / 5.8)).toFixed(1) + 'px');
+  }
   function fitDock() {
     if (!G || $('#game').hidden) return;
     placeControls(); // v08p
@@ -852,7 +891,11 @@
     dock.classList.remove('compact');
     const n = G.settings.hand, cs = getComputedStyle(dock);
     // (40 px spare: "Pass" grows to "Done · 3" during a turn)
-    const avail = dock.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - $('#actions').offsetWidth - 40;
+    // v08q (CD-59: 1.4a): on upright tablets DONE sits under the hand, so the hand gets the full width, tiles up to grid size
+    const below = cs.flexDirection === 'column';
+    const cel = $('#board .cell');
+    dock.style.setProperty('--tcell', Math.max(40, (cel && cel.offsetWidth) || ui.cell) + 'px');
+    const avail = dock.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - (below ? 0 : $('#actions').offsetWidth + 40);
     const compact = (avail - 6 * (n - 1)) / n < 40;
     dock.classList.toggle('compact', compact);
     $('#game').classList.toggle('compact', compact);
@@ -860,10 +903,11 @@
     const tk = E.timerOf(G.settings.timer).kind;
     $('#clkTop').hidden = tk === 'none'; // v08p (JM CD-56 add'l 1.1.1, iPad 1.1.1): your clock always shows beside your score in a timed game
     renderOppClock();
+    fitHub(); // v08q: after the clocks are shown or hidden
     // v06c (JM, CD-18: 1.1): when tiles are narrow (under 48 px, on any device) and they show point values,
     // tiles grow taller and the value sits centered under the letter instead of crowding its corner
     const rack = $('#rack');
-    const tw = (rack.clientWidth - 6 * (n - 1)) / n;
+    const tw = (rack.clientWidth - (parseFloat(getComputedStyle(rack).columnGap) || 6) * (n - 1)) / n;
     const tall = tw < 48 && E.showsValues(G);
     rack.classList.toggle('tall', tall);
     rack.style.setProperty('--tw', Math.max(20, tw).toFixed(1) + 'px');
@@ -922,9 +966,20 @@
   const PIC_TAG = { cat: 'group word', assoc: 'goes with', rebus: 'add them up', sound: 'sounds like', math: 'letter math' };
   // Type labels help only at Challenge Levels 1–5; from level 6 the tricky pictures stay tricky (JM, CD-7: 5.1.1)
   const picTag = s => (s.clue.pic && G && G.settings.skill < 6 && PIC_TAG[s.clue.pt]) || '';
+  // v08q (JM CD-59/CD-60: 2.5a): drawn pictures, for things no emoji shows. The Lexicon names them "@name".
+  const PIC_ART = {
+    '@iceberg': '<svg class="art" viewBox="0 0 64 64" role="img" aria-label="iceberg"><rect x="0" y="25" width="64" height="39" rx="3" fill="#2f7fc1" opacity=".55"/>'
+      + '<polygon points="9,25 55,25 61,41 49,58 25,61 5,47" fill="#bfe3f7" opacity=".85"/>'
+      + '<polygon points="19,25 29,9 35,15 41,5 50,25" fill="#f4fbff" stroke="#8cc6e8" stroke-width="1.2"/>'
+      + '<path d="M0 25h64" stroke="#e8f6ff" stroke-width="2"/><path d="M4 33q4-3 8 0t8 0M44 31q4-3 8 0t8 0" stroke="#e8f6ff" stroke-width="1.4" fill="none" opacity=".8"/></svg>'
+  };
+  const picHTML = p => PIC_ART[p] || p;
+  // v08q (CD-59 comment, CD-60: 2.6): a picture for a 1-letter fill-in ("_OMATO" + 🍅) keeps its fill-in under it
+  const capHTML = (s, px) => s.clue.cap ? `<span class="pcap" style="font-size:${px}px">${clueMarks(s.clue.t)}</span>` : '';
   // How wide a picture clue is, in "emoji widths" (letters and + − signs count less)
   const unitCache = new Map(); // v08k: measured once per picture
   function picUnits(pic) {
+    if (PIC_ART[pic]) return 1;
     if (unitCache.has(pic)) return unitCache.get(pic);
     const u = picUnits0(pic);
     unitCache.set(pic, u);
@@ -976,7 +1031,8 @@
     const inner = parts.map(([d, si]) => {
       const s = G.pz.slots[si];
       const body = s.clue.pic
-        ? `<span class="pic" style="font-size:${picFont(s.clue.pic, split)}px">${s.clue.pic}</span>`
+        ? (s.clue.cap ? `<span class="pic" style="font-size:${(picFont(s.clue.pic, split) * 0.6).toFixed(1)}px">${picHTML(s.clue.pic)}</span>${capHTML(s, Math.min(ui.cell * (split ? 0.16 : 0.2), clueFont(s.clue.t, split, d) * 0.9).toFixed(1))}`
+          : `<span class="pic" style="font-size:${picFont(s.clue.pic, split)}px">${picHTML(s.clue.pic)}</span>`)
         : `<span class="ct" style="font-size:${clueFont(s.clue.t, split, d)}px">${clueMarks(s.clue.t)}</span>`;
       const cls = ['cl', 'cl-' + d];
       if (slotDone(s)) cls.push('solved');
@@ -1093,7 +1149,8 @@
     }
     ui.bHtml = parts;
     // v08j: the chosen grid colors (v08k: kept with the countdown's border flash, and only set when it changes)
-    const want = [gridCls(settings.grid), ...[...board.classList].filter(k => k.startsWith('tf-'))].join(' ');
+    const want = [gridCls(settings.screen === 'night' ? 'a' : settings.grid), // v08q (CD-59: 2.3b): Night has one fixed grid look
+      ...[...board.classList].filter(k => k.startsWith('tf-'))].join(' ');
     if (board.className !== want) board.className = want;
     ui.pop = -1;
     sharpWords();
@@ -1213,9 +1270,23 @@
     }).join('');
     const sp = solvedPts(s, got);
     const tag = picTag(s) ? `<span class="cb-tag">${picTag(s)}</span>` : '';
-    const clue = s.clue.pic ? `<span class="cb-pic">${s.clue.pic}</span>${tag}` : `<span class="cb-word">${esc(s.clue.t)}</span>`;
+    const clue = s.clue.pic ? `<span class="cb-pic">${picHTML(s.clue.pic)}</span>${tag}` : `<span class="cb-word">${esc(s.clue.t)}</span>`;
     return `<div class="cb-line${primary ? ' on' : ''}" data-s="${si}"><span class="cb-dir">${s.d === 'A' ? '→' : '↓'}</span>${clue}`
       + `<span class="cb-stat"><span class="cb-pat">[${letters}]</span><span class="cb-n">${got.length} / ${s.cells.length}</span>${sp ? `<span class="cb-pts">${sp.v} ${sp.t}</span>` : ''}</span></div>`;
+  }
+
+  // v08q (JM CD-58: 2.2 YwC, 2.2.1): the word's progress, always at the foot of the clue card: [C ? T ?] 2 / 4 · 4 pts
+  function zoomProg(s) {
+    const pend = new Map(ui.pending.map(p => [p.cell, p.ch]));
+    const got = [];
+    const letters = s.cells.map(ci => {
+      const ch = G.board[ci] || pend.get(ci) || '';
+      if (ch) { got.push(ch); return `<i>${ch}</i>`; }
+      if (G.over) return `<i class="rv">${G.pz.cells[ci].s}</i>`;
+      return '<i class="bl">?</i>';
+    }).join(' ');
+    const sp = solvedPts(s, got);
+    return `<div class="z-prog"><span class="zp-pat">[${letters}]</span> <span>${got.length} / ${s.cells.length}</span>${sp ? ` · <span>${sp.v} ${sp.t}</span>` : ''}</div>`;
   }
 
   // v08p: 🔍 sits in the hub's button row (it used to sit at the end of the clue bar)
@@ -1441,6 +1512,8 @@
 
   function render() {
     if (!G) return;
+    // v08q: a Letters in Hand change made in ⚙ has just started (at the top of a round)
+    if (G.handChanged) { const h = G.handChanged; delete G.handChanged; toast(`✋ Round ${h.r}: both hands now hold ${h.to} letters (were ${h.from}).`, '', 3200); }
     // Everything around the grid first, then measure the space that is left, then draw the grid
     renderTop();
     renderRack();
@@ -1730,10 +1803,12 @@
         <li>The five options you change least (${go('Letters in Hand')}, ${go('Bonus Squares')}, ${go('Clue Pics')}, ${go('Scoring')} and ${go('Timer')}) fold into one <b>▸ Options</b> row, so the menu fits on one screen. The row shows your choices in one line, like "6 letters · Floating bonus · Some pics · Classic · Untimed".</li>
         <li>Tap it to open (▾) or close (▸) it. It stays the way you left it. ⚙ Settings in the game changes the same options.</li>
         <li><b>Grid Colors</b> (at the foot of Options, and in ⚙): five looks for the grid. <b>Board</b> (the default): empty cells are dark slots and played tiles are cream, with a colored bar for whose they are. <b>Inked</b>: no bars; your letters are blue, the Bot's red, starter letters black. <b>Inked Blue</b>: Inked, with this turn's tiles blue. <b>Painted</b>: solid blue and red tiles with white letters, light-gray starters. <b>Bold</b>: white empty cells and solid tiles. The change shows at once.</li>
+        <li><b>Screen</b> (under Grid Colors, and in ⚙): <b>Auto</b> follows your device's light or dark setting; <b>Light</b> and <b>Dark</b> stay put; <b>Night</b> is the dimmest look (charcoal grays, color only in the owner bars and clocks) for playing in the dark, with one fixed grid look.</li>
         <li>The menu remembers your last choices. <b>⭐ Save as my defaults</b> keeps the Challenge Level, Grid Size and all the Options as your own defaults; <b>↺ Defaults</b> brings them back after you try something different (or the app's defaults, if you haven't saved any).</li>`)}
       ${sec('Letters in Hand', `
-        <li>How many tiles each player holds: 5 to 8. Your hand refills from the bag after every turn.</li>
-        <li>More tiles give you more choices each turn. Fewer tiles make the <b>Full Hand</b> bonus easier to earn: place as many tiles in one turn as this setting (all 5 of 5, for example). See ${go('Bonuses')}.</li>`)}
+        <li>How many tiles each player holds: 4 to 8. Your hand refills from the bag after every turn.</li>
+        <li>You can change it during a game in ⚙ (under "Changes now"). The new size starts with the next full round, for both hands: a smaller hand sends random tiles back into the bag, a bigger one draws more.</li>
+        <li>More tiles give you more choices each turn. Fewer tiles make the <b>Full Hand</b> bonus easier to earn but smaller: it is worth 2 points for each tile in this setting (all 4 of 4 = +8, all 8 of 8 = +16). See ${go('Bonuses')}.</li>`)}
       ${sec('Bonus Squares', `
         <li><b>Fixed</b>: the bonus cells (2×, +5 and +2) are placed when the game starts and stay put.</li>
         <li><b>Floating</b>: a new +5 and 2× pair appears every turn from turn 2 and lasts 2 turns; last turn's pair is dimmed. +2 cells are never floating: they come only with Fixed or Both.</li>
@@ -1759,7 +1834,7 @@
         <li><span class="chip p5">+${R.plusCell}</span> cells add <b>${R.plusCell}</b> points.</li>
         <li><span class="chip p5">+${R.plus2Cell}</span> cells add <b>${R.plus2Cell}</b> points.</li>
         <li><span class="chip x2">2×</span> cells double the turn's points from tiles and words (see ${go('Bonuses')}).</li>
-        <li><b>Full Hand</b>: <b>+${R.fullHandBonus}</b> points.</li>
+        <li><b>Full Hand</b>: <b>+${R.fullHandPerTile}</b> points per tile in your Letters in Hand setting (4 letters = +8 … 8 letters = +16).</li>
         <li><b>Wrong Cell</b>: each tile still in a wrong cell when you tap Done costs <b>${wrongMin} points</b>, or the tile's value if that is more. In Classic a wrong Q or Z costs 10 and a wrong E costs 2.</li>
         <li><b>Hint</b>, <b>Place</b>, <b>Check</b> and <b>+30s</b> cost <b>coins</b>, not points (see ${go('Coins')}).</li>
         <li>When the game ends, the tiles still in each hand are taken off that player's score (see ${go('The End')}).</li>
@@ -1793,7 +1868,7 @@
       ${sec('Resume Game', `
         <li><b>New Game</b> starts a fresh puzzle with the settings above. <b>🔐 Word Vault</b>, beside it, opens the word-guessing game.</li>
         <li><b>Resume Game</b> appears when you have an unfinished game. Your game is saved after every turn and whenever you leave it (☰, between the two scores, takes you straight to the menu).</li>
-        <li><b>⚙</b> (among the buttons between the two scores) shows this game's settings. Changes apply from your next game; <b>New game with these</b> starts one now.</li>`)}
+        <li><b>⚙</b> (among the buttons between the two scores) shows this game's settings in two parts. <b>Changes now</b>: Grid Colors and Screen change at once; Letters in Hand changes for both hands from the next round. <b>From your next game</b>: everything else. <b>New game with these</b> starts one now.</li>`)}
       ${sec('Clue Cards', `
         <li>Tap a clue in the grid (or point at it with a mouse) to see it enlarged on a clue card, with how many letters it has. Tap it again, or anywhere else, to close the card. Press and hold a clue to see the card only while you hold.</li>
         <li>In a clue, an orange <b style="color:#ff7a00">?</b> stands for a missing letter (like ?IRAFFE), and a thick orange bar for a missing word (like "Band-▬").</li>
@@ -1834,7 +1909,7 @@
       ${sec('Bonuses', `
         <li><span class="chip x2">2×</span> doubles your turn's points from tiles and words. Each extra 2× in the same turn adds another double: 10 → 20 → 40 → 60.</li>
         <li><span class="chip p5">+${R.plusCell}</span> cells add ${R.plusCell} points, and <span class="chip p5">+${R.plus2Cell}</span> cells add ${R.plus2Cell} points. Both are added after doubling and are never doubled. +${R.plus2Cell} cells appear only with the Fixed or Both setting (see ${go('Bonus Squares')}).</li>
-        <li><b>Full Hand</b>: place as many tiles in one turn as your ${go('Letters in Hand', '"Letters in Hand"')} setting (all 7 of 7, for example) to earn a +${R.fullHandBonus} point bonus. A tile put down with 🎯 Place counts. A Full Hand bonus is added after doubling and is never doubled. Near the end of the game, when the bag is empty and your hand holds fewer tiles than the setting, it can't be earned.</li>
+        <li><b>Full Hand</b>: place as many tiles in one turn as your ${go('Letters in Hand', '"Letters in Hand"')} setting (all 7 of 7, for example) to earn a bonus of ${R.fullHandPerTile} points per tile in that setting (+14 for 7 of 7, +8 for 4 of 4). A tile put down with 🎯 Place counts. A Full Hand bonus is added after doubling and is never doubled. Near the end of the game, when the bag is empty and your hand holds fewer tiles than the setting, it can't be earned.</li>
         <li>Bonus cells still open glow and pulse at three speeds: +${R.plus2Cell} slowest, +${R.plusCell} slowly, 2× quickly. The bigger the bonus, the faster the pulse. Once a tile is played there, the pulse stops and a small number in the corner shows the bonus it earned.</li>
         <li>Where bonus cells appear is set by ${go('Bonus Squares')}.</li>`)}
       ${sec('Turn Reports and The Scoreboard', `
@@ -1926,22 +2001,45 @@
     if (G && !G.over && E.timerOf(G.settings.timer).kind !== 'none') setPaused(true);
     const cur = Object.assign({}, settings, G ? G.settings : {}, { grid: settings.grid }); // v08j: grid colors are yours, not the game's
     const sizes = [...$('#sizeSeg').children].map(b => `<option value="${b.dataset.v}">${esc(b.textContent.trim())}</option>`).join('');
-    // v08L (JM CD-49 add'l 2.1, 2.2): Grid Colors first, with its sample (it changes the grid at once, mid-game too)
-    const F = [['skill', 'Challenge Level', $('#skillSel').innerHTML], ['size', 'Grid Size', sizes], ['hand', 'Letters in Hand', $('#handSel').innerHTML],
+    // v08q (JM CD-58 add'l 3; CD-59: 1.2 YwC, 1.2.1): one window, two sections. "Changes now": Grid Colors and Screen
+    // at once; Letters in Hand from the next full round of THIS game (and for your next games). "From your next game": the rest.
+    const F = [['skill', 'Challenge Level', $('#skillSel').innerHTML], ['size', 'Grid Size', sizes],
       ['bonus', 'Bonus Squares', $('#bonusSel').innerHTML], ['pics', 'Clue Pics', $('#picsSel').innerHTML], ['scoring', 'Scoring', $('#scoringSel').innerHTML],
       ['timer', 'Timer', $('#timerSel').innerHTML]]; // v08j (CD-45: 2.2a)
     const live = G && !G.over;
+    cur.hand = live ? (G.handNext != null ? G.handNext : G.settings.hand) : settings.hand;
+    cur.screen = settings.screen || 'auto';
     openModal(`<h2>⚙ Clue Duel settings</h2>
-      <label class="field cd-gridpick"><span class="lbl">Grid Colors <i>(changes at once)</i></span><span class="gs-pick"><select data-k="grid">${gridOpts()}</select><span id="cdGridSample">${gridSample(settings.grid)}</span></span></label>
+      <h3 class="cd-sec">Changes now</h3>
+      <label class="field cd-gridpick"><span class="lbl">Grid Colors</span><span class="gs-pick"><select data-k="grid">${gridOpts()}</select><span id="cdGridSample">${gridSample(settings.grid)}</span></span></label>
+      <div class="vt-grid cd-set">
+        <label class="field"><span class="lbl">Screen</span><select data-k="screen">${$('#screenSel').innerHTML}</select></label>
+        <label class="field"><span class="lbl">Letters in Hand${live ? ' <i>(next round)</i>' : ''}</span><select data-k="hand">${$('#handSel').innerHTML}</select></label>
+      </div>
+      <p class="help-note" id="cdHandNote"></p>
+      <h3 class="cd-sec">From your next game</h3>
       <div class="vt-grid cd-set">${F.map(([k, l, o]) => `<label class="field"><span class="lbl">${l}</span><select data-k="${k}">${o}</select></label>`).join('')}</div>
       <p class="opt-desc" id="cdSetDesc"></p>
-      <p class="help-note">${live ? 'This game keeps its settings; the others apply from your next game. "New game with these" starts one now (this game is lost).' : 'The others apply from your next game.'}</p>
+      <p class="help-note">${live ? '"New game with these" starts a new game now (this game is lost).' : '"New game with these" starts one now.'}</p>
       <div class="row"><button class="btn" data-a="close">Close</button><button class="btn primary" data-a="new">New game with these</button></div>`);
     const sels = [...document.querySelectorAll('#sheet select[data-k]')];
     for (const s of sels) { s.value = String(cur[s.dataset.k]); if (s.selectedIndex < 0) s.selectedIndex = 0; }
     const desc = () => { const v = sels.find(s => s.dataset.k === 'scoring').value; $('#cdSetDesc').textContent = (E.MODES[v] || E.MODES.classic).desc; };
-    const keep = () => { for (const s of sels) settings[s.dataset.k] = /^(skill|hand)$/.test(s.dataset.k) ? +s.value : s.value; saveSettings(); if (G && !$('#game').hidden) renderBoard(); const smp = $('#cdGridSample'); if (smp) smp.innerHTML = gridSample(settings.grid); };
-    desc();
+    const handNote = () => {
+      const n = $('#cdHandNote'); if (!n) return;
+      n.textContent = live && G.handNext != null
+        ? `Both hands become ${G.handNext} letters at the start of Round ${Math.ceil(G.turnNo / 2) + 1}; extra tiles go back into the bag at random.`
+        : live ? `Both hands hold ${G.settings.hand} letters in this game.` : '';
+    };
+    const keep = () => {
+      for (const s of sels) settings[s.dataset.k] = /^(skill|hand)$/.test(s.dataset.k) ? +s.value : s.value;
+      saveSettings(); applyScreen(settings.screen);
+      if (live) { E.setHandNext(G, settings.hand); save(); }
+      if (G && !$('#game').hidden) { renderBoard(); render(); }
+      const smp = $('#cdGridSample'); if (smp) smp.innerHTML = gridSample(settings.grid);
+      handNote();
+    };
+    desc(); handNote();
     for (const s of sels) s.addEventListener('change', () => { keep(); desc(); });
     $('#sheet').onclick = e => {
       const b = e.target.closest('[data-a]'); if (!b) return;
@@ -2901,7 +2999,8 @@
     const cardW = Math.min(innerWidth - 16, Math.max(br.width, 260));
     const inner = cardW - 36; // card padding
     let body;
-    if (s.clue.pic) body = `<div class="z-pic" style="font-size:${Math.round(Math.min(170, Math.max(br.height * 0.42, 90), (inner * 0.85) / picUnits(s.clue.pic)))}px">${s.clue.pic}</div>`;
+    if (s.clue.pic) body = `<div class="z-pic" style="font-size:${Math.round(Math.min(170, Math.max(br.height * 0.42, 90), (inner * 0.85) / picUnits(s.clue.pic)))}px">${picHTML(s.clue.pic)}</div>`
+      + (s.clue.cap ? `<div class="z-word" style="font-size:40px">${clueMarks(s.clue.t)}</div>` : '');
     else {
       const longest = Math.max(...s.clue.t.split(/\s+/).map(w => w.length));
       const f = Math.max(18, Math.min(84, inner / (longest * 0.64), Math.max(br.height * 0.2, 40)));
@@ -2909,7 +3008,7 @@
     }
     const ztag = picTag(s) ? picTag(s) + ' · ' : '';
     // Caption: a taller band with larger, pure-white text (JM, CD-7: 6.2)
-    z.innerHTML = body + `<div class="z-sub">${ztag}${s.d === 'A' ? '→ across' : '↓ down'} · ${s.cells.length} letters</div>`;
+    z.innerHTML = body + `<div class="z-sub">${ztag}${s.d === 'A' ? '→ across' : '↓ down'} · ${s.cells.length} letters</div>` + zoomProg(s);
     z.style.maxWidth = 'none';
     z.style.width = Math.round(cardW) + 'px';
     stopAnims(z); stopAnims(ln);

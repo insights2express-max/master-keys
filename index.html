@@ -9,7 +9,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Clue Duel">
   <meta name="description" content="A head-to-head crossword tile game you can play offline.">
-  <title>Clue Duel · v08p</title>
+  <title>Clue Duel · v08q</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="icon" href="icons/icon-192.png" type="image/png" sizes="192x192">
@@ -23,7 +23,7 @@
       <header class="brand">
         <img class="logo" src="icons/icon.svg" alt="" width="64" height="64">
         <div class="brand-txt">
-          <h1>Clue Duel <span class="vpill" id="verPill">v08p</span></h1>
+          <h1>Clue Duel <span class="vpill" id="verPill">v08q</span></h1>
           <p class="tag">Place your letters. Finish the words. Beat the Bot.</p>
         </div>
         <!-- v08h (JM CD-41: 1.3, 1.4.1): sound, Game History and How To Play as small icons in the top corner -->
@@ -89,6 +89,7 @@
         <label class="field">
           <span class="lbl">Letters in Hand</span>
           <select id="handSel">
+            <option value="4">4 letters</option>
             <option value="5">5 letters</option>
             <option value="6">6 letters</option>
             <option value="7">7 letters</option>
@@ -152,6 +153,11 @@
       <label class="field gs-field">
         <span class="lbl">Grid Colors</span>
         <span class="gs-pick"><select id="gridSel"></select><span id="gridSample"></span></span>
+      </label>
+      <!-- v08q (JM CD-58 discussion 2; CD-59: 2.1c, 2.2, 2.3b): Screen = Auto / Light / Dark / Night (Charcoal) -->
+      <label class="field gs-field">
+        <span class="lbl">Screen</span>
+        <select id="screenSel"><option value="auto">Auto (follows your device)</option><option value="light">Light</option><option value="dark">Dark</option><option value="night">Night (dimmest)</option></select>
       </label>
       <div class="def-row">
         <button class="btn" id="saveDefBtn" type="button" title="Keep the Challenge Level, Grid Size and all these Options as your defaults">⭐ Save as my defaults</button>
