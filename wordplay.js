@@ -3,11 +3,15 @@
    These replace the plain "hard" clue at higher Challenge Levels (5+). Most are double meanings or puns;
    a question mark means "don't take this literally". Only words in lexicon.js are used. */
 self.WORDPLAY_DATA = `
-ACE|Card that can also serve
+ACE|Card that also serves
+ABLE|Cain's brother, by sound
+ARC|Noah's boat, by sound
+AWL|Everything, by sound
+AJAR|When is a door not a door?
+ANAGRAM|Listen, for silent
 BAND|Group that might be rubber
 BANK|Place to save money, or to sit and fish
 BAT|Club member that flies at night?
-BEAR|Grin and ___ it
 BOARD|Plank you can get on a plane
 BOW|Ribbon knot, or a curtain call move
 CAPE|Superhero wear, or a headland
@@ -128,7 +132,7 @@ TOWER|Tall building, or a tugboat
 TRACK|Path you follow
 # ---------- v03 batch (JM, CD-7: 7): double meanings and puns ----------
 ACT|Do something on stage, or pass a law
-ADDRESS|Speech that tells the mail carrier where to go?
+ADDRESS|Lincoln shows where to send mail.
 AGENT|Spy who might sell you a house?
 AIR|Tune you can breathe
 ALIEN|Visitor who's out of this world?
@@ -171,7 +175,6 @@ BELT|Sing loudly, or hold up pants
 BENCH|Where subs sit, or a judge's seat
 BEND|Bow, or a curve in the road
 BEST|Top, or to beat
-BET|Wager, or "You ___!"
 BID|Auction offer, or a command
 BILL|Duck's mouth, or a restaurant check
 BIRD|Little tweeter?
@@ -220,12 +223,10 @@ BUY|Believe, or purchase
 CAB|Taxi, or red wine
 CABIN|Log home, or a plane section
 CABLE|TV service, or a strong wire
-CAKE|Piece of ___ (something easy)
 CALF|Young cow, or the back of a leg
 CALL|Phone, or a referee's decision
 CALM|Eye of the storm?
 CAMP|Tent site, or over-the-top style
-CANE|Sugar ___, or a walking stick
 CANDY|Sweet nothing?
 CAP|Limit, or a hat
 CAPTAIN|Team leader, or a ship's boss
@@ -238,7 +239,6 @@ CARROT|Reward dangled before a donkey
 CARRY|Tote, or what you do with a one in math
 CART|Shopping wheels, before the horse?
 CASE|Briefcase, or a detective's job
-CASH|Money, or "___ in"
 CASTLE|Chess move fit for a king?
 CAT|Cool jazz fan, or a pet
 CATCH|Hidden problem, or a fly ball
@@ -247,7 +247,6 @@ CAVE|Give in, or a bat's home
 CELL|Phone, or a jail room
 CHAIN|Store group, or links
 CHAIR|Head of a meeting, or a seat
-CHALK|"___ it up to experience"
 CHARM|Bracelet trinket, or appeal
 CHART|Top 40 list, or a sea map
 CHEEK|Sass, or part of the face
@@ -259,7 +258,6 @@ CHIN|Keep it up?
 CIRCLE|Social group, or a round shape
 CIRCUIT|Electric path, or a tour
 CLAIM|Assert, or gold-rush land
-CLAM|"Happy as a ___"
 CLAP|Applause, or thunder
 CLASS|Style, or a lesson
 CLAW|Hammer part with a cat's grip?
@@ -271,14 +269,12 @@ CLOCK|Punch in, or a timepiece
 CLOSE|Near, or shut
 CLOUD|Sky puff that stores files?
 CLOUT|Influence, or a whack
-CLOWN|Class ___ (cut-up)
 CLUE|What you're reading right now?
 COACH|Bus, or a trainer
 COAL|Lump for a naughty kid?
 COAST|Shore, or glide
 CODE|Secret writing a programmer types?
 COLD|Sniffle, or icy
-COMB|Honey___, or a hair tool
 CONE|Ice cream holder, or a traffic marker
 COOK|Fudge the books?
 COOL|Calm, or awesome
@@ -321,7 +317,6 @@ DEEP|Profound, or far down
 DEER|Animal that sounds like a darling?
 DEN|Lion's home, or a cozy room
 DESERT|Abandon, or the Sahara
-DESK|Help ___ (support counter)
 DIAMOND|Ball field, or a gem
 DICE|Cut in cubes, or a gamer's cubes
 DIET|Lawmaking body, or a meal plan
@@ -333,7 +328,6 @@ DIVE|Plunge, or a seedy bar
 DOCK|Pier, or cut pay
 DOCTOR|Fake a photo, or a physician
 DOG|Follow closely, or a pet
-DOT|Polka ___, or a period
 DOUGH|Money for a baker?
 DOWN|Sad, or fluffy feathers
 DRAIN|Exhaust, or a sink hole
@@ -356,7 +350,6 @@ EGG|Urge on, or a breakfast item
 ELBOW|Nudge, or an arm joint
 ELDER|Tree, or an older person
 ELEMENT|Part, or iron or gold
-ENGINE|Search ___, or a motor
 ENTER|Key you press to go in?
 ENTRY|Diary page, or a way in
 ESCAPE|Key to leave?
@@ -364,7 +357,6 @@ EVEN|Level, or divisible by two
 EYE|Needle hole, or watch
 FACE|Clock front, or confront
 FARE|Bus price, or get along
-FEATHER|Light as a ___
 FEED|News stream, or give food
 FEEL|Touch, or sense
 FEET|Measures on a ruler you stand on?
@@ -417,14 +409,12 @@ GRILL|Question hard, or a barbecue
 GRIP|Handle, or hold
 GUARD|Basketball position, or a sentry
 GUT|Instinct, or the belly
-HAIR|Split ___s (nitpick)
 HAM|Overactor, or a deli meat
 HAMMER|Tool that hits the nail on the head?
 HAND|Help, or a palm and fingers
 HANG|Spend time, or put up a picture
 HARP|Nag on, or an angel's instrument
 HAWK|Sell, or a bird of prey
-HAY|Hit the ___ (go to bed)
 HEAD|Lead, or a bathroom on a ship
 HEART|Center of things, or a card suit
 HEAT|Spiciness, or a race round
@@ -441,7 +431,6 @@ HOLE|Golf target, or a gap
 HOME|Plate, or a house
 HOOK|Catchy part of a song
 HOOT|Owl sound, or a riot
-HORN|Toot your own ___
 HORSE|Gym vault that neighs?
 HOT|Spicy, or stolen
 HUMOR|Go along with, or comedy
@@ -475,13 +464,11 @@ LEVEL|Floor, or flat
 LID|Cap, or an eyelid
 LIFT|Elevator in London, or a ride
 LIKE|Similar, or enjoy
-LIMB|Out on a ___ (taking a risk)
 LIME|Green citrus, or chalky mineral
 LINK|Chain piece, or a web address
 LIP|Sass, or the edge of a cup
 LIST|Lean, or a to-do
 LOAF|Lounge, or bread
-LOOP|In the ___ (informed)
 LOT|Parking area, or many
 LOUD|Garish, or noisy
 MAD|Angry, or crazy
@@ -570,7 +557,6 @@ ROLE|Part in a play
 ROLL|Bread, or a list of names
 ROOM|Space, or a hotel booking
 ROOT|Cheer, or a plant base
-ROPE|Learn the ___s
 ROUND|Drink order, or circular
 RUB|Massage, or a snag
 RULE|Measuring stick, or a law
@@ -580,7 +566,6 @@ SAFE|Home free, or a vault
 SALT|Old sailor, or seasoning
 SAND|Grit, or smooth wood
 SAP|Fool, or tree juice
-SCENE|Make a ___ (cause a fuss)
 SCHOOL|Fish group, or a place to learn
 SEASON|Add salt, or summer
 SEED|Tournament ranking, or a plant start
@@ -623,12 +608,10 @@ TASTE|Style, or flavor
 TEE|Golf peg, or a shirt
 TERM|Word, or a school period
 THROW|Blanket, or toss
-TIME|Do ___ (be in jail)
 TIP|Advice, or a waiter's extra
 TITLE|Championship, or a name
 TOLL|Road fee, or a bell's ring
 TON|Lots, or 2,000 pounds
-TOOTH|Sweet ___
 TORCH|Burn, or a British flashlight
 TRAP|Snare, or a mouth, in slang
 TURKEY|Flop, or a holiday bird
@@ -640,7 +623,6 @@ VET|Check out, or an animal doctor
 WASH|Even trade?
 WAX|Grow, as the moon, or polish
 WEB|Internet, or spider work
-WHEEL|Big ___ (important person)
 WING|Hospital section, or a flier's part
 WIRE|Telegram, or cable
 WORM|Bait, or wriggle

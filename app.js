@@ -14,7 +14,7 @@
    v08j: grid colors, final-play view, clock-out final turn, menu defaults, phone two-finger drag) */
 'use strict';
 (() => {
-  const APP_VER = 'v08s'; // Project CP: shown as a pill beside the title and in the browser tab
+  const APP_VER = 'v08t'; // Project CP: shown as a pill beside the title and in the browser tab
   const E = window.Engine;
   const $ = (s, el = document) => el.querySelector(s);
   const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -941,7 +941,8 @@
     const W = (cell - 4 - (d === 'A' ? cell * 0.18 : 0)) * 0.95;
     const H = ((split ? (cell - 1) / 2 : cell) - 2 - (d === 'D' ? cell * 0.17 : 0)) * 0.97;
     if (!fitCtx) fitCtx = document.createElement('canvas').getContext('2d');
-    const words = text.toUpperCase().split(/\s+/).filter(Boolean);
+    // v08t: a spaced missing-letter word ("SAND _ ICH") is one word: it shrinks to fit rather than break across lines
+    const words = tightBlanks(text).toUpperCase().split(/[ \t\r\n]+/).filter(Boolean);
     const fits = size => {
       fitCtx.font = `700 ${size}px ${CLUE_FONT}`;
       const sp = size * -0.01; // letter-spacing -.01em
@@ -1063,7 +1064,11 @@
   }
   // v08p (JM CD-56 add'l 1.2; CD-57: 2.1c, 2.2.1): a missing letter ("_") shows as a bold orange "?"; a missing word
   // ("___") as a thick orange bar. On a lit (yellow) clue cell both turn deep orange so they don't wash out (2.2.2.1).
+  // v08t (JM CD-67: 3.4a): a 1-letter clue such as "SAND _ ICH" or "C _ _ KIE" is spaced for legibility; non-breaking
+  // spaces keep it on one line in the cell (only for all-capital letter patterns, so "Grin and ___ it" still wraps)
+  function tightBlanks(t) { return /^[A-Z]+(?: +(?:_|[A-Z]+))+$|^(?:_ +)+[A-Z]/.test(t) && t.includes('_') ? t.replace(/ +/g, ' ') : t; }
   function clueMarks(t) {
+    t = tightBlanks(t);
     return esc(t).replace(/_{2,}/g, '<span class="mw" aria-label="missing word"></span>').replace(/_/g, '<span class="ml" aria-label="missing letter">?</span>');
   }
   function renderBoard() {

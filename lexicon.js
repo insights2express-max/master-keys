@@ -4,17 +4,17 @@
    Level: 1 everyday · 2 common · 3 moderate · 4 advanced · 5 obscure
    Words are 2–7 letters, plus 11-letter words for Large grids (A–Z only). A repeated word adds an extra clue set (see above). */
 // Lexicon edition (JM, CD-24 other edits 1.1): its own number, separate from the game version. Add 1 whenever the word data or the Lexicon page changes.
-// L01 v07a · L02 v07b · L03 v07c · L04 v07d (wrapping cells) · L05 v07e (8-letter hint clues, edition number) · L06 v08 (8-letter easy and hard hints) · L07 (editor page: Status, Comments, Edit Mode + Copy Edits, advanced search; "/" in 23 Word Vault clues) · L08 v08b (58 country-code clues "Madrid URL" style, JM CD-27; Word Vault tricky hints) · L09 (JM's first Copy Edits, CD-29: ZAR clues, EXCITE added ON-DECK; ";" separates alternative clues, one picked at random) · L10 v08q (JM's Copy Edits, CD-59 + CD-60: 28 clue changes, "on an exchange board" / "on a bag tag" / "on a T-shirt tag" dropped, EXCITE active, new 1-letter clues, T pictures, drawn ICEBERG picture "@iceberg"; the Lexicon page gives each 1-letter row its own key) · L11 v08r (CD-62: 2.1a: 1-letter answers have one clue per row, so F, K and X's new ";" clues became separate rows; page: missing-letter marks drawn as in the game + "Missing-letter clues" filter) · L12 v08s (JM's Copy Edits CD-64 + CD-65: 34 changes, sorted Literal = plain / Indirect = figurative; page: permanent edit record, Reviewed ticks, Wordplay column, Claude drafts)
-self.LEXICON_VER = 'L12';
+// L01 v07a · L02 v07b · L03 v07c · L04 v07d (wrapping cells) · L05 v07e (8-letter hint clues, edition number) · L06 v08 (8-letter easy and hard hints) · L07 (editor page: Status, Comments, Edit Mode + Copy Edits, advanced search; "/" in 23 Word Vault clues) · L08 v08b (58 country-code clues "Madrid URL" style, JM CD-27; Word Vault tricky hints) · L09 (JM's first Copy Edits, CD-29: ZAR clues, EXCITE added ON-DECK; ";" separates alternative clues, one picked at random) · L10 v08q (JM's Copy Edits, CD-59 + CD-60: 28 clue changes, "on an exchange board" / "on a bag tag" / "on a T-shirt tag" dropped, EXCITE active, new 1-letter clues, T pictures, drawn ICEBERG picture "@iceberg"; the Lexicon page gives each 1-letter row its own key) · L11 v08r (CD-62: 2.1a: 1-letter answers have one clue per row, so F, K and X's new ";" clues became separate rows; page: missing-letter marks drawn as in the game + "Missing-letter clues" filter) · L12 v08s (JM's Copy Edits CD-64 + CD-65: 34 changes, sorted Literal = plain / Indirect = figurative; page: permanent edit record, Reviewed ticks, Wordplay column, Claude drafts) · L13 v08t (JM's Copy Edits CD-66 + CD-67: 375 Claude drafts for A accepted, three-kind test — sound-alike clues to Wordplay, blanks to Indirect; ACRID; 125 new 1-letter clues with the blank inside the word; page: Draft toggle, clue lengths, Wrap / Clip, two-row filters)
+self.LEXICON_VER = 'L13';
 self.LEXICON_DATA = `
 # ---------- 2 letters ----------
-AD|Commercial; Selling|Promo|1
-AH|"I see!"|Sound of realization|1
-AM|Morning hours|Before noon, on clocks|1
-AN|Article before a vowel|Indefinite little word|1
-AS|"___ you wish"|Like, in comparisons|1
-AT|Located ___ home|Email symbol, spoken|1
-AX|Chopping tool|Lumberjack's tool|2
+AD|Commercial; Selling; Promo|Spot on TV; Billboard filler|1
+AH|"I see!"; Sound of realization|Sigh of relief; Spa sound|1
+AM|Morning hours; Before noon, on clocks|Rise-and-shine time; I think, therefore I ___|1
+AN|Article before a vowel; Indefinite little word|___ apple a day|1
+AS|Like, in comparisons|"___ you wish"|1
+AT|Email symbol, spoken|Located ___ home|1
+AX|Chopping tool; Lumberjack's tool|Give the ___ (fire)|2
 BE|Exist|"To ___ or not to ___"|1
 BY|Next to|Beside|1
 DO|Perform|Party, informally|1
@@ -53,7 +53,7 @@ UP|Not down|Awake|1|⬆️
 US|You and me|America|1
 WE|You and I|Us, as subject|1
 YO|Hey there|Casual greeting|2
-AI|Smart software|Computer brain|2
+AI|Smart software; Computer brain|Chatbot's brain; HAL 9000, e.g.|2
 TV|Telly|Small screen|1|📺
 PC|Desktop computer|Correct, politically|1
 UK|Britain|Blighty|1
@@ -69,7 +69,7 @@ EG|For example|"Say," in short|2
 IE|That is|"That is"|3
 ET|"___ cetera"|Latin "and"|3
 PM|Afternoon|Prime Minister|1
-AC|Air conditioning|Cool unit; Cool!; Chillin'|2
+AC|Air conditioning; Cool unit|Cool!; Chillin'; Summer's best friend|2
 VR|Virtual reality|Goggles tech|2|🥽
 MD|Doctor|Physician|2
 RN|Nurse|Hospital pro|3
@@ -89,7 +89,7 @@ XL|Extra large|Big tag size|2
 HQ|Base|Main office|2
 IQ|Smarts score|Brainpower measure|1
 FM|Radio band|AM partner|2|📻
-AA|Small battery|Battery size|2|🔋
+AA|Small battery; Battery size|Remote-control fuel; Twelve-step group, briefly|2|🔋
 NB|Note well|Take note abbr.|4
 PR|Public relations|Spin|3
 LP|Vinyl album|Record|3
@@ -112,7 +112,7 @@ SI|Spanish yes|Yes, in Madrid|3
 OM|Meditation chant|Yoga sound|2
 UM|Hesitation sound|"Er..."|1
 ER|Hospital dept.|Hesitation sound|1|🏥
-AW|"How sweet!"|"Shucks!"|1
+AW|"How sweet!"|"Shucks!"; Puppy-photo reaction|1
 UH|"Hmm..."|Filler word|1
 EW|"Gross!"|Yuck!|1|🤢
 HM|Pondering sound|"Let me think..."|2
@@ -120,29 +120,29 @@ SH|"Quiet!"|Library sound|2
 # ---------- 3 letters ----------
 ACE|Top card|Serve no one returns; Best-in-class|1
 ACT|Perform on stage; Pretend|Bill becomes law|1
-ADD|Sum up|Tack on; Anti-minus; Minus x -1|1
-AGE|Years lived; Period|Era|1
-AGO|In the past|Back then|1
-AID|Help|Band-___|1
-AIM|Point at a target|Goal|1
-AIR|What we breathe|Melody|1|💨
-ALE|Pub drink|Brewpub pour|2|🍺
-ALL|Every one|The whole shebang|1
-AND|Plus|Ampersand|1
-ANT|Tiny insect|Colony worker|1|🐜
-ANY|Some|Whichever|1
-APE|Gorilla|Mimic|1|🦍
-APT|Fitting|Likely|2
-ARC|Curved line|Story's shape|2
-ARE|"We ___ here"|Hectare part|1
-ARK|Noah's boat|Sacred chest|2
-ARM|Limb|Weapon, verb|1|💪
-ART|Painting|Craft|1|🎨
-ASH|Fire residue|Tree with keys|1
-ASK|Inquire|Pop the question|1
-ATE|Had a meal|Chowed down|1
-AWE|Wonder|Reverence|2
-AXE|Chopping tool|Fire, slangily|2|🪓
+ADD|Sum up; Tack on|Anti-minus; Minus x -1; Throw in|1
+AGE|Years lived; Period; Era|Stone ___; Act your ___|1
+AGO|In the past; Back then|Long, long ___; Once upon a time|1
+AID|Help|Band-___; First ___; Lend a hand|1
+AIM|Point at a target; Goal|Set one's sights; Ready, ___, fire!|1
+AIR|What we breathe; Melody|Put on ___s; Hot ___ (empty talk)|1|💨
+ALE|Pub drink; Brewpub pour|Pint, perhaps; Hoppy pour|2|🍺
+ALL|Every one|The whole shebang; Whole enchilada; One for ___|1
+AND|Plus; Ampersand|Rock ___ roll; No ifs, ___s, or buts|1
+ANT|Tiny insect; Colony worker|Picnic crasher; Aesop's hard worker|1|🐜
+ANY|Some; Whichever|___ way you slice it; ___ port in a storm|1
+APE|Gorilla|Mimic; Go ___ (lose it)|1|🦍
+APT|Fitting; Likely|Right on the nose; Spot-on|2
+ARC|Curved line; Story's shape|Rainbow's path|2
+ARE|Form of "to be"|"We ___ here"; Hectare part|1
+ARK|Noah's boat; Sacred chest|Two-by-two cruise ship|2
+ARM|Limb; Weapon, verb|Twist someone's ___; Long ___ of the law|1|💪
+ART|Painting; Craft|State of the ___; Museum display|1|🎨
+ASH|Fire residue|Tree with keys; Phoenix's bed|1
+ASK|Inquire|Pop the question; ___ me anything|1
+ATE|Had a meal; Chowed down|Cleaned one's plate; What's ___ you?|1
+AWE|Wonder; Reverence|Jaw-dropper's feeling|2
+AXE|Chopping tool|Fire, slangily; Get the ___|2|🪓
 BAD|Not good|Cool, in old slang|1|👎
 BAG|Sack|Snag, as a trophy|1|👜
 BAN|Forbid|Embargo|1
@@ -195,7 +195,7 @@ DIM|Not bright|Slow-witted|1
 DIP|Chip spread|Quick swim|1
 DOE|Female deer|Rabbit mom|1
 DOG|Barking pet|Tail closely|1|🐕
-DOT|Small spot|Point|1
+DOT|Small spot|Point; Polka ___|1
 DRY|Not wet|Witty, deadpan|1
 DUE|Owed|Expected|1
 DUG|Excavated|Liked, slangily|1
@@ -253,7 +253,7 @@ HAD|Owned|Fooled|1
 HAM|Pork meat|Overactor|1|🍖
 HAS|Owns|Possesses|1
 HAT|Head cover|Role|1|🎩
-HAY|Dried grass|Horse feed|1
+HAY|Dried grass|Horse feed; Hit the ___ (go to bed)|1
 HEN|Female chicken|Clucker|1|🐔
 HER|That woman|Possessive she|1
 HEY|"Hi!"|"Psst!"|1
@@ -469,18 +469,18 @@ ZAP|Shock|Microwave|1|⚡
 ZEN|Calm|Meditation school|2
 ZIP|Fasten|Zero|1|🤐
 ZOO|Animal park|Madhouse|1
-ABS|Stomach muscles|Six-pack|2
-ADO|Fuss; Bother; Trouble|Much ___ about nothing|2
-AFT|Toward the stern|Rear, at sea; Sailor's 6; 6 o'clock|3
-AHA|"Got it!"|Eureka|1|💡
-ALP|Swiss peak|Mountain|2|🏔️
-ALT|Keyboard key|Other, in tech|3
-AMP|Guitar booster|Ampere|2
-APP|Phone program|Software|1|📱
-ASP|Small cobra|Cleopatra's killer|3
-AVE|Street|"Hail" in Latin|3
-AWL|Leather punch|Cobbler's tool|4
-AYE|Yes|Vote for|2
+ABS|Stomach muscles|Six-pack; Crunch targets|2
+ADO|Fuss; Bother; Trouble|Much ___ about nothing; Song and dance|2
+AFT|Toward the stern; Rear, at sea|Sailor's 6; 6 o'clock|3
+AHA|"Got it!"; Eureka|Light-bulb moment|1|💡
+ALP|Swiss peak; Mountain|Heidi's home; Matterhorn, e.g.|2|🏔️
+ALT|Keyboard key; Other, in tech|___-rock; Ctrl-___-Delete|3
+AMP|Guitar booster; Ampere|Turn it up to 11 gear; ___ up (excite)|2
+APP|Phone program; Software|There's one for that; Icon on a home screen|1|📱
+ASP|Small cobra|Cleopatra's killer; Nile biter|3
+AVE|Street|"Hail" in Latin; ___ Maria|3
+AWL|Leather punch; Cobbler's tool||4
+AYE|Yes; Vote for|___, ___, captain!|2
 BAA|Sheep sound|Lamb's cry|1
 BRA|Lingerie item|Car hood cover|2
 BRO|Brother|Dude|1
@@ -573,31 +573,31 @@ ETC|And so on|Et cetera|1
 ORT|Table scrap|Leftover morsel|5
 OLE|Bullfight cheer|Spanish cheer|3
 ONO|Hawaiian fish|Wahoo fish|5
-ALA|In the style of|Like, menu-style|3
+ALA|In the style of; Like, menu-style|Pie ___ mode|3
 TSK|Disapproving sound|Tut|3
 # ---------- 4 letters ----------
-ABLE|Capable|Competent|1
-ACHE|Pain|Yearn|1
+ABLE|Capable; Competent|Up to the task|1
+ACHE|Pain|Yearn; What a sore muscle does; Heart's longing|1
 ACID|Sour substance; Low pH; Sulfuric|Biting, as wit|2|🧪
-ACRE|Land measure|Farm unit|1
-AGED|Old|Matured|1
-AIDE|Assistant|Helper|2
-AIRY|Breezy|Light and spacious|2
-ALOE|Soothing plant|Gel plant|2
-ALSO|Too|In addition|1
-ALTO|Low female voice|Choir part|2
-AMID|Among|In the middle of|2
-ANEW|Again|Afresh|2
-ANTE|Poker stake|Up the ___|2
-APEX|Peak|Summit|2
-AREA|Region|Zone|1
-ARIA|Opera solo|Diva's song|2
-ARMY|Military force|Host|1
-ATOM|Tiny particle|Smallest unit|1|⚛️
-AUNT|Parent's sister|Uncle's wife|1
-AURA|Glow|Vibe|2
-AWAY|Gone|Not home|1
-AXIS|Pivot line|Alliance|2
+ACRE|Land measure; Farm unit|Football field, roughly|1
+AGED|Old; Matured|Like fine wine; Over the hill|1
+AIDE|Assistant; Helper|Right-hand person; Gofer|2
+AIRY|Breezy; Light and spacious|Head in the clouds; Like a sunlit loft|2
+ALOE|Soothing plant; Gel plant|Sunburn soother|2
+ALSO|Too; In addition|And another thing…|1
+ALTO|Low female voice; Choir part|Sax size; Range below soprano|2
+AMID|Among; In the middle of|Smack in the middle of|2
+ANEW|Again; Afresh|Clean slate; From the top|2
+ANTE|Poker stake|Up the ___; Price of admission, at the card table|2
+APEX|Peak; Summit|Top of the food chain|2
+AREA|Region; Zone|___ 51; Gray ___|1
+ARIA|Opera solo; Diva's song|Showstopper at the opera|2
+ARMY|Military force; Host|___ of one; Ant colony, e.g.|1
+ATOM|Tiny particle; Smallest unit|Split this; Bit of everything|1|⚛️
+AUNT|Parent's sister; Uncle's wife|Agony ___ (advice columnist)|1
+AURA|Glow; Vibe|Halo effect|2
+AWAY|Gone; Not home|Far, far ___; ___ game|1
+AXIS|Pivot line|Alliance; Earth's spin line|2
 BABY|Infant|Pamper|1|👶
 BACK|Rear|Support|1
 BAKE|Cook in oven|Roast|1
@@ -613,7 +613,7 @@ BEAD|Small bauble|Drop|1
 BEAK|Bird's bill|Nose|1
 BEAM|Ray|Girder|1
 BEAN|Legume|Head|1
-BEAR|Grizzly|Endure|1|🐻
+BEAR|Grizzly|Endure; Grin and ___ it|1|🐻
 BEAT|Defeat|Rhythm|1
 BEEF|Cow meat|Complaint|1|🥩
 BELL|Ringer|Chime|1|🔔
@@ -642,18 +642,18 @@ BURN|Scorch|Sear|1
 BUSY|Occupied|Swamped|1
 CAFE|Coffee shop|Bistro|1
 CAGE|Pen|Enclosure|1
-CAKE|Dessert|Bar of soap|1|🎂
+CAKE|Dessert|Bar of soap; Piece of ___ (something easy)|1|🎂
 CALF|Young cow|Leg part|1
 CALL|Phone|Shout|1|📞
 CALM|Peaceful|Serene|1
 CAMP|Tent site|Kitschy|1|⛺
-CANE|Walking stick|Sugar stalk|1
+CANE|Walking stick|Sugar stalk; Sugar ___|1
 CAPE|Cloak|Headland|1
 CARD|Playing card|Greeting|1|🃏
 CARE|Concern|Worry|1
 CART|Wagon|Trolley|1|🛒
 CASE|Box|Lawsuit|1
-CASH|Money|Bills|1|💵
+CASH|Money|Bills; "___ in"|1|💵
 CAST|Throw|Actors|1
 CAVE|Cavern|Give in|1
 CELL|Prison room|Phone|1
@@ -661,7 +661,7 @@ CHEF|Cook|Kitchen boss|1
 CHIN|Jaw|Face part|1
 CHIP|Snack|Microchip|1
 CITY|Town|Metropolis|1|🏙️
-CLAM|Shellfish|Close up|1
+CLAM|Shellfish|Close up; "Happy as a ___"|1
 CLAP|Applaud|Thunder|1|👏
 CLAW|Talon|Nail|1
 CLAY|Pottery soil|Earth|1
@@ -672,7 +672,7 @@ COAT|Jacket|Layer|1|🧥
 CODE|Cipher|Program|1
 COIN|Money piece|Invent|1|🪙
 COLD|Chilly|Aloof|1|🥶
-COMB|Hair tool|Search|1
+COMB|Hair tool|Search; Honey___|1
 CONE|Ice cream holder|Pine fruit|1|🍦
 COOK|Chef|Fiddle with|1
 COOL|Chilly|Hip|1|😎
@@ -703,7 +703,7 @@ DECK|Card pack|Ship floor|1
 DEED|Act|Property paper|1
 DEEP|Far down|Profound|1
 DEER|Antlered animal|Buck|1|🦌
-DESK|Writing table|Bureau|1
+DESK|Writing table|Bureau; Help ___ (support counter)|1
 DIAL|Clock face|Call|1
 DICE|Cubes|Cut small|1|🎲
 DIET|Food plan|Regimen|1|🥗
@@ -815,7 +815,7 @@ GRIP|Hold|Grasp|1
 GROW|Expand|Sprout|1
 GULF|Bay|Chasm|1
 HAIL|Ice storm|Greet|1
-HAIR|Locks|Mane|1
+HAIR|Locks|Mane; Split ___s (nitpick)|1
 HALF|50%|Partial|1
 HALL|Corridor|Auditorium|1
 HAND|Palm|Help|1|✋
@@ -845,7 +845,7 @@ HOLE|Pit|Gap|1|🕳️
 HOME|House|Abode|1|🏠
 HOOK|Fishing ___|Catch|1|🪝
 HOPE|Wish|Aspire|1
-HORN|Car beeper|Antler|1|📯
+HORN|Car beeper|Antler; Toot your own ___|1|📯
 HOSE|Water tube|Stockings|1
 HOST|Emcee|Party giver|1
 HOUR|60 minutes|Time unit|1|⏰
@@ -917,7 +917,7 @@ LOCK|Fasten|Curl of hair|1|🔒
 LOFT|Attic|Lift|1
 LONG|Lengthy|Yearn|1
 LOOK|See|Glance|1
-LOOP|Circle|Ring|1|➰
+LOOP|Circle|Ring; In the ___ (informed)|1|➰
 LORD|Noble|Master|1
 LOSE|Misplace|Be beaten|1
 LOSS|Defeat|Setback|1
@@ -1083,7 +1083,7 @@ ROLL|Bun|Tumble|1
 ROOF|Top|Ceiling|1
 ROOM|Chamber|Space|1
 ROOT|Origin|Cheer|1
-ROPE|Cord|Lasso|1
+ROPE|Cord|Lasso; Learn the ___s|1
 ROSE|Flower|Ascended|1|🌹
 RUBY|Red gem|Jewel|1
 RUDE|Impolite|Crude|1
@@ -1182,7 +1182,7 @@ TICK|Clock sound|Mite|1
 TIDE|Ebb and flow|Current|1
 TIDY|Neat|Orderly|1
 TILE|Square piece|Floor slab|1
-TIME|Clock|Hour|1|⌛
+TIME|Clock|Hour; Do ___ (be in jail)|1|⌛
 TINY|Small|Wee|1
 TIRE|Wheel|Weary|1
 TOAD|Frog kin|Croaker|1
@@ -1259,14 +1259,14 @@ YELL|Shout|Holler|1
 YOGA|Mindful stretch|Asana practice|1|🧘
 ZERO|Nothing|Nil|1|0️⃣
 ZONE|Area|Region|1
-ABET|Aid a crime|Egg on|3
-ADZE|Woodworking ax|Shaping blade; Strange ax|5
-ALEE|Away from wind|Sheltered side|5
-ANON|Soon, old-style|Shortly, poetically|4
-ARID|Very dry|Parched|2
-ATOP|On top of|Upon|2
-AVER|Assert|Declare firmly|4
-AVID|Eager|Keen|2
+ABET|Aid a crime|Egg on; Be a partner in crime|3
+ADZE|Woodworking ax; Shaping blade|Strange ax; Shipwright's swinger|5
+ALEE|Away from wind; Sheltered side|Helm's ___!|5
+ANON|Soon, old-style; Shortly, poetically|Unsigned, briefly|4
+ARID|Very dry; Parched|Like the Sahara; Dry as a bone|2
+ATOP|On top of; Upon|Perched on; Cherry on ___|2
+AVER|Assert; Declare firmly|Swear up and down|4
+AVID|Eager; Keen|Diehard|2
 BRIO|Vigor|Verve|4
 BUOY|Float marker|Lift spirits|3
 CLEF|Music symbol|Staff sign|3
@@ -1298,7 +1298,7 @@ IOTA|Tiny bit|Greek letter|3
 JEST|Joke|Quip|3
 LAUD|Praise|Extol|4
 LIEU|In ___ of|Place|4
-LIMB|Arm or leg|Branch|2
+LIMB|Arm or leg|Branch; Out on a ___ (taking a risk)|2
 LORE|Folklore|Tradition|3
 LURE|Bait|Tempt|2
 LUTE|Old guitar|Strings|3
@@ -1373,11 +1373,11 @@ YOKE|Harness|Burden|3
 ZANY|Wacky|Crazy|3
 ZEAL|Passion|Fervor|3
 ZEST|Gusto|Peel|3
-AGOG|Excited|Eager|5
-ALIT|Landed|Dismounted|5
-AMEN|Prayer end|So be it|2
-ARCH|Curve|Chief|2
-AXLE|Wheel shaft|Spindle|2
+AGOG|Excited; Eager|All eyes and ears; On tenterhooks|5
+ALIT|Landed; Dismounted|Came down, like a butterfly|5
+AMEN|Prayer end; So be it|Preach!; You said it!|2
+ARCH|Curve; Chief|Gateway to the West; Foot's bridge|2
+AXLE|Wheel shaft; Spindle|Car's backbone|2
 EMIR|Ruler|Prince|5
 ESPY|Spot|Catch sight of|5
 ETUI|Needle case|Small case|5
@@ -1387,59 +1387,59 @@ STOA|Greek portico|Colonnade|5
 TSAR|Czar|Russian ruler|4
 UNAU|Two-toed sloth|Sloth|5
 ERNE|Sea eagle|Eagle|5
-AEON|Very long time; Epoch; Era|Age|4
+AEON|Very long time; Epoch; Era; Age|Forever and a day; Ages and ages|4
 ONUS|Burden|Responsibility|4
 EDEN|Paradise|Garden|2
 IRIS|Eye part|Flower|2
-AGUE|Fever|Chills|5
+AGUE|Fever; Chills|Shakes from marsh air, old-style|5
 # ---------- 5 letters ----------
-ABOUT|Approximately|Regarding|1
-ABOVE|Over|Overhead|1
-ACORN|Oak nut|Oak seed; Squirrel fav|1|🌰
-ACTOR|Performer|Thespian; Shakespearean|1
-ADAPT|Adjust; Flex; Bend|Modify|1
-ADMIT|Confess|Let in|1
-ADOPT|Take in|Embrace|1
-ADULT|Grown-up|Mature; 18+|1
-AFTER|Later; Subsequent|Behind|1
-AGAIN|Once more|Anew; >once|1
-AGENT|Spy; Rep; Proxy|Representative|2
-AGREE|Concur|Accept|1
-AHEAD|In front|Forward|1
-ALARM|Alert|Fear|1|🚨
-ALBUM|Record|Photo book|1
-ALERT|Watchful|Warning|1
-ALIEN|Extraterrestrial|Foreign|1|👽
-ALIKE|Similar|Same|1
-ALIVE|Living|Lively|1
-ALLOW|Permit|Let|1
-ALONE|Solo|Lonely|1
-ALONG|Beside|Onward|1
-ALTER|Change|Modify|1
-AMBER|Fossil resin|Yellow light|2
-AMPLE|Plenty|Enough|2
-ANGEL|Cherub|Sweetheart|1|👼
-ANGER|Rage|Fury|1
-ANGLE|Corner|Fish|1|📐
-ANGRY|Mad|Irate|1|😡
-ANKLE|Leg joint|Foot joint|1
-APART|Separated|Aside|1
-APPLE|Fruit|Tech giant|1|🍎
-APRON|Cook's cover|Smock|1
-ARENA|Stadium|Venue|1|🏟️
-ARGUE|Debate|Bicker|1
-ARISE|Get up|Emerge|2
-ARMOR|Plate mail|Shield|2|🛡️
-AROMA|Scent|Fragrance|2
-ARROW|Pointer|Shaft|1|🏹
-ASIDE|Apart|Stage whisper|1
-ASSET|Plus|Resource|2
-ATLAS|Map book|Titan|2
-AUDIO|Sound|Hearing|1
-AVOID|Evade|Shun|1
-AWAKE|Alert|Up|1
-AWARD|Prize|Grant|1|🏅
-AWARE|Conscious|Informed|1
+ABOUT|Approximately; Regarding|Give or take; In the ballpark|1
+ABOVE|Over; Overhead|___ board (on the level); Over one's head|1
+ACORN|Oak nut; Oak seed|Squirrel fav; Mighty oak's start|1|🌰
+ACTOR|Performer; Thespian|Shakespearean; Oscar hopeful|1
+ADAPT|Adjust; Flex; Bend; Modify|Roll with the punches; Go with the flow|1
+ADMIT|Confess; Let in|Own up; Fess up|1
+ADOPT|Take in; Embrace|Give a home to; Take under one's wing|1
+ADULT|Grown-up; Mature|18+; Past the kids' table|1
+AFTER|Later; Subsequent; Behind|Happily ever ___; Post-|1
+AGAIN|Once more; Anew|>once; Encore!; Take two|1
+AGENT|Spy; Rep; Proxy; Representative|Double ___; 007, e.g.|2
+AGREE|Concur; Accept|See eye to eye; Shake on it|1
+AHEAD|In front; Forward|Leading the pack; Full steam ___|1
+ALARM|Alert; Fear|Wake-up call; Raise the ___|1|🚨
+ALBUM|Record; Photo book|Wedding keepsake; Scrapbook of snaps|1
+ALERT|Watchful; Warning|On one's toes; Red ___|1
+ALIEN|Extraterrestrial; Foreign|E.T.; Out-of-this-world visitor|1|👽
+ALIKE|Similar; Same|Like two peas in a pod; Birds of a feather|1
+ALIVE|Living; Lively|Stayin' ___; Still kicking|1
+ALLOW|Permit; Let|Give the green light|1
+ALONE|Solo; Lonely|Home ___ (1990 film); On one's own|1
+ALONG|Beside; Onward|Sing-___; Come ___ for the ride|1
+ALTER|Change; Modify|___ ego; Tailor's job|1
+AMBER|Fossil resin; Yellow light|Jurassic Park's DNA keeper; Caution signal|2
+AMPLE|Plenty; Enough|More than enough; Room to spare|2
+ANGEL|Cherub|Sweetheart; Guardian on your shoulder|1|👼
+ANGER|Rage; Fury|Seeing red; Steam out of the ears|1
+ANGLE|Corner|Fish; Spin on a story|1|📐
+ANGRY|Mad; Irate|Hot under the collar; Fit to be tied|1|😡
+ANKLE|Leg joint; Foot joint|Bracelet spot; Twisted on the stairs|1
+APART|Separated; Aside|Worlds ___; Falling to pieces|1
+APPLE|Fruit|Tech giant; Big ___ (New York)|1|🍎
+APRON|Cook's cover; Smock|Tied to mom's ___ strings|1
+ARENA|Stadium; Venue|Gladiators' stage|1|🏟️
+ARGUE|Debate; Bicker|Go round and round; Lock horns|1
+ARISE|Get up; Emerge|Rise and shine; Come up, as a problem|2
+ARMOR|Plate mail; Shield|Knight's suit; Chink in the ___|2|🛡️
+AROMA|Scent; Fragrance|Bakery welcome|2
+ARROW|Pointer; Shaft|Cupid's dart; Straight as an ___|1|🏹
+ASIDE|Apart|Stage whisper; By the way|1
+ASSET|Plus; Resource|Feather in one's cap|2
+ATLAS|Map book|Titan; World-holder|2
+AUDIO|Sound; Hearing|What you hear but don't see|1
+AVOID|Evade; Shun|Steer clear of; Duck|1
+AWAKE|Alert; Up|Wide-eyed at 3 a.m.|1
+AWARD|Prize; Grant|Oscar, e.g.|1|🏅
+AWARE|Conscious; Informed|In the know|1
 BACON|Pork strips|Breakfast meat|1|🥓
 BADGE|Pin|Emblem|1
 BAGEL|Ring roll|Bread ring|1|🥯
@@ -1499,7 +1499,7 @@ CATCH|Grab|Snag|1
 CAUSE|Reason|Movement|1
 CHAIN|Links|Shackle|1|⛓️
 CHAIR|Seat|Lead a meeting|1
-CHALK|Board writer|Limestone|1
+CHALK|Board writer|Limestone; "___ it up to experience"|1
 CHARM|Allure|Spell|1
 CHART|Graph|Map|1|📊
 CHASE|Pursue|Hunt|1
@@ -1527,7 +1527,7 @@ CLOCK|Timepiece|Watch|1|🕰️
 CLOSE|Near|Shut|1
 CLOTH|Fabric|Material|1
 CLOUD|Puff|Haze|1|☁️
-CLOWN|Jester|Joker|1
+CLOWN|Jester|Joker; Class ___ (cut-up)|1
 COACH|Trainer|Bus|1
 COAST|Shore|Glide|1
 COCOA|Hot chocolate|Cacao|1
@@ -1814,7 +1814,7 @@ SALAD|Greens|Mixed dish|1
 SAUCE|Gravy|Sass|1
 SCALE|Weigh|Climb|1|⚖️
 SCARF|Muffler|Wolf down|1|🧣
-SCENE|View|Setting|1
+SCENE|View|Setting; Make a ___ (cause a fuss)|1
 SCORE|Points|Twenty|1
 SCOUT|Explore|Spy|1
 SEVEN|Number|Days in a week|1|7️⃣
@@ -1903,7 +1903,7 @@ TIRED|Weary|Sleepy|1
 TITLE|Name|Championship|1
 TOAST|Grilled bread|Salute|1
 TODAY|This day|Now|1
-TOOTH|Molar|Tusk|1
+TOOTH|Molar|Tusk; Sweet ___|1
 TOPIC|Subject|Theme|1
 TORCH|Flashlight|Burn|1|🔦
 TOTAL|Sum|Complete|1
@@ -1942,7 +1942,7 @@ WATCH|Look|Timepiece|1|⌚
 WATER|H2O|Aqua|1
 WHALE|Big sea mammal|Huge|1|🐳
 WHEAT|Grain|Cereal|1
-WHEEL|Wheel|Steering ring|1
+WHEEL|Wheel|Steering ring; Big ___ (important person)|1
 WHITE|Snow color|Pale|1|⬜
 WHOLE|Entire|Complete|1
 WOMAN|Lady|Female|1
@@ -1954,25 +1954,25 @@ YACHT|Luxury boat|Sailboat|1
 YOUNG|Youthful|New|1
 YOUTH|Teen|Juvenile|1
 ZEBRA|Striped horse|Crosswalk|1|🦓
-ABHOR|Hate|Loathe|4
-ACRID|Pungent; Harsh|Bitter; Like the smell of rot|4
-ADAGE|Saying|Proverb|3
-ADEPT|Skilled; Talented|Expert|3
-ADORN|Decorate; Enhance|Embellish; Makeup|3
-AEGIS|Protection; Shielding|Sponsorship|5
-AGILE|Nimble; Athletic; Flexible|Spry|3
-AGLOW|Shining|Radiant|4
-ALOFT|In the air|Overhead|4
-AMBLE|Stroll|Saunter|3
-AMISS|Wrong|Awry|4
-ANNEX|Addition|Wing|4
-ARDOR|Passion|Zeal|4
-ASKEW|Crooked|Awry|4
-ASTIR|Moving|Up and about|5
-ATONE|Make amends|Repent|4
-AUDIT|Inspect accounts|Review|3
-AVAIL|Use|Benefit|4
-AWASH|Flooded|Overflowing|4
+ABHOR|Hate; Loathe|Can't stand the sight of|4
+ACRID|Pungent; Harsh; Bitter|Rotten smell; Eye-stinging; Putrid smell|4
+ADAGE|Saying; Proverb|Old saw; Words to live by|3
+ADEPT|Skilled; Talented; Expert|Old hand; Whiz|3
+ADORN|Decorate; Enhance; Embellish|Makeup; Deck the halls|3
+AEGIS|Protection; Shielding; Sponsorship|Under the wing of; Zeus's shield|5
+AGILE|Nimble; Athletic; Flexible; Spry|Quick on one's feet; Cat-like|3
+AGLOW|Shining; Radiant|Lit up like a tree; Beaming|4
+ALOFT|In the air; Overhead|Up in the rigging; Sky-high|4
+AMBLE|Stroll; Saunter|Take one's sweet time; Mosey along|3
+AMISS|Wrong; Awry|Out of whack; Something's ___|4
+ANNEX|Addition; Wing|Take over, as land; Library's add-on building|4
+ARDOR|Passion; Zeal|Fire in the belly|4
+ASKEW|Crooked; Awry|Out of whack; Like a tilted picture|4
+ASTIR|Moving; Up and about|Rising early, poetically|5
+ATONE|Make amends; Repent|Make up for it|4
+AUDIT|Inspect accounts; Review|Taxpayer's nightmare|3
+AVAIL|Use; Benefit|To no ___|4
+AWASH|Flooded; Overflowing|Swimming in it|4
 BALMY|Mild|Pleasant|3
 BANAL|Trite|Commonplace|4
 BATON|Wand|Relay stick|3
@@ -2188,16 +2188,16 @@ YEARN|Long|Crave|3
 YODEL|Alpine song|Sing|4
 ZESTY|Spicy|Lively|3
 # ---------- 6 letters ----------
-ACTION|Deed|Movement|1
-ACTIVE|Busy|Lively|1
-ADVICE|Counsel|Tip|1
-AGENDA|Plan|Schedule|2
-ANCHOR|Ship's weight|News host|1
-ANIMAL|Creature|Beast|1
-ANSWER|Reply|Solution|1
-ARTIST|Painter|Creator|1
-ATTACK|Assault|Strike|1
-AUTUMN|Fall|Harvest season|1
+ACTION|Deed; Movement|"Lights, camera, ___!"; Where the excitement is|1
+ACTIVE|Busy; Lively|On the go; Full of beans|1
+ADVICE|Counsel; Tip|Two cents' worth; Dear Abby's stock|1
+AGENDA|Plan; Schedule|Hidden ___; Meeting's road map|2
+ANCHOR|Ship's weight|News host; Drop it to stay put|1
+ANIMAL|Creature; Beast|Party ___; Zoo resident|1
+ANSWER|Reply; Solution|What this grid wants; Final ___|1
+ARTIST|Painter; Creator|Starving ___; Con ___|1
+ATTACK|Assault; Strike|Charge!; Go on the offense|1
+AUTUMN|Fall; Harvest season|Leaf-peeping time|1
 BAKERY|Bread shop|Patisserie|1|🥐
 BANANA|Yellow fruit|Peel|1|🍌
 BASKET|Hamper|Hoop|1|🧺
@@ -2230,7 +2230,7 @@ DRAGON|Mythic beast|Fire breather|1|🐉
 EASILY|Simply|Without effort|1
 EDITOR|Reviser|Newspaper boss|1
 ENERGY|Power|Vigor|1
-ENGINE|Motor|Machine|1
+ENGINE|Motor|Machine; Search ___|1
 ESCAPE|Flee|Getaway|1
 FAMILY|Kin|Relatives|1
 FAMOUS|Well-known|Noted|1
@@ -2324,13 +2324,13 @@ WINTER|Season|Cold season|1|⛄
 WIZARD|Sorcerer|Genius|1|🧙
 YELLOW|Lemon color|Cowardly|1|🟨
 ZIPPER|Fastener|Slide fastener|1
-ABJECT|Wretched|Hopeless|4
-ACUMEN|Shrewdness|Insight; Biz wiz|4
-ADROIT|Skillful|Deft|5
-AGHAST|Horrified; Speechless|Appalled|4
-ALLURE|Charm|Appeal|3
-ARCANE|Obscure|Mysterious|4
-ASTUTE|Shrewd|Sharp|4
+ABJECT|Wretched; Hopeless|Down in the dumps, utterly|4
+ACUMEN|Shrewdness; Insight|Biz wiz; Business savvy|4
+ADROIT|Skillful; Deft|Nimble-fingered|5
+AGHAST|Horrified; Speechless; Appalled|Jaw on the floor; Shocked stiff|4
+ALLURE|Charm; Appeal|Siren song; Pull of the bright lights|3
+ARCANE|Obscure; Mysterious|Known only to wizards|4
+ASTUTE|Shrewd; Sharp|Sharp as a tack|4
 BANTER|Teasing chat|Repartee|3
 BAZAAR|Market|Fair|3
 BEDLAM|Chaos|Uproar|4
@@ -2392,13 +2392,13 @@ WANDER|Roam|Stray|2
 ZEALOT|Fanatic|Extremist|4
 ZENITH|Peak|Summit|4
 # ---------- 7 letters ----------
-ABILITY|Skill|Talent|1
-ACROBAT|Gymnast|Tumbler; PDF reader; Adobe viewer|1|🤸
-ADDRESS|Location|Speech; House ID|1
-AIRPORT|Airfield|Terminal|1|🛫
-ANIMATE|Bring to life|Enliven|2
-ANTENNA|Aerial|Feeler|1
-APRICOT|Orange fruit|Stone fruit|2
+ABILITY|Skill; Talent|What it takes; Know-how|1
+ACROBAT|Gymnast; Tumbler|PDF reader; Adobe viewer; Circus flier|1|🤸
+ADDRESS|Location; Speech|House ID; Gettysburg ___|1
+AIRPORT|Airfield; Terminal|Where flights land; Runway home|1|🛫
+ANIMATE|Bring to life; Enliven|Make Mickey move|2
+ANTENNA|Aerial|Feeler; Bug's radar|1
+APRICOT|Orange fruit; Stone fruit|Peachy cousin|2
 BALANCE|Equilibrium|Remainder|1
 BALLOON|Inflatable|Swell|1|🎈
 BANDAGE|Dressing|Wrap|1|🩹
@@ -2428,7 +2428,7 @@ ELEMENT|Part|Component|1
 EMPEROR|Monarch|Ruler|1
 EVENING|Night|Dusk|1
 FASHION|Style|Trend|1
-FEATHER|Plume|Quill|1|🪶
+FEATHER|Plume|Quill; Light as a ___|1|🪶
 FICTION|Story|Invention|1
 FIREMAN|Firefighter|Stoker|1|🚒
 FREEDOM|Liberty|Release|1|🗽
@@ -2492,11 +2492,11 @@ WEATHER|Climate|Endure|1
 WEEKEND|Saturday|Days off|1
 WHISKER|Hair|Bristle|1
 WITNESS|Observer|See|1
-ABANDON|Desert|Leave|2
-ALCHEMY|Magic|Transmutation|4
+ABANDON|Desert; Leave|Jump ship; Leave high and dry|2
+ALCHEMY|Magic; Transmutation|Lead-into-gold trick; Kitchen wizardry|4
 ANAGRAM|Rearranged word|Wordplay|3
-ARMOIRE|Wardrobe|Cabinet|4
-AVARICE|Greed|Cupidity|5
+ARMOIRE|Wardrobe; Cabinet|Narnia's doorway, of sorts|4
+AVARICE|Greed; Cupidity|Scrooge's sin|5
 BRAVADO|Swagger|Boldness|4
 CADENCE|Rhythm|Lilt|4
 CAPRICE|Whim|Impulse|5
@@ -2554,7 +2554,7 @@ SOLAR|Of the sun|Sun-powered|2
 STEAL|Take without paying|Bargain|1
 WEIGH|Put on a scale|Consider|2
 HEARD|Listened to|Caught, as news|1
-AISLE|Store walkway|Wedding path|2
+AISLE|Store walkway; Wedding path|Down the ___; Seat choice vs. window|2
 KNIGHT|Armored warrior|Chess piece|2
 WEIGHT|Heaviness|Gym plate|2
 SAILOR|Seaman|Deckhand|1
@@ -2663,7 +2663,7 @@ FOREVER|For all time|Always|1
 FAIRIES|Tiny winged sprites|Tinker Bell and friends|1|🧚
 GIANTS|Huge people in tales|Beanstalk dwellers|1
 ROBOTS|Metal helpers|Machines that act human|1|🤖
-ALIENS|Space visitors|Little green men|1|👽
+ALIENS|Space visitors; Little green men|E.T. and friends; Roswell visitors|1|👽
 JEWELS|Gems|Crown stones|1|💎
 WALLET|Money holder|Billfold|1|👛
 STAMPS|Postage|Envelope stickers|1
@@ -2676,7 +2676,7 @@ POSTMAN|Mail carrier|Letter deliverer|1
 BARBER|Haircutter|Shop with a striped pole|1|💈
 PLUMBER|Pipe fixer|Leak repairer|1
 TAILOR|Clothes maker|Person who hems pants|1
-AVOCADO|Guacamole fruit|Green fruit with a big pit|1|🥑
+AVOCADO|Guacamole fruit; Green fruit with a big pit|Toast topper|1|🥑
 BROWNIE|Chocolate square|Fudgy bar|1
 BURRITO|Wrapped Mexican meal|Tortilla roll|1|🌯
 CEREAL|Breakfast in a bowl|Corn flakes, e.g.|1|🥣
@@ -2766,7 +2766,7 @@ FRIDAY|Last school day of the week|Day before Saturday|1
 TUESDAY|Day after Monday|Taco day|1
 JANUARY|First month|New Year's month|1
 OCTOBER|Halloween month|Tenth month|1
-AUGUST|Eighth month|Summer month|1
+AUGUST|Eighth month; Summer month|Dog days month; Majestic|1
 MINUTES|Sixty-second spans|Clock units|1
 SECONDS|Short time units|Second helpings|1
 CLOCKS|Time tellers|Things with hands|1
@@ -2871,20 +2871,20 @@ CHEERLEADER|Pom-pom waver|Sideline motivator|1|📣
 SCOREBOARDS|Game tally displays|Signs showing points|1
 STOPWATCHES|Race timers|Coach's timers|1|⏱️
 TOURNAMENTS|Series of contests|Championship events|1
-ARCHAEOLOGY|Study of ancient remains|Dig science|3
-ASTRONOMERS|Star scientists|Telescope users|2|🔭
+ARCHAEOLOGY|Study of ancient remains; Dig science|Indiana Jones's field|3
+ASTRONOMERS|Star scientists; Telescope users|Galileo and company|2|🔭
 MATHEMATICS|Numbers subject|Math, in full|1
 BIOGRAPHIES|Life stories|Books about people|2
 JOURNALISTS|News writers|Reporters|2
 MAGNIFICENT|Splendid|Grand|2
 SPECTACULAR|Amazing to see|Showstopping|1
 MISCHIEVOUS|Playfully naughty|Prankish|2
-ADVENTUROUS|Daring|Bold and curious|2
+ADVENTUROUS|Daring; Bold and curious|Up for anything; Off the beaten path|2
 INDEPENDENT|Free|Self-reliant|2
 REFRESHMENT|Snack or drink|Pick-me-up|2
 ENVIRONMENT|Surroundings|Nature around us|2
 NEWSLETTERS|Club bulletins|Regular mailed updates|2
-ANNIVERSARY|Yearly date to celebrate|Wedding milestone|1
+ANNIVERSARY|Yearly date to celebrate; Wedding milestone|Silver or gold occasion|1
 SIGHTSEEING|Touring the sights|Tourist's activity|1
 CAMPGROUNDS|Places to pitch tents|Sites for RVs|1|🏕️
 BACKGROUNDS|Scenery behind things|Wallpaper settings|2
@@ -2935,13 +2935,13 @@ SUPERPOWERS|Heroes' special abilities|Flying and X-ray vision, e.g.|1
 TRANSFORMER|Thing that changes shape|Robot that becomes a truck|2
 # ---------- v05 additions (JM CD-10: 7.1.1.1) ----------
 # Easy 2-letter answers: they let the 'full' grid style fill more clue cells (levels 1–2)
-AB|Stomach muscle|Six-pack|2
-AK|Alaska|Juneau's state|2
-AL|Alabama|Montgomery's state|2
-AP|Big news agency|Advanced Placement|2
-AR|Arkansas|Little Rock's state|2
-AV|Audiovisual|School projector dept.|2
-AZ|Arizona|Grand Canyon State|2
+AB|Stomach muscle|Six-pack; Crunch target|2
+AK|Alaska; Juneau's state|Last Frontier; Land of the midnight sun, briefly|2
+AL|Alabama; Montgomery's state|Heart of Dixie, briefly; Roll Tide state|2
+AP|Big news agency; Advanced Placement|___ exam (college credit test)|2
+AR|Arkansas; Little Rock's state|Natural State, briefly|2
+AV|Audiovisual|School projector dept.; ___ club (school tech crew)|2
+AZ|Arizona; Grand Canyon State|Saguaro state, briefly|2
 BA|College degree|Bachelor of Arts letters|2
 BB|Tiny air-gun pellet|Small round shot|2
 BC|Before Christ, on dates|Vancouver's province|2
@@ -3045,7 +3045,7 @@ YD|Yard|Three feet|2
 YR|Year|12 months|1
 # 3 letters
 ZZZ|Sound of snoring|Comic-strip sleep|1|💤
-AIL|Be sick|Feel poorly|3
+AIL|Be sick; Feel poorly|Under the weather; "What ___s you?"|3
 BAH|Scrooge's scoff|"Humbug" partner|2
 BEG|Plead|Doggy trick for a treat|1
 BIO|Life story|Profile summary|2
@@ -3067,7 +3067,7 @@ SOB|Cry loudly|Weep and weep|1
 SOW|Plant seeds|Mother pig|2
 WOK|Stir-fry pan|Chinese cooking bowl|2
 # 4 letters
-AJAR|Slightly open|Not shut tight|2
+AJAR|Slightly open; Not shut tight|Open a crack|2
 BALM|Soothing ointment|Lip ___|2
 BARK|Dog's sound|Tree's skin|1
 BLUR|Fuzzy image|Speeding streak|2
@@ -3120,7 +3120,7 @@ YOLK|Yellow of an egg|Egg's center|1
 ZINC|Metal in brass|Sunscreen ingredient|3
 ZOOM|Move fast|Video call app|1
 # 5 letters
-ATTIC|Room under the roof|Place for old trunks|1
+ATTIC|Room under the roof|Place for old trunks; Grandma's treasure trove|1
 BADLY|Poorly|Very much, as in "want ___"|1
 BASIL|Pesto herb|Herb in a caprese salad|2
 BELLY|Tummy|Underside|1
@@ -3301,7 +3301,7 @@ WHISTLE|Referee's tool|Blow a tune|1
 # common global abbreviations. No US state codes. Country and airport codes are NOT used as clues (under discussion).
 # Words and interjections
 OI|"Hey, you!" in Britain|Cockney shout for attention|1
-AY|Yes vote (a spelling of "aye")|Sailor's "yes"|1
+AY|Yes vote (a spelling of "aye"); Sailor's "yes"|___, there's the rub|1
 OY|"___ vey!"|Yiddish groan|1
 HO|"Land ___!"|"Westward ___!"|1
 YE|"Hear ___! Hear ___!"|Olde "you"|1
@@ -3329,8 +3329,8 @@ CR|Chromium|Shiny-bumper metal|2
 NI|Nickel|Coin metal that sticks to magnets|1
 CU|Copper|Electric-wire metal|1
 ZN|Zinc|Sunscreen metal|1
-AG|Silver|Second-place metal; Gold's little brother|1
-AU|Gold|First-place metal|1
+AG|Silver; Second-place metal|Gold's little brother; Runner-up's medal, chemically|1
+AU|Gold|First-place metal; Olympic winner's metal, chemically|1
 HG|Mercury|Old-thermometer metal|2
 SN|Tin|Tin-can metal|2
 XE|Xenon|Bright-headlight gas|2
@@ -3464,7 +3464,7 @@ YVR|Vancouver airport code|Bag tag for Stanley Park trips|4||7
 MEX|Mexico City airport code|Bag tag for Aztec-capital trips|4||7
 GRU|Sao Paulo airport code|Bag tag for Brazil's biggest city|4||7
 FRA|Frankfurt airport code|Bag tag for German banking-city trips|4||7
-AMS|Amsterdam airport code|Bag tag for canal-city trips|4||7
+AMS|Amsterdam airport code|Canal-city gateway|4||7
 MAD|Madrid airport code|Bag tag for Spanish-capital trips|4||7
 FCO|Rome airport code|Bag tag for Colosseum trips|4||7
 MUC|Munich airport code|Bag tag for Oktoberfest trips|4||7
@@ -3479,7 +3479,7 @@ NRT|Tokyo Narita code|Bag tag for Japan trips|4||7
 ICN|Seoul airport code|Bag tag for K-pop capital trips|4||7
 PEK|Beijing airport code|Bag tag for Forbidden City trips|4||7
 SYD|Sydney airport code|Bag tag for Opera House trips|4||7
-AKL|Auckland airport code|Bag tag for Kiwi trips|4||7
+AKL|Auckland airport code|Kiwi gateway; Sky Tower city, on a ticket|4||7
 JNB|Johannesburg airport code|Bag tag for South African trips|4||7
 CAI|Cairo airport code|Bag tag for pyramid trips|4||7
 DEL|Delhi airport code|Bag tag for Taj Mahal trips|4||7
@@ -3526,7 +3526,7 @@ CN|Copernicium|Element named for Copernicus|4||7
 BK|Berkelium|Element named for a California campus|4||7
 # ---------- v07b additions (JM CD-20: 3.4.6–3.4.8) ----------
 # Chemistry both ways (a formula or symbol as the clue, the word as the answer), formula clues from Challenge Level 5
-AMMONIA|Pungent cleaning gas|Window-cleaner chemical|3
+AMMONIA|Pungent cleaning gas; Window-cleaner chemical|Smelling-salt sniff|3
 AMMONIA|NH3|Nitrogen and hydrogen, combined|3||5
 OXYGEN|Gas we breathe|Element number 8|1
 OXYGEN|O2|Air's life-giving gas, chemically|2||5
@@ -3644,7 +3644,7 @@ J|Tenth letter|1
 J|Sounds like a blue bird|3
 K|_ANGAROO|1
 K|_OALA|1
-K|J_L|1
+K|J _ L|1
 K|A thousand (as in 5_)|2
 K|Potassium|3
 K|Strikeout, on a baseball scorecard|3
@@ -3660,7 +3660,7 @@ M|Medium T-shirt|1
 M|Metro sign letter|1|Ⓜ️
 M|Roman 1000|2
 M|Thirteenth letter|1
-N|PEA_UT|1
+N|PEA _ UT|1
 N|North|1
 N|Fourteenth letter|1
 N|Nitrogen|3
@@ -3720,4 +3720,132 @@ Z|_EBRA|1
 Z|Last letter|1
 Z|Sleep sound, in comics|1|💤
 Z|Zed, in Britain|3
+# L13 (JM, CD-67: 3.4.1): more blanks INSIDE words, added to the ones above. Every "_" is the same answer letter; only that letter makes a word.
+A|B _ NANA|1
+A|CAN _ DA|1
+A|GIR _ FFE|1
+A|TOM _ TO|1
+B|RA _ _ IT|2
+B|CO _ WEB|1
+B|CA _ IN|1
+B|BU _ _ LE|2
+B|RI _ _ ON|2
+C|SO _ _ ER|2
+C|PI _ NIC|1
+C|RA _ _ OON|2
+C|O _ EAN|1
+C|BI _ YCLE|1
+D|CAN _ LE|1
+D|GAR _ EN|1
+D|PA _ _ LE|2
+D|SAN _ AL|1
+D|WI _ OW|1
+E|SH _ _ P|2
+E|QU _ _ N|2
+E|GR _ _ N|2
+E|P _ NCIL|1
+E|PR _ SENT|1
+F|CO _ _ EE|2
+F|GIRA _ _ E|2
+F|MU _ _ IN|2
+F|BU _ _ ALO|2
+F|SA _ ARI|1
+F|WAF _ LE|1
+G|WA _ ON|1
+G|DRA _ ON|1
+G|JU _ _ LE|2
+G|PI _ EON|1
+H|C _ AIR|1
+H|ELEP _ ANT|1
+H|W _ ALE|1
+H|MOT _ ER|1
+I|P _ ZZA|1
+I|K _ TTEN|1
+I|PENC _ L|1
+I|MAG _ C|1
+I|CH _ LI|1
+J|PA _ AMAS|1
+J|BAN _ O|1
+J|RE _ OICE|1
+J|OB _ ECT|1
+J|A _ AR|1
+K|BAS _ ET|1
+K|MON _ EY|1
+K|TUR _ EY|1
+K|CHIC _ EN|1
+K|PIC _ LE|1
+L|BAL _ OON|1
+L|SA _ AD|1
+L|YE _ _ OW|2
+L|PI _ _ OW|2
+L|TU _ IP|1
+M|HA _ MER|1
+M|LE _ ON|1
+M|SUM _ ER|1
+M|CA _ EL|1
+M|TO _ ATO|1
+N|BA _ ANA|1
+N|PEN _ Y|1
+N|DIN _ ER|1
+N|PLA _ ET|1
+N|O _ ION|1
+O|B _ _ K|2
+O|M _ _ N|2
+O|R _ BOT|1
+O|C _ _ KIE|2
+O|LEM _ N|1
+P|AP _ LE|1
+P|PUP _ Y|1
+P|HAP _ Y|1
+P|PEP _ ER|1
+P|LA _ TOP|1
+Q|S _ UID|1
+Q|S _ UIRREL|1
+Q|A _ UA|1
+Q|LI _ UID|1
+Q|E _ UAL|1
+R|CA _ _ OT|2
+R|MI _ _ OR|2
+R|CHE _ _ Y|2
+R|PA _ _ OT|2
+R|ST _ AW|1
+S|DE _ _ ERT|2
+S|LE _ _ ON|2
+S|BA _ KET|1
+S|MU _ IC|1
+T|KI _ _ EN|2
+T|PO _ ATO|1
+T|BOT _ LE|1
+T|TUR _ LE|1
+T|GUI _ AR|1
+U|Q _ EEN|1
+U|J _ MP|1
+U|T _ RTLE|1
+U|M _ SIC|1
+U|S _ GAR|1
+V|SE _ EN|1
+V|E _ ERY|1
+V|SHO _ EL|1
+V|LE _ EL|1
+V|SIL _ ER|1
+W|FLO _ ER|1
+W|S _ EATER|1
+W|TO _ EL|1
+W|SAND _ ICH|1
+W|T _ ELVE|1
+X|TA _ I|1
+X|O _ YGEN|1
+X|SI _ TY|1
+X|MA _ IMUM|1
+X|E _ TRA|1
+Y|P _ RAMID|1
+Y|ST _ LE|1
+Y|RH _ THM|1
+Y|CR _ STAL|1
+Y|OX _ GEN|1
+Z|PI _ _ A|2
+Z|BLI _ _ ARD|2
+Z|PUZ _ LE|1
+Z|LI _ ARD|1
+Z|DO _ EN|1
 `;
