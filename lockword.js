@@ -6,10 +6,10 @@
    v08c (CD-30, CD-32): button groups (gold coin buttons | gray round game buttons); New Game and Give up ask first; coin buttons
    take two taps; finished words go into the shared Game History; levels 8–10 get SHORT hints (one to three words).
    v08d (CD-34: 1.1–1.2): coin buttons are blue, each icon on a white circle.
-   v08e (CD-36: 1.1, 5.1, 5.3): icons on a navy circle; the result window matches Clue Duel's (one-line heading, tables side
+   v08e (CD-36: 1.1, 5.1, 5.3): icons on a navy circle; the result window matches CrossKeys's (one-line heading, tables side
    by side on wide screens, a pinned button bar; the Guesses-needed note opens from ⓘ).
    v08f (CD-37): result buttons ⚙ Settings · ☰ Menu · Next word; ✕ / tap outside closes it and shows a game-over bar;
-   How To Play in collapsible sections; the clock is a gray pill like Clue Duel's.
+   How To Play in collapsible sections; the clock is a gray pill like CrossKeys's.
    v08g (CD-38 add'l 1): the ← → arrow keys wrap from one end of the row to the other.
    v08h (CD-41: 1.4): sound effects (off by default; 🔇 / 🔊 in the header): typed letters, guesses, not-a-word, ticks, solved / not solved.
    v07f (CD-25): no embossed text; played letters are black on green, yellow or red; typed (tentative) letters turn their key
@@ -33,8 +33,10 @@
   const { $, esc, store, toast, openModal, closeModal } = UI;
 
   // ---------- Settings, stats and words ----------
-  const DEF = { level: 3, len: 5, tries: 6, timer: '0', scoring: 'classic', name: '', icon: '🔐' };
+  const DEF = { level: 3, len: 5, tries: 6, timer: '0', scoring: 'classic', name: '', icon: 'lw' }; // v09a: 'lw' = the LockWord icon (icons/lockword.svg)
   const vs = Object.assign({}, DEF, store.get('cd.vault.settings', {}));
+  // v09a (JM CD-71: 1.3b): the old default 🔐 becomes the new LockWord icon, once (🔐 can still be picked)
+  if (vs.icon === '🔐' && !vs.lwIco) { vs.icon = 'lw'; vs.lwIco = 1; store.set('cd.vault.settings', vs); }
   const saveVs = () => store.set('cd.vault.settings', vs);
   const blankStats = () => ({ played: 0, won: 0, streak: 0, best: 0, dist: {}, points: 0, top: 0, bestMs: 0 });
   const stats = Object.assign(blankStats(), store.get('cd.vault.stats', {}));
@@ -402,7 +404,7 @@
     $('#vtReveal').classList.toggle('poor', UI.coins && UI.coins.bal < rc);
     $('#vtQuit').disabled = R.over;
     $('#vtHint').disabled = R.over;
-    // v08f (CD-37: 2.1.1): once the word is over, the button row becomes the game-over bar (same as Clue Duel's)
+    // v08f (CD-37: 2.1.1): once the word is over, the button row becomes the game-over bar (same as CrossKeys's)
     const over = !!(R.over && R.resHtml);
     $('#vtPlay').classList.toggle('is-over', over);
     $('#vtOver').hidden = !over;
@@ -694,7 +696,7 @@
     // Guesses needed (CD-24: 1.2.1): one row per number of guesses; the bar's number = words solved in that many guesses
     const tip = k => { const n = stats.dist[k], wd = n === 1 ? 'word' : 'words'; return k === 'X' ? `Not solved: ${n} ${wd}` : `Solved in ${k} ${+k === 1 ? 'guess' : 'guesses'}: ${n} ${wd}`; };
     const bars = keys.map(k => `<div class="vt-bar" title="${tip(k)}"><span class="k">${k === 'X' ? '✗' : k}</span><span class="b${(won && +k === R.rows.length) || (!won && k === 'X') ? ' me' : ''}${k === 'X' ? ' x' : ''}" style="width:${Math.max(8, Math.round(100 * stats.dist[k] / maxN))}%">${stats.dist[k]}</span></div>`).join('');
-    // v08e (JM CD-36: 5.3, 5.3.1): the same layout as Clue Duel's result: a one-line heading (big emoji + title), pairs of
+    // v08e (JM CD-36: 5.3, 5.3.1): the same layout as CrossKeys's result: a one-line heading (big emoji + title), pairs of
     // tables side by side on wide screens, the Guesses-needed note behind ⓘ, and a button bar pinned to the bottom
     const sec = s => s ? `<section>${s}</section>` : '';
     const pts = won ? `<h3 class="res-h">🏅 Points</h3><table class="score-table vt-sc">${sc.rows.map(r => `<tr><td>${esc(r[0])}</td><td>${r[1] < 0 ? '−' + Math.abs(r[1]) : '+' + r[1]}</td></tr>`).join('')}<tr class="total"><td>Score</td><td>${sc.total}</td></tr></table>` : '';
@@ -719,7 +721,7 @@
     render(); // the game-over bar replaces the button row
     openResult();
   }
-  // v08f (JM CD-37: 2.1, 3.1): the same three buttons as Clue Duel's result: ⚙ Settings · ☰ Menu · Next word.
+  // v08f (JM CD-37: 2.1, 3.1): the same three buttons as CrossKeys's result: ⚙ Settings · ☰ Menu · Next word.
   // ✕ or a tap outside closes it and shows the finished grid with its game-over bar (📊 Results reopens it).
   function openResult() {
     if (!R || !R.over || !R.resHtml) return;
@@ -741,7 +743,7 @@
 
   // ---------- Help ----------
   function help() {
-    // v08f (JM CD-37: 5.1): the same collapsible sections (▸/▾, one open at a time) as Clue Duel's How To Play
+    // v08f (JM CD-37: 5.1): the same collapsible sections (▸/▾, one open at a time) as CrossKeys's How To Play
     const sec = UI.helpSec;
     openModal(`<h2>How To Play: ${esc(title())}</h2>
       <p class="help-note">Tap a heading to open it.</p>
@@ -797,8 +799,9 @@
   // Icons (CD-24 other edits 1.1–1.2): a longer list, plus your own picture (shrunk to fit, kept on this device)
   const MORE_ICONS = ['🛡️', '🏆', '🥇', '🪙', '💵', '🎖️', '🔮', '🧭', '🗺️', '🏰', '⚔️', '🕵️', '🦉', '🐉', '🦊', '🐺', '🦅', '🐙', '🐧', '🐨',
     '🧠', '✨', '⚡', '🌟', '🎓', '📜', '✏️', '🖋️', '🔍', '🧪', '🎹', '🎮', '🕹️', '🏝️', '🌋', '⛰️', '🍩', '🍓', '🍉', '🎃'];
-  const ICONS = [...new Set(['🔐', '🔒', '🗝️', '🔑', '💰', '💎', '🏦', '🧩', '🎁', '📦'].concat(MORE_ICONS, UI.AVATARS))];
-  function iconHTML() { return vs.icon === 'custom' && vs.custom ? `<img src="${vs.custom}" alt="">` : esc(vs.icon || '🔐'); }
+  const ICONS = [...new Set(['lw', '🔐', '🔒', '🗝️', '🔑', '💰', '💎', '🏦', '🧩', '🎁', '📦'].concat(MORE_ICONS, UI.AVATARS))];
+  const icoFace = a => a === 'lw' ? UI.gimg('lock', '') : esc(a); // v09a: 'lw' is drawn as the LockWord icon
+  function iconHTML() { return vs.icon === 'custom' && vs.custom ? `<img src="${vs.custom}" alt="">` : icoFace(vs.icon || 'lw'); }
   function shrinkPicture(file, done) {
     const rd = new FileReader();
     rd.onload = () => {
@@ -821,7 +824,7 @@
       <div class="vt-upl"><button type="button" class="btn" data-a="upload">📷 Upload your own picture</button>
         ${vs.custom ? `<button type="button" data-av="custom" class="vt-mine ${vs.icon === 'custom' ? 'on' : ''}" title="Your picture"><img src="${vs.custom}" alt="Your picture"></button>` : ''}
         <input type="file" id="vtFile" accept="image/*" hidden></div>
-      <div class="av-grid">${ICONS.map(a => `<button type="button" data-av="${a}" class="${a === vs.icon ? 'on' : ''}">${a}</button>`).join('')}</div>
+      <div class="av-grid">${ICONS.map(a => `<button type="button" data-av="${a}" class="${a === vs.icon ? 'on' : ''}${a === 'lw' ? ' av-img' : ''}">${icoFace(a)}</button>`).join('')}</div>
       <div class="row"><button class="btn" data-a="close">Cancel</button></div>`);
     $('#modal').onclick = e => { if (e.target === $('#modal')) closeModal(); };
     $('#vtFile').addEventListener('change', e => {

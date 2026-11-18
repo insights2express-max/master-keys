@@ -1,4 +1,4 @@
-/* Master Keys — user interface: the menu and CrossKeys, fka Clue Duel (v09: renamed Master Keys / CrossKeys / LockWord, names in names.js, LockWord Night look;
+/* Master Keys — user interface: the menu and CrossKeys, fka Clue Duel (v09a: Night crossing-clue text, tile drawn in its cell at once + slow-drop recorder, game icons, code files renamed lockword.js / lockwords.js; v09: renamed Master Keys / CrossKeys / LockWord, names in names.js, LockWord Night look;
    v08r: mirrored top boxes (the Bot gets a per-TURN clock, names centered), long settings line wraps;
    v08q: Screen setting with Night (Charcoal), ⚙ "Changes now" / "From your next game", Letters in Hand 4–8 and changeable mid-game (next round), Full Hand +2 per tile, bigger hub, DONE under the hand on upright tablets, word progress on the clue card, drawn pictures, 1-letter picture captions;
    v08p: new top band (no clue bar; clocks by the scores, hub of buttons), floating turn messages, tap a clue for its card, orange ? and bars for missing letters and words, the Bot waits for your tap after red marks, the Bot's 2-second finish after your clock runs out, wide screens: names over avatars, wings for the buttons, big DONE under the grid;
@@ -15,8 +15,11 @@
    v08j: grid colors, final-play view, clock-out final turn, menu defaults, phone two-finger drag) */
 'use strict';
 (() => {
-  const APP_VER = 'v09'; // Project CP: shown as a pill beside the title and in the browser tab
+  const APP_VER = 'v09a'; // Project CP: shown as a pill beside the title and in the browser tab
   const NM = window.MK_NAMES || { suite: 'Master Keys', cross: 'CrossKeys', lock: 'LockWord' }; // v09: the game names (names.js)
+  // v09a (JM CD-71: 1.2c, 1.3b): the two games' own icons, shown wherever the 🧩 / 🔐 emoji stood
+  const GI = { cross: 'icons/crosskeys.svg', lock: 'icons/lockword.svg' };
+  const gimg = (k, cls = 'gi') => `<img class="${cls}" src="${GI[k]}" alt="">`;
   const E = window.Engine;
   const $ = (s, el = document) => el.querySelector(s);
   const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -53,7 +56,7 @@
   // Made in code with Web Audio (no sound files, so nothing to download and nothing to license). OFF by default:
   // the 🔇 / 🔊 button (menu, both games' headers) turns them on or off, remembered on this device ('cd.sound').
   // Soft, short sounds: tile lands, wrong tile thunk, word chime, coin clink, last-10-second ticks, PASS banner,
-  // win and lose. Shared with Word Vault through CDUI.sound.
+  // win and lose. Shared with LockWord through CDUI.sound.
   const sound = (() => {
     let on = store.get('cd.sound', false), ac = null, out = null, nbuf = null;
     function ctx() {
@@ -122,14 +125,14 @@
       }
     }
     const FX = {
-      key: t => knock(t, 0.035, 0.35, 2600),                                         // a typed letter (Word Vault)
+      key: t => knock(t, 0.035, 0.35, 2600),                                         // a typed letter (LockWord)
       // v08i (JM CD-42: 1.5.3): 5 semitones lower than v08h (× 0.749)
       land: t => { knock(t, 0.05, 0.6, 1124); tone(194.8, t, 0.08, 'sine', 0.28, 127.4); }, // your tile lands in a cell
       opp: t => { knock(t, 0.045, 0.35, 1100); tone(200, t, 0.06, 'sine', 0.15, 140); }, // the rival pencils a tile in
       bounce: t => { tone(150, t, 0.16, 'triangle', 0.4, 95); tone(120, t + 0.12, 0.18, 'triangle', 0.3, 80); }, // wrong tile / not a word
       word: t => arp(t, [523.25, 659.25, 783.99, 1046.5], 0.075, 0.45, 'sine', 0.22),   // you finished a word
       oppword: t => arp(t, [392, 493.88], 0.09, 0.35, 'sine', 0.13),                    // the rival finished a word
-      row: t => arp(t, [440, 554.37], 0.06, 0.18, 'triangle', 0.15),                    // a Word Vault guess goes in
+      row: t => arp(t, [440, 554.37], 0.06, 0.18, 'triangle', 0.15),                    // a LockWord guess goes in
       coin: t => { tone(1318.5, t, 0.07, 'square', 0.05); tone(1975.5, t + 0.06, 0.28, 'square', 0.05); }, // coins earned
       spend: t => { tone(987.8, t, 0.06, 'triangle', 0.18); tone(659.3, t + 0.06, 0.14, 'triangle', 0.16); }, // coins spent
       // v08i (JM CD-42: 1.5.4): both 25 % louder; 10–6 s keeps its pitch; 5–1 s is a quick "tick-tock" pair each
@@ -183,9 +186,9 @@
   })();
 
   // ---------- Coins (v08; JM CD-13: 5a, 5.3.1; CD-18: 8.1; CD-26: 3.1): ONE currency for both games ----------
-  // Spent on: Hint, Place and +30s in Clue Duel (instead of points), and Word Vault's Hint.
+  // Spent on: Hint, Place and +30s in CrossKeys (instead of points), and LockWord's Hint.
   // Earned by: speed (1 coin per second left on a timed clock, on turns that place tiles; never in untimed games),
-  // winning a Clue Duel game, and solving a Word Vault word. Kept on this device (localStorage 'cd.coins').
+  // winning a CrossKeys game, and solving a LockWord word. Kept on this device (localStorage 'cd.coins').
   const COIN = { start: 100, win: 10, perTile: 20, vaultLetter: 2, vaultSpare: 2 };
   const SCAN_PER_TILE = 2; // v08L (JM CD-50: 7.2.1): 🔦 Scan costs 🪙2 per tile still in your hand
   const coinData = Object.assign({ bal: COIN.start, earned: 0, spent: 0, log: [] }, store.get('cd.coins', {}));
@@ -403,7 +406,7 @@
   $('#startBtn').addEventListener('click', startNewGame);
   $('#resumeBtn').addEventListener('click', resumeGame);
 
-  // v08i (JM CD-42 add'l 1): Word Vault's longer icon list plus your own picture (shrunk to a 128 px square, kept on
+  // v08i (JM CD-42 add'l 1): LockWord's longer icon list plus your own picture (shrunk to a 128 px square, kept on
   // this device). The rivals' animals stay out, so you never look like your opponent.
   const AV_MORE = ['🛡️', '🏆', '🥇', '🎖️', '🔮', '🧭', '🗺️', '🏰', '⚔️', '🕵️', '🐺', '🦅', '🐧', '🧠', '✨', '⚡', '🌟', '🎓', '✏️', '🖋️',
     '🔍', '🧪', '🎹', '🎮', '🕹️', '🏝️', '🌋', '⛰️', '🍩', '🍓', '🍉', '🎃', '🔑', '🗝️', '🧩', '🎁'];
@@ -456,8 +459,8 @@
   function showScreen(id) {
     $('#home').hidden = id !== 'home';
     $('#game').hidden = id !== 'game';
-    $('#vault').hidden = id !== 'vault'; // v07c: Word Vault
-    if (id === 'home') { const vs = store.get('cd.vault.settings', {}); { const n = (vs.name || '').trim(); $('#vaultBtnName').textContent = n && n !== 'Word Vault' ? n : NM.lock; } const ico = $('#vaultBtnIco'); if (vs.icon === 'custom' && vs.custom) ico.innerHTML = `<img src="${vs.custom}" alt="">`; else ico.textContent = vs.icon || '🔐'; fitOpts(); }
+    $('#vault').hidden = id !== 'vault'; // v07c: LockWord
+    if (id === 'home') { const vs = store.get('cd.vault.settings', {}); { const n = (vs.name || '').trim(); $('#vaultBtnName').textContent = n && n !== 'Word Vault' ? n : NM.lock; } const ico = $('#vaultBtnIco'); if (vs.icon === 'custom' && vs.custom) ico.innerHTML = `<img src="${vs.custom}" alt="">`; else { const ic = vs.icon && !(vs.icon === '🔐' && !vs.lwIco) ? vs.icon : 'lw'; if (ic === 'lw') ico.innerHTML = gimg('lock', ''); else ico.textContent = ic; } /* v09a: the LockWord icon is the default (the old default 🔐 moves to it once) */ fitOpts(); }
   }
 
   async function startNewGame() {
@@ -604,7 +607,7 @@
   window.addEventListener('resize', () => { clearTimeout(resizeT); closeZoom(true); resizeT = setTimeout(() => { fitDock(); relayout(); renderReports(); }, 80); });
 
   // =====================================================================
-  // v08m (JM CD-49 add'l 1; CD-50: 6.1c, 6.2; CD-52: 1.1): grid zoom, Clue Duel only.
+  // v08m (JM CD-49 add'l 1; CD-50: 6.1c, 6.2; CD-52: 1.1): grid zoom, CrossKeys only.
   // Free zoom: pinch (phones) or Ctrl + mouse wheel / trackpad pinch (computers); the point under your fingers (or
   // the pointer) stays put. Zoomed, drag the grid to slide it. Focus zoom: 🔍 (or Z), then tap the part of the grid to
   // zoom into. 🔍 while zoomed shows the whole grid again; 🔍 🔍 brings back your last view. Zoomed, edge arrows
@@ -1029,7 +1032,7 @@
     // v08L (CD-50: 1.1a): while passes are running, this corner shows the ⏭ 1/3 counter instead of the logo (no room
     // in a phone's top bar, and the grid never moves)
     if (!parts.length && i === 0 && passChip()) return `<div class="cell clue corner pcorner" data-i="${i}">${passChip()}</div>`;
-    if (!parts.length && i === 0) { const src = ($('.brand .logo') || {}).src || ''; return `<div class="cell clue corner" data-i="${i}">${src ? `<img src="${src}" alt="">` : ''}</div>`; }
+    if (!parts.length && i === 0) { const src = GI.cross; /* v09a (JM CD-71: 1.4 Y): the CrossKeys icon */ return `<div class="cell clue corner" data-i="${i}">${src ? `<img src="${src}" alt="">` : ''}</div>`; }
     if (!parts.length) return `<div class="cell clue empty" data-i="${i}"></div>`;
     const split = parts.length === 2;
     const inner = parts.map(([d, si]) => {
@@ -1522,6 +1525,7 @@
 
   function render() {
     if (!G) return;
+    const r0 = performance.now(); // v09a: timed for the slow-drop recorder
     // v08q: a Letters in Hand change made in ⚙ has just started (at the top of a round)
     if (G.handChanged) { const h = G.handChanged; delete G.handChanged; toast(`✋ Round ${h.r}: both hands now hold ${h.to} letters (were ${h.from}).`, '', 3200); }
     // Everything around the grid first, then measure the space that is left, then draw the grid
@@ -1535,6 +1539,7 @@
     renderBoard();
     veil();
     placeToasts(); // v08L
+    ui.lastRenderMs = performance.now() - r0;
   }
   // v08i (JM CD-42 add'l 7; CD-43: 4.1a): in TIMED games the grid, clue bar and hand blur whenever your clock is
   // stopped by a turn report or the PASS banner, so the grid can't be studied off the clock. The rival's tiles
@@ -1742,9 +1747,9 @@
     const rows = all.map((e, i) => ({ e, i })).filter(x => f === 'all' || x.e.g === f);
     const tab = (v, l) => `<button type="button" data-f="${v}" class="${f === v ? 'on' : ''}">${l}</button>`;
     openModal(`<h2>📜 Game History</h2>
-      <div class="seg one hist-seg">${tab('all', 'All')}${tab('duel', '🧩 ' + NM.cross)}${tab('vault', '🔐 ' + NM.lock)}</div>
+      <div class="seg one hist-seg">${tab('all', 'All')}${tab('duel', gimg('cross') + ' ' + NM.cross)}${tab('vault', gimg('lock') + ' ' + NM.lock)}</div>
       ${rows.length ? `<ul class="hist-list">${rows.map(({ e, i }) => `<li><button type="button" class="hist-it ${e.win ? 'won' : 'lost'}" data-i="${i}">
-          <span class="hi-ico">${e.g === 'duel' ? '🧩' : '🔐'}</span>
+          <span class="hi-ico">${gimg(e.g === 'duel' ? 'cross' : 'lock')}</span>
           <span class="hi-main"><b>${esc(e.title)}</b><small>${esc(e.sub || '')}</small><small>${when(e.t)}</small></span>
           <span class="hi-side"><b>${esc(e.score || '')}</b><small>🪙${signed(e.coins)}</small></span></button></li>`).join('')}</ul>`
         : `<p class="hist-none">No ${f === 'duel' ? NM.cross + ' ' : f === 'vault' ? NM.lock + ' ' : ''}results yet. Finished games show up here.</p>`}
@@ -1790,7 +1795,7 @@
     const modeH = (k, extra) => `<li class="help-sub"><b>${esc(E.MODES[k].name)}</b>${chip(k)}${extra || ''}</li>`;
     openModal(`
       <h2>How To Play ${NM.suite} <span class="chip">${APP_VER}</span></h2>
-      <p>${NM.suite} holds two word games: <b>🧩 ${NM.cross}</b> and <b>🔐 ${go(NM.lock)}</b>. In ${NM.cross}, you and the Bot (a computer player) take turns filling the same crossword with letter tiles. Every tile you place correctly scores, finishing words scores more, and the highest score wins.</p>
+      <p>${NM.suite} holds two word games: <b>${gimg('cross')} ${NM.cross}</b> and <b>${gimg('lock')} ${go(NM.lock)}</b>. In ${NM.cross}, you and the Bot (a computer player) take turns filling the same crossword with letter tiles. Every tile you place correctly scores, finishing words scores more, and the highest score wins.</p>
       <p class="help-note">The first sections follow the menu, top to bottom. Tap a heading to open it. Underlined names open their section.</p>
       ${sec('You', `
         <li>Tap the face to choose your avatar from the icon list, or to upload your own picture (kept on this device).</li>
@@ -1876,7 +1881,7 @@
         <li>Clocks never run while a ${go('Turn Reports and The Scoreboard', 'turn report')} is waiting for your tap, or while the game is paused.</li>
         <li>In the last 10 seconds the grid's border flashes every second: <b>yellow</b> from 10 to 6, <b>red</b> from 5 to 1.</li>`)}
       ${sec('Resume Game', `
-        <li><b>🧩 ${NM.cross}</b> starts a fresh puzzle with the settings above. <b>🔐 ${NM.lock}</b>, beside it, opens the word-guessing game.</li>
+        <li><b>${gimg('cross')} ${NM.cross}</b> starts a fresh puzzle with the settings above. <b>${gimg('lock')} ${NM.lock}</b>, beside it, opens the word-guessing game.</li>
         <li><b>Resume Game</b> appears when you have an unfinished game. Your game is saved after every turn and whenever you leave it (☰, between the two scores, takes you straight to the menu).</li>
         <li><b>⚙</b> (among the buttons between the two scores) shows this game's settings in two parts. <b>Changes now</b>: Grid Colors and Screen change at once; Letters in Hand changes for both hands from the next round. <b>From your next game</b>: everything else. <b>New game with these</b> starts one now.</li>`)}
       ${sec('Clue Cards', `
@@ -1951,7 +1956,7 @@
         <li>Make it yours: double-click its title to rename it, and tap the icon beside the title to change it or upload your own picture.</li>`)}
       ${sec('Game History', `
         <li><b>📜 Game History</b> (the 📜 icon in the menu's top corner, beside ? How To Play) lists your last 100 results from both games, newest first: the date, the settings, the score and the coins won or spent. A green edge marks a win, a red edge a loss.</li>
-        <li>Filter it by game (All, 🧩 ${NM.cross}, 🔐 ${NM.lock}), and tap any result to see its full result window again; ◂ History goes back to the list.</li>
+        <li>Filter it by game (All, ${gimg('cross')} ${NM.cross}, ${gimg('lock')} ${NM.lock}), and tap any result to see its full result window again; ◂ History goes back to the list.</li>
         <li>It's kept on this device only, like your stats and coins.</li>`)}
       ${sec('Sound', `
         <li>Sound effects are <b>off</b> until you turn them on. Tap <b>🔇</b> (top corner of the menu, and in both games' headers) to turn them on; it becomes <b>🔊</b>. Tap again to mute. Your choice is remembered on this device.</li>
@@ -1966,7 +1971,7 @@
     const sheet = $('#sheet');
     sheet.onclick = e => { if (helpClick(e)) return; if (e.target.closest('[data-a]')) closeModal(); };
   }
-  // v08f (JM CD-37: 5.1): How To Play sections, shared with Word Vault. helpSec() draws one closed section;
+  // v08f (JM CD-37: 5.1): How To Play sections, shared with LockWord. helpSec() draws one closed section;
   // helpClick() opens a tapped heading (closing the others) or follows a link to a section. Returns true if it acted.
   const helpId = title => title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
   const helpSec = (title, body) => `<section class="help-sec" data-sec="${helpId(title)}"><button class="help-h" type="button" aria-expanded="false">${title}<span class="hc" aria-hidden="true">▸</span></button><div class="help-b"><div><ul>${body}</ul></div></div></section>`;
@@ -2001,10 +2006,10 @@
   $('#helpBtn2').addEventListener('click', () => $('#helpBtn').click());
   $('#menuBtn2').addEventListener('click', () => $('#menuBtn').click());
 
-  // v08f (JM CD-37: 2.3): ☰ leaves at once, as in Word Vault. The game is saved; Resume Game picks it up again.
+  // v08f (JM CD-37: 2.3): ☰ leaves at once, as in LockWord. The game is saved; Resume Game picks it up again.
   $('#menuBtn').addEventListener('click', () => leaveGame());
 
-  // ⚙ Clue Duel settings (v08f, JM CD-37: 3.1, 4.1), like Word Vault's: in the game's header and on the result window.
+  // ⚙ CrossKeys settings (v08f, JM CD-37: 3.1, 4.1), like LockWord's: in the game's header and on the result window.
   // It opens with this game's settings. Changes become your settings for the next game (the menu shows them too);
   // "New game with these" starts one now (asking first if a game is unfinished).
   function gameSettings() {
@@ -2031,7 +2036,8 @@
       <div class="vt-grid cd-set">${F.map(([k, l, o]) => `<label class="field"><span class="lbl">${l}</span><select data-k="${k}">${o}</select></label>`).join('')}</div>
       <p class="opt-desc" id="cdSetDesc"></p>
       <p class="help-note">${live ? '"New game with these" starts a new game now (this game is lost).' : '"New game with these" starts one now.'}</p>
-      <div class="row"><button class="btn" data-a="close">Close</button><button class="btn primary" data-a="new">New game with these</button></div>`);
+      <div class="row"><button class="btn" data-a="close">Close</button><button class="btn primary" data-a="new">New game with these</button></div>
+      ${slowDropRow()}`);
     const sels = [...document.querySelectorAll('#sheet select[data-k]')];
     for (const s of sels) { s.value = String(cur[s.dataset.k]); if (s.selectedIndex < 0) s.selectedIndex = 0; }
     const desc = () => { const v = sels.find(s => s.dataset.k === 'scoring').value; $('#cdSetDesc').textContent = (E.MODES[v] || E.MODES.classic).desc; };
@@ -2053,6 +2059,8 @@
     for (const s of sels) s.addEventListener('change', () => { keep(); desc(); });
     $('#sheet').onclick = e => {
       const b = e.target.closest('[data-a]'); if (!b) return;
+      if (b.dataset.a === 'sdcopy') { copyText(slowDropText()); return; } // v09a: the slow-drop recorder
+      if (b.dataset.a === 'sdclear') { store.set('cd.slowdrops', []); const r = $('#sdRow'); if (r) r.outerHTML = slowDropRow(); return; }
       // v08m (JM CD-51 strategic 3): save the choices BEFORE the window closes (v08L refreshed the gone sample first and stopped)
       if (b.dataset.a === 'new') keep();
       closeModal();
@@ -2517,8 +2525,8 @@
   // Place one of your tiles on a cell
   // v08d (JM CD-34: 4.1c): no instant check. The tile is penciled in and can be moved or taken back until DONE
   // (ok = already known to fit: placed by 🎯 Place, or passed a ☑️ Check)
-  function placeTile(tileId, ci, ok) {
-    if (!myTurn()) return;
+  function placeTile(tileId, ci, ok, quick) {
+    if (!myTurn()) { if (quick) render(); return; }
     const t = G.hands[0].find(x => x.id === tileId);
     const c = G.pz.cells[ci];
     if (!t || !c || c.k !== 'l' || G.board[ci] || ui.pending.some(p => p.cell === ci) || ui.pending.some(p => p.tileId === tileId)) {
@@ -2531,7 +2539,68 @@
     ui.selCell = ci;
     ui.pop = ci;
     sound.play('land'); // v08h
+    if (quick && quickPaint(ci, t.ch)) { renderSoon(); return; }
     render();
+  }
+
+  // v09a (JM CD-70: 2.2.1; CD-71: 2.1b, seen on iPad): a dropped tile sometimes hung just short of its cell for up to
+  // ~3 s. The whole screen (hand, grid, clue bar, scores) was redrawn before the device showed anything new, so the
+  // last picture, with the tile still in mid-air, stayed up while that ran. Now the tile is drawn in its cell at once,
+  // and the full redraw follows right after that picture is on screen.
+  function quickPaint(ci, ch) {
+    const el = $(`#board .cell[data-i="${ci}"]`);
+    if (!el || !el.classList.contains('let')) return false;
+    el.classList.add('pending', 'popin');
+    el.innerHTML = tileInner(ch);
+    return true;
+  }
+  let soonT = 0;
+  function renderSoon() {
+    if (soonT) return;
+    soonT = requestAnimationFrame(() => setTimeout(() => { soonT = 0; render(); }, 0)); // after the next picture
+  }
+
+  // v09a (JM CD-71: 2.2 Y): the slow-drop recorder. Any tile drop that takes longer than a third of a second to show
+  // (from the finger lifting to the finished redraw) is noted on this device, newest first (up to 40), with what was
+  // slow: waiting for the device to pass on the finger lifting, drawing the tile, or the full redraw. ⚙ CrossKeys
+  // settings shows the count, with Copy (a list to paste to Claude) and Clear.
+  const SLOW_MS = 333;
+  function timeDrop(ev) {
+    const now = performance.now();
+    const ts = ev && ev.timeStamp > 0 && now - ev.timeStamp < 60000 ? ev.timeStamp : now; // when the finger lifted
+    const wait = now - ts;
+    return () => {
+      const drawn = performance.now() - ts;
+      // after the full redraw (queued just before this) and the picture after it
+      requestAnimationFrame(() => setTimeout(() => requestAnimationFrame(() => {
+        const total = performance.now() - ts;
+        if (total < SLOW_MS) return;
+        const list = store.get('cd.slowdrops', []);
+        list.unshift({ at: new Date().toISOString().slice(0, 19).replace('T', ' ') + ' UT', ms: Math.round(total),
+          wait: Math.round(wait), drawn: Math.round(drawn), redraw: Math.round(ui.lastRenderMs || 0),
+          grid: G ? G.pz.C + '×' + G.pz.R : '', tiles: ui.pending.length, screen: document.documentElement.dataset.screen || '',
+          dev: (navigator.userAgent.match(/iPad|iPhone|Android|Windows|Macintosh/) || ['?'])[0] + ' ' + innerWidth + '×' + innerHeight });
+        store.set('cd.slowdrops', list.slice(0, 40));
+      }), 0));
+    };
+  }
+  function slowDropRow() {
+    const n = store.get('cd.slowdrops', []).length;
+    return `<p class="sd-row" id="sdRow">🐢 Slow tile drops recorded on this device: <b>${n}</b>${n ? ' <button class="btn mini" data-a="sdcopy" type="button">📋 Copy for Claude</button> <button class="btn mini" data-a="sdclear" type="button">Clear</button>' : ''}</p>`;
+  }
+  function slowDropText() {
+    const list = store.get('cd.slowdrops', []);
+    return `${NM.cross} slow tile drops (${APP_VER}), newest first. ms = finger lift to finished redraw; wait = before the game heard the lift; drawn = tile shown; redraw = full redraw time.\n` +
+      list.map(d => `${d.at} · ${d.ms} ms (wait ${d.wait}, drawn ${d.drawn}, redraw ${d.redraw}) · grid ${d.grid} · ${d.tiles} penciled · ${d.screen} · ${d.dev}`).join('\n');
+  }
+  function copyText(s) {
+    const done = () => toast('📋 Copied: paste it into your reply to Claude.');
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(s).then(done, () => copyOld(s, done));
+    else copyOld(s, done);
+  }
+  function copyOld(s, done) {
+    const ta = document.createElement('textarea'); ta.value = s; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); done(); } catch (err) { toast('Copy did not work on this device.'); } ta.remove();
   }
 
   // v08k (JM CD-46 add'l 2.2): which word's clue lights up when a tile lands on cell ci. Before, it was always the
@@ -2679,6 +2748,7 @@
       if (ev.pointerId !== pid) return;
       if (raf) step(); // a quick flick: catch up on the last move first
       const dragged = !!ghost;
+      const fin = dragged ? timeDrop(ev) : null; // v09a: the slow-drop recorder
       detach();
       if (dragged) {
         suppressClick();
@@ -2686,6 +2756,7 @@
         // been redrawn by the other finger's drop: its drop still counts (the drop handlers check the tile by id)
         if ((!opts.multi && !el.isConnected) || !G || G.over) { if (G) render(); return; }
         onDrop(ev.type === 'pointerup' ? at(ev.clientX, ev.clientY) : null);
+        fin();
       } else if (ev.type === 'pointerup' && onTap && el.isConnected) onTap();
     };
     const me = { abort: detach, multi: !!opts.multi, moving: false };
@@ -2743,7 +2814,8 @@
       t => {
         clearSortPreview();
         if (!t) { render(); return; }
-        if (t.classList.contains('let')) { placeTile(id, +t.dataset.i); return; }
+        // v09a: the tile is drawn in its cell at once (and leaves the hand at once); the full redraw follows
+        if (t.classList.contains('let')) { el.style.visibility = 'hidden'; placeTile(id, +t.dataset.i, false, true); return; }
         reorderHand(id, ui.sortK);
       },
       () => { if (myTurn()) { ui.selTile = ui.selTile === id ? null : id; render(); } },
@@ -3166,7 +3238,7 @@
     const coinTbl = `<h3 class="res-h">🪙 Coins</h3><table class="score-table coin-tbl">`
       + (coinRows.length ? coinRows.map(x => `<tr><td>${esc(x[0])}</td><td class="${x[1] < 0 ? 'neg' : 'pos'}">${sg(x[1])}</td></tr>`).join('') : '<tr><td>No coins earned or spent</td><td>0</td></tr>')
       + `<tr class="total"><td>This game ${sg(net)} · Balance</td><td data-coins>${coins.bal}</td></tr></table>`;
-    // v08e (JM CD-36: 5.2, 5.3.1): the same layout as Word Vault's result. One-line heading; the Record right under the
+    // v08e (JM CD-36: 5.2, 5.3.1): the same layout as LockWord's result. One-line heading; the Record right under the
     // scores; no "Help you used" table (the Coins table already lists Hint ×N, Place ×N…); Play and Coins side by side
     // on wide screens; the buttons on a bar pinned to the bottom of the window.
     const resBody = `
@@ -3176,7 +3248,7 @@
         <p class="rec-line"><span class="rl-a">Record vs ${esc(o.n)}:</span><span class="rl-b"><i class="w">${rec.w} won</i> · <i class="l">${rec.l} lost</i>${rec.d ? ` · ${rec.d} drawn` : ''}</span></p>
         <div class="res-cols"><section>
         <table class="score-table play-tbl">
-          <tr><th class="res-h">🧩 Play</th><th>${esc(myName())}</th><th>${esc(o.n)}</th></tr>
+          <tr><th class="res-h">${gimg('cross')} Play</th><th>${esc(myName())}</th><th>${esc(o.n)}</th></tr>
           <tr><td>Words finished</td><td>${st.words[0]}</td><td>${st.words[1]}</td></tr>
           <tr><td>Tiles placed</td><td>${st.placed[0]}</td><td>${st.placed[1]}</td></tr>
           <tr><td>Full Hand bonuses</td><td>${st.fullHands[0]}</td><td>${st.fullHands[1]}</td></tr>
@@ -3229,14 +3301,15 @@
   // =====================================================================
   // Boot
   // =====================================================================
-  // v07c: the Word Vault mini-game (vault.js) shares the menu's modal, toasts, storage and avatar list
+  // v07c: the LockWord mini-game (lockword.js) shares the menu's modal, toasts, storage and avatar list
   window.CDUI = {
-    $, esc, store, toast, openModal, closeModal, APP_VER, AVATARS, coins, coinPill, COIN, // v08: coins shared with Word Vault
-    armTap, history: hist, // v08c: two-tap coin buttons; Game History shared with Word Vault
-    helpSec, helpClick, // v08f: How To Play sections shared with Word Vault
+    $, esc, store, toast, openModal, closeModal, APP_VER, AVATARS, coins, coinPill, COIN, // v08: coins shared with LockWord
+    armTap, history: hist, // v08c: two-tap coin buttons; Game History shared with LockWord
+    helpSec, helpClick, // v08f: How To Play sections shared with LockWord
     showScreen, goHome: () => { showScreen('home'); renderHome(); },
     settings: () => settings,
-    sound, // v08h: sound effects (and the 🔇 / 🔊 buttons) shared with Word Vault
+    GI, gimg, // v09a: the game icons
+    sound, // v08h: sound effects (and the 🔇 / 🔊 buttons) shared with LockWord
     _render: () => render(), _G: () => G // v08k: for timing checks only
   };
   sound.paint();

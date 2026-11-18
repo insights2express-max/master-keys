@@ -10,7 +10,7 @@ window.MK_NAMES = {
 };
 // Fills every element marked data-mk="suite" / "cross" / "lock" with its name (the static HTML holds the same text),
 // plus aria-label / title text marked data-mk-aria="…{cross}…". This file loads first, at the end of <body>, so the
-// page is already there; app.js and vault.js then add the player's own LockWord name, if one was set.
+// page is already there; app.js and lockword.js then add the player's own LockWord name, if one was set.
 (function () {
   const N = window.MK_NAMES, put = s => s.replace(/\{(suite|cross|lock)\}/g, (m, k) => N[k]);
   document.querySelectorAll('[data-mk]').forEach(el => { const n = N[el.dataset.mk]; if (n) el.textContent = n; });

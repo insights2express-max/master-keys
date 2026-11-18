@@ -1,4 +1,4 @@
-/* Clue Duel — styles (v08b) */
+/* CrossKeys — styles (v08b) */
 :root {
   --bg: #ece6d8;
   --surface: #fbf8f1;
@@ -725,7 +725,7 @@ select {
 }
 
 /* =====================================================================
-   v07c: Word Vault mini-game (JM, CD-21: 5.1–5.3) and the "new version ready" bar (CD-21: 4.1)
+   v07c: LockWord mini-game (JM, CD-21: 5.1–5.3) and the "new version ready" bar (CD-21: 4.1)
    ===================================================================== */
 .vault-btn { display: flex; align-items: center; justify-content: center; gap: 8px; }
 .vault-btn #vaultBtnIco { font-family: var(--emoji); font-size: 20px; }
@@ -792,7 +792,7 @@ select {
   border: 0; border-radius: 999px; padding: 10px 18px; background: var(--primary); color: var(--primary-ink);
   font-weight: 800; box-shadow: 0 8px 24px rgba(0, 0, 0, .35); cursor: pointer;
 }
-/* v07d (JM, CD-23: 1.1.1.1–1.1.1.7): Word Vault colors, selected square, carried-forward letters, celebration */
+/* v07d (JM, CD-23: 1.1.1.1–1.1.1.7): LockWord colors, selected square, carried-forward letters, celebration */
 :root { --vt-ok: #00C853; --vt-in: #FFFF00; --vt-no: #C8102E; } /* green, pure yellow, stop-sign red */
 .vt-cell { font-weight: 900; }
 .vt-cell.cur { cursor: pointer; }
@@ -810,7 +810,7 @@ select {
 }
 @keyframes vtcheer { 0% { transform: translate(-50%, -50%) scale(.3); opacity: 0; } 15% { transform: translate(-50%, -50%) scale(1.15); opacity: 1; } 25% { transform: translate(-50%, -50%) scale(1); } 85% { opacity: 1; } 100% { opacity: 0; transform: translate(-50%, -60%) scale(1); } }
 
-/* v07e (JM, CD-24): Word Vault pause clock, overlays, keyboard-width squares, ✕ clear, darker selection glow, embossed letters,
+/* v07e (JM, CD-24): LockWord pause clock, overlays, keyboard-width squares, ✕ clear, darker selection glow, embossed letters,
    chart note, icon upload */
 .vt-clock {
   display: inline-flex; align-items: center; gap: 6px; border: 0; cursor: pointer; color: var(--ink);
@@ -925,9 +925,9 @@ select {
 .coin-log td.pos { color: #1e9e4a; font-weight: 800; }
 .vt-info { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 6px; }
 
-/* Word Vault (v08, JM CD-26): the active row's > is 25% bolder (in vault.js) and 25% brighter, same height */
+/* LockWord (v08, JM CD-26): the active row's > is 25% bolder (in lockword.js) and 25% brighter, same height */
 .vt-chev { color: #4fc3f7; filter: brightness(1.25) drop-shadow(0 0 7px rgba(79, 195, 247, .9)); }
-/* keys whose height follows the auto-fit (--kh, --kf set by vault.js) */
+/* keys whose height follows the auto-fit (--kh, --kf set by lockword.js) */
 .vt-k { height: var(--kh, 48px); font-size: var(--kf, 17px); }
 .vt-k.wide { font-size: clamp(12px, calc(var(--kf, 17px) - 5px), 14px); } /* ENTER always fits its key */
 
@@ -963,7 +963,7 @@ select {
 /* ===== v08c (JM CD-30: 4.2a, 4.4, 4.5) ===== */
 /* Coin buttons (both games): a gold tint, so it's clear they spend coins */
 .btn.coinbtn { background: linear-gradient(180deg, #fff6d6, #f6df92); color: #3b2a0b; box-shadow: inset 0 0 0 1.5px #d9b44a, var(--shadow); }
-/* Word Vault's button row: [coin buttons] gap [gray round game controls] ⇕ */
+/* LockWord's button row: [coin buttons] gap [gray round game controls] ⇕ */
 .vt-grp { display: flex; gap: 8px; }
 .vt-grp.ctl { margin-left: 10px; padding-left: 12px; border-left: 2px solid var(--line); }
 .btn.ctlbtn { background: #e3e5e8; color: #2b3138; border-radius: 999px; box-shadow: inset 0 0 0 1.5px #b7bcc3; }
@@ -1057,7 +1057,7 @@ select {
   position: sticky; bottom: -18px; z-index: 2; margin: 12px -18px -18px; padding: 10px 18px 14px;
   background: var(--surface); border-top: 1px solid var(--line); box-shadow: 0 -8px 14px -10px rgba(0, 0, 0, .45);
 }
-/* Word Vault: "What do the bars mean?" opens on a tap */
+/* LockWord: "What do the bars mean?" opens on a tap */
 .res-info { margin-top: 6px; }
 .res-info summary { cursor: pointer; font-size: 12px; font-weight: 800; color: var(--muted); list-style: none; }
 .res-info summary::-webkit-details-marker { display: none; }
@@ -1071,11 +1071,11 @@ select {
 }
 .sheet-x:hover { background: var(--line); }
 
-/* Clue Duel header: ⚙ beside ? (phones: both sit at the right end of the Scoreboard row) */
+/* CrossKeys header: ⚙ beside ? (phones: both sit at the right end of the Scoreboard row) */
 .tb-btns { grid-area: help; display: flex; gap: 6px; }
 @media not all and (min-width: 900px) and (min-height: 480px) { .tb-btns { display: none; } }
 
-/* Result window, Clue Duel (CD-37: 1.4.1): names beside their scores; a slimmer Record banner on one line plus
+/* Result window, CrossKeys (CD-37: 1.4.1): names beside their scores; a slimmer Record banner on one line plus
    one line of numbers (won in the "you" blue, lost in the rival's red, a shade darker so they read on yellow);
    the 🧩 Play heading sits in the table's header row */
 .res-big { align-items: center; gap: 18px; }
@@ -1090,7 +1090,7 @@ select {
 .score-table.play-tbl th.res-h { margin: 0; text-align: left; padding: 6px 4px; font-size: 13px; }
 .res-cols > section > .play-tbl:first-child { margin-top: 6px; }
 
-/* After the game: the hand's row (Clue Duel) or the button row (Word Vault) becomes the game-over bar */
+/* After the game: the hand's row (CrossKeys) or the button row (LockWord) becomes the game-over bar */
 .overbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px 12px; padding: 8px 10px 12px; }
 .overbar[hidden] { display: none; }
 .overbar .ob-h { font-weight: 900; text-align: center; }
@@ -1100,7 +1100,7 @@ select {
 #vtPlay.is-over .vt-acts { display: none; }
 #vtPlay .overbar { padding: 6px 4px; }
 
-/* Game controls in Clue Duel (CD-37: 4.2): gray and rounded like Word Vault's; on wide screens a divider line
+/* Game controls in CrossKeys (CD-37: 4.2): gray and rounded like LockWord's; on wide screens a divider line
    separates them from the blue coin buttons */
 .btn.ctlbtn { position: relative; }
 .dock:not(.compact) #swapBtn { margin-left: 12px; }
@@ -1113,7 +1113,7 @@ select {
 @media (prefers-color-scheme: dark) { .vt-clock { background: #3a4048; color: #e8eaed; box-shadow: inset 0 0 0 1.5px #59616b; } }
 .vt-clock.on { background: #f5c518; color: #1f2933; }
 
-/* Word Vault's How To Play uses the shared collapsible sections (CD-37: 5.1) */
+/* LockWord's How To Play uses the shared collapsible sections (CD-37: 5.1) */
 .vt-help { padding: 0; }
 
 /* ===== v08g (JM CD-38: 1.3.1; CD-39: 1.2a) ===== */
@@ -1149,7 +1149,7 @@ select {
 .opts[open] .opts-sum { display: none; }
 .opts .opts-body { display: flex; flex-direction: column; gap: 12px; padding: 0 12px 12px; }
 .opts .opts-body .opt-desc { margin-top: -4px; }
-/* New Game and Word Vault side by side, as two equal buttons */
+/* New Game and LockWord side by side, as two equal buttons */
 .play-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .play-row .btn.big { padding: 14px 8px; min-width: 0; }
 .play-row .vault-btn { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -1168,7 +1168,7 @@ select {
   .gameinfo.bar .coin-pill { margin-right: 3px; padding: 1px 6px 1px 4px; gap: 2px; }
   .gameinfo.bar .ib-t { font-size: 11px; }
 }
-/* Word Vault header: one more column for 🔇 / 🔊 (☰ · icon · title · clock · sound · ⚙ · ?) */
+/* LockWord header: one more column for 🔇 / 🔊 (☰ · icon · title · clock · sound · ⚙ · ?) */
 .vt-top { grid-template-columns: auto auto minmax(0, 1fr) auto auto auto auto; }
 @media (max-width: 480px) {
   .vt-top { gap: 4px; }
@@ -1431,7 +1431,7 @@ img.av-img { display: inline-block; width: 1.15em; height: 1.15em; border-radius
 #game.veiled.wrongs .cluebar { filter: none; }
 
 /* ===== v08n (JM CD-52: 6.1.1, 6.2.1; CD-54: 2.1–2.3a): the 3D look, in every Grid Colors scheme, always on =====
-   Tiles are glass "candy drops" lit from 12 o'clock (as in Word Vault): a soft shine on top and shade below, drawn with
+   Tiles are glass "candy drops" lit from 12 o'clock (as in LockWord): a soft shine on top and shade below, drawn with
    gradients and crisp inner lines only (no blurred shadows on every cell, so phones stay fast). Empty cells are wells,
    clue cells raised plaques (text flat), penciled tiles float and settle into their wells at Done, buttons are keycaps. */
 :root {
@@ -1666,7 +1666,9 @@ html[data-screen="night"] #board.gs-slots .cell.let:where(:not(.filled, .pending
 html[data-screen="night"] #board.gs-slots .cell.let.filled, html[data-screen="night"] :is(#board, #sharpOv) .gs-slots .cell.let.filled { background-image: var(--shine), var(--shade), linear-gradient(#363636, #2b2b2b); color: #d0d0d0; }
 html[data-screen="night"] #board .cell.clue { background: var(--clue); color: var(--clue-ink); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06), inset 0 -2px 0 rgba(0, 0, 0, .5); }
 html[data-screen="night"] #board .cl.on { background: var(--hl); color: #d2c896; }
-html[data-screen="night"] #board .cl.pale { background: #262519; }
+html[data-screen="night"] #board .cl.pale { background: #262519; color: #b3aa86; box-shadow: inset 0 0 0 1px #5a5026; } /* v09a (JM CD-70: 3.1.1): crossing-word clues kept Day's near-black text in Night, so they vanished */
+html[data-screen="night"] #board .cl:is(.on, .pale) .ml { color: #c8742a; } /* (and the orange letters inside them: Day's dark orange was too dim) */
+html[data-screen="night"] #board .cl:is(.on, .pale) .mw { background: #c8742a; }
 html[data-screen="night"] #board.gs-slots .cell.b-x2 .bn { color: #b39a45; }
 html[data-screen="night"] #board.gs-slots .cell.let.b-x2:where(:not(.filled, .pending, .aipend, .wrongflash, .wrongtile, .wrongcell)) { box-shadow: inset 0 0 0 2px #8a7428, inset 0 3px 0 rgba(0, 0, 0, .5); }
 html[data-screen="night"] #board.gs-slots .cell.let:is(.b-p5, .b-p2):where(:not(.filled, .pending, .aipend, .wrongflash, .wrongtile, .wrongcell)) { box-shadow: inset 0 0 0 2px #2f6b48, inset 0 3px 0 rgba(0, 0, 0, .5); }
@@ -1727,3 +1729,13 @@ html[data-screen="night"] :is(.vt-av, #vaultBtnIco) img { filter: brightness(.75
   .topbar .hub .gameinfo.bar { white-space: nowrap; }
   .topbar .pl { max-width: 100%; }
 }
+
+/* v09a (JM CD-71: 2.2 Y): the slow-drop recorder line at the foot of the CrossKeys settings window */
+.sd-row { font-size: 12px; color: var(--muted); margin: 12px 0 0; text-align: center; line-height: 2; }
+.sd-row .btn.mini { padding: 2px 9px; font-size: 12px; min-height: 0; margin-left: 4px; }
+/* v09a (JM CD-71: 1.2c, 1.3b, 1.4 Y): the games' own icons (icons/crosskeys.svg, icons/lockword.svg) in place of 🧩 / 🔐 */
+.gi { display: inline-block; width: 1.25em; height: 1.25em; vertical-align: -.28em; border-radius: 24%; }
+img.pb-ico { display: inline-block; width: 28px; height: 28px; border-radius: 7px; vertical-align: middle; margin-top: -3px; }
+.hi-ico .gi { width: 28px; height: 28px; vertical-align: middle; border-radius: 7px; }
+.av-grid button.av-img img { display: block; width: 36px; height: 36px; margin: auto; border-radius: 9px; }
+html[data-screen="night"] :is(.gi, img.pb-ico, .cell.clue.corner img) { filter: brightness(.75) saturate(.7); }
