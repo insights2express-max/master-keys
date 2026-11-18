@@ -7,9 +7,9 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="Clue Duel">
-  <meta name="description" content="A head-to-head crossword tile game you can play offline.">
-  <title>Clue Duel · v08t</title>
+  <meta name="apple-mobile-web-app-title" content="Master Keys">
+  <meta name="description" content="Master Keys: CrossKeys, a head-to-head crossword tile game, and LockWord, a word-guessing game. Plays offline.">
+  <title>Master Keys · v09</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="icon" href="icons/icon-192.png" type="image/png" sizes="192x192">
@@ -23,7 +23,7 @@
       <header class="brand">
         <img class="logo" src="icons/icon.svg" alt="" width="64" height="64">
         <div class="brand-txt">
-          <h1>Clue Duel <span class="vpill" id="verPill">v08t</span></h1>
+          <h1><span data-mk="suite">Master Keys</span> <span class="vpill" id="verPill">v09</span></h1>
           <p class="tag">Place your letters. Finish the words. Beat the Bot.</p>
         </div>
         <!-- v08h (JM CD-41: 1.3, 1.4.1): sound, Game History and How To Play as small icons in the top corner -->
@@ -166,25 +166,25 @@
         </div>
       </details>
 
-      <!-- v08h (JM CD-41: 1.2): New Game and Word Vault side by side, as two equal buttons -->
+      <!-- v08h (JM CD-41: 1.2): the two games side by side, as two equal buttons. v09: named CrossKeys and LockWord (names.js) -->
       <div class="play-row">
-        <button class="btn primary big" id="startBtn" type="button">New Game</button>
-        <button class="btn big vault-btn" id="vaultBtn" type="button"><span id="vaultBtnIco">🔐</span> <span id="vaultBtnName">Word Vault</span></button>
+        <button class="btn primary big" id="startBtn" type="button"><span class="pb-ico">🧩</span> <span data-mk="cross">CrossKeys</span></button>
+        <button class="btn big vault-btn" id="vaultBtn" type="button"><span id="vaultBtnIco">🔐</span> <span id="vaultBtnName">LockWord</span></button>
       </div>
       <button class="btn big" id="resumeBtn" type="button" hidden>Resume Game</button>
     </div>
   </section>
 
-  <!-- ===== Word Vault (v07c, JM CD-21: 5.1–5.3): a word-guessing mini-game ===== -->
+  <!-- ===== LockWord, fka Word Vault (v07c, JM CD-21: 5.1–5.3): a word-guessing mini-game ===== -->
   <section id="vault" class="screen" hidden>
     <header class="vt-top">
       <button class="icon-btn" id="vtMenu" type="button" aria-label="Back to the menu" title="Back to the menu">☰</button>
-      <button class="vt-av" id="vtAv" type="button" aria-label="Choose the Word Vault icon" title="Choose an icon">🔐</button>
-      <h2 class="vt-title" id="vtTitle" title="Double-click to rename">Word Vault</h2>
+      <button class="vt-av" id="vtAv" type="button" aria-label="Choose the LockWord icon" data-mk-aria="Choose the {lock} icon" title="Choose an icon">🔐</button>
+      <h2 class="vt-title" id="vtTitle" title="Double-click to rename">LockWord</h2>
       <button class="vt-clock" id="vtClock" type="button" title="Pause" aria-label="Pause" hidden><b id="vtPauseIco">⏸️</b><span id="vtClockTxt">0:00</span></button>
       <button class="icon-btn snd-btn" data-snd type="button">🔇</button><!-- v08h: sound on / off -->
-      <button class="icon-btn" id="vtSet" type="button" aria-label="Word Vault settings" title="Settings">⚙</button>
-      <button class="icon-btn" id="vtHelp" type="button" aria-label="How To Play Word Vault">?</button>
+      <button class="icon-btn" id="vtSet" type="button" aria-label="LockWord settings" data-mk-aria="{lock} settings" title="Settings">⚙</button>
+      <button class="icon-btn" id="vtHelp" type="button" aria-label="How To Play LockWord" data-mk-aria="How To Play {lock}">?</button>
     </header>
     <div class="vt-main">
       <div class="vt-setup" id="vtSetup">
@@ -196,7 +196,7 @@
           <label class="field"><span class="lbl">Scoring</span><select id="vtScoring"><option value="classic">Classic</option><option value="flat">Flat</option></select></label>
         </div>
         <span class="opt-desc" id="vtDesc"></span>
-        <button class="btn primary big" id="vtStart" type="button">Open the Vault</button>
+        <button class="btn primary big" id="vtStart" type="button">🔓 Pick the Lock</button>
         <div class="vt-stats" id="vtStats"></div>
       </div>
       <div class="vt-play" id="vtPlay" hidden>
@@ -235,7 +235,7 @@
       </div>
       <div class="hub" id="hub">
         <div class="hub-info"><span class="gameinfo bar" id="infoBar"></span><span class="hub-set" id="hubSet"></span></div>
-        <div class="hub-btns"><button class="icon-btn" id="menuBtn" type="button" aria-label="Menu">☰</button><span class="zslot" id="zoomSlot"></span><button class="icon-btn snd-btn" data-snd type="button">🔇</button><button class="icon-btn" id="setBtn" type="button" aria-label="Clue Duel settings" title="Settings">⚙</button><button class="icon-btn" id="helpBtn" type="button" aria-label="How To Play">?</button></div>
+        <div class="hub-btns"><button class="icon-btn" id="menuBtn" type="button" aria-label="Menu">☰</button><span class="zslot" id="zoomSlot"></span><button class="icon-btn snd-btn" data-snd type="button">🔇</button><button class="icon-btn" id="setBtn" type="button" aria-label="CrossKeys settings" data-mk-aria="{cross} settings" title="Settings">⚙</button><button class="icon-btn" id="helpBtn" type="button" aria-label="How To Play">?</button></div>
       </div>
       <div class="pl opp" id="plOpp">
         <div class="nm" id="oppNm">Bot</div>
@@ -248,7 +248,7 @@
     <div class="sheetbar" id="sheetbar">
       <button class="icon-btn mini" id="menuBtn2" type="button" aria-label="Menu" hidden>☰</button>
       <button class="sheet-toggle" id="sheetToggle" type="button" aria-expanded="false" hidden><span class="cec" id="sheetCec">▸</span> Scoreboard</button>
-      <button class="icon-btn mini" id="setBtn2" type="button" aria-label="Clue Duel settings" title="Settings" hidden>⚙</button>
+      <button class="icon-btn mini" id="setBtn2" type="button" aria-label="CrossKeys settings" data-mk-aria="{cross} settings" title="Settings" hidden>⚙</button>
       <button class="icon-btn mini" id="helpBtn2" type="button" aria-label="How To Play" hidden>?</button>
       <div class="sheetpanel" id="sheetPanel" hidden></div>
     </div>
@@ -289,7 +289,7 @@
           <button class="btn act coinbtn" id="placeBtn" type="button" title="Place one of your tiles in a cell where it fits. Costs that tile's value in coins."><b>🎯</b><span>Place 🪙?</span></button>
           <button class="btn act coinbtn" id="checkBtn" type="button" title="Check the tiles you've penciled in this turn. Costs 5 coins, plus 5 for each wrong tile; wrong tiles go back to your hand with no point penalty."><b>☑️</b><span>Check 🪙5+</span></button>
           <button class="btn act coinbtn" id="timeBtn" type="button" title="Add 30 seconds to your clock. Costs 5 coins each time." hidden><b>⏱️</b><span>+30s 🪙5</span></button>
-          <!-- v08f (JM CD-37: 4.2, 4.4): gray rounded game controls, as Word Vault's; Pause is the clock pill (⏸️ + time) -->
+          <!-- v08f (JM CD-37: 4.2, 4.4): gray rounded game controls, as LockWord's; Pause is the clock pill (⏸️ + time) -->
           <button class="btn act ctlbtn" id="swapBtn" type="button"><b>🔄</b><span>Swap</span></button>
           <button class="btn act ctlbtn" id="mixBtn" type="button"><b>🔀</b><span>Shuffle</span></button>
           <button class="btn act ctlbtn clockpill" id="pauseBtn" type="button" title="Pause (P or Space)"><b id="pauseIco">⏸️</b><span class="timer" id="timerTxt">∞</span></button>
@@ -320,6 +320,7 @@
     <div class="sheet" id="sheet" role="dialog" aria-modal="true"></div>
   </div>
 
+  <script src="names.js"></script><!-- v09: the game names, in one place -->
   <script src="lexicon.js"></script>
   <script src="cluepics.js"></script>
   <script src="wordplay.js"></script>

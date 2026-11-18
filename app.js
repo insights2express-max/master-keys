@@ -1,4 +1,5 @@
-/* Clue Duel — user interface (v08r: mirrored top boxes (the Bot gets a per-TURN clock, names centered), long settings line wraps;
+/* Master Keys — user interface: the menu and CrossKeys, fka Clue Duel (v09: renamed Master Keys / CrossKeys / LockWord, names in names.js, LockWord Night look;
+   v08r: mirrored top boxes (the Bot gets a per-TURN clock, names centered), long settings line wraps;
    v08q: Screen setting with Night (Charcoal), ⚙ "Changes now" / "From your next game", Letters in Hand 4–8 and changeable mid-game (next round), Full Hand +2 per tile, bigger hub, DONE under the hand on upright tablets, word progress on the clue card, drawn pictures, 1-letter picture captions;
    v08p: new top band (no clue bar; clocks by the scores, hub of buttons), floating turn messages, tap a clue for its card, orange ? and bars for missing letters and words, the Bot waits for your tap after red marks, the Bot's 2-second finish after your clock runs out, wide screens: names over avatars, wings for the buttons, big DONE under the grid;
    v08o: the Bot's own whole-game clock, the other side plays on alone when a clock runs out,
@@ -14,7 +15,8 @@
    v08j: grid colors, final-play view, clock-out final turn, menu defaults, phone two-finger drag) */
 'use strict';
 (() => {
-  const APP_VER = 'v08t'; // Project CP: shown as a pill beside the title and in the browser tab
+  const APP_VER = 'v09'; // Project CP: shown as a pill beside the title and in the browser tab
+  const NM = window.MK_NAMES || { suite: 'Master Keys', cross: 'CrossKeys', lock: 'LockWord' }; // v09: the game names (names.js)
   const E = window.Engine;
   const $ = (s, el = document) => el.querySelector(s);
   const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -214,13 +216,13 @@
   function coinWindow() {
     const when = t => { const m = Math.round((Date.now() - t) / 60000); return m < 1 ? 'just now' : m < 60 ? m + ' min ago' : m < 1440 ? Math.round(m / 60) + ' h ago' : Math.round(m / 1440) + ' d ago'; };
     openModal(`<h2>🪙 Coins: ${coinData.bal}</h2>
-      <p class="help-note">One currency for Clue Duel and Word Vault. Earned ${coinData.earned} · spent ${coinData.spent} on this device.</p>
+      <p class="help-note">One currency for ${NM.cross} and ${NM.lock}. Earned ${coinData.earned} · spent ${coinData.spent} on this device.</p>
       <ul class="coin-how">
-        <li><b>Spend:</b> 💡 Hint ${E.RULES.hintCost}, 🔦 Scan ${SCAN_PER_TILE} per tile, 🎯 Place = the tile's value, ☑️ Check ${E.RULES.checkBase} + ${E.RULES.checkPerWrong} per wrong tile, ⏱️ +30s ${E.RULES.timeCost} (Clue Duel); 🔎 Hint 5, 💡 Reveal 40 ÷ letters (Word Vault).</li>
+        <li><b>Spend:</b> 💡 Hint ${E.RULES.hintCost}, 🔦 Scan ${SCAN_PER_TILE} per tile, 🎯 Place = the tile's value, ☑️ Check ${E.RULES.checkBase} + ${E.RULES.checkPerWrong} per wrong tile, ⏱️ +30s ${E.RULES.timeCost} (${NM.cross}); 🔎 Hint 5, 💡 Reveal 40 ÷ letters (${NM.lock}).</li>
         <li><b>Speed coins:</b> in timed games, 1 coin for every second left on your clock when you end a turn that placed tiles. Up to ${COIN.perTile} per tile placed, with no cap when you place every tile in your hand. Untimed games pay no speed coins; time bought with +30s doesn't count.</li>
         <li><b>Whole-game clocks</b> pay at the end: your clock is shared evenly among your turns, and each turn pays the seconds it saved from its share, by the rule above.</li>
-        <li><b>Win a Clue Duel game:</b> +${COIN.win}.</li>
-        <li><b>Solve a Word Vault word:</b> ${COIN.vaultLetter} per letter, ${COIN.vaultSpare} per guess to spare, plus speed coins in timed rounds (up to ${COIN.perTile} per letter).</li>
+        <li><b>Win a ${NM.cross} game:</b> +${COIN.win}.</li>
+        <li><b>Solve a ${NM.lock} word:</b> ${COIN.vaultLetter} per letter, ${COIN.vaultSpare} per guess to spare, plus speed coins in timed rounds (up to ${COIN.perTile} per letter).</li>
       </ul>
       ${coinData.log.length ? `<h3>Latest</h3><table class="score-table coin-log">${coinData.log.map(([t, n, w]) => `<tr><td>${esc(w)}<small> · ${when(t)}</small></td><td class="${n < 0 ? 'neg' : 'pos'}">${n < 0 ? '−' + -n : '+' + n}</td></tr>`).join('')}</table>` : ''}
       <div class="row"><button class="btn primary" data-a="ok">Close</button></div>`);
@@ -297,7 +299,7 @@
     left: 0, lastTick: 0, paused: false, chainBroken: false, sortK: -1,
     passHold: 0, passSeen: 0 // v08d: the PASS banner holds the game until tapped (passSeen = the pass count it last held for)
   };
-  document.title = `Clue Duel · ${APP_VER}`;
+  document.title = `${NM.suite} · ${APP_VER}`;
   $('#verPill').textContent = APP_VER;
 
   const opp = () => OPP[(G ? G.settings.skill : settings.skill) - 1];
@@ -455,7 +457,7 @@
     $('#home').hidden = id !== 'home';
     $('#game').hidden = id !== 'game';
     $('#vault').hidden = id !== 'vault'; // v07c: Word Vault
-    if (id === 'home') { const vs = store.get('cd.vault.settings', {}); $('#vaultBtnName').textContent = (vs.name || '').trim() || 'Word Vault'; const ico = $('#vaultBtnIco'); if (vs.icon === 'custom' && vs.custom) ico.innerHTML = `<img src="${vs.custom}" alt="">`; else ico.textContent = vs.icon || '🔐'; fitOpts(); }
+    if (id === 'home') { const vs = store.get('cd.vault.settings', {}); { const n = (vs.name || '').trim(); $('#vaultBtnName').textContent = n && n !== 'Word Vault' ? n : NM.lock; } const ico = $('#vaultBtnIco'); if (vs.icon === 'custom' && vs.custom) ico.innerHTML = `<img src="${vs.custom}" alt="">`; else ico.textContent = vs.icon || '🔐'; fitOpts(); }
   }
 
   async function startNewGame() {
@@ -1740,12 +1742,12 @@
     const rows = all.map((e, i) => ({ e, i })).filter(x => f === 'all' || x.e.g === f);
     const tab = (v, l) => `<button type="button" data-f="${v}" class="${f === v ? 'on' : ''}">${l}</button>`;
     openModal(`<h2>📜 Game History</h2>
-      <div class="seg one hist-seg">${tab('all', 'All')}${tab('duel', '🧩 Clue Duel')}${tab('vault', '🔐 Word Vault')}</div>
+      <div class="seg one hist-seg">${tab('all', 'All')}${tab('duel', '🧩 ' + NM.cross)}${tab('vault', '🔐 ' + NM.lock)}</div>
       ${rows.length ? `<ul class="hist-list">${rows.map(({ e, i }) => `<li><button type="button" class="hist-it ${e.win ? 'won' : 'lost'}" data-i="${i}">
           <span class="hi-ico">${e.g === 'duel' ? '🧩' : '🔐'}</span>
           <span class="hi-main"><b>${esc(e.title)}</b><small>${esc(e.sub || '')}</small><small>${when(e.t)}</small></span>
           <span class="hi-side"><b>${esc(e.score || '')}</b><small>🪙${signed(e.coins)}</small></span></button></li>`).join('')}</ul>`
-        : `<p class="hist-none">No ${f === 'duel' ? 'Clue Duel ' : f === 'vault' ? 'Word Vault ' : ''}results yet. Finished games show up here.</p>`}
+        : `<p class="hist-none">No ${f === 'duel' ? NM.cross + ' ' : f === 'vault' ? NM.lock + ' ' : ''}results yet. Finished games show up here.</p>`}
       <p class="hist-note">The last ${HIST_MAX} results, kept on this device. Tap one to see its full result.</p>
       <div class="row"><button class="btn primary" data-a="close">Close</button></div>`);
     $('#modal').onclick = e => { if (e.target === $('#modal')) closeModal(); };
@@ -1787,8 +1789,8 @@
     const chip = k => (k === cur ? ' <span class="chip">this game</span>' : '');
     const modeH = (k, extra) => `<li class="help-sub"><b>${esc(E.MODES[k].name)}</b>${chip(k)}${extra || ''}</li>`;
     openModal(`
-      <h2>How To Play <span class="chip">${APP_VER}</span></h2>
-      <p>You and the Bot (a computer player) take turns filling the same crossword with letter tiles. Every tile you place correctly scores, finishing words scores more, and the highest score wins.</p>
+      <h2>How To Play ${NM.suite} <span class="chip">${APP_VER}</span></h2>
+      <p>${NM.suite} holds two word games: <b>🧩 ${NM.cross}</b> and <b>🔐 ${go(NM.lock)}</b>. In ${NM.cross}, you and the Bot (a computer player) take turns filling the same crossword with letter tiles. Every tile you place correctly scores, finishing words scores more, and the highest score wins.</p>
       <p class="help-note">The first sections follow the menu, top to bottom. Tap a heading to open it. Underlined names open their section.</p>
       ${sec('You', `
         <li>Tap the face to choose your avatar from the icon list, or to upload your own picture (kept on this device).</li>
@@ -1874,7 +1876,7 @@
         <li>Clocks never run while a ${go('Turn Reports and The Scoreboard', 'turn report')} is waiting for your tap, or while the game is paused.</li>
         <li>In the last 10 seconds the grid's border flashes every second: <b>yellow</b> from 10 to 6, <b>red</b> from 5 to 1.</li>`)}
       ${sec('Resume Game', `
-        <li><b>New Game</b> starts a fresh puzzle with the settings above. <b>🔐 Word Vault</b>, beside it, opens the word-guessing game.</li>
+        <li><b>🧩 ${NM.cross}</b> starts a fresh puzzle with the settings above. <b>🔐 ${NM.lock}</b>, beside it, opens the word-guessing game.</li>
         <li><b>Resume Game</b> appears when you have an unfinished game. Your game is saved after every turn and whenever you leave it (☰, between the two scores, takes you straight to the menu).</li>
         <li><b>⚙</b> (among the buttons between the two scores) shows this game's settings in two parts. <b>Changes now</b>: Grid Colors and Screen change at once; Letters in Hand changes for both hands from the next round. <b>From your next game</b>: everything else. <b>New game with these</b> starts one now.</li>`)}
       ${sec('Clue Cards', `
@@ -1906,7 +1908,7 @@
         <li><b>🎯 Place (🪙?)</b>: puts one random tile from your hand into a cell where it fits. It costs that tile's value in coins (shown on the tile; 1 in modes without tile values), then scores like any tile you place. It's marked ✓ (known to fit).</li>
         <li><b>☑️ Check (🪙${R.checkBase}+)</b>: tests the tiles you've penciled in this turn. It costs ${R.checkBase} coins, plus ${R.checkPerWrong} for each wrong tile it finds. Wrong tiles go back to your hand with <b>no point penalty</b>; right ones get a ✓ (move one and it's unchecked again). Check needs <b>🪙${R.checkBase + R.checkPerWrong}</b> to start, then checks your tiles in the order you placed them. If it finds more wrong tiles than you can pay for, it takes your last coins for that tile and stops; any later tiles stay penciled in, unchecked.</li>
         <li>The coin buttons (💡 Hint, 🎯 Place, ☑️ Check, ⏱️ +30s) are <b>blue</b> (each icon on a navy circle) and sit together; on a phone they're the top row of ⋯ More.</li>
-        <li>The game buttons (🔄 Swap, 🔀 Shuffle and the ⏸️ clock) are <b>gray and rounded</b>, as in Word Vault.</li>
+        <li>The game buttons (🔄 Swap, 🔀 Shuffle and the ⏸️ clock) are <b>gray and rounded</b>, as in ${NM.lock}.</li>
         <li><b>🔄 Swap</b>: trade some or all of your tiles for new ones from the bag. It ends your turn and counts as a pass.</li>
         <li><b>🔀 Shuffle</b>: mixes the order of your hand.</li>
         <li><b>⏸️ Pause</b> (or the P key) shows your clock in timed games. On a phone, tapping the clock under your score also pauses (and resumes) the game. It stops every clock and hides the grid, clues and hand; tap the PLAY PAUSED panel, ▶️, or P to resume. The game also pauses when you switch to another tab or app.</li>
@@ -1933,23 +1935,23 @@
         <li>Close it (✕, or tap outside it) to look at the finished grid. Your hand's row then becomes a <b>game-over bar</b> with <b>📊 Results</b> (opens the window again), <b>☰ Menu</b> and <b>Rematch</b>.</li>
         <li>Every window closes the same way: ✕ in its top-right corner, a tap outside it, or its <b>Close</b> button.</li>`)}
       ${sec('Coins', `
-        <li><b>🪙 Coins</b> are one currency shared by Clue Duel and ${go('Word Vault')}. You start with <b>${COIN.start}</b>. Your balance shows on the menu, in the game's info line and above the Word Vault grid; tap it for details and your latest coins.</li>
-        <li><b>Spend them on</b> 💡 Hint (${hintC}), 🔦 Scan (${SCAN_PER_TILE} per tile), 🎯 Place (the tile's value), ☑️ Check (${R.checkBase} + ${R.checkPerWrong} per wrong tile) and ⏱️ +30s (${R.timeCost}) in Clue Duel, and 🔎 Hint (5) and 💡 Reveal (40 ÷ the word's letters, like ¹⁄₅ 🪙8) in Word Vault. These cost coins, not points. Coin buttons are <b>blue</b>. Without enough coins the button is dimmed, and a tap tells you what it costs.</li>
+        <li><b>🪙 Coins</b> are one currency shared by ${NM.cross} and ${go(NM.lock)}. You start with <b>${COIN.start}</b>. Your balance shows on the menu, in the game's info line and above the ${NM.lock} grid; tap it for details and your latest coins.</li>
+        <li><b>Spend them on</b> 💡 Hint (${hintC}), 🔦 Scan (${SCAN_PER_TILE} per tile), 🎯 Place (the tile's value), ☑️ Check (${R.checkBase} + ${R.checkPerWrong} per wrong tile) and ⏱️ +30s (${R.timeCost}) in ${NM.cross}, and 🔎 Hint (5) and 💡 Reveal (40 ÷ the word's letters, like ¹⁄₅ 🪙8) in ${NM.lock}. These cost coins, not points. Coin buttons are <b>blue</b>. Without enough coins the button is dimmed, and a tap tells you what it costs.</li>
         <li><b>Two taps to buy:</b> the first tap on a coin button lights it up and shows "Tap again · 🪙N" (for Place, the price of the tile it found; for Check, 🪙5+) for 3 seconds; the second tap buys. Tapping anywhere else, or waiting, cancels it. This stops accidental spending.</li>
         <li><b>Speed coins</b> (timed games only): end a turn that placed tiles and earn <b>1 coin for every second left</b> on your clock. A 1-minute turn finished in 35 seconds pays 25. The most a turn can pay is ${COIN.perTile} per tile placed, but there's <b>no cap</b> when you place every tile in your hand. Time bought with +30s doesn't count.</li>
         <li>With a <b>whole-game</b> clock, speed coins are paid once, when the game ends. Your clock is <b>shared evenly among your turns</b>: a 5-minute game in which you took 6 turns gives each turn 50 seconds. Each turn then pays like a per-turn game: the seconds it saved from its 50, up to ${COIN.perTile} per tile it placed (no cap if it emptied your hand); passes and swaps pay nothing. The total is never more than the time left on your clock, and nothing is paid if your clock runs out. <i>Example:</i> a turn that took 20 seconds and placed 2 tiles saved 30 seconds and pays 30 (its cap is 40).</li>
         <li><b>Untimed games</b> pay no speed coins.</li>
         <li><b>Winning</b> a game pays <b>+${COIN.win}</b>.</li>
-        <li><b>Word Vault</b> pays coins for every word you solve: see its <b>?</b>.</li>
+        <li><b>${NM.lock}</b> pays coins for every word you solve: see its <b>?</b>.</li>
         <li>Each turn report shows that turn's coins on a 🪙 line, and the result screen totals the game's coins.</li>`)}
-      ${sec('Word Vault', `
-        <li><b>Word Vault</b> is a word-guessing mini-game, opened from its own button on the menu. Guess the hidden word in a set number of tries.</li>
+      ${sec(NM.lock, `
+        <li><b>${NM.lock}</b> is a word-guessing mini-game, opened from its own button on the menu. Guess the hidden word in a set number of tries.</li>
         <li>After each guess every letter is marked: <b>green</b> right letter in the right spot, <b>yellow</b> in the word but in another spot, <b>red</b> not in the word. Green letters carry into your next guess.</li>
         <li>You choose the Challenge Level (vocabulary), the word's length (4–8 letters), the number of guesses (5–10), a timer and a scoring mode, and you can change them during play (⚙). Extras: 🔎 Hint (🪙5) shows a clue that gets trickier as the Challenge Level rises, 💡 Reveal places a letter (its coin price is that letter's share of the word: 40 ÷ letters, like ¹⁄₅ 🪙8), ✕ clears a guess, and tapping the clock pauses. Tap its <b>?</b> for the full rules.</li>
         <li>Make it yours: double-click its title to rename it, and tap the icon beside the title to change it or upload your own picture.</li>`)}
       ${sec('Game History', `
         <li><b>📜 Game History</b> (the 📜 icon in the menu's top corner, beside ? How To Play) lists your last 100 results from both games, newest first: the date, the settings, the score and the coins won or spent. A green edge marks a win, a red edge a loss.</li>
-        <li>Filter it by game (All, 🧩 Clue Duel, 🔐 Word Vault), and tap any result to see its full result window again; ◂ History goes back to the list.</li>
+        <li>Filter it by game (All, 🧩 ${NM.cross}, 🔐 ${NM.lock}), and tap any result to see its full result window again; ◂ History goes back to the list.</li>
         <li>It's kept on this device only, like your stats and coins.</li>`)}
       ${sec('Sound', `
         <li>Sound effects are <b>off</b> until you turn them on. Tap <b>🔇</b> (top corner of the menu, and in both games' headers) to turn them on; it becomes <b>🔊</b>. Tap again to mute. Your choice is remembered on this device.</li>
@@ -2017,7 +2019,7 @@
     const live = G && !G.over;
     cur.hand = live ? (G.handNext != null ? G.handNext : G.settings.hand) : settings.hand;
     cur.screen = settings.screen || 'auto';
-    openModal(`<h2>⚙ Clue Duel settings</h2>
+    openModal(`<h2>⚙ ${NM.cross} settings</h2>
       <h3 class="cd-sec">Changes now</h3>
       <label class="field cd-gridpick"><span class="lbl">Grid Colors</span><span class="gs-pick"><select data-k="grid">${gridOpts()}</select><span id="cdGridSample">${gridSample(settings.grid)}</span></span></label>
       <div class="vt-grid cd-set">
@@ -3145,7 +3147,7 @@
         const gs = gameSpeedCoins();
         if (gs.total > 0) { coins.add(gs.total, 'Speed coins (game clock)'); endCoins.push([gs.turns ? `Speed, game clock (${gs.share} s per turn × ${gs.turns})` : 'Speed, game clock', gs.total]); }
       }
-      if (r.winner === 0) { coins.add(COIN.win, 'Clue Duel win'); endCoins.push(['Win', COIN.win]); }
+      if (r.winner === 0) { coins.add(COIN.win, NM.cross + ' win'); endCoins.push(['Win', COIN.win]); }
     }
     // v08b (CD-27: 2.4.1): the result is grouped: the two scores, then Play, Help used, Coins and your Record
     const cs = {};

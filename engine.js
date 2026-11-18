@@ -1,4 +1,4 @@
-/* Clue Duel — game engine (v08q: 4-letter hands, Letters in Hand changes at the next round (setHandNext / roundStart), Full Hand = 2 points per tile, letter clues with ";" choices and picture captions;
+/* Master Keys — CrossKeys game engine (fka Clue Duel; v09 rename: no rule changes) (v08q: 4-letter hands, Letters in Hand changes at the next round (setHandNext / roundStart), Full Hand = 2 points per tile, letter clues with ";" choices and picture captions;
    v08o: each side has its own whole-game clock; when one runs out, the other plays on alone;
    v08j: whole-game clock-out gives the rival a final turn; v08i: starter letters by level, final turn)
    Puzzle generator (arrow-word grid), tile bag, scoring modes, bonus squares and the computer opponent.

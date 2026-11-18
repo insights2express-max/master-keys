@@ -1682,6 +1682,39 @@ html[data-screen="night"] .pl .sc { background: #262626; box-shadow: inset 0 0 0
 html[data-screen="night"] .topbar .pl .clk { background: #1c1c1c; color: #b0b0b0; }
 html[data-screen="night"] .z-sub, html[data-screen="night"] .z-prog { background: #1a1a1a; color: #c8c8c8; }
 
+/* ===== v09 (JM CD-61: 2.1 Y): Night (Charcoal) for LockWord, fka Word Vault. The green / yellow / red keep their meaning
+   but are deep, matte versions with black letters; the glass panel, empty squares, keys, > marker, clock and windows turn
+   charcoal; glows and the shine on the squares are toned down. ===== */
+html[data-screen="night"] { --vt-ok: #3d8a5a; --vt-in: #a8963a; --vt-no: #a8433d; }
+html[data-screen="night"] .vt-board { background: linear-gradient(160deg, rgba(255, 255, 255, .05), rgba(255, 255, 255, 0) 45%, rgba(0, 0, 0, .2)), #161616; box-shadow: inset 0 1px 0 rgba(255, 255, 255, .07), inset 0 0 0 1px rgba(255, 255, 255, .04), 0 8px 20px rgba(0, 0, 0, .5); }
+html[data-screen="night"] .vt-cell { --drop: inset 0 -5px 8px rgba(0, 0, 0, .45), inset 0 2px 1px rgba(255, 255, 255, .1), 0 2px 3px rgba(0, 0, 0, .6); --slot: 0 -1px 0 3px rgba(0, 0, 0, .6), 0 1px 0 3px rgba(255, 255, 255, .05); }
+html[data-screen="night"] .vt-cell::before { background: linear-gradient(rgba(255, 255, 255, .16), rgba(255, 255, 255, 0)); }
+html[data-screen="night"] .vt-cell.empty, html[data-screen="night"] .vt-cell.typed { background: #0e0e0e; color: #c8c8c8; }
+html[data-screen="night"] .vt-cell.empty::before, html[data-screen="night"] .vt-cell.typed::before { background: linear-gradient(rgba(255, 255, 255, .06), rgba(255, 255, 255, 0)); }
+html[data-screen="night"] .vt-cell.ok, html[data-screen="night"] .vt-cell.in, html[data-screen="night"] .vt-cell.no { color: #0a0a0a; }
+html[data-screen="night"] .vt-cell.hint { color: #7a93ad; }
+html[data-screen="night"] .vt-board .vt-cell.sel { box-shadow: inset 0 0 0 3px #000, var(--drop), 0 0 0 3px #4a6a8a, 0 0 10px 2px rgba(74, 106, 138, .55); }
+html[data-screen="night"] .vt-chev { color: #6f8fb0; filter: drop-shadow(0 0 4px rgba(111, 143, 176, .45)); }
+html[data-screen="night"] .vt-k.tent { background: #9a9a9a; color: #111; }
+html[data-screen="night"] :is(.vt-k.bksp, .vt-k.wide.bksp) { background: #9a6420; color: #0a0a0a; }
+html[data-screen="night"] .vt-k:is(.ok, .in, .no), html[data-screen="night"] .vt-res-w span, html[data-screen="night"] .vt-chip:is(.ok, .in, .no) { color: #0a0a0a; }
+html[data-screen="night"] .vt-clock { background: #1c1c1c; color: #b0b0b0; box-shadow: inset 0 0 0 1.5px #333; }
+html[data-screen="night"] .vt-clock.on { background: #8a7428; color: #0a0a0a; }
+html[data-screen="night"] .vt-clock.low { color: #c25a5a; }
+html[data-screen="night"] .vt-ovcard { background: rgba(22, 22, 22, .95); color: #c8c8c8; box-shadow: 0 0 0 3px #8a7428, 0 18px 50px rgba(0, 0, 0, .6); }
+html[data-screen="night"] .vt-ov.hint .vt-ovcard { box-shadow: 0 0 0 3px #4a6a8a, 0 18px 50px rgba(0, 0, 0, .6); }
+html[data-screen="night"] .vt-ov.gate .vt-ovcard { box-shadow: 0 0 0 3px var(--vt-no), 0 18px 50px rgba(0, 0, 0, .6); }
+html[data-screen="night"] :is(.vt-grip:hover, .vt-grip.on) { color: #6f8fb0; box-shadow: 0 0 0 2px #4a6a8a; }
+html[data-screen="night"] .vt-bar .b { background: #3a3a3a; color: #c8c8c8; }
+html[data-screen="night"] .vt-bar .b.me { background: var(--vt-ok); color: #0a0a0a; }
+html[data-screen="night"] .vt-bar .b.x { background: #4a3336; }
+html[data-screen="night"] .vt-bar .b.x.me { background: var(--vt-no); color: #0a0a0a; }
+html[data-screen="night"] .vt-cheer { color: #cfcfcf; -webkit-text-stroke: 2px #0a0a0a; text-shadow: 0 6px 18px rgba(0, 0, 0, .7); }
+html[data-screen="night"] .vt-party { filter: brightness(.6) saturate(.6); }
+html[data-screen="night"] :is(.vt-av, #vaultBtnIco) img { filter: brightness(.75) saturate(.7); }
+/* v09: the menu's two game buttons (🧩 CrossKeys · 🔐 LockWord) */
+.pb-ico { font-family: var(--emoji); }
+
 /* ===== v08r (JM CD-61: 1.4.1; CD-62: 1.1a, 1.2.1 + add-on; CD-63: 1.1a): mirrored top boxes =====
    Each side reads icon · score · clock from the outside in (the Bot gets a per-TURN clock too), each name is
    centered over its whole box, and a long settings line wraps instead of widening the hub (it pushed the

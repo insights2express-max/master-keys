@@ -1,7 +1,7 @@
 {
-  "name": "Clue Duel",
-  "short_name": "Clue Duel",
-  "description": "A head-to-head crossword tile game. Plays offline.",
+  "name": "Master Keys",
+  "short_name": "Master Keys",
+  "description": "Two word games: CrossKeys, a head-to-head crossword tile game, and LockWord, a word-guessing game. Plays offline.",
   "id": "./",
   "start_url": "./",
   "scope": "./",

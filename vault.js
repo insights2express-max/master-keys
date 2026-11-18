@@ -1,4 +1,4 @@
-/* Clue Duel — Word Vault (v08c): a word-guessing mini-game (JM, CD-12: 4.2.1; CD-13: 4.x; CD-18: 7.1a; CD-21: 5.1–5.3; CD-23; CD-24; CD-25; CD-26).
+/* Master Keys — LockWord, fka Word Vault (v09: renamed, names from names.js, Night look in style.css; v08c): a word-guessing mini-game (JM, CD-12: 4.2.1; CD-13: 4.x; CD-18: 7.1a; CD-21: 5.1–5.3; CD-23; CD-24; CD-25; CD-26).
    v08 (CD-26): coins (the Hint costs 5 coins; solved words pay coins); the Hint's difficulty follows the Challenge Level;
    a 25% bolder and brighter >; every timer says "per"; the Space bar jumps to the next open square; a grab bar makes the keys taller.
    v08b (CD-27): Reveal costs coins (40 ÷ letters); keys auto-fit (tallest by default, ⇕ handle in the button row); ␣ key on
@@ -39,7 +39,8 @@
   const blankStats = () => ({ played: 0, won: 0, streak: 0, best: 0, dist: {}, points: 0, top: 0, bestMs: 0 });
   const stats = Object.assign(blankStats(), store.get('cd.vault.stats', {}));
   const saveStats = () => store.set('cd.vault.stats', stats);
-  const title = () => (vs.name || '').trim() || 'Word Vault';
+  const NM = window.MK_NAMES || { suite: 'Master Keys', cross: 'CrossKeys', lock: 'LockWord' }; // v09: the game names (names.js)
+  const title = () => { const n = (vs.name || '').trim(); return n && n !== 'Word Vault' ? n : NM.lock; }; // v09: the old default name counts as no name
 
   let GUESS = null, ANS = null;
   function words() {
@@ -156,7 +157,7 @@
   function renderHead() {
     $('#vtTitle').textContent = title();
     $('#vtAv').innerHTML = iconHTML();
-    document.title = `${title()} · Clue Duel ${UI.APP_VER}`;
+    document.title = `${title()} · ${NM.suite} ${UI.APP_VER}`;
   }
 
   // ---------- Setup panel (first visit, or after a round) ----------
@@ -176,7 +177,7 @@
       ? `<div class="vt-st"><b>${stats.played}</b><span>Played</span></div><div class="vt-st"><b>${pct}%</b><span>Solved</span></div>`
         + `<div class="vt-st"><b>${stats.streak}</b><span>Streak</span></div><div class="vt-st"><b>${stats.best}</b><span>Best streak</span></div>`
         + `<div class="vt-st"><b>${stats.top}</b><span>Top score</span></div>`
-      : '<p class="vt-none">No rounds played yet. Pick your settings and open the Vault.</p>';
+      : '<p class="vt-none">No rounds played yet. Pick your settings and pick the lock.</p>';
   }
   for (const [id, k] of [['#vtLevel', 'level'], ['#vtLen', 'len'], ['#vtTries', 'tries'], ['#vtTimer', 'timer'], ['#vtScoring', 'scoring']]) {
     $(id).addEventListener('change', e => { setFrom(k, e.target.value); $('#vtDesc').textContent = DESC[vs.scoring]; });
@@ -651,7 +652,7 @@
     else setTimeout(() => showResult(won, gaveUp, sc, ms), 400);
   }
   // 2-second celebration (JM, CD-23: 1.1.1.7): a cheer and confetti
-  const CHEERS = ['Congratulations!', 'You did it!', 'Vault cracked!', 'Brilliant!', 'Nailed it!', 'Superb!', 'Word wizard!', 'Bravo!'];
+  const CHEERS = ['Congratulations!', 'You did it!', 'Unlocked!', 'Brilliant!', 'Nailed it!', 'Superb!', 'Word wizard!', 'Bravo!'];
   function celebrate() {
     const ov = document.createElement('div');
     ov.className = 'vt-party';
@@ -697,7 +698,7 @@
     // tables side by side on wide screens, the Guesses-needed note behind ⓘ, and a button bar pinned to the bottom
     const sec = s => s ? `<section>${s}</section>` : '';
     const pts = won ? `<h3 class="res-h">🏅 Points</h3><table class="score-table vt-sc">${sc.rows.map(r => `<tr><td>${esc(r[0])}</td><td>${r[1] < 0 ? '−' + Math.abs(r[1]) : '+' + r[1]}</td></tr>`).join('')}<tr class="total"><td>Score</td><td>${sc.total}</td></tr></table>` : '';
-    const [face, head] = won ? ['🔓', 'Vault cracked!'] : gaveUp ? ['🏳️', 'You gave up'] : ['🔒', 'The Vault stays shut'];
+    const [face, head] = won ? ['🔓', 'Unlocked!'] : gaveUp ? ['🏳️', 'You gave up'] : ['🔒', 'The lock holds'];
     const body = `
       <div class="res-top"><span class="res-face">${face}</span><span class="res-title">${head}</span></div>
       <div class="vt-res-w">${w.split('').map(ch => `<span>${ch}</span>`).join('')}</div>
@@ -761,7 +762,7 @@
         <li><b>🆕 New Game</b> starts a fresh word. <b>🏳️ Give up</b> shows the word. Both ask first while the word is unfinished ("Keep playing" is the main button). Either one, once you've made a guess or used a Hint or Reveal, counts that word as not solved and breaks your streak. After every New Game, the word that just ended is shown over the new grid until you click or tap anywhere; the new word's clock starts then.</li>
         <li><b>⏸️ Pause:</b> tap the clock. The grid is hidden until you tap anywhere. The clock counts down in timed games and counts up in untimed ones. In the last 10 seconds the grid's border flashes yellow, then red.</li>`)}
       ${sec('Coins', `
-        <li><b>🪙 Coins</b> (one currency with Clue Duel; your balance shows beside the line above the grid): every word you solve pays <b>2 per letter</b> and <b>2 per guess to spare</b>. Timed rounds add <b>speed coins</b>: 1 for every second left on the clock when you solve it, up to 20 per letter. Untimed rounds pay no speed coins.</li>`)}
+        <li><b>🪙 Coins</b> (one currency with ${NM.cross}; your balance shows beside the line above the grid): every word you solve pays <b>2 per letter</b> and <b>2 per guess to spare</b>. Timed rounds add <b>speed coins</b>: 1 for every second left on the clock when you solve it, up to 20 per letter. Untimed rounds pay no speed coins.</li>`)}
       ${sec('Settings', `
         <li><b>Challenge Level</b> (1–10) sets how hard the vocabulary is: everyday words at 1–3, rarer ones as it rises.</li>
         <li><b>Letters</b> (4–8) and <b>Guesses</b> (5–10) set the word's length and how many tries you get.</li>
@@ -774,7 +775,7 @@
       ${sec('Make It Yours', `
         <li>Double-click (or double-tap) the title to rename the game, and tap the icon beside it to choose another or to upload your own picture. Both are remembered on this device.</li>`)}
       ${sec('Sound', `
-        <li>Sound effects are <b>off</b> until you tap <b>🔇</b> in the header (it becomes <b>🔊</b>); tap again to mute. The same switch covers Clue Duel and the menu.</li>
+        <li>Sound effects are <b>off</b> until you tap <b>🔇</b> in the header (it becomes <b>🔊</b>); tap again to mute. The same switch covers ${NM.cross} and the menu.</li>
         <li>You'll hear a soft click for each letter, a short tone when a guess goes in, a thunk for a word that isn't in the list, a clink for coins, a tick each second in the last 10, and a short tune when the word is solved or lost.</li>`)}
       </div>
       <div class="row"><button class="btn primary" data-a="ok">Close</button></div>`);
@@ -847,7 +848,7 @@
   $('#vtInfo').addEventListener('click', e => { if (e.target.closest('#vtInfoBtn')) openSettings(); });
   $('#vtMenu').addEventListener('click', () => {
     if (R && !R.over) { setPaused(true); clearInterval(R.tId); } // the round waits, paused; reopening the Vault shows PLAY PAUSED
-    document.title = `Clue Duel · ${UI.APP_VER}`;
+    document.title = `${NM.suite} · ${UI.APP_VER}`;
     UI.goHome();
   });
   $('#vtKb').addEventListener('click', e => { const b = e.target.closest('[data-k]'); if (b) key(b.dataset.k); });

@@ -1,4 +1,4 @@
-/* Clue Duel — CLUE PICS v02 (Phase C)
+/* Master Keys — CrossKeys CLUE PICS v02 (Phase C)
    One entry per line:  WORD|type|picture
    Types, and the lowest Challenge Level that uses them (JM, CD-2: 4.1):
      lit    literal          🐟 = FISH                     (level 1+)
