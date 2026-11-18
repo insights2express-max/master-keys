@@ -1,6 +1,6 @@
 /* Master Keys (fka Clue Duel) — service worker: caches the whole app so it plays offline.
    Bump CACHE whenever any file changes, so players get the update. */
-const CACHE = 'master-keys-v09a-1'; // v09a: Night crossing-clue text, quicker tile drops + slow-drop recorder, new icons (Master Keys / CrossKeys / LockWord), code files renamed lockword.js / lockwords.js
+const CACHE = 'master-keys-v09a-2'; // v09a-2: Master Keys Lexicon L14.01 (data-only: new drafts); v09a: Night crossing-clue text, quicker tile drops + slow-drop recorder, new icons, code files renamed lockword.js / lockwords.js
 const ASSETS = [
   './',
   'index.html',
