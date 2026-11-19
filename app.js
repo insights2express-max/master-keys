@@ -1,4 +1,4 @@
-/* Master Keys — user interface: the Lobby and CrossKeys, fka Clue Duel (v10a: Alfa Slab One titles, collapsible game cards (name = Setup, chevron = details), New Game fits, striped Hint cell; v10: the Lobby with one card per game (🆕 New Game / ▶ Resume / ⚙ Setup), CrossKeys Setup screen, ⚙ Master Keys settings (Screen), ☰ back to the Lobby, How To Play split into the suite and each game; v09a: Night crossing-clue text, tile drawn in its cell at once + slow-drop recorder, game icons, code files renamed lockword.js / lockwords.js; v09: renamed Master Keys / CrossKeys / LockWord, names in names.js, LockWord Night look;
+/* Master Keys — user interface: the Lobby and CrossKeys, fka Clue Duel (v10b: 💡 Hint marks a cell only, no tile picked for you; v10a: Alfa Slab One titles, collapsible game cards (name = Setup, chevron = details), New Game fits, striped Hint cell; v10: the Lobby with one card per game (🆕 New Game / ▶ Resume / ⚙ Setup), CrossKeys Setup screen, ⚙ Master Keys settings (Screen), ☰ back to the Lobby, How To Play split into the suite and each game; v09a: Night crossing-clue text, tile drawn in its cell at once + slow-drop recorder, game icons, code files renamed lockword.js / lockwords.js; v09: renamed Master Keys / CrossKeys / LockWord, names in names.js, LockWord Night look;
    v08r: mirrored top boxes (the Bot gets a per-TURN clock, names centered), long settings line wraps;
    v08q: Screen setting with Night (Charcoal), ⚙ "Changes now" / "From your next game", Letters in Hand 4–8 and changeable mid-game (next round), Full Hand +2 per tile, bigger hub, DONE under the hand on upright tablets, word progress on the clue card, drawn pictures, 1-letter picture captions;
    v08p: new top band (no clue bar; clocks by the scores, hub of buttons), floating turn messages, tap a clue for its card, orange ? and bars for missing letters and words, the Bot waits for your tap after red marks, the Bot's 2-second finish after your clock runs out, wide screens: names over avatars, wings for the buttons, big DONE under the grid;
@@ -15,7 +15,7 @@
    v08j: grid colors, final-play view, clock-out final turn, menu defaults, phone two-finger drag) */
 'use strict';
 (() => {
-  const APP_VER = 'v10a'; // Project CP: shown as a pill beside the title and in the browser tab
+  const APP_VER = 'v10b'; // Project CP: shown as a pill beside the title and in the browser tab
   const NM = window.MK_NAMES || { suite: 'Master Keys', cross: 'CrossKeys', lock: 'LockWord' }; // v09: the game names (names.js)
   // v09a (JM CD-71: 1.2c, 1.3b): the two games' own icons, shown wherever the 🧩 / 🔐 emoji stood
   const GI = { cross: 'icons/crosskeys.svg', lock: 'icons/lockword.svg' };
@@ -2040,7 +2040,7 @@
         <li>Your hand refills from the bag after every turn as long as more tiles exist in the bag. Near the end of a game, the Bot may hold more tiles than you, requiring you to PASS until all tiles have been played (or three passes in a row have occurred to end the game).</li>`)}
       ${sec('The Buttons', `
         <li>Your hand and the buttons share the bottom row. On a phone, ✓ Done stays on the row and the other buttons open from <b>⋯ More</b>; in timed games your clock then shows under your score.</li>
-        <li><b>💡 Hint (🪙${hintC})</b>: stripes a cell where one of your tiles fits (its stripes slant the other way from Scan's) and picks that tile for you. It costs ${hintC} ${go('Coins', 'coins')}.</li>
+        <li><b>💡 Hint (🪙${hintC})</b>: stripes one empty cell where one of your tiles fits (its stripes slant the other way from Scan's). It doesn't say which tile: you work that out, as with Scan. It costs ${hintC} ${go('Coins', 'coins')}.</li>
         <li><b>🔦 Scan (🪙${SCAN_PER_TILE} per tile)</b>: stripes one empty cell for <b>each</b> tile still in your hand (tiles you have already penciled in don't count), so 5 tiles cost 🪙${5 * SCAN_PER_TILE}: cheaper than a Hint per tile. Only the cells are striped; you work out which tile goes where. Once per turn.</li>
         <li><b>🎯 Place (🪙?)</b>: puts one random tile from your hand into a cell where it fits. It costs that tile's value in coins (shown on the tile; 1 in modes without tile values), then scores like any tile you place. It's marked ✓ (known to fit).</li>
         <li><b>☑️ Check (🪙${R.checkBase}+)</b>: tests the tiles you've penciled in this turn. It costs ${R.checkBase} coins, plus ${R.checkPerWrong} for each wrong tile it finds. Wrong tiles go back to your hand with <b>no point penalty</b>; right ones get a ✓ (move one and it's unchecked again). Check needs <b>🪙${R.checkBase + R.checkPerWrong}</b> to start, then checks your tiles in the order you placed them. If it finds more wrong tiles than you can pay for, it takes your last coins for that tile and stops; any later tiles stay penciled in, unchecked.</li>
@@ -3038,11 +3038,13 @@
     if (coins.bal >= cost && !armTap($('#hintBtn'), cost)) return; // v08c: second tap buys
     if (!coins.spend(cost, 'Hint')) return;
     coinItem('hint', -cost);
+    // v10b (JM CD-85: 1.6.1): a Hint shows a CELL only, like Scan. No tile in your hand is picked for you:
+    // you still work out which of your tiles goes there.
     ui.hintCell = h.cell;
-    ui.selTile = h.tileId;
+    ui.selTile = null;
     ui.selSlot = pickSlot(h.cell);
     ui.selCell = h.cell;
-    toast(`Hint · 🪙−${cost}. Tap the striped cell to place it.`);
+    toast(`💡 Hint · 🪙−${cost}. One of your tiles fits the striped cell. Which one?`, '', 3200);
     save();
     render();
   });
