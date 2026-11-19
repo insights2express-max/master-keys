@@ -1,4 +1,4 @@
-/* Master Keys — user interface: the Lobby and CrossKeys, fka Clue Duel (v10: the Lobby with one card per game (🆕 New Game / ▶ Resume / ⚙ Setup), CrossKeys Setup screen, ⚙ Master Keys settings (Screen), ☰ back to the Lobby, How To Play split into the suite and each game; v09a: Night crossing-clue text, tile drawn in its cell at once + slow-drop recorder, game icons, code files renamed lockword.js / lockwords.js; v09: renamed Master Keys / CrossKeys / LockWord, names in names.js, LockWord Night look;
+/* Master Keys — user interface: the Lobby and CrossKeys, fka Clue Duel (v10a: Alfa Slab One titles, collapsible game cards (name = Setup, chevron = details), New Game fits, striped Hint cell; v10: the Lobby with one card per game (🆕 New Game / ▶ Resume / ⚙ Setup), CrossKeys Setup screen, ⚙ Master Keys settings (Screen), ☰ back to the Lobby, How To Play split into the suite and each game; v09a: Night crossing-clue text, tile drawn in its cell at once + slow-drop recorder, game icons, code files renamed lockword.js / lockwords.js; v09: renamed Master Keys / CrossKeys / LockWord, names in names.js, LockWord Night look;
    v08r: mirrored top boxes (the Bot gets a per-TURN clock, names centered), long settings line wraps;
    v08q: Screen setting with Night (Charcoal), ⚙ "Changes now" / "From your next game", Letters in Hand 4–8 and changeable mid-game (next round), Full Hand +2 per tile, bigger hub, DONE under the hand on upright tablets, word progress on the clue card, drawn pictures, 1-letter picture captions;
    v08p: new top band (no clue bar; clocks by the scores, hub of buttons), floating turn messages, tap a clue for its card, orange ? and bars for missing letters and words, the Bot waits for your tap after red marks, the Bot's 2-second finish after your clock runs out, wide screens: names over avatars, wings for the buttons, big DONE under the grid;
@@ -15,7 +15,7 @@
    v08j: grid colors, final-play view, clock-out final turn, menu defaults, phone two-finger drag) */
 'use strict';
 (() => {
-  const APP_VER = 'v10'; // Project CP: shown as a pill beside the title and in the browser tab
+  const APP_VER = 'v10a'; // Project CP: shown as a pill beside the title and in the browser tab
   const NM = window.MK_NAMES || { suite: 'Master Keys', cross: 'CrossKeys', lock: 'LockWord' }; // v09: the game names (names.js)
   // v09a (JM CD-71: 1.2c, 1.3b): the two games' own icons, shown wherever the 🧩 / 🔐 emoji stood
   const GI = { cross: 'icons/crosskeys.svg', lock: 'icons/lockword.svg' };
@@ -386,6 +386,24 @@
       $('#lwNewBtn').classList.toggle('primary', !L.unf);
       $('#lwLast').textContent = `🆕 New Game uses your last settings: ${L.last}`;
     }
+    // v10a (CD-83: 3.1.1): a collapsed card says "⏸ Unfinished …" under its name instead of its one-line pitch
+    lobbyPitch('#ckCard', unf ? '⏸ ' + ut : '');
+    lobbyPitch('#lwCard', L && L.unf ? '⏸ ' + L.unf : '');
+    const co = store.get('cd.cardsOpen', {}) || {};
+    for (const c of document.querySelectorAll('.gcard[data-g]')) setCardOpen(c, !!co[c.dataset.g]);
+  }
+  // v10a (JM CD-83: 3.1.1): game cards start collapsed; the chevron shows the details. Each card's state is remembered.
+  function lobbyPitch(sel, unfTxt) {
+    const p = $(sel + ' .gpitch');
+    p.innerHTML = `<span class="pt">${esc(p.dataset.pitch)}</span>` + (unfTxt ? `<span class="pu">${esc(unfTxt)}</span>` : ''); // open cards show the pitch (the details say where you left off)
+    p.classList.toggle('unf', !!unfTxt);
+  }
+  function setCardOpen(card, open) {
+    card.classList.toggle('open', open);
+    const b = card.querySelector('.gchev');
+    b.setAttribute('aria-expanded', open);
+    b.title = open ? 'Hide details' : 'Show details';
+    card.querySelector('.gbody').inert = !open; // hidden buttons can't be reached with Tab
   }
   // v08i: the option boxes use the full size (+50 %) where they fit, and shrink only as much as a narrow phone needs
   function fitOpts() {
@@ -461,7 +479,12 @@
   $('#ckSetResume').addEventListener('click', resumeGame);
   $('#ckMenu').addEventListener('click', () => { showScreen('home'); renderHome(); });
   $('#ckHelp').addEventListener('click', () => showHelp('cross'));
-  // tapping a card anywhere outside its buttons opens that game's Setup screen
+  // v10a: the chevron opens or closes a card's details; a tap anywhere else outside its buttons (its name) opens that game's Setup screen
+  for (const b of document.querySelectorAll('.gchev')) b.addEventListener('click', () => {
+    const c = b.closest('.gcard'), open = !c.classList.contains('open');
+    setCardOpen(c, open);
+    const co = store.get('cd.cardsOpen', {}) || {}; co[c.dataset.g] = open; store.set('cd.cardsOpen', co);
+  });
   $('#ckCard').addEventListener('click', e => { if (!e.target.closest('button')) openCkSetup(); });
   $('#lwCard').addEventListener('click', e => { if (!e.target.closest('button') && window.WordVault) window.WordVault.setup(); });
   $('#lwResumeBtn').addEventListener('click', () => { if (window.WordVault) window.WordVault.open(); });
@@ -1849,7 +1872,7 @@
   function showSuiteHelp() {
     const sec = helpSec, go = (t, l) => `<a class="help-link" href="#" data-go="${helpId(t)}">${l || t}</a>`;
     openModal(`
-      <h2>How To Play ${NM.suite} <span class="chip">${APP_VER}</span></h2>
+      <h2 class="mk-title">How To Play ${NM.suite} <span class="chip">${APP_VER}</span></h2>
       <p>${NM.suite} is a set of word games. <b>${gimg('cross')} ${NM.cross}</b>: you and the Bot (a computer player) take turns filling the same crossword with letter tiles. <b>${gimg('lock')} ${NM.lock}</b>: crack a hidden word in a few guesses. Each game has its own How To Play: tap a button here, or the <b>?</b> inside the game.</p>
       <div class="row help-games"><button class="btn" type="button" data-h="cross">${gimg('cross')} How To Play ${NM.cross}</button><button class="btn" type="button" data-h="lock">${gimg('lock')} How To Play ${NM.lock}</button></div>
       <p class="help-note">Tap a heading to open it. Underlined names open their section.</p>
@@ -1861,10 +1884,13 @@
         <li>Tap the face to choose your avatar from the icon list, or to upload your own picture (kept on this device).</li>
         <li>Type your name in the box beside it. It shows in the games and on the Scoreboard. Left empty, you're "You".</li>`)}
       ${sec('The Game Cards', `
-        <li>Each game has its own card: its icon, name and a line about it, then your record (games played, the share you won or solved, and a top score or streak).</li>
-        <li><b>🆕 New Game</b> starts a game at once with your last settings for that game (the line under the buttons says which). It's the quickest way to play your favorite setup again.</li>
-        <li><b>⚙ Setup</b>, or a tap anywhere else on the card, opens that game's <b>Setup screen</b>, where you choose its settings before you start.</li>
-        <li><b>▶ Resume</b> appears, with a line saying where you left off, when a game is unfinished. 🆕 New Game then asks first, because the unfinished game would be lost.</li>
+        <li>Each game has its own card. It starts <b>closed</b>: just the game's icon, its name and a line about it, so many games fit on one screen. When a game is unfinished, that line says <b>⏸ Unfinished</b> and where you left off.</li>
+        <li><b>Tap the game's name</b> (or anywhere on the closed card) to open its <b>Setup screen</b>, where you choose its settings before you start.</li>
+        <li><b>Tap the round chevron</b> at the card's top right to open the details; tap it again to close them. Each card remembers whether you left it open. The details hold:
+          <ul><li>your record (games played, the share you won or solved, and a top score or streak);</li>
+          <li><b>▶ Resume</b>, when a game is unfinished;</li>
+          <li><b>🆕 New Game</b>: starts a game at once with your last settings for that game (the line under the buttons says which). It's the quickest way to play your favorite setup again. If a game is unfinished, it asks first, because that game would be lost;</li>
+          <li><b>⚙ Setup</b>: the game's Setup screen.</li></ul></li>
         <li>The dashed card holds the place of the games still to come.</li>`)}
       ${sec(NM.suite + ' Settings', `
         <li><b>⚙</b> in the Lobby's top corner holds the settings that change every game.</li>
@@ -1902,7 +1928,7 @@
     const chip = k => (k === cur ? ' <span class="chip">this game</span>' : '');
     const modeH = (k, extra) => `<li class="help-sub"><b>${esc(E.MODES[k].name)}</b>${chip(k)}${extra || ''}</li>`;
     openModal(`
-      <h2>How To Play ${gimg('cross')} ${NM.cross} <span class="chip">${APP_VER}</span></h2>
+      <h2 class="mk-title">How To Play ${gimg('cross')} ${NM.cross} <span class="chip">${APP_VER}</span></h2>
       <p>In ${NM.cross}, you and the Bot (a computer player) take turns filling the same crossword with letter tiles. Every tile you place correctly scores, finishing words scores more, and the highest score wins.</p>
       <p class="help-note">The first sections follow the ${NM.cross} Setup screen, top to bottom. Tap a heading to open it. Underlined names open their section. The Lobby, You, Game History, Sound and Offline are in How To Play ${NM.suite} (the ? in the Lobby).</p>
       ${sec('Bot', `
@@ -2014,7 +2040,7 @@
         <li>Your hand refills from the bag after every turn as long as more tiles exist in the bag. Near the end of a game, the Bot may hold more tiles than you, requiring you to PASS until all tiles have been played (or three passes in a row have occurred to end the game).</li>`)}
       ${sec('The Buttons', `
         <li>Your hand and the buttons share the bottom row. On a phone, ✓ Done stays on the row and the other buttons open from <b>⋯ More</b>; in timed games your clock then shows under your score.</li>
-        <li><b>💡 Hint (🪙${hintC})</b>: shows a cell where one of your tiles fits. It costs ${hintC} ${go('Coins', 'coins')}.</li>
+        <li><b>💡 Hint (🪙${hintC})</b>: stripes a cell where one of your tiles fits (its stripes slant the other way from Scan's) and picks that tile for you. It costs ${hintC} ${go('Coins', 'coins')}.</li>
         <li><b>🔦 Scan (🪙${SCAN_PER_TILE} per tile)</b>: stripes one empty cell for <b>each</b> tile still in your hand (tiles you have already penciled in don't count), so 5 tiles cost 🪙${5 * SCAN_PER_TILE}: cheaper than a Hint per tile. Only the cells are striped; you work out which tile goes where. Once per turn.</li>
         <li><b>🎯 Place (🪙?)</b>: puts one random tile from your hand into a cell where it fits. It costs that tile's value in coins (shown on the tile; 1 in modes without tile values), then scores like any tile you place. It's marked ✓ (known to fit).</li>
         <li><b>☑️ Check (🪙${R.checkBase}+)</b>: tests the tiles you've penciled in this turn. It costs ${R.checkBase} coins, plus ${R.checkPerWrong} for each wrong tile it finds. Wrong tiles go back to your hand with <b>no point penalty</b>; right ones get a ✓ (move one and it's unchecked again). Check needs <b>🪙${R.checkBase + R.checkPerWrong}</b> to start, then checks your tiles in the order you placed them. If it finds more wrong tiles than you can pay for, it takes your last coins for that tile and stops; any later tiles stay penciled in, unchecked.</li>
@@ -3016,7 +3042,7 @@
     ui.selTile = h.tileId;
     ui.selSlot = pickSlot(h.cell);
     ui.selCell = h.cell;
-    toast(`Hint · 🪙−${cost}. Tap the glowing cell to place it.`);
+    toast(`Hint · 🪙−${cost}. Tap the striped cell to place it.`);
     save();
     render();
   });

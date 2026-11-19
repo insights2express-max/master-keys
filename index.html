@@ -30,7 +30,7 @@
       <header class="brand">
         <img class="logo" src="icons/icon.svg" alt="" width="64" height="64">
         <div class="brand-txt">
-          <h1><span data-mk="suite">Master Keys</span> <span class="vpill" id="verPill">v10</span></h1>
+          <h1><span data-mk="suite">Master Keys</span> <span class="vpill" id="verPill">v10a</span></h1>
           <p class="tag">Word games. Play anywhere, even offline.</p>
         </div>
       </header>
@@ -46,28 +46,33 @@
 
       <span class="lbl games-lbl">Games</span>
       <div class="games">
-        <!-- each card: tap it (or ⚙ Setup) for the game's Setup screen; 🆕 New Game starts at once with your last settings -->
+        <!-- v10a (JM CD-83: 3.1.1): each card starts collapsed. Tap the name (or the card) for the game's Setup screen;
+             the chevron at the far right shows the details: record, ▶ Resume, 🆕 New Game (your last settings), ⚙ Setup -->
         <div class="gcard" id="ckCard" data-g="cross">
-          <div class="ghead"><img class="gico" src="icons/crosskeys.svg" alt=""><div><p class="gname" data-mk="cross">CrossKeys</p><p class="gpitch">Head-to-head crossword tiles. Finish the words, beat the Bot.</p></div></div>
-          <div class="grec" id="ckRec"></div>
-          <div class="gres" id="ckUnf" hidden></div>
-          <div class="gbtns">
-            <button class="btn primary big" id="resumeBtn" type="button" hidden>▶ Resume</button>
-            <button class="btn big" id="ckNewBtn" type="button">🆕 New Game</button>
-            <button class="btn big" id="ckSetupBtn" type="button">⚙ Setup</button>
-          </div>
-          <p class="glast" id="ckLast"></p>
+          <div class="ghead"><img class="gico" src="icons/crosskeys.svg" alt=""><div><p class="gname" data-mk="cross">CrossKeys</p><p class="gpitch" data-pitch="Head-to-head crossword tiles. Finish the words, beat the Bot.">Head-to-head crossword tiles. Finish the words, beat the Bot.</p></div><button class="gchev" type="button" aria-expanded="false" aria-label="Show CrossKeys details" data-mk-aria="Show {cross} details" title="Show details"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button></div>
+          <div class="gbody"><div>
+            <div class="grec" id="ckRec"></div>
+            <div class="gres" id="ckUnf" hidden></div>
+            <div class="gbtns">
+              <button class="btn primary big" id="resumeBtn" type="button" hidden>▶ Resume</button>
+              <button class="btn big" id="ckNewBtn" type="button">🆕 New Game</button>
+              <button class="btn big" id="ckSetupBtn" type="button" aria-label="Setup">⚙<span class="bt"> Setup</span></button>
+            </div>
+            <p class="glast" id="ckLast"></p>
+          </div></div>
         </div>
         <div class="gcard" id="lwCard" data-g="lock">
-          <div class="ghead"><span class="gico" id="vaultBtnIco"><img src="icons/lockword.svg" alt=""></span><div><p class="gname" id="vaultBtnName">LockWord</p><p class="gpitch">Crack the hidden word in a few guesses.</p></div></div>
-          <div class="grec" id="lwRec"></div>
-          <div class="gres" id="lwUnf" hidden></div>
-          <div class="gbtns">
-            <button class="btn primary big" id="lwResumeBtn" type="button" hidden>▶ Resume</button>
-            <button class="btn big" id="lwNewBtn" type="button">🆕 New Game</button>
-            <button class="btn big" id="vaultBtn" type="button">⚙ Setup</button>
-          </div>
-          <p class="glast" id="lwLast"></p>
+          <div class="ghead"><span class="gico" id="vaultBtnIco"><img src="icons/lockword.svg" alt=""></span><div><p class="gname" id="vaultBtnName">LockWord</p><p class="gpitch" data-pitch="Crack the hidden word in a few guesses.">Crack the hidden word in a few guesses.</p></div><button class="gchev" type="button" aria-expanded="false" aria-label="Show LockWord details" data-mk-aria="Show {lock} details" title="Show details"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button></div>
+          <div class="gbody"><div>
+            <div class="grec" id="lwRec"></div>
+            <div class="gres" id="lwUnf" hidden></div>
+            <div class="gbtns">
+              <button class="btn primary big" id="lwResumeBtn" type="button" hidden>▶ Resume</button>
+              <button class="btn big" id="lwNewBtn" type="button">🆕 New Game</button>
+              <button class="btn big" id="vaultBtn" type="button" aria-label="Setup">⚙<span class="bt"> Setup</span></button>
+            </div>
+            <p class="glast" id="lwLast"></p>
+          </div></div>
         </div>
         <div class="gcard soon"><b>🗝️</b>More games on the way</div>
       </div>

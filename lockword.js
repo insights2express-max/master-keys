@@ -745,7 +745,7 @@
   function help() {
     // v08f (JM CD-37: 5.1): the same collapsible sections (▸/▾, one open at a time) as CrossKeys's How To Play
     const sec = UI.helpSec;
-    openModal(`<h2>How To Play: ${esc(title())}</h2>
+    openModal(`<h2 class="mk-title">How To Play: ${esc(title())}</h2>
       <p class="help-note">Tap a heading to open it.</p>
       <div class="vt-help">
       ${sec('The Basics', `
