@@ -15,10 +15,10 @@
    v08j: grid colors, final-play view, clock-out final turn, menu defaults, phone two-finger drag) */
 'use strict';
 (() => {
-  const APP_VER = 'v10b'; // Project CP: shown as a pill beside the title and in the browser tab
+  const APP_VER = 'v11'; // Project CP: shown as a pill beside the title and in the browser tab
   const NM = window.MK_NAMES || { suite: 'Master Keys', cross: 'CrossKeys', lock: 'LockWord' }; // v09: the game names (names.js)
   // v09a (JM CD-71: 1.2c, 1.3b): the two games' own icons, shown wherever the 🧩 / 🔐 emoji stood
-  const GI = { cross: 'icons/crosskeys.svg', lock: 'icons/lockword.svg' };
+  const GI = { cross: 'icons/crosskeys.svg', lock: 'icons/lockword.svg', ring: 'icons/keyring.svg' }; // v11: KeyRing
   const gimg = (k, cls = 'gi') => `<img class="${cls}" src="${GI[k]}" alt="">`;
   const E = window.Engine;
   const $ = (s, el = document) => el.querySelector(s);
@@ -219,12 +219,13 @@
   function coinWindow() {
     const when = t => { const m = Math.round((Date.now() - t) / 60000); return m < 1 ? 'just now' : m < 60 ? m + ' min ago' : m < 1440 ? Math.round(m / 60) + ' h ago' : Math.round(m / 1440) + ' d ago'; };
     openModal(`<h2>🪙 Coins: ${coinData.bal}</h2>
-      <p class="help-note">One currency for ${NM.cross} and ${NM.lock}. Earned ${coinData.earned} · spent ${coinData.spent} on this device.</p>
+      <p class="help-note">One currency for ${NM.cross}, ${NM.lock} and ${NM.ring}. Earned ${coinData.earned} · spent ${coinData.spent} on this device.</p>
       <ul class="coin-how">
-        <li><b>Spend:</b> 💡 Hint ${E.RULES.hintCost}, 🔦 Scan ${SCAN_PER_TILE} per tile, 🎯 Place = the tile's value, ☑️ Check ${E.RULES.checkBase} + ${E.RULES.checkPerWrong} per wrong tile, ⏱️ +30s ${E.RULES.timeCost} (${NM.cross}); 🔎 Hint 5, 💡 Reveal 40 ÷ letters (${NM.lock}).</li>
+        <li><b>Spend:</b> 💡 Hint ${E.RULES.hintCost}, 🔦 Scan ${SCAN_PER_TILE} per tile, 🎯 Place = the tile's value, ☑️ Check ${E.RULES.checkBase} + ${E.RULES.checkPerWrong} per wrong tile, ⏱️ +30s ${E.RULES.timeCost} (${NM.cross}); 🔎 Hint 5, 💡 Reveal 40 ÷ letters (${NM.lock}); 💡 Hint = the slot's letters × one letter's worth, 🔑 Key Drop = one letter's worth (${NM.ring}: a Ring is worth 100, so one letter is worth 100 ÷ the Ring's letters).</li>
         <li><b>Speed coins:</b> in timed games, 1 coin for every second left on your clock when you end a turn that placed tiles. Up to ${COIN.perTile} per tile placed, with no cap when you place every tile in your hand. Untimed games pay no speed coins; time bought with +30s doesn't count.</li>
         <li><b>Whole-game clocks</b> pay at the end: your clock is shared evenly among your turns, and each turn pays the seconds it saved from its share, by the rule above.</li>
         <li><b>Win a ${NM.cross} game:</b> +${COIN.win}.</li>
+        <li><b>Clear a ${NM.ring} Ring:</b> one letter's worth for every letter you filled yourself (🪙100 with no Key Drop), plus 1 for every bonus word.</li>
         <li><b>Solve a ${NM.lock} word:</b> ${COIN.vaultLetter} per letter, ${COIN.vaultSpare} per guess to spare, plus speed coins in timed rounds (up to ${COIN.perTile} per letter).</li>
       </ul>
       ${coinData.log.length ? `<h3>Latest</h3><table class="score-table coin-log">${coinData.log.map(([t, n, w]) => `<tr><td>${esc(w)}<small> · ${when(t)}</small></td><td class="${n < 0 ? 'neg' : 'pos'}">${n < 0 ? '−' + -n : '+' + n}</td></tr>`).join('')}</table>` : ''}
@@ -386,9 +387,19 @@
       $('#lwNewBtn').classList.toggle('primary', !L.unf);
       $('#lwLast').textContent = `🆕 New Game uses your last settings: ${L.last}`;
     }
+    // v11: the KeyRing card (keyring.js fills it in once it has loaded; NEW until the first Ring is played)
+    const K = window.KeyRing && window.KeyRing.lobby ? window.KeyRing.lobby() : null;
+    if (K) {
+      $('#krRec').innerHTML = recBoxes([[K.played, 'Rings'], [K.played ? K.pct + '%' : '–', 'Cleared'], [K.bonus, 'Bonus words']]);
+      $('#krResumeBtn').hidden = !K.unf; $('#krUnf').hidden = !K.unf; $('#krUnf').textContent = K.unf;
+      $('#krNewBtn').classList.toggle('primary', !K.unf);
+      $('#krLast').textContent = `🆕 New Game uses your last settings: ${K.last}`;
+      $('#krNewB').hidden = K.played > 0;
+    }
     // v10a (CD-83: 3.1.1): a collapsed card says "⏸ Unfinished …" under its name instead of its one-line pitch
     lobbyPitch('#ckCard', unf ? '⏸ ' + ut : '');
     lobbyPitch('#lwCard', L && L.unf ? '⏸ ' + L.unf : '');
+    lobbyPitch('#krCard', K && K.unf ? '⏸ ' + K.unf : '');
     const co = store.get('cd.cardsOpen', {}) || {};
     for (const c of document.querySelectorAll('.gcard[data-g]')) setCardOpen(c, !!co[c.dataset.g]);
   }
@@ -545,6 +556,7 @@
     $('#ckSetup').hidden = id !== 'cksetup'; // v10: CrossKeys Setup
     $('#game').hidden = id !== 'game';
     $('#vault').hidden = id !== 'vault'; // v07c: LockWord
+    $('#keyring').hidden = id !== 'keyring'; // v11: KeyRing (Setup and the game)
     if (id === 'home') { const vs = store.get('cd.vault.settings', {}); { const n = (vs.name || '').trim(); $('#vaultBtnName').textContent = n && n !== 'Word Vault' ? n : NM.lock; } const ico = $('#vaultBtnIco'); if (vs.icon === 'custom' && vs.custom) ico.innerHTML = `<img src="${vs.custom}" alt="">`; else { const ic = vs.icon && !(vs.icon === '🔐' && !vs.lwIco) ? vs.icon : 'lw'; if (ic === 'lw') ico.innerHTML = gimg('lock', ''); else ico.textContent = ic; } /* v09a: the LockWord icon is the default (the old default 🔐 moves to it once) */ fitOpts(); }
   }
 
@@ -1832,12 +1844,12 @@
     const rows = all.map((e, i) => ({ e, i })).filter(x => f === 'all' || x.e.g === f);
     const tab = (v, l) => `<button type="button" data-f="${v}" class="${f === v ? 'on' : ''}">${l}</button>`;
     openModal(`<h2>📜 Game History</h2>
-      <div class="seg one hist-seg">${tab('all', 'All')}${tab('duel', gimg('cross') + ' ' + NM.cross)}${tab('vault', gimg('lock') + ' ' + NM.lock)}</div>
+      <div class="seg one hist-seg">${tab('all', 'All')}${tab('duel', gimg('cross') + ' ' + NM.cross)}${tab('vault', gimg('lock') + ' ' + NM.lock)}${tab('ring', gimg('ring') + ' ' + NM.ring)}</div>
       ${rows.length ? `<ul class="hist-list">${rows.map(({ e, i }) => `<li><button type="button" class="hist-it ${e.win ? 'won' : 'lost'}" data-i="${i}">
-          <span class="hi-ico">${gimg(e.g === 'duel' ? 'cross' : 'lock')}</span>
+          <span class="hi-ico">${gimg(e.g === 'duel' ? 'cross' : e.g === 'ring' ? 'ring' : 'lock')}</span>
           <span class="hi-main"><b>${esc(e.title)}</b><small>${esc(e.sub || '')}</small><small>${when(e.t)}</small></span>
           <span class="hi-side"><b>${esc(e.score || '')}</b><small>🪙${signed(e.coins)}</small></span></button></li>`).join('')}</ul>`
-        : `<p class="hist-none">No ${f === 'duel' ? NM.cross + ' ' : f === 'vault' ? NM.lock + ' ' : ''}results yet. Finished games show up here.</p>`}
+        : `<p class="hist-none">No ${f === 'duel' ? NM.cross + ' ' : f === 'vault' ? NM.lock + ' ' : f === 'ring' ? NM.ring + ' ' : ''}results yet. Finished games show up here.</p>`}
       <p class="hist-note">The last ${HIST_MAX} results, kept on this device. Tap one to see its full result.</p>
       <div class="row"><button class="btn primary" data-a="close">Close</button></div>`);
     $('#modal').onclick = e => { if (e.target === $('#modal')) closeModal(); };
@@ -1873,8 +1885,8 @@
     const sec = helpSec, go = (t, l) => `<a class="help-link" href="#" data-go="${helpId(t)}">${l || t}</a>`;
     openModal(`
       <h2 class="mk-title">How To Play ${NM.suite} <span class="chip">${APP_VER}</span></h2>
-      <p>${NM.suite} is a set of word games. <b>${gimg('cross')} ${NM.cross}</b>: you and the Bot (a computer player) take turns filling the same crossword with letter tiles. <b>${gimg('lock')} ${NM.lock}</b>: crack a hidden word in a few guesses. Each game has its own How To Play: tap a button here, or the <b>?</b> inside the game.</p>
-      <div class="row help-games"><button class="btn" type="button" data-h="cross">${gimg('cross')} How To Play ${NM.cross}</button><button class="btn" type="button" data-h="lock">${gimg('lock')} How To Play ${NM.lock}</button></div>
+      <p>${NM.suite} is a set of word games. <b>${gimg('cross')} ${NM.cross}</b>: you and the Bot (a computer player) take turns filling the same crossword with letter tiles. <b>${gimg('lock')} ${NM.lock}</b>: crack a hidden word in a few guesses. <b>${gimg('ring')} ${NM.ring}</b>: spell words from a ring of letters to fill every slot. Each game has its own How To Play: tap a button here, or the <b>?</b> inside the game.</p>
+      <div class="row help-games"><button class="btn" type="button" data-h="cross">${gimg('cross')} How To Play ${NM.cross}</button><button class="btn" type="button" data-h="lock">${gimg('lock')} How To Play ${NM.lock}</button><button class="btn" type="button" data-h="ring">${gimg('ring')} How To Play ${NM.ring}</button></div>
       <p class="help-note">Tap a heading to open it. Underlined names open their section.</p>
       ${sec('The Lobby', `
         <li>The Lobby is the first screen: the ${NM.suite} title, ${go('You')}, your ${go('Coins', 'coins')}, and one card per game.</li>
@@ -1898,10 +1910,10 @@
         <li>Each game's own settings are on its Setup screen and in the ⚙ inside the game.</li>`)}
       ${sec('Coins', `
         <li><b>🪙 Coins</b> are one currency shared by every game. You start with <b>${COIN.start}</b>. Your balance shows in the Lobby and inside each game; tap it for details and your latest coins.</li>
-        <li>You earn coins by playing well (finishing turns quickly in timed ${NM.cross} games, winning, solving ${NM.lock} words) and spend them on help like hints. Coin buttons are <b>blue</b> and take <b>two taps</b>, so you never spend by accident. Each game's How To Play has the details.</li>`)}
+        <li>You earn coins by playing well (finishing turns quickly in timed ${NM.cross} games, winning, solving ${NM.lock} words, clearing ${NM.ring} Rings and finding bonus words) and spend them on help like hints. Coin buttons are <b>blue</b> and take <b>two taps</b>, so you never spend by accident. Each game's How To Play has the details.</li>`)}
       ${sec('Game History', `
         <li><b>📜 Game History</b> (top corner of the Lobby) lists your last 100 results from every game, newest first: the date, the settings, the score and the coins won or spent. A green edge marks a win, a red edge a loss.</li>
-        <li>Filter it by game (All, ${gimg('cross')} ${NM.cross}, ${gimg('lock')} ${NM.lock}), and tap any result to see its full result window again; ◂ History goes back to the list.</li>
+        <li>Filter it by game (All, ${gimg('cross')} ${NM.cross}, ${gimg('lock')} ${NM.lock}, ${gimg('ring')} ${NM.ring}), and tap any result to see its full result window again; ◂ History goes back to the list.</li>
         <li>It's kept on this device only, like your stats and coins.</li>`)}
       ${sec('Sound', `
         <li>Sound effects are <b>off</b> until you turn them on. Tap <b>🔇</b> (in the Lobby and in every game's header) to turn them on; it becomes <b>🔊</b>. Tap again to mute. One switch covers every game, and it's remembered on this device.</li>`)}
@@ -1911,7 +1923,7 @@
     $('#sheet').onclick = e => {
       if (helpClick(e)) return;
       const h = e.target.closest('[data-h]');
-      if (h) { if (h.dataset.h === 'cross') showHelp('cross'); else if (window.WordVault) window.WordVault.help(); return; }
+      if (h) { if (h.dataset.h === 'cross') showHelp('cross'); else if (h.dataset.h === 'ring') { if (window.KeyRing) window.KeyRing.help(); } else if (window.WordVault) window.WordVault.help(); return; }
       if (e.target.closest('[data-a]')) closeModal();
     };
   }

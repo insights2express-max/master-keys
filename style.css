@@ -1848,3 +1848,173 @@ html[data-screen="night"] :is(.gres, .unfin) { color: var(--ink); }
   animation: none;
   background-image: repeating-linear-gradient(-45deg, rgba(20, 24, 30, .45) 0 calc(var(--cell) * .045), transparent calc(var(--cell) * .045) calc(var(--cell) * .16));
 }
+
+/* =====================================================================
+   v11 (JM CD-87, CD-88): KeyRing, a word builder. Glass panels, 3D tiles, a 3D Ring platform with a steel key ring.
+   CD-88: 1.6.1–1.6.2: the Ring spans almost the whole phone width; the BONUS tag, 💡 Hint and 🔑 Drop sit in its corners
+   (they move out beside the Ring when there is room); Shuffle stays the steel hub in its center.
+   ===================================================================== */
+#keyring {
+  --kr-fx: radial-gradient(60% 45% at 12% 8%, rgba(44, 107, 216, .20), transparent 70%), radial-gradient(55% 40% at 92% 92%, rgba(245, 179, 0, .22), transparent 70%);
+  --kr-glass: linear-gradient(160deg, rgba(255, 255, 255, .15), rgba(255, 255, 255, .03) 45%, rgba(0, 0, 0, .14)), rgba(22, 30, 40, .82);
+  --kr-edge: inset 0 1px 0 rgba(255, 255, 255, .22), inset 0 0 0 1px rgba(255, 255, 255, .1), 0 10px 26px rgba(0, 0, 0, .3);
+  --kr-well: #0b1016; --kr-t1: #fcebc0; --kr-t2: #efd18c; --kr-te: #c39d4f; --kr-ti: #3b2a0b;
+  --kr-d1: #d9e8ff; --kr-d2: #a9c8f5; --kr-de: #6e95cf; --kr-di: #173f8f;
+  --kr-glow: #4fc3f7; --kr-st1: #f4f7fa; --kr-st2: #9aa7b3; --kr-st3: #5d6a77; --kr-side: #0d131a;
+  --kr-tag1: #ffe082; --kr-tag2: #f5b300; --kr-tagi: #3a2a00;
+  --rs: 300px; --sw: 300px; --ts: 60px; --cb: 52px;
+  background: var(--kr-fx), var(--bg); overflow: hidden;
+}
+@media (prefers-color-scheme: dark) {
+  #keyring {
+    --kr-fx: radial-gradient(60% 45% at 12% 8%, rgba(63, 127, 232, .22), transparent 70%), radial-gradient(55% 40% at 92% 92%, rgba(245, 179, 0, .10), transparent 70%);
+    --kr-glass: linear-gradient(160deg, rgba(255, 255, 255, .12), rgba(255, 255, 255, .02) 45%, rgba(0, 0, 0, .2)), rgba(30, 40, 52, .78);
+  }
+}
+html[data-screen="night"] #keyring {
+  --kr-fx: linear-gradient(transparent, transparent);
+  --kr-glass: linear-gradient(160deg, rgba(255, 255, 255, .05), rgba(255, 255, 255, 0) 45%, rgba(0, 0, 0, .2)), #161616;
+  --kr-edge: inset 0 1px 0 rgba(255, 255, 255, .07), inset 0 0 0 1px rgba(255, 255, 255, .04), 0 8px 20px rgba(0, 0, 0, .5);
+  --kr-well: #0e0e0e; --kr-t1: #b9ad8e; --kr-t2: #9c8f6c; --kr-te: #6f6448; --kr-ti: #111;
+  --kr-d1: #7f8fa3; --kr-d2: #64748a; --kr-de: #45525f; --kr-di: #0d1520;
+  --kr-glow: #6f8fb0; --kr-st1: #8f8f8f; --kr-st2: #555; --kr-st3: #333; --kr-side: #070707;
+  --kr-tag1: #a08530; --kr-tag2: #7d6620; --kr-tagi: #111;
+}
+html[data-screen="night"] #keyring .ck-ico, html[data-screen="night"] .kr-stamp { filter: brightness(.75) saturate(.7); }
+#keyring .kr-top { grid-template-columns: auto auto minmax(0, 1fr) auto auto auto; }
+#keyring .ck-title small { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.kr-setup { flex: 1; min-height: 0; overflow-y: auto; }
+.kr-setup[hidden], .kr-main[hidden] { display: none; }
+.kr-nseg button { font-size: 18px; font-weight: 800; padding: 9px 2px; }
+.kr-prev { display: flex; justify-content: center; gap: 6px; flex-wrap: wrap; margin-top: -2px; }
+.kr-prev span { width: 34px; height: 34px; border-radius: 22%; display: grid; place-items: center; font-weight: 900; color: var(--kr-ti);
+  background-image: radial-gradient(ellipse 80% 40% at 50% 20%, rgba(255, 255, 255, .62), rgba(255, 255, 255, 0) 70%), linear-gradient(var(--kr-t1), var(--kr-t2));
+  box-shadow: inset 0 -3px 0 var(--kr-te), 0 2px 3px rgba(0, 0, 0, .3); }
+.kr-desc { margin-top: -4px; }
+
+/* the game screen: info row, slot panel, message strip, the Ring (its corner buttons), and the key tips (computers) */
+.kr-main { flex: 1; min-height: 0; display: flex; }
+.kr-grid { flex: 1; min-height: 0; min-width: 0; display: grid; gap: 8px; padding: 6px 12px 10px;
+  grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr) 46px var(--rs) auto;
+  grid-template-areas: "info" "slots" "msg" "play" "tip"; }
+.kr-grid.wide { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); column-gap: 26px; padding: 8px 22px 16px;
+  grid-template-rows: auto minmax(0, 1fr) 46px var(--rs) auto minmax(0, 1fr);
+  grid-template-areas: "info info" "slots ." "slots msg" "slots play" "slots tip" "slots ."; }
+.kr-info { grid-area: info; display: flex; justify-content: center; align-items: center; gap: 8px; flex-wrap: wrap; }
+.kr-info .coin-pill { font-size: 14px; padding: 3px 10px 3px 7px; }
+.kr-pill { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border: 0; border-radius: 999px; background: var(--surface); color: var(--ink);
+  box-shadow: var(--shadow); font: inherit; font-weight: 800; font-size: 14px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+button.kr-pill { cursor: pointer; }
+.kr-pill .e { font-family: var(--emoji); }
+.kr-clock.low { background: var(--bad); color: #fff; animation: pulse 1s infinite; }
+
+/* the slot panel: dark glass, like LockWord's grid panel; short words share a row */
+.kr-slots { grid-area: slots; min-height: 0; border-radius: 18px; background: var(--kr-glass); box-shadow: var(--kr-edge);
+  -webkit-backdrop-filter: blur(10px) saturate(1.3); backdrop-filter: blur(10px) saturate(1.3);
+  display: flex; flex-direction: column; justify-content: center; align-items: center; gap: var(--rg, 8px); padding: 10px; overflow: hidden; }
+.kr-row { display: flex; justify-content: center; gap: calc(var(--cs) * .7); }
+.kr-word { display: flex; gap: calc(var(--cs) * .1); position: relative; padding: 3px; border: 0; border-radius: 12px; background: transparent; color: inherit; font: inherit; cursor: pointer; transition: box-shadow .2s; }
+.kr-word.sel { box-shadow: 0 0 0 2px var(--kr-glow), 0 0 12px rgba(79, 195, 247, .55); }
+.kr-word.flash { animation: krFlash .6s; }
+@keyframes krFlash { 30% { box-shadow: 0 0 0 3px #f5b300, 0 0 16px rgba(245, 179, 0, .8); } }
+.kr-word .hm { position: absolute; left: calc(var(--cs) * -.42); top: 50%; transform: translateY(-50%); font-size: calc(var(--cs) * .38); font-family: var(--emoji); }
+.kr-c { width: var(--cs); height: var(--cs); border-radius: 22%; display: grid; place-items: center; font-weight: 900; font-size: calc(var(--cs) * .56); line-height: 1; position: relative;
+  background: radial-gradient(circle at 50% 125%, rgba(79, 195, 247, .12), transparent 60%), var(--kr-well); color: #fff;
+  box-shadow: inset 0 3px 0 rgba(0, 0, 0, .5), inset 0 -2px 0 rgba(255, 255, 255, .12), 0 0 0 1px rgba(255, 255, 255, .06); }
+.kr-c.f, .kr-c.d { box-shadow: inset 0 -4px 0 var(--edge), inset 0 1px 0 rgba(255, 255, 255, .7), 0 2px 3px rgba(0, 0, 0, .55); }
+.kr-c.f { --edge: var(--kr-te); color: var(--kr-ti); background-image: radial-gradient(ellipse 80% 40% at 50% 20%, rgba(255, 255, 255, .62), rgba(255, 255, 255, .14) 66%, rgba(255, 255, 255, 0) 70%), linear-gradient(var(--kr-t1), var(--kr-t2)); }
+.kr-c.d { --edge: var(--kr-de); color: var(--kr-di); background-image: radial-gradient(ellipse 80% 40% at 50% 20%, rgba(255, 255, 255, .6), rgba(255, 255, 255, 0) 70%), linear-gradient(var(--kr-d1), var(--kr-d2)); }
+.kr-c.pop { animation: krPop .42s cubic-bezier(.3, 1.6, .5, 1) both; }
+@keyframes krPop { 0% { transform: translateY(-14px) scale(.6); opacity: 0; } 100% { transform: none; opacity: 1; } }
+
+/* message strip: the word you are spelling, or what just happened */
+.kr-msg { grid-area: msg; min-width: 0; display: flex; justify-content: center; align-items: center; gap: 4px; text-align: center; font-weight: 800; font-size: 15px; }
+.kr-msg .mt { padding: 6px 12px; border-radius: 12px; background: var(--surface); color: var(--ink); box-shadow: var(--shadow); max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.kr-msg .mt.sm { margin-left: 6px; font-size: 12px; padding: 4px 8px; }
+.kr-msg .mt.good { background: #1e9e4a; color: #fff; }
+.kr-msg .mt.bad { background: #cf3f3f; color: #fff; }
+.kr-msg .mt.dup { background: #fff0b8; color: #3b2a0b; }
+.kr-msg .mt.clue { background: var(--primary); color: var(--primary-ink); white-space: normal; line-height: 1.2; max-height: 44px; }
+html[data-screen="night"] .kr-msg .mt.good { background: #2f6b45; color: #ddd; }
+html[data-screen="night"] .kr-msg .mt.bad { background: #7e3431; color: #ddd; }
+html[data-screen="night"] .kr-msg .mt.dup { background: var(--hl); color: #d2c896; }
+.kr-msg .wl { width: 32px; height: 36px; flex: none; border-radius: 8px; display: grid; place-items: center; font-weight: 900; font-size: 20px; color: #fff;
+  background: linear-gradient(#5b9bff, #2c6bd8); box-shadow: inset 0 -3px 0 #173f8f, 0 2px 3px rgba(0, 0, 0, .3); animation: krPop .18s both; }
+html[data-screen="night"] .kr-msg .wl { background: linear-gradient(#4b6684, #3d5878); color: #ccc; box-shadow: inset 0 -3px 0 #24364a; }
+.kr-msg.shake { animation: krShake .4s; }
+@keyframes krShake { 20%, 60% { transform: translateX(-8px); } 40%, 80% { transform: translateX(8px); } }
+
+/* the play area: a stage (the Ring, with a button in three of its corners) */
+.kr-play { grid-area: play; display: flex; justify-content: center; align-items: flex-start; min-width: 0; }
+.kr-stage { position: relative; width: var(--sw); height: var(--rs); flex: none; }
+.kr-ring { position: absolute; left: 50%; top: 0; width: var(--rs); height: var(--rs); transform: translateX(-50%); touch-action: none; -webkit-user-select: none; user-select: none; }
+.kr-plat { position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle at 50% 30%, rgba(255, 255, 255, .22), rgba(255, 255, 255, .04) 55%, rgba(0, 0, 0, .2) 100%), var(--kr-glass);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, .3), inset 0 0 0 1px rgba(255, 255, 255, .12), inset 0 -12px 20px rgba(0, 0, 0, .35),
+    0 calc(var(--rs) * .03) 0 -1px var(--kr-side), 0 calc(var(--rs) * .03) 0 0 rgba(255, 255, 255, .07), 0 calc(var(--rs) * .06) 22px rgba(0, 0, 0, .35); }
+.kr-ring svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+.kr-line polyline { fill: none; stroke: var(--kr-glow); stroke-width: calc(var(--ts) * .2); stroke-linecap: round; stroke-linejoin: round; opacity: .8; filter: drop-shadow(0 0 5px var(--kr-glow)); }
+.kr-t { position: absolute; width: var(--ts); height: var(--ts); transform: translate(-50%, -50%); border-radius: 24%; display: grid; place-items: center; z-index: 2;
+  font-weight: 900; font-size: calc(var(--ts) * .56); color: var(--kr-ti); cursor: pointer; transition: transform .12s;
+  background-image: radial-gradient(ellipse 80% 40% at 50% 20%, rgba(255, 255, 255, .65), rgba(255, 255, 255, .15) 66%, rgba(255, 255, 255, 0) 70%), linear-gradient(rgba(0, 0, 0, 0) 56%, rgba(0, 0, 0, .14)), linear-gradient(var(--kr-t1), var(--kr-t2));
+  box-shadow: inset 0 -4px 0 var(--kr-te), inset 0 1px 0 rgba(255, 255, 255, .7), 0 4px 0 rgba(0, 0, 0, .3), 0 7px 10px rgba(0, 0, 0, .35); }
+.kr-t::after { content: ''; position: absolute; left: 50%; top: -5px; width: 9px; height: 9px; margin-left: -5px; border-radius: 50%; border: 2px solid var(--kr-st2); z-index: -1; }
+.kr-t.on { color: #fff; transform: translate(-50%, -50%) scale(1.1);
+  background-image: radial-gradient(ellipse 80% 40% at 50% 20%, rgba(255, 255, 255, .5), rgba(255, 255, 255, 0) 70%), linear-gradient(#5b9bff, #2c6bd8);
+  box-shadow: inset 0 -4px 0 #173f8f, 0 0 0 3px #fff, 0 0 16px 3px rgba(79, 195, 247, .85), 0 6px 10px rgba(0, 0, 0, .35); }
+html[data-screen="night"] .kr-t.on { color: #d0d0d0; background-image: linear-gradient(#4b6684, #3d5878); box-shadow: inset 0 -4px 0 #24364a, 0 0 0 2px #888, 0 0 8px rgba(111, 143, 176, .5); }
+.kr-hub { position: absolute; left: 50%; top: 50%; width: 27%; height: 27%; transform: translate(-50%, -50%); border-radius: 50%; border: 0; cursor: pointer; z-index: 1; padding: 0;
+  display: grid; place-items: center; color: #2b3a4a;
+  background: radial-gradient(circle at 38% 30%, var(--kr-st1), var(--kr-st2) 62%, var(--kr-st3));
+  box-shadow: inset 0 -3px 0 rgba(0, 0, 0, .3), inset 0 2px 0 rgba(255, 255, 255, .8), 0 4px 0 rgba(0, 0, 0, .35), 0 8px 12px rgba(0, 0, 0, .3); }
+.kr-hub svg { position: static; width: 52%; height: 52%; }
+.kr-hub:active { transform: translate(-50%, -48%); box-shadow: inset 0 -1px 0 rgba(0, 0, 0, .3), 0 2px 0 rgba(0, 0, 0, .35); }
+html[data-screen="night"] .kr-hub { color: #1a1a1a; }
+
+/* corner buttons: round blue coin buttons (two taps to buy, as in the other games) and the gold BONUS key-fob tag */
+.btn.coinbtn.kr-cb { position: absolute; bottom: 0; z-index: 3; width: var(--cb); height: var(--cb); border-radius: 50%; padding: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; line-height: 1; font-weight: 800; }
+.kr-cb.kr-hint { left: 0; }
+.kr-cb.kr-drop { right: 0; }
+.btn.coinbtn.kr-cb > b { font-size: calc(var(--cb) * .25); width: 1.55em; height: 1.55em; }
+.kr-cb .cl { font-size: 10px; letter-spacing: .02em; }
+.kr-cb .cp { font-size: 11px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.btn.coinbtn.kr-cb.armed::after { font-size: 10px; line-height: 1.05; }
+.kr-tag { position: absolute; left: 0; top: 2px; z-index: 3; width: calc(var(--cb) * .86); height: calc(var(--cb) * 1.1); border: 0; padding: 14px 0 4px; cursor: pointer;
+  border-radius: 10px 10px 22px 22px; color: var(--kr-tagi);
+  background: radial-gradient(ellipse 80% 30% at 50% 22%, rgba(255, 255, 255, .55), rgba(255, 255, 255, 0) 70%), linear-gradient(var(--kr-tag1), var(--kr-tag2));
+  box-shadow: inset 0 -4px 0 rgba(0, 0, 0, .2), 0 3px 8px rgba(0, 0, 0, .25); display: flex; flex-direction: column; align-items: center; justify-content: center;
+  font: 800 9px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; letter-spacing: .04em; }
+.kr-tag::before { content: ''; position: absolute; top: 5px; left: 50%; width: 10px; height: 10px; margin-left: -5px; border-radius: 50%; background: var(--bg); box-shadow: inset 0 2px 2px rgba(0, 0, 0, .45); }
+.kr-tag::after { content: ''; position: absolute; top: -11px; left: 50%; width: 14px; height: 16px; margin-left: -7px; border-radius: 50%; border: 3px solid var(--kr-st2); border-bottom-color: transparent; }
+.kr-tag b { font-size: calc(var(--cb) * .4); line-height: 1; font-variant-numeric: tabular-nums; }
+.kr-tag.bump { animation: krSwing .6s; transform-origin: 50% -10px; }
+@keyframes krSwing { 20% { transform: rotate(12deg) scale(1.08); } 45% { transform: rotate(-9deg); } 70% { transform: rotate(5deg); } }
+.kr-tag .plus { position: absolute; top: -6px; right: -14px; background: #1e9e4a; color: #fff; font-size: 12px; padding: 1px 6px; border-radius: 999px; animation: krUp 1s forwards; }
+@keyframes krUp { to { transform: translateY(-22px); opacity: 0; } }
+.kr-tip { grid-area: tip; margin: 0; text-align: center; font-size: 12px; color: var(--muted); }
+.kr-tip kbd { font: 700 11px system-ui, sans-serif; background: var(--surface); border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 5px; padding: 0 5px; color: var(--ink); }
+@media (pointer: coarse) { .kr-tip { display: none; } }
+
+/* the result window and the bonus list */
+.kr-chips { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin: 6px 0; }
+.kr-chips span { padding: 3px 8px; border-radius: 8px; background: var(--bg); font-weight: 800; font-size: 13px; letter-spacing: .04em; }
+.kr-chips span.miss { background: var(--bad); color: #fff; }
+.kr-chips span.bon { background: #fff0b8; color: #3b2a0b; }
+.kr-chips span.drp { background: #d9e8ff; color: #173f8f; }
+html[data-screen="night"] .kr-chips span.bon { background: var(--hl); color: #d2c896; }
+html[data-screen="night"] .kr-chips span.drp { background: #2a3442; color: #9fb3c8; }
+.sheet .kr-note { text-align: center; margin: 0 0 4px; }
+.kr-coins td:first-child { font-size: 13px; }
+.kr-confetti { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 60; }
+.kr-confetti i { position: absolute; top: -12px; width: 8px; height: 12px; border-radius: 2px; animation: krFall 1.8s ease-in forwards; }
+@keyframes krFall { to { transform: translateY(105vh) rotate(540deg); opacity: .2; } }
+@media (prefers-reduced-motion: reduce) { .kr-c.pop, .kr-tag.bump, .kr-msg.shake, .kr-msg .wl, .kr-word.flash { animation: none; } }
+
+/* the Lobby card: a NEW badge until the first Ring; the same button fit as the other cards */
+.gname .newb { display: inline-block; vertical-align: middle; margin-left: 6px; padding: 1px 7px; border-radius: 999px; background: #f5b300; color: #3a2a00;
+  font: 800 11px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; letter-spacing: .03em; }
+.gname .newb[hidden] { display: none; }
+.gbtns #krResumeBtn { flex: 1 1 100%; }
+.gbtns #krNewBtn { flex: 2 1 0; }
+.gbtns #krSetupBtn { flex: 1 1 0; }

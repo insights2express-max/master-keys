@@ -1,6 +1,6 @@
 /* Master Keys (fka Clue Duel) — service worker: caches the whole app so it plays offline.
    Bump CACHE whenever any file changes, so players get the update. */
-const CACHE = 'master-keys-v10b-1'; // v10b-1: Hint marks a cell only (no tile picked); v10a-1: Alfa Slab One titles (fonts/alfa-slab-one.woff2), collapsible game cards, New Game fits, striped Hint cell; v10-1: the Lobby (one card per game), CrossKeys Setup screen, Master Keys settings, How To Play split; v09a-3: v09a-3: Master Keys Lexicon L14.02 (data-only: drafts round 2); v09a-2: L14.01; v09a: Night crossing-clue text, quicker tile drops + slow-drop recorder, new icons, code files renamed lockword.js / lockwords.js
+const CACHE = 'master-keys-v11-1'; // v11-1: KeyRing, the word builder (keyring.js, keyrings.js, icons/keyring.svg); v10b-1: Hint marks a cell only (no tile picked); v10a-1: Alfa Slab One titles (fonts/alfa-slab-one.woff2), collapsible game cards, New Game fits, striped Hint cell; v10-1: the Lobby (one card per game), CrossKeys Setup screen, Master Keys settings, How To Play split; v09a-3: v09a-3: Master Keys Lexicon L14.02 (data-only: drafts round 2); v09a-2: L14.01; v09a: Night crossing-clue text, quicker tile drops + slow-drop recorder, new icons, code files renamed lockword.js / lockwords.js
 const ASSETS = [
   './',
   'index.html',
@@ -11,12 +11,15 @@ const ASSETS = [
   'wordplay.js',
   'lockwords.js',
   'lockword.js',
+  'keyrings.js',
+  'keyring.js',
   'engine.js',
   'app.js',
   'manifest.webmanifest',
   'icons/icon.svg',
   'icons/crosskeys.svg',
   'icons/lockword.svg',
+  'icons/keyring.svg',
   'icons/icon-192.png',
   'icons/icon-512.png',
   'icons/maskable-512.png',
