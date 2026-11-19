@@ -678,8 +678,8 @@
     if (R.reveals) rows.push([`Reveal ×${R.reveals}`, -(R.revealCoins || 0)]);
     if (!rows.length) return '';
     const net = rows.reduce((a, r) => a + r[1], 0);
-    return `<h3 class="res-h">🪙 Coins</h3><table class="score-table coin-tbl">${rows.map(r => `<tr><td>${esc(r[0])}</td><td class="${r[1] < 0 ? 'neg' : 'pos'}">${r[1] < 0 ? '−' + -r[1] : '+' + r[1]}</td></tr>`).join('')}`
-      + `<tr class="total"><td>This word ${net < 0 ? '−' + -net : '+' + net} · Balance</td><td data-coins>${UI.coins ? UI.coins.bal : ''}</td></tr></table>`;
+    return UI.coinHead() + `<table class="score-table coin-tbl">${rows.map(r => `<tr><td>${esc(r[0])}</td><td class="${r[1] < 0 ? 'neg' : 'pos'}">${r[1] < 0 ? '−' + -r[1] : '+' + r[1]}</td></tr>`).join('')}`
+      + UI.coinTotal("This word's total earned coins:", net) + '</table>'; // v11b (CD-90: 4.2.4; CD-95: 7.4)
   }
   // v08c (JM CD-30: 4.5): every finished word goes into the shared Game History (with a copy of its result window)
   function addHistory(head, score, body) {
@@ -780,7 +780,7 @@
       ${sec('Make It Yours', `
         <li>Double-click (or double-tap) the title to rename the game, and tap the icon beside it to choose another or to upload your own picture. Both are remembered on this device.</li>`)}
       ${sec('Sound', `
-        <li>Sound effects are <b>off</b> until you tap <b>🔇</b> in the header (it becomes <b>🔊</b>); tap again to mute. The same switch covers ${NM.cross} and the Lobby.</li>
+        <li>Sound effects are <b>off</b> until you tap the <b>speaker</b> in the header (red with a ✕ while muted); tap again to mute. The same switch covers ${NM.cross} and the Lobby.</li>
         <li>You'll hear a soft click for each letter, a short tone when a guess goes in, a thunk for a word that isn't in the list, a clink for coins, a tick each second in the last 10, and a short tune when the word is solved or lost.</li>`)}
       </div>
       <div class="row"><button class="btn primary" data-a="ok">Close</button></div>`);

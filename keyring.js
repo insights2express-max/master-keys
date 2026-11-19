@@ -11,6 +11,12 @@
      yourself (Key Drop letters don't pay). So a Ring cleared with no help pays 100.
    - Layout (CD-88: 1.6.1–1.6.2): the Ring spans almost the full width of a phone; the BONUS tag, 💡 Hint and 🔑 Drop sit
      in the Ring's corners; Shuffle stays in the Ring's center. Hint is a signal, not a solve: it shows a clue only (CD-85).
+   v11b (JM CD-90, CD-95): "Key words" (the words in the Key grid) and "Key grid" (their box); fewer bonus words (the Key grid
+   takes in the everyday words a Ring spells, -S forms too) and a Key words setting (Auto / Few / Some / Many); Key words in
+   candy colors (by word or by letter); rectangular 3D coin buttons; ⏱ +30s (🪙10) in the top-right corner, even after the
+   Ring ends; ⏸ Pause (the button or the clock) blurs the Ring and the Key grid; 🆕 New Game in the header; Tab cycles the
+   Ring buttons; purple BONUS; big colored message pills; layout Auto / Stacked / Side by side; Setup switch "Time's up pays
+   for your letters"; a new result window (time beside the heading, Key / Bonus / Missed word groups, the balance beside Coins).
    Saved on this device: settings 'cd.kr.settings', stats 'cd.kr.stats', an unfinished Ring 'cd.kr.save', recent seeds 'cd.kr.recent'. */
 'use strict';
 (function () {
@@ -23,7 +29,9 @@
   const night = () => document.documentElement.dataset.screen === 'night';
 
   // ---------- settings and stats ----------
-  const DEF = { n: 6, lv: 3, timer: 0 };
+  // v11b: kw = Key words (auto / few / some / many), colors = Key word colors (word / letter), layout (auto / stack / side),
+  // timePay = a timed-out Ring pays for the letters you filled (CD-95: 2.1–2.2, off at first)
+  const DEF = { n: 6, lv: 3, timer: 0, kw: 'auto', colors: 'word', layout: 'auto', timePay: false };
   const ks = Object.assign({}, DEF, store.get('cd.kr.settings', {}));
   const saveKs = () => store.set('cd.kr.settings', ks);
   const blankStats = () => ({ played: 0, cleared: 0, streak: 0, best: 0, bonus: 0, fastest: {} });
@@ -32,9 +40,10 @@
   const TIMERS = [[0, 'Untimed'], [60, '1 min per Ring'], [120, '2 min per Ring'], [180, '3 min per Ring'], [300, '5 min per Ring']];
   const timerName = t => (TIMERS.find(x => x[0] === +t) || TIMERS[0])[1];
   const LV_NAMES = { 1: '1 · Gentle', 10: '10 · Master' };
-  const N_DESC = { 3: 'A quick warm-up: 2 to 4 short words.', 4: '3 to 6 slots of 3–4 letters.', 5: '4 to 8 slots, up to 5 letters.', 6: '5 to 10 slots, up to 6 letters.', 7: '6 to 12 slots, up to 7 letters.', 8: '6 to 12 slots, up to 8 letters: the longest Rings.' };
+  const N_DESC = { 3: 'A quick warm-up: short Key words.', 4: 'Key words of 3–4 letters.', 5: 'Key words up to 5 letters.', 6: 'Key words up to 6 letters.', 7: 'Key words up to 7 letters.', 8: 'Key words up to 8 letters: the longest Rings.' };
   const N_DEMO = { 3: 'TEA', 4: 'LEAP', 5: 'PLATE', 6: 'GARDEN', 7: 'PAINTER', 8: 'KEYRINGS' };
   const lastLine = () => `${ks.n} letters · Level ${ks.lv} · ${timerName(ks.timer)}`;
+  const TIME_COST = 10, TIME_ADD = 30; // ⏱ +30s (CD-90: 4.1.4.1)
 
   // ---------- words ----------
   // bonus words: ENABLE, 3 letters from keyrings.js, 4–8 from LockWord's lockwords.js (sorted, fixed-length strings)
@@ -83,78 +92,145 @@
   // ---------- dealing a Ring ----------
   // Challenge Level → the hardest Lexicon level allowed in the slots (Lexicon levels: 1 everyday … 5 obscure)
   const CAP = [1, 1, 2, 2, 3, 3, 4, 4, 5, 5];
-  const MIN = { 3: 2, 4: 3, 5: 4, 6: 5, 7: 6, 8: 6 }, MAX = { 3: 4, 4: 6, 5: 8, 6: 10, 7: 12, 8: 12 };
-  const seedsOf = n => String((D.seeds || {})[n] || '').split(' ').filter(Boolean).map(s => ({ w: s.slice(0, -1), t: +s.slice(-1) }));
+  // v11b (JM CD-95 add. 1–1.1): how many Key words a Ring holds, by letters on the Ring: [fewest, most]. "Auto" follows
+  // the Challenge Level (1–3 Few, 4–7 Some, 8–10 Many).
+  const KW = {
+    3: { few: [2, 3], some: [3, 4], many: [4, 6] }, 4: { few: [3, 5], some: [5, 7], many: [7, 10] },
+    5: { few: [4, 6], some: [6, 9], many: [9, 12] }, 6: { few: [5, 8], some: [8, 11], many: [11, 15] },
+    7: { few: [6, 9], some: [9, 13], many: [13, 16] }, 8: { few: [6, 9], some: [9, 13], many: [13, 16] }
+  };
+  const KW_NAMES = { auto: 'Auto (by level)', few: 'Few', some: 'Some', many: 'Many' };
+  const kwOf = (kw, lv) => kw === 'few' || kw === 'some' || kw === 'many' ? kw : lv <= 3 ? 'few' : lv <= 7 ? 'some' : 'many';
+  // a seed: 'PLATE3.21' = PLATE, tier 3, and 21 other real words its letters spell (keyrings.js K02)
+  const seedsOf = n => String((D.seeds || {})[n] || '').split(' ').filter(Boolean).map(s => {
+    const m = /^([A-Z]+)(\d)(?:\.(\d+))?$/.exec(s);
+    return m ? { w: m[1], t: +m[2], e: m[3] != null ? +m[3] : -1 } : { w: s.slice(0, -1), t: +s.slice(-1), e: -1 };
+  });
   const shuffled = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
-  function dealRing(n, lv) {
+  // the Key words a seed can hold: Lexicon words it spells (up to the level's cap), plus their -S / -ES forms when those are
+  // real words too (CATS from CAT): everyday words a Player finds at once, so they count as Key words, not bonus words
+  function keyCands(s, n, cap, lv) {
+    const sc = counts(s.w);
+    const base = LEX.filter(e => e.w !== s.w && e.w.length <= n && e.l <= cap && inSk(e.wsk, lv) && fits(e.cc, sc));
+    const have = new Set(base.map(e => e.w)); have.add(s.w);
+    const der = [];
+    const seedE = LEXBY[s.w] || { w: s.w, l: 1 };
+    for (const e of [seedE, ...base]) {
+      for (const suf of ['S', 'ES']) {
+        const w2 = e.w + suf;
+        if (w2.length > n || have.has(w2) || !fits(counts(w2), sc) || !isWord(w2)) continue;
+        have.add(w2); der.push({ w: w2, l: e.l, base: e.w, suf });
+      }
+    }
+    return base.concat(der);
+  }
+  function dealRing(n, lv, kwSet) {
     lex();
     const cap = CAP[lv - 1] || 3, recent = new Set(store.get('cd.kr.recent', []));
+    // Auto: aims at the level's size, but takes in every everyday word the Ring spells, up to the "Many" limit, so few
+    // familiar words are left over as bonus words. Few / Some / Many keep to their own limits.
+    const auto = !KW[n][kwSet], band = KW[n][kwOf(kwSet, lv)];
+    const lo = band[0], hi = auto ? KW[n].many[1] : band[1];
     let pool = seedsOf(n).filter(s => s.t <= cap);
     if (!pool.length) pool = seedsOf(n);
     let fresh = pool.filter(s => !recent.has(s.w));
     if (!fresh.length) fresh = pool;
     // higher levels lean on seeds that need their level's words
     if (lv >= 4) { const hard = fresh.filter(s => s.t >= cap - 1); if (hard.length && Math.random() < 0.7) fresh = hard; }
-    for (let tries = 0; tries < 80 && fresh.length; tries++) {
-      const s = fresh[Math.floor(Math.random() * fresh.length)];
+    // try up to 60 seeds; keep the ones whose letters leave the fewest real words outside the Key grid (bonus words
+    // should be the exception), then pick one of the best few at random so Rings stay varied
+    const tried = [];
+    for (const s of shuffled(fresh).slice(0, 60)) {
       const se = LEXBY[s.w];
       if (se && !inSk(se.wsk, lv)) continue;
-      const sc = counts(s.w);
-      const cands = LEX.filter(e => e.w !== s.w && e.w.length <= n && e.l <= cap && inSk(e.wsk, lv) && fits(e.cc, sc));
-      if (cands.length + 1 < MIN[n]) continue;
-      // keep up to MAX slots: a random mix that leans to longer words, and to rarer words at Challenge Levels 5–10
-      const lean = lv >= 5 ? 0.22 : -0.22;
-      const pick = cands.map(e => ({ e, k: Math.random() + lean * (e.l - 1) + 0.12 * (e.w.length - 3) }))
-        .sort((a, b) => b.k - a.k).slice(0, MAX[n] - 1).map(x => x.e.w);
-      const words = [s.w, ...pick].sort((a, b) => a.length - b.length || a.localeCompare(b));
-      let letters;
-      do { letters = shuffled([...s.w]); } while (n > 2 && letters.join('') === s.w);
-      store.set('cd.kr.recent', [s.w, ...[...recent].filter(x => x !== s.w)].slice(0, 150));
-      return { seed: s.w, words, clues: words.map(w => clueOf(w, lv)), letters };
+      const cands = keyCands(s, n, cap, lv);
+      if (cands.length + 1 < Math.min(lo, MINK[n])) continue;
+      const keys = Math.min(cands.length + 1, hi);
+      const leftKnown = cands.length + 1 - keys; // familiar (Lexicon) words that don't fit in the Key grid: the bonus words Players find
+      const left = Math.max(0, (s.e >= 0 ? s.e : cands.length) - (keys - 1)); // every real word left over, rare ones included
+      const short = Math.max(0, lo - keys); // fewer Key words than asked for
+      const over = auto ? Math.max(0, keys - band[1]) : 0; // Auto: bigger than the level's size (allowed, but not sought)
+      tried.push({ s, cands, keys, score: leftKnown / keys + 0.35 * left / (left + keys) + short * 0.12 + over * 0.03 });
     }
-    return null;
+    if (!tried.length) return null;
+    tried.sort((a, b) => a.score - b.score);
+    const { s, cands } = tried[Math.floor(Math.random() * Math.min(5, tried.length))];
+    // too many candidates: keep the everyday ones first (so the words left out are the rarer ones); at Challenge Levels
+    // 5–10, up to a third of the grid goes to the level's rarer words
+    let pick;
+    if (cands.length + 1 <= hi) pick = cands;
+    else {
+      const room = hi - 1, rare = lv >= 5 ? shuffled(cands.filter(e => e.l >= cap - 1 && !e.base)).slice(0, Math.ceil(room / 3)) : [];
+      const rest = cands.filter(e => !rare.includes(e)).map(e => ({ e, k: e.l + (e.base ? 0.6 : 0) + Math.random() * 0.9 })).sort((a, b) => a.k - b.k).map(x => x.e);
+      pick = rare.concat(rest).slice(0, room);
+    }
+    const der = {};
+    pick.forEach(e => { if (e.base) der[e.w] = e; });
+    const words = [s.w, ...pick.map(e => e.w)].sort((a, b) => a.length - b.length || a.localeCompare(b));
+    let letters;
+    do { letters = shuffled([...s.w]); } while (n > 2 && letters.join('') === s.w);
+    store.set('cd.kr.recent', [s.w, ...[...recent].filter(x => x !== s.w)].slice(0, 150));
+    return { seed: s.w, words, clues: words.map(w => der[w] ? derClue(der[w], lv) : clueOf(w, lv)), letters };
   }
+  const MINK = { 3: 2, 4: 3, 5: 4, 6: 5, 7: 6, 8: 6 }; // the fewest Key words any Ring may have (the seed included)
+  // the clue for an -S / -ES Key word: its base word's clue, with the ending to add
+  const derClue = (d, lv) => { const c = clueOf(d.base, lv); return c ? `Add ${d.suf} to the answer for: ${c}` : ''; };
 
   // ---------- the Ring in play ----------
   let R = null;
   const SAVE_KEY = 'cd.kr.save';
+  // v11b (CD-90 add. 3): Key word colors, glass candy drops in our own palette: [light, deep, edge]; black letters
+  const PAL = [
+    ['#ff8a8a', '#f0545c', '#b9333b'], ['#ffc078', '#ff922b', '#c4620e'], ['#ffe36e', '#fcc419', '#c29200'], ['#8ce99a', '#40c057', '#2b8a3e'],
+    ['#7ae6da', '#20c4b4', '#0f8a7e'], ['#a5c8ff', '#5c95f5', '#2f62c4'], ['#d0b8ff', '#9775fa', '#6741d9'], ['#ffa8cf', '#f06595', '#c2255c']
+  ];
+  // the counts kept with a Ring (v11b: paid = Ring coins paid so far, time / timeCoins = ⏱ +30s bought, ended = the Ring
+  // has been settled once, statClr = counted as cleared, streak0 = the streak before it, histT = its Game History entry)
+  const NUMS = ['hints', 'hintCoins', 'drops', 'dropCoins', 'bonusCoins', 'paid', 'ext', 'timeCoins', 'streak0', 'histT'];
   function newR(d) {
     const L = d.words.reduce((a, w) => a + w.length, 0);
-    return {
-      seed: d.seed, n: d.letters.length, lv: ks.lv, timer: +ks.timer, no: st.played + 1,
+    const r = {
+      seed: d.seed, n: d.letters.length, lv: ks.lv, timer: +ks.timer, timer0: +ks.timer, timePay: !!ks.timePay, no: st.played + 1,
       words: d.words, clues: d.clues, L, v: 100 / L,
       tiles: d.letters.map((ch, i) => ({ ch, k: i, ang: -90 + i * 360 / d.letters.length })),
       found: new Set(), byDrop: new Set(), drop: d.words.map(() => new Set()), hinted: new Set(), bonus: [],
-      el: 0, sel: -1, hints: 0, hintCoins: 0, drops: 0, dropCoins: 0, bonusCoins: 0, over: false, started: false
+      el: 0, sel: -1, over: false, started: false, ended: false, statClr: false, paused: false,
+      pal: d.pal || shuffled([...Array(PAL.length).keys()]) // this Ring's color order (CD-90 add. 3)
     };
+    NUMS.forEach(k => { r[k] = 0; });
+    return r;
   }
   function save() {
     if (!R || R.over) { store.set(SAVE_KEY, null); return; }
-    store.set(SAVE_KEY, {
-      seed: R.seed, lv: R.lv, timer: R.timer, no: R.no, words: R.words, clues: R.clues,
-      letters: R.tiles.slice().sort((a, b) => a.k - b.k).map(t => t.ch),
+    const s = {
+      seed: R.seed, lv: R.lv, timer: R.timer, timer0: R.timer0, timePay: R.timePay, no: R.no, words: R.words, clues: R.clues,
+      letters: R.tiles.slice().sort((a, b) => a.k - b.k).map(t => t.ch), pal: R.pal, ended: R.ended, statClr: R.statClr,
       found: [...R.found], byDrop: [...R.byDrop], drop: R.drop.map(s => [...s]), hinted: [...R.hinted], bonus: R.bonus,
-      el: Math.round(R.el), hints: R.hints, hintCoins: R.hintCoins, drops: R.drops, dropCoins: R.dropCoins, bonusCoins: R.bonusCoins
-    });
+      el: Math.round(R.el)
+    };
+    NUMS.forEach(k => { s[k] = R[k]; });
+    store.set(SAVE_KEY, s);
   }
   function load() {
     const s = store.get(SAVE_KEY, null);
     if (!s || !Array.isArray(s.words) || !Array.isArray(s.letters)) return null;
     const keep = Object.assign({}, ks);
-    ks.lv = s.lv; ks.timer = s.timer;
-    const r = newR({ seed: s.seed, words: s.words, clues: s.clues || s.words.map(() => ''), letters: s.letters });
+    ks.lv = s.lv; ks.timer = s.timer; ks.timePay = !!s.timePay;
+    const r = newR({ seed: s.seed, words: s.words, clues: s.clues || s.words.map(() => ''), letters: s.letters, pal: Array.isArray(s.pal) && s.pal.length === PAL.length ? s.pal : null });
     Object.assign(ks, keep);
     r.no = s.no || r.no;
+    r.timer0 = s.timer0 != null ? s.timer0 : s.timer;
+    r.ended = !!s.ended; r.statClr = !!s.statClr;
     r.found = new Set(s.found || []); r.byDrop = new Set(s.byDrop || []); r.hinted = new Set(s.hinted || []);
     r.drop = (s.drop || []).map(a => new Set(a)); while (r.drop.length < r.words.length) r.drop.push(new Set());
     r.bonus = s.bonus || []; r.el = s.el || 0;
-    ['hints', 'hintCoins', 'drops', 'dropCoins', 'bonusCoins'].forEach(k => { r[k] = s[k] || 0; });
+    NUMS.forEach(k => { r[k] = s[k] || 0; });
     r.started = true;
     return r;
   }
   R = load();
   const unfinished = () => !!(R && !R.over);
-  const progressed = () => !!(R && (R.found.size || R.bonus.length || R.hints || R.drops));
+  const progressed = () => !!(R && !R.ended && (R.found.size || R.bonus.length || R.hints || R.drops || R.ext));
   const hintCost = i => Math.max(1, Math.round(R.v * R.words[i].length));
   const dropCost = () => Math.max(1, Math.round(R.v));
   const fmt = s => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
@@ -178,6 +254,7 @@
     $('#krSetup').hidden = true; $('#krPlay').hidden = false;
     setHead(`Ring ${R.no} · ${R.n} letters`);
     buildRing();
+    setKf(-1); paintPause();
     paintTag(); paintBtns(); tick(0);
     paintOver(); // v11a (CD-93)
     fit(); requestAnimationFrame(fit);
@@ -200,6 +277,14 @@
     $('#krNDesc').textContent = N_DESC[ks.n];
     $('#krLv').value = String(ks.lv);
     $('#krTm').value = String(ks.timer);
+    // v11b: Key words (the counts depend on the letters), colors, layout, and the time's-up pay switch
+    $('#krKw').innerHTML = ['auto', 'few', 'some', 'many'].map(k => {
+      const r = KW[ks.n][kwOf(k, ks.lv)];
+      return `<option value="${k}">${KW_NAMES[k]}: ${r[0]}–${r[1]}${k === 'auto' && r[1] < KW[ks.n].many[1] ? '+' : ''}</option>`;
+    }).join('');
+    $('#krKw').value = ks.kw;
+    const seg = (id, v) => { for (const b of document.querySelectorAll(`#${id} button`)) { const on = b.dataset.v === String(v); b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); } };
+    seg('krCol', ks.colors); seg('krLay', ks.layout); seg('krTp', ks.timePay ? 'on' : 'off');
     const unf = unfinished();
     $('#krSetUnf').hidden = !unf;
     if (unf) $('#krSetUnfTxt').textContent = unfText();
@@ -214,13 +299,20 @@
   $('#krLv').innerHTML = Array.from({ length: 10 }, (_, i) => `<option value="${i + 1}">${LV_NAMES[i + 1] || i + 1}</option>`).join('');
   $('#krTm').innerHTML = TIMERS.map(([v, l]) => `<option value="${v}">${l}</option>`).join('');
   $('#krNSeg').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; ks.n = +b.dataset.n; saveKs(); paintSetup(); UI.lobby(); });
-  $('#krLv').addEventListener('change', e => { ks.lv = +e.target.value; saveKs(); UI.lobby(); });
+  $('#krLv').addEventListener('change', e => { ks.lv = +e.target.value; saveKs(); paintSetup(); UI.lobby(); });
   $('#krTm').addEventListener('change', e => { ks.timer = +e.target.value; saveKs(); UI.lobby(); });
+  $('#krKw').addEventListener('change', e => { ks.kw = e.target.value; saveKs(); });
+  const segPick = (id, f) => $(id).addEventListener('click', e => { const b = e.target.closest('button[data-v]'); if (!b) return; f(b.dataset.v); saveKs(); paintSetup(); });
+  segPick('#krCol', v => { ks.colors = v; });
+  segPick('#krLay', v => { ks.layout = v; });
+  segPick('#krTp', v => { ks.timePay = v === 'on'; });
   $('#krStart').addEventListener('click', () => newRing());
   $('#krSetResume').addEventListener('click', () => { if (unfinished()) showPlay(); });
 
   // a New Ring while one is unfinished asks first; with progress made, the old Ring counts as not cleared
   function newRing(confirmed) {
+    // a Ring that already ended once and is in ⏱ extra time: settle it again quietly, then deal
+    if (unfinished() && R.ended) { clearTrace(); endRing('quit'); confirmed = true; }
     if (unfinished() && progressed() && !confirmed) {
       openModal(`<h2>Start a new Ring?</h2><p>Your unfinished Ring (${R.found.size} of ${R.words.length} words) will count as not cleared, and your streak starts again.</p>
         <div class="row"><button class="btn" data-a="new">🆕 New Ring</button><button class="btn primary" data-a="keep">Keep playing</button></div>`, '', { close: false });
@@ -231,7 +323,7 @@
       };
       return;
     }
-    const d = dealRing(ks.n, ks.lv);
+    const d = dealRing(ks.n, ks.lv, ks.kw);
     if (!d) { toast('Could not build a Ring. Please try again.', 'bad'); return; }
     R = newR(d);
     save();
@@ -239,7 +331,7 @@
   }
 
   // ---------- sizes and layout ----------
-  let cs = 40, rs = 300, ts = 60, cb = 52;
+  let cs = 40, rs = 300, ts = 60, cbw = 62, cbh = 46, wide = false;
   function pack(C) {
     const rows = []; let row = [], used = 0;
     R.words.forEach((w, i) => {
@@ -261,31 +353,40 @@
     const main = $('#krMain');
     const W0 = main.clientWidth, H0 = main.clientHeight;
     if (!W0 || !H0) return;
-    const wide = W0 >= 900 && H0 >= 480;
-    main.classList.toggle('wide', wide);
     const coarse = matchMedia('(pointer: coarse)').matches;
-    const infoH = $('#krInfo').offsetHeight || 34, msgH = 46, gap = 8;
+    const big = W0 >= 700 && H0 >= 560; // tablets and computers: bigger message pills
+    const sideOk = W0 >= 640 && H0 >= 400; // side by side is possible (the layout pill shows)
+    $('#krLayP').hidden = !sideOk; // before the info row is measured
+    const infoH = $('#krInfo').offsetHeight || 34, msgH = big ? 66 : 54, gap = 8;
+    main.style.setProperty('--mh', msgH + 'px');
     // v11a (CD-93): once the Ring is over, the win report takes the tip's row (so the Ring leaves room for it)
     const ob = $('#krOver'), tipH = !ob.hidden ? ob.offsetHeight : coarse ? 0 : 22, tipRow = !ob.hidden || !coarse;
-    if (wide) {
-      const colW = (W0 - 44 - 26) / 2.1; // the right column (1 of 2.1 shares)
-      const H = H0 - 24 - infoH - msgH - tipH - gap * 4;
-      rs = Math.min(colW, H, 560);
-    } else {
-      const W = W0 - 24, H = H0 - 16 - infoH - msgH - tipH - gap * (tipRow ? 4 : 3);
-      rs = Math.min(W - 4, H - slotNeed(W, W < 500 ? 28 : 34), 560);
-    }
-    rs = Math.max(170, Math.floor(rs));
+    // v11b (CD-90: 4.1.5; CD-95: 6.2b, 6.2.1): stacked (the Key grid above the Ring) or side by side. Auto picks the one that
+    // gives the bigger Ring (side by side only wins on wide, short screens); Setup or the layout pill can force either.
+    const Ws = W0 - 24, Hs = H0 - 16 - infoH - msgH - tipH - gap * (tipRow ? 4 : 3);
+    // the Key grid's squares stay at least 28 px on phones (24 px on short phones, so the Ring keeps its room), 34 px on tablets
+    const rsStack = Math.min(Ws - 4, Hs - slotNeed(Ws, Ws < 500 ? (H0 < 700 ? 24 : 28) : 34), 640);
+    const colW = (W0 - 44 - 26) / 2.1; // side by side: the Ring's column (1 of 2.1 shares)
+    const rsSide = sideOk ? Math.min(colW, H0 - 24 - infoH - msgH - tipH - gap * 4, 640) : 0;
+    const lay = ks.layout;
+    wide = sideOk && (lay === 'side' || (lay !== 'stack' && rsSide > rsStack + 12));
+    main.classList.toggle('wide', wide);
+    $('#krLayP').innerHTML = `<span class="e">${wide ? '⇆' : '⇅'}</span> ${lay === 'auto' ? 'Auto' : lay === 'side' ? 'Side by side' : 'Stacked'}`;
+    rs = Math.max(170, Math.floor(wide ? rsSide : rsStack));
     const n = R.tiles.length;
     ts = Math.round(Math.min(rs * (n <= 4 ? 0.27 : n === 5 ? 0.25 : n === 6 ? 0.23 : n === 7 ? 0.21 : 0.19), 104));
-    cb = Math.round(Math.min(66, Math.max(46, rs * 0.15)));
-    // the stage holds the Ring and its corner buttons; when there is room beside the Ring, the buttons move out to the sides
-    const availW = wide ? (W0 - 44 - 26) / 2.1 : W0 - 24;
-    const sw = Math.floor(Math.min(availW, rs + 2 * (cb + 8)));
+    // v11b (CD-90: 4.1.1): rectangular 3D coin buttons, big enough for their label and price; short enough to clear the tiles
+    cbw = Math.round(Math.min(108, Math.max(56, rs * 0.18)));
+    cbh = Math.round(cbw * 0.74);
+    // the stage holds the Ring and its corner buttons; when there is room beside the Ring, the buttons move out to the sides,
+    // well clear of the tiles (CD-90: 4.1.6)
+    const availW = wide ? colW : W0 - 24;
+    const sw = Math.floor(Math.min(availW, rs + 2 * (cbw + 18)));
     main.style.setProperty('--rs', rs + 'px');
     main.style.setProperty('--sw', sw + 'px');
     main.style.setProperty('--ts', ts + 'px');
-    main.style.setProperty('--cb', cb + 'px');
+    main.style.setProperty('--cbw', cbw + 'px');
+    main.style.setProperty('--cbh', cbh + 'px');
     $('#krLine').setAttribute('viewBox', `0 0 ${rs} ${rs}`);
     placeTiles();
     renderSlots(); // reading the panel's size makes the browser lay it out first, so no frame wait is needed
@@ -306,21 +407,64 @@
     }
     cs = Math.max(16, Math.floor(best.size));
     box.style.setProperty('--cs', cs + 'px'); box.style.setProperty('--rg', Math.round(cs * 0.22) + 'px');
+    const col = colorize(best.rows);
     box.innerHTML = best.rows.map(r => `<div class="kr-row">${r.map(i => {
       const w = R.words[i], f = R.found.has(i);
       const cells = [...w].map((c, p) => {
         const d = R.drop[i].has(p);
-        const cls = f ? (d ? 'd' : 'f') : d ? 'd' : '';
-        const pop = pops && pops[i] && pops[i].has(p) ? ` pop" style="animation-delay:${[...pops[i]].indexOf(p) * 55}ms` : '';
-        return `<span class="kr-c ${cls}${pop}">${f || d ? c : ''}</span>`;
+        const cls = f ? 'f' : d ? 'd' : '';
+        const k = PAL[col[i][p]];
+        const sty = [f ? `--c1:${k[0]};--c2:${k[1]};--ce:${k[2]}` : '', pops && pops[i] && pops[i].has(p) ? `animation-delay:${[...pops[i]].indexOf(p) * 55}ms` : ''].filter(Boolean).join(';');
+        const pop = pops && pops[i] && pops[i].has(p) ? ' pop' : '';
+        return `<span class="kr-c ${cls}${pop}"${sty ? ` style="${sty}"` : ''}>${f || d ? c : ''}</span>`;
       }).join('');
       const lbl = f ? `${w}, found` : `${w.length} letters${R.hinted.has(i) ? ', clue shown' : ''}`;
       return `<button type="button" class="kr-word${R.sel === i ? ' sel' : ''}${f ? ' done' : ''}" data-i="${i}" aria-label="${lbl}">${R.hinted.has(i) && !f ? '<span class="hm" aria-hidden="true">💡</span>' : ''}${cells}</button>`;
     }).join('')}</div>`).join('');
-    $('#krProg').innerHTML = `<span class="e">🔑</span> ${R.found.size} / ${R.words.length} words`;
+    $('#krProg').innerHTML = `<span class="e">🔑</span> ${R.found.size}/${R.words.length} Key words`;
+  }
+  // v11b (CD-90 add. 3; CD-95: 5.1c): each Key word's colors, from this Ring's palette order. By word: one color per word, never
+  // the same as the word beside it or a word touching it in the row above. By letter: every tile differs from the tile beside it
+  // and the tile above it. Worked out on the rows as drawn, so neighbors are real neighbors.
+  function colorize(rows) {
+    const out = R.words.map(w => new Array(w.length).fill(0));
+    const byLetter = ks.colors === 'letter';
+    let prev = []; // the row above: [{ x, c }] tile centers (in tile widths) and colors
+    rows.forEach((row, ri) => {
+      const width = row.reduce((a, i) => a + R.words[i].length * 1.1, 0) + (row.length - 1) * 0.7;
+      let x = -width / 2;
+      const cur = [];
+      let leftC = -1;
+      row.forEach((i, j) => {
+        const w = R.words[i], x0 = x;
+        const xs = [...w].map((c, p) => x0 + p * 1.1 + 0.5);
+        const pickFrom = (avoid, salt) => {
+          for (let k = 0; k < PAL.length; k++) { const c = R.pal[(salt + k) % PAL.length]; if (!avoid.has(c)) return c; }
+          return R.pal[salt % PAL.length];
+        };
+        if (byLetter) {
+          xs.forEach((cx, p) => {
+            const avoid = new Set(prev.filter(t => Math.abs(t.x - cx) < 1.05).map(t => t.c));
+            if (p > 0) avoid.add(out[i][p - 1]);
+            const c = pickFrom(avoid, i * 3 + p * 5 + ri);
+            out[i][p] = c; cur.push({ x: cx, c });
+          });
+        } else {
+          const lo = xs[0] - 0.6, hi = xs[xs.length - 1] + 0.6;
+          const avoid = new Set(prev.filter(t => t.x > lo && t.x < hi).map(t => t.c));
+          if (j > 0) avoid.add(leftC);
+          const c = pickFrom(avoid, i * 3 + ri);
+          out[i].fill(c); xs.forEach(cx => cur.push({ x: cx, c }));
+          leftC = c;
+        }
+        x += w.length * 1.1 + 0.7;
+      });
+      prev = cur;
+    });
+    return out;
   }
   $('#krSlots').addEventListener('click', e => {
-    const b = e.target.closest('.kr-word'); if (!b || !R || R.over) return;
+    const b = e.target.closest('.kr-word'); if (!b || !R || R.over || R.paused) return;
     const i = +b.dataset.i;
     if (R.found.has(i)) { msg(`${R.words[i]}: ${esc(R.clues[i] || '')}`, 'clue', 3000); return; }
     R.sel = R.sel === i ? -1 : i;
@@ -392,7 +536,7 @@
     m.innerHTML = trace.map(i => `<span class="wl">${R.tiles[i].ch}</span>`).join('') + (tapMode && !dragging ? `<span class="mt sm">${keyed ? 'Enter to submit' : 'tap the last letter again'}</span>` : '');
   }
   ring.addEventListener('pointerdown', e => {
-    if (!R || R.over || spinning) return;
+    if (!R || R.over || spinning || R.paused) return;
     const [x, y] = local(e), i = hit(x, y);
     if (i == null) { if (trace.length) { clearTrace(); msg(''); } return; }
     e.preventDefault();
@@ -425,28 +569,55 @@
   ring.addEventListener('pointercancel', () => { clearTrace(); msg(''); });
   $('#krMsg').addEventListener('click', () => { if (tapMode && trace.length) submit(); });
 
-  // keyboard: type the word
+  // keyboard: type the word. v11b (CD-90: 1.3.1.1; CD-95: 1.1): Tab / Shift+Tab move an outline around the Ring's buttons
+  // (BONUS → 💡 Hint → 🔑 Drop → ⏱ +30s → back to BONUS); Enter presses the outlined button when no letters are typed.
+  const CYC = ['#krTag', '#krHint', '#krDrop', '#krTime'];
+  let kf = -1;
+  function setKf(i) {
+    document.querySelectorAll('#keyring .kr-kf').forEach(b => b.classList.remove('kr-kf'));
+    kf = i;
+    if (i >= 0) $(CYC[i]).classList.add('kr-kf');
+  }
+  document.addEventListener('pointerdown', () => { if (kf >= 0) setKf(-1); }, true);
   document.addEventListener('keydown', e => {
     if (!playOn() || !R || !$('#modal').hidden || e.ctrlKey || e.metaKey || e.altKey || /^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName || '')) return;
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      if (R.paused) return;
+      setKf(kf < 0 ? (e.shiftKey ? CYC.length - 1 : 0) : (kf + (e.shiftKey ? -1 : 1) + CYC.length) % CYC.length);
+      return;
+    }
     if (/^[a-z]$/i.test(e.key)) {
       e.preventDefault();
-      if (R.over || spinning) return;
+      if (R.over || spinning || R.paused) return;
       const c = e.key.toUpperCase(), i = R.tiles.findIndex((t, j) => t.ch === c && !trace.includes(j));
       if (i < 0) { nudge(`No free ${c} on the Ring`); return; }
       tapMode = true; keyed = true; add(i);
-    } else if (e.key === 'Enter') { e.preventDefault(); if (trace.length) submit(); }
+    } else if (e.key === 'Enter') { e.preventDefault(); if (trace.length) submit(); else if (kf >= 0) $(CYC[kf]).click(); }
     else if (e.key === 'Backspace') { e.preventDefault(); pop(); if (!trace.length) tapMode = false; }
-    else if (e.key === 'Escape') { clearTrace(); msg(''); }
-    else if (e.key === ' ') { e.preventDefault(); shuffle(); }
+    else if (e.key === 'Escape') { clearTrace(); setKf(-1); msg(''); }
+    else if (e.key === ' ') { e.preventDefault(); if (!R.paused) shuffle(); }
   });
 
   // ---------- messages ----------
+  // v11b (CD-90: 4.1.8): big pills, as wide as the text needs but never wider than the Ring; colors by what happened:
+  // key = a new Key word (bright green), dup = already found (bright orange), bad = not a word (bright red),
+  // bon = a bonus word (purple, like the BONUS tag), clue = a clue (blue)
   let msgT = 0;
   function msg(t, kind, ms) {
     clearTimeout(msgT);
     const m = $('#krMsg'); m.className = 'kr-msg';
     m.innerHTML = t ? `<span class="mt ${kind || ''}">${t}</span>` : '';
+    fitMsg();
     if (t && ms) msgT = setTimeout(() => { if (!trace.length) msg(''); }, ms);
+  }
+  function fitMsg() {
+    const m = $('#krMsg'), t = m.querySelector('.mt:not(.sm)'); if (!t) return;
+    const maxW = Math.max(120, Math.min(rs, m.clientWidth || rs));
+    let f = Math.round(Math.min(34, Math.max(19, rs * 0.072)));
+    t.style.maxWidth = maxW + 'px'; t.style.whiteSpace = 'nowrap'; t.style.fontSize = f + 'px';
+    if (t.scrollWidth > maxW) { f = Math.max(15, Math.floor(f * maxW / t.scrollWidth)); t.style.fontSize = f + 'px'; }
+    if (t.scrollWidth > maxW) t.style.whiteSpace = 'normal'; // a long clue: two lines
   }
   function nudge(t) { msg(t, 'bad', 1700); snd('bounce'); const m = $('#krMsg'); m.classList.remove('shake'); void m.offsetWidth; m.classList.add('shake'); }
 
@@ -454,18 +625,18 @@
   function submit() {
     const w = trace.map(i => R.tiles[i].ch).join('');
     clearTrace();
-    if (!R || R.over) return;
+    if (!R || R.over || R.paused) return;
     if (w.length < 3) { msg('Words need 3 letters or more', '', 1500); return; }
     const i = R.words.indexOf(w);
     if (i >= 0) {
-      if (R.found.has(i)) { msg(`${w} is already in a slot`, 'dup', 1800); snd('draw'); flashRow(i); return; }
+      if (R.found.has(i)) { msg(`${w}: Key word already found`, 'dup', 1800); snd('draw'); flashRow(i); return; }
       fill(i); return;
     }
     if (isWord(w)) {
       if (R.bonus.includes(w)) { msg(`${w}: bonus word already found`, 'dup', 1800); snd('draw'); return; }
       R.bonus.push(w); R.bonusCoins++; st.bonus++; saveSt();
       if (UI.coins) UI.coins.add(1, `${NM.ring} bonus word ${w}`);
-      msg(`★ Bonus word ${w} · 🪙+1`, 'good', 1800); paintTag(true); save(); return;
+      msg(`★ Bonus word ${w} · 🪙+1`, 'bon', 1800); paintTag(true); save(); return;
     }
     nudge(`${w} isn't in the word list`);
   }
@@ -474,7 +645,7 @@
     const pops = { [i]: new Set([...R.words[i]].map((c, p) => p).filter(p => !R.drop[i].has(p))) };
     if (R.sel === i) R.sel = -1;
     renderSlots(pops); paintBtns();
-    msg(`✓ ${R.words[i]}`, 'good', 1400);
+    msg(`✓ Key word ${R.words[i]}`, 'key', 1400);
     snd('word');
     save();
     checkDone();
@@ -488,8 +659,8 @@
     }
   }
   $('#krTag').addEventListener('click', () => {
-    if (!R) return;
-    openModal(`<h2 class="mk-title">★ Bonus words</h2><p class="help-note">Real words spelled from this Ring that are not in a slot. Each new one pays 🪙1.</p>
+    if (!R || R.paused) return;
+    openModal(`<h2 class="mk-title">★ Bonus words</h2><p class="help-note">Real words spelled from this Ring that are not Key words. Each new one pays 🪙1.</p>
       <div class="kr-chips">${R.bonus.length ? R.bonus.map(w => `<span class="bon">${w}</span>`).join('') : '<span>None yet. Keep spelling!</span>'}</div>
       <p class="help-note">This Ring: ${R.bonus.length} found · 🪙+${R.bonusCoins}. All Rings: ${st.bonus}.</p>
       <div class="row"><button class="btn primary" data-a="ok">Close</button></div>`);
@@ -509,15 +680,15 @@
     $('#krDropCp').textContent = '🪙' + dropCost();
     $('#krHint').title = `Hint: show a slot's clue (${hp})`;
     $('#krDrop').title = `Key Drop: drop one letter into a slot (🪙${dropCost()})`;
+    $('#krTimeCp').textContent = '🪙' + TIME_COST;
+    $('#krTime').title = `+30s: 30 more seconds on the clock (🪙${TIME_COST}); after the Ring ends, 30 seconds more to hunt bonus words`;
   }
   function arm(btn, price) {
     if (!UI.armTap) return true;
-    const go = UI.armTap(btn, price);
-    if (!go) btn.dataset.arm = `Tap\nagain\n🪙${price}`; // three short lines fit the round button
-    return go;
+    return UI.armTap(btn, price); // "Tap again / 🪙N" on two lines fits the rectangular buttons
   }
   $('#krHint').addEventListener('click', () => {
-    if (!R || R.over) return;
+    if (!R || R.over || R.paused) return;
     const btn = $('#krHint');
     if (!btn.classList.contains('armed')) {
       const pool = hintPool();
@@ -541,7 +712,7 @@
     msg(`💡 ${R.words[i].length} letters: ${esc(R.clues[i] || 'no clue for this word')}`, 'clue', 6000);
   });
   $('#krDrop').addEventListener('click', () => {
-    if (!R || R.over) return;
+    if (!R || R.over || R.paused) return;
     const btn = $('#krDrop'), price = dropCost();
     if (!btn.classList.contains('armed')) {
       if (UI.coins && UI.coins.bal < price) { UI.coins.spend(price, `${NM.ring} Key Drop`); return; }
@@ -565,11 +736,74 @@
     checkDone();
   });
 
+  // ---------- ⏱ +30s (CD-90: 4.1.4; CD-95: 6.5.1, 6.6) ----------
+  // Always shown. In a timed Ring it adds 30 seconds. Once any Ring has ended (cleared or out of time, timed or untimed), it
+  // opens the Ring again for 30 seconds more (plus any time left) to hunt bonus words, or to finish it: a Ring finished in
+  // extra time counts as cleared. Two taps, 🪙10 each time.
+  $('#krTime').addEventListener('click', () => {
+    if (!R || R.paused) return;
+    if (!R.over && !R.timer) { msg(`Untimed Ring: no clock to add to. Once the Ring ends, ⏱ +30s gives you 30 seconds more to hunt bonus words`, 'clue', 5000); return; }
+    const btn = $('#krTime');
+    if (!btn.classList.contains('armed')) {
+      if (UI.coins && UI.coins.bal < TIME_COST) { UI.coins.spend(TIME_COST, `${NM.ring} +30s`); return; }
+      arm(btn, TIME_COST);
+      return;
+    }
+    arm(btn, 0);
+    buyTime();
+  });
+  function buyTime() {
+    if (UI.coins && !UI.coins.spend(TIME_COST, `${NM.ring} +30s`)) return false;
+    R.ext++; R.timeCoins += TIME_COST;
+    const sec = Math.floor(R.el / 1000);
+    if (R.over) {
+      // the Ring opens again: a countdown of 30 seconds, plus whatever was left on a timed clock
+      R.timer = !R.timer || sec >= R.timer ? sec + TIME_ADD : R.timer + TIME_ADD;
+      R.over = false;
+      if (!$('#modal').hidden) closeModal();
+      paintOver(); fit();
+      msg(R.found.size === R.words.length ? '⏱ +30s: hunt for more bonus words' : '⏱ +30s: keep going', 'clue', 2600);
+    } else {
+      R.timer += TIME_ADD;
+      msg('⏱ +30s on the clock', 'clue', 1600);
+    }
+    lastSec = -1; tick(0); paintBtns(); paintPause(); save();
+    return true;
+  }
+
+  // ---------- ⏸ Pause (CD-90: 4.1.9; CD-95: 6.7–6.7.1): the button or the clock; the Ring and the Key grid blur ----------
+  function setPause(on) {
+    if (!R || (on && R.over)) return;
+    R.paused = !!on;
+    if (on) { clearTrace(); setKf(-1); document.querySelectorAll('#keyring .btn.armed').forEach(b => { if (UI.armTap) UI.armTap(b, 0); }); }
+    paintPause();
+    msg(''); // the ⏸ Paused panel says it all
+  }
+  function paintPause() {
+    const p = !!(R && R.paused);
+    $('#krMain').classList.toggle('paused', p);
+    $('#krPz').hidden = !p;
+    const b = $('#krPause');
+    b.textContent = p ? '▶' : '⏸';
+    b.title = p ? 'Resume' : 'Pause: the clock stops and the letters are hidden';
+    b.setAttribute('aria-label', b.title);
+    b.disabled = !!(R && R.over);
+  }
+  $('#krPause').addEventListener('click', () => { if (R && !R.over) setPause(!R.paused); });
+  $('#krClock').addEventListener('click', () => { if (R && !R.over) setPause(!R.paused); });
+  $('#krPz').addEventListener('click', () => setPause(false));
+  // the layout pill (tablets and computers): Auto → Stacked → Side by side (CD-95: 6.2.1)
+  $('#krLayP').addEventListener('click', () => {
+    ks.layout = ks.layout === 'auto' ? 'stack' : ks.layout === 'stack' ? 'side' : 'auto'; saveKs();
+    fit();
+    msg(`Layout: ${ks.layout === 'auto' ? 'Auto (the bigger Ring)' : ks.layout === 'stack' ? 'Stacked' : 'Side by side'}`, '', 1600);
+  });
+
   // ---------- clock ----------
   let lastT = performance.now(), lastSec = -1;
   function tick(dt) {
     if (!R) return;
-    if (dt && playOn() && !R.over && $('#modal').hidden && !document.hidden) R.el += dt;
+    if (dt && playOn() && !R.over && !R.paused && $('#modal').hidden && !document.hidden) R.el += dt;
     const sec = Math.floor(R.el / 1000), rem = R.timer ? Math.max(0, R.timer - sec) : sec;
     $('#krClk').textContent = fmt(rem);
     $('#krClock').classList.toggle('low', !!R.timer && rem <= 10 && !R.over);
@@ -584,65 +818,93 @@
 
   // ---------- the end of a Ring ----------
   function checkDone() { if (R.found.size === R.words.length && !R.over) { R.over = true; clearTrace(); setTimeout(() => endRing('clear'), 650); } }
+  // A Ring is settled when it ends. With ⏱ +30s it can open and end again: each end pays only what is new (the Ring's coins
+  // are paid once), counts the Ring once in your stats (as cleared if it is cleared in extra time: CD-95: 6.6) and updates
+  // its one Game History entry.
   function endRing(how) {
     if (!R) return;
-    const cleared = how === 'clear';
-    R.over = true;
-    const mine = R.L - R.drops;
-    const earn = cleared ? Math.round(R.v * mine) : 0;
-    if (earn && UI.coins) UI.coins.add(earn, `${NM.ring}: Ring cleared`);
-    st.played++;
-    if (cleared) {
-      st.cleared++; st.streak++; st.best = Math.max(st.best, st.streak);
-      const k = R.n + (R.timer ? 't' : '');
-      if (!R.timer && (!st.fastest[k] || R.el < st.fastest[k])) st.fastest[k] = Math.round(R.el);
-    } else st.streak = 0;
+    const first = !R.ended, newlyCleared = R.found.size === R.words.length && !R.statClr;
+    R.ended = true; R.over = true; R.paused = false;
+    const cleared = R.found.size === R.words.length;
+    // the letters the Player filled (Key Drop letters don't count)
+    const mine = R.words.reduce((a, w, i) => a + (R.found.has(i) ? w.length - R.drop[i].size : 0), 0);
+    const timePaid = !cleared && how === 'time' && R.timePay; // CD-95: 2.1 (the Setup switch)
+    const due = cleared || timePaid ? Math.round(R.v * mine) : 0;
+    const pay = Math.max(0, due - R.paid);
+    if (pay && UI.coins) UI.coins.add(pay, `${NM.ring}: ${cleared ? 'Ring cleared' : "time's up, your letters"}`);
+    R.paid += pay;
+    if (first) { R.streak0 = st.streak; st.played++; }
+    if (newlyCleared) {
+      R.statClr = true; st.cleared++; st.streak = R.streak0 + 1; st.best = Math.max(st.best, st.streak);
+      if (!R.timer0 && !R.ext && (!st.fastest[R.n] || R.el < st.fastest[R.n])) st.fastest[R.n] = Math.round(R.el);
+    } else if (first && !cleared) st.streak = 0;
     saveSt();
     store.set(SAVE_KEY, null);
-    const net = earn + R.bonusCoins - R.hintCoins - R.dropCoins;
+    const net = R.paid + R.bonusCoins - R.hintCoins - R.dropCoins - R.timeCoins;
     const sec = Math.floor(R.el / 1000);
     const [face, head] = cleared ? ['🔑', 'Ring cleared!'] : how === 'time' ? ['⏱', "Time's up"] : ['🏳️', 'Ring not cleared'];
-    const sub = `${R.found.size} of ${R.words.length} words · ${R.bonus.length} bonus word${R.bonus.length === 1 ? '' : 's'} · ${R.timer ? (cleared ? 'time left ' + fmt(Math.max(0, R.timer - sec)) : timerName(R.timer)) : 'time ' + fmt(sec)}`;
-    const chips = R.words.map((w, i) => `<span class="${R.found.has(i) ? (R.byDrop.has(i) ? 'drp' : '') : 'miss'}">${w}</span>`).join('') + R.bonus.map(w => `<span class="bon">${w}</span>`).join('');
+    // CD-90: 4.2.1; CD-95: 7.1a: beside the heading, the time left (timed Rings) or the time taken (untimed)
+    const tShow = R.timer0 || R.ext ? `${fmt(Math.max(0, R.timer - sec))}<small> left</small>` : fmt(sec);
+    // CD-90: 4.2.2–4.2.3: Key words, Bonus words and Missed words, each in its own box, its count first
+    const grp = (c, n, name, chips, note) => `<div class="kr-grp ${c}"><div class="kr-gh"><b>${n}</b> ${name}${n === 1 ? '' : 's'}</div>
+      <div class="kr-chips">${chips || '<span class="none">None</span>'}</div>${note ? `<p class="kr-gn">${note}</p>` : ''}</div>`;
+    const keyW = R.words.map((w, i) => i).filter(i => R.found.has(i));
+    const missW = R.words.map((w, i) => i).filter(i => !R.found.has(i));
+    const groups = grp('kr-kw', keyW.length, 'Key word', keyW.map(i => `<span class="${R.byDrop.has(i) ? 'drp' : ''}">${R.words[i]}</span>`).join(''), R.byDrop.size ? 'Light blue = filled by Key Drop' : '')
+      + grp('kr-bw', R.bonus.length, 'Bonus word', R.bonus.map(w => `<span>${w}</span>`).join(''))
+      + (missW.length ? grp('kr-mw', missW.length, 'Missed word', missW.map(i => `<span>${R.words[i]}</span>`).join('')) : '');
     const row = (l, v) => `<tr><td>${l}</td><td class="${v < 0 ? 'neg' : 'pos'}">${v < 0 ? '−' + -v : '+' + v}</td></tr>`;
-    const coinTbl = `<h3 class="res-h">🪙 Coins</h3><table class="score-table kr-coins">`
-      + (cleared ? row(`🔑 Ring cleared: ${mine} of ${R.L} letters yours, at 🪙${(Math.round(R.v * 100) / 100)} each`, earn) : '')
+    const per = Math.round(R.v * 100) / 100;
+    const coinTbl = UI.coinHead() + `<table class="score-table coin-tbl kr-coins">`
+      + (R.paid ? row(cleared ? `🔑 Ring cleared: ${mine} of ${R.L} letters yours, at 🪙${per} each` : `⏱ Time's up: ${mine} of ${R.L} letters yours, at 🪙${per} each`, R.paid) : '')
       + row(`★ Bonus words (${R.bonus.length})`, R.bonusCoins)
       + (R.hints ? row(`💡 Hint × ${R.hints}`, -R.hintCoins) : '')
       + (R.drops ? row(`🔑 Key Drop × ${R.drops}`, -R.dropCoins) : '')
-      + `<tr class="total"><td>This Ring ${net < 0 ? '−' + -net : '+' + net} · Balance</td><td data-coins>${UI.coins ? UI.coins.bal : ''}</td></tr></table>`;
+      + (R.ext ? row(`⏱ +30s × ${R.ext}`, -R.timeCoins) : '')
+      + UI.coinTotal("This ring's total earned coins:", net) + '</table>';
     const pct = st.played ? Math.round(100 * st.cleared / st.played) : 0;
     const stats = `<h3 class="res-h">📊 Your stats</h3><div class="vt-res-stats">
       <div><b>${st.played}</b><span>Rings</span></div><div><b>${pct}%</b><span>Cleared</span></div><div><b>${st.streak}</b><span>Streak</span></div>
       <div><b>${st.best}</b><span>Best streak</span></div><div><b>${st.bonus}</b><span>Bonus words</span></div><div><b>${st.fastest[R.n] ? fmt(Math.floor(st.fastest[R.n] / 1000)) : '–'}</b><span>Fastest ${R.n}-letter</span></div></div>`;
-    const body = `<div class="res-top"><span class="res-face">${face}</span><span class="res-title">${head}</span></div>
-      <p class="res-sub">${sub}</p>
-      <div class="kr-chips">${chips}</div>
-      ${how !== 'clear' ? '<p class="help-note kr-note">Red = the words you missed. Your bonus coins are yours to keep.</p>' : R.byDrop.size ? '<p class="help-note kr-note">Light blue = filled by Key Drop.</p>' : ''}
+    const body = `<div class="res-top kr-rtop"><span class="res-face">${face}</span><span class="res-title">${head}</span><span class="kr-rtime">${tShow}</span></div>
+      ${groups}
+      ${!cleared ? '<p class="help-note kr-note">Your bonus coins are yours to keep. ⏱ +30s opens the Ring again.</p>' : ''}
       <div class="res-cols"><section>${coinTbl}</section><section>${stats}</section></div>`;
     if (UI.history) {
-      UI.history.add({
+      const entry = {
         g: 'ring', win: cleared, title: `${NM.ring} · ${cleared ? 'Ring cleared' : how === 'time' ? "Time's up" : 'Not cleared'} (${R.seed.length} letters)`,
-        sub: [`Level ${R.lv}`, `${R.n} letters`, timerName(R.timer)].join(' · '), score: `${R.found.size}/${R.words.length} words`, coins: net, html: body
-      });
+        sub: [`Level ${R.lv}`, `${R.n} letters`, timerName(R.timer0)].join(' · '), score: `${R.found.size}/${R.words.length} Key words`, coins: net, html: body
+      };
+      if (first || !R.histT || !UI.history.put) R.histT = UI.history.add(entry) || 0;
+      else UI.history.put(R.histT, entry);
     }
     R.resHtml = body;
     // v11a (JM CD-93: 2.1 N): the same one-row win report as the other games, under the Ring
-    const sc = `${R.found.size}/${R.words.length} words`;
+    const sc = `${R.found.size}/${R.words.length} Key words`;
     R.resWin = cleared ? Object.assign(UI.meWin(), { score: sc }) : { av: UI.gimg('ring', 'ob-gi'), who: 'The Ring', score: sc };
+    setKf(-1); paintPause(); paintBtns();
     paintOver(); fit();
     UI.lobby();
     if (how === 'quit') return;
     snd(cleared ? 'win' : 'lose');
-    if (cleared && !night() && !reduceMotion()) confetti();
+    if (newlyCleared && !night() && !reduceMotion()) confetti();
     openResult();
   }
   function timeUp() { clearTrace(); endRing('time'); }
   function openResult() {
     if (!R || !R.resHtml) return;
-    openModal(`${R.resHtml}<div class="row res-bar"><button class="btn" data-a="setup">⚙ Setup</button><button class="btn" data-a="menu">☰ Lobby</button><button class="btn primary" data-a="next">▶ Next Ring</button></div>`, 'res', { close: () => { if (playOn()) msg('Ring over: 📊 Results reopens the result', '', 5000); } });
+    openModal(`${R.resHtml}<div class="row res-bar"><button class="btn" data-a="setup">⚙ Setup</button><button class="btn" data-a="menu">☰ Lobby</button>`
+      + `<button class="btn coinbtn kr-more" data-a="more" title="30 seconds more on this Ring (🪙${TIME_COST})"><b>⏱</b> +30s 🪙${TIME_COST}</button>`
+      + `<button class="btn primary" data-a="next">▶ Next Ring</button></div>`, 'res', { close: () => { if (playOn()) msg('Ring over: 📊 Results reopens the result', '', 5000); } });
     $('#sheet').onclick = e => {
       const b = e.target.closest('[data-a]'); if (!b) return;
+      if (b.dataset.a === 'more') {
+        // two taps, like every coin button; the second buys and opens the Ring again
+        if (!b.classList.contains('armed') && UI.coins && UI.coins.bal < TIME_COST) { UI.coins.spend(TIME_COST, `${NM.ring} +30s`); return; }
+        if (!arm(b, TIME_COST)) return;
+        closeModal(); buyTime();
+        return;
+      }
       closeModal();
       if (b.dataset.a === 'next') newRing(true);
       else if (b.dataset.a === 'setup') showSetup();
@@ -671,40 +933,46 @@
   function help() {
     const sec = UI.helpSec;
     openModal(`<h2 class="mk-title">How To Play ${NM.ring} <span class="chip">${UI.APP_VER}</span></h2>
-      <p>Spell words from the letters on the Ring to fill every slot. A Ring is cleared when every slot is full.</p>
+      <p>Spell words from the letters on the Ring to fill the <b>Key grid</b> with its <b>Key words</b>. A Ring is cleared when every Key word is found.</p>
       <p class="help-note">Tap a heading to open it.</p>
       ${sec('The Basics', `
-        <li>Open ${NM.ring} from its card in the ${NM.suite} Lobby: <b>🆕 New Game</b> deals a Ring at once with your last settings, <b>⚙ Setup</b> (or a tap on the card) shows the settings first, and <b>▶ Resume</b> appears while a Ring is unfinished. <b>☰</b> goes back to the Lobby; an unfinished Ring waits, with its clock stopped.</li>
-        <li>Each slot holds one word, and its squares show how long the word is. Shortest words come first.</li>
+        <li>Open ${NM.ring} from its card in the ${NM.suite} Lobby: <b>🆕 New Game</b> deals a Ring at once with your last settings, <b>⚙ Setup</b> (or a tap on the card) shows the settings first, and <b>▶ Resume</b> appears while a Ring is unfinished. In the game, <b>🆕</b> in the header deals a new Ring, <b>⚙</b> opens Setup (your Ring waits) and <b>☰</b> goes back to the Lobby; an unfinished Ring waits, with its clock stopped.</li>
+        <li>The <b>Key grid</b> holds one slot for each Key word; its squares show how long the word is. Shortest words come first. Found Key words light up in candy colors.</li>
         <li>Each letter on the Ring can be used <b>once per word</b>, but in as many words as you like.</li>`)}
       ${sec('Spell a Word', `
         <li><b>Swipe</b> (touch) or <b>drag</b> (mouse) across the letters, then let go. Slide back one letter to undo it.</li>
         <li>Or <b>tap</b> the letters one by one, then tap the last one again (or tap the letters above the Ring).</li>
-        <li>Or <b>type</b> it on a keyboard and press <b>Enter</b>: <b>⌫</b> takes a letter back, <b>Esc</b> clears, <b>Space</b> shuffles.</li>
-        <li>The strip above the Ring shows the word you're spelling, then what happened: green = a slot filled or a bonus word, gold = already found, red = not a word, blue = a clue.</li>`)}
+        <li>Or <b>type</b> it on a keyboard and press <b>Enter</b>: <b>⌫</b> takes a letter back, <b>Esc</b> clears, <b>Space</b> shuffles, and <b>Tab</b> moves an outline around the Ring's buttons (BONUS, 💡 Hint, 🔑 Drop, ⏱ +30s, then round again; <b>Shift+Tab</b> goes back); <b>Enter</b> presses the outlined button when no letters are typed.</li>
+        <li>The pill above the Ring shows the word you're spelling, then what happened: <b>bright green</b> = a new Key word, <b>purple</b> = a bonus word, <b>bright orange</b> = already found, <b>bright red</b> = not a word, <b>blue</b> = a clue.</li>`)}
       ${sec('Bonus Words', `
-        <li>Any other real word you spell from the Ring (at least 3 letters) is a <b>bonus word</b>. Each new one pays <b>🪙1</b>, with no limit. The gold <b>BONUS</b> tag in the Ring's top corner counts them and swings when you find one; tap it to see the list.</li>`)}
+        <li>Any other real word you spell from the Ring (at least 3 letters) is a <b>bonus word</b>. Each new one pays <b>🪙1</b>, with no limit. The purple <b>BONUS</b> tag in the Ring's top-left corner counts them and swings when you find one; tap it to see the list.</li>
+        <li>The Key grid takes in the everyday words a Ring spells (and their -S forms, like CATS from CAT), so bonus words are mostly the rarer ones.</li>`)}
       ${sec('The Buttons', `
         <li><b>Shuffle</b> is the steel hub in the middle of the Ring: the letters spin to new places. Free.</li>
         <li><b>💡 Hint</b> (bottom-left corner) shows the clue for one empty slot: the slot you picked (tap a slot; it glows blue), or else a random one, which lights up when you tap Hint. It's a signal, not a solve: no letters are given. The slot keeps a 💡 mark; tap it to read the clue again, free.</li>
-        <li><b>🔑 Key Drop</b> (bottom-right corner) drops <b>one letter</b> into an empty square: in the slot you picked, or anywhere. Dropped letters are light blue. A slot it completes counts as filled.</li>
+        <li><b>🔑 Key Drop</b> (bottom-right corner) drops <b>one letter</b> into an empty square: in the slot you picked, or anywhere. Dropped letters are light blue. A slot it completes counts as found.</li>
+        <li><b>⏱ +30s</b> (top-right corner, 🪙${TIME_COST}) adds 30 seconds to a timed Ring. Once any Ring ends (cleared or out of time, timed or not), it opens the Ring again for 30 seconds more, to hunt bonus words or to finish it; a Ring finished in extra time counts as cleared. It's in the result window too.</li>
+        <li><b>⏸ Pause</b> (beside the clock, or tap the clock) stops the clock and blurs the Ring and the Key grid; tap <b>▶</b> or the clock to go on.</li>
         <li>Coin buttons are blue and take <b>two taps</b>: the first lights the button and shows its price, the second buys.</li>`)}
       ${sec('Coins', `
         <li>Each Ring is worth <b>100 coins</b>, shared over its letter squares: one letter is worth 100 ÷ the Ring's letters (with 50 letters, 🪙2 each).</li>
-        <li><b>💡 Hint</b> costs one letter's worth for each letter in its slot (a 5-letter slot at 🪙2 a letter = 🪙10). <b>🔑 Key Drop</b> costs one letter's worth.</li>
+        <li><b>💡 Hint</b> costs one letter's worth for each letter in its slot (a 5-letter slot at 🪙2 a letter = 🪙10). <b>🔑 Key Drop</b> costs one letter's worth. <b>⏱ +30s</b> costs 🪙${TIME_COST}.</li>
         <li><b>Ring cleared:</b> one letter's worth for every letter you filled yourself, so a Ring cleared with no Key Drop pays 🪙100. Hints don't lower it (they cost coins already).</li>
-        <li><b>Bonus words:</b> 🪙1 each. When time runs out, you keep your bonus coins, but the Ring pays nothing.</li>
-        <li>Coins are shared by every ${NM.suite} game; tap your balance for the details.</li>`)}
+        <li><b>Bonus words:</b> 🪙1 each. When time runs out, you keep your bonus coins; the Ring itself pays nothing, unless <b>Time's up pays for your letters</b> is on in Setup (then one letter's worth for each letter you filled).</li>
+        <li>The result window shows your balance beside <b>Coins</b>, and the Ring's total at the bottom. Coins are shared by every ${NM.suite} game; tap your balance for the details.</li>`)}
       ${sec('Setup', `
-        <li><b>Letters on the Ring</b>: 3 to 8. More letters give more and longer slots.</li>
-        <li><b>Challenge Level</b> (1–10) picks the slot words: everyday words at 1–3, rarer ones as it rises. From level 6 the clues turn figurative. Bonus words can be any real word at every level.</li>
-        <li><b>Timer</b>: Untimed (the clock counts up), or 1, 2, 3 or 5 minutes per Ring (it counts down, and turns red in the last 10 seconds).</li>
+        <li><b>Letters on the Ring</b>: 3 to 8. More letters give more and longer Key words.</li>
+        <li><b>Challenge Level</b> (1–10) picks the Key words: everyday words at 1–3, rarer ones as it rises. From level 6 the clues turn figurative. Bonus words can be any real word at every level.</li>
+        <li><b>Key words</b>: how many the Key grid holds: <b>Few</b>, <b>Some</b> or <b>Many</b> (the counts depend on the letters), or <b>Auto</b>, which follows the Challenge Level (1–3 Few, 4–7 Some, 8–10 Many) and takes more Key words (up to Many) when the Ring spells more everyday words, so fewer are left as bonus words.</li>
+        <li><b>Timer</b>: Untimed (the clock counts up), or 1, 2, 3 or 5 minutes per Ring (it counts down, and turns red in the last 10 seconds). <b>Time's up pays for your letters</b>: Off (as standard) or On.</li>
+        <li><b>Key word colors</b>: <b>By word</b> (each word one color) or <b>By letter</b> (every tile its own color). No two neighbors match.</li>
+        <li><b>Layout</b>: <b>Auto</b> picks whichever gives the bigger Ring, <b>Stacked</b> puts the Key grid above the Ring, <b>Side by side</b> puts them next to each other (tablets and computers). On those screens the layout pill beside the clock switches it too.</li>
         <li>Every Ring is new: the app deals a fresh set of letters each time and avoids the Rings you played recently.</li>`)}
       ${sec('Your Stats', `
-        <li>Rings played, the share cleared, your streak (Rings cleared in a row), your best streak, bonus words and your fastest untimed Ring for each size are kept on this device. Every Ring also goes into <b>📜 Game History</b> in the Lobby.</li>
+        <li>Rings played, the share cleared, your streak (Rings cleared in a row), your best streak, bonus words and your fastest untimed Ring for each size (without extra time) are kept on this device. Every Ring also goes into <b>📜 Game History</b> in the Lobby.</li>
         <li>Starting a new Ring after you've found a word (or used a coin button) in an unfinished one counts that Ring as not cleared.</li>`)}
       ${sec('Sound', `
-        <li>Sound effects are <b>off</b> until you tap <b>🔇</b> in the header (it becomes <b>🔊</b>). You'll hear a click for each letter, a chime for each slot, a thunk for a word that isn't in the list, a clink for coins, ticks in the last 10 seconds, and a fanfare when the Ring is cleared.</li>`)}
+        <li>Sound effects are <b>off</b> until you tap the speaker in the header (red with a ✕ while muted). You'll hear a click for each letter, a chime for each Key word, a thunk for a word that isn't in the list, a clink for coins, ticks in the last 10 seconds, and a fanfare when the Ring is cleared.</li>`)}
       <div class="row"><button class="btn primary" data-a="ok">Close</button></div>`);
     $('#sheet').onclick = e => { if (UI.helpClick(e)) return; if (e.target.closest('[data-a]')) closeModal(); };
   }
@@ -714,6 +982,7 @@
   $('#krMenu').addEventListener('click', goLobby);
   $('#krHelp').addEventListener('click', help);
   $('#krSet').addEventListener('click', () => { clearTrace(); save(); showSetup(); });
+  $('#krNewG').addEventListener('click', () => { clearTrace(); newRing(!!(R && R.over)); }); // v11b (CD-90 add. 1; CD-95: 3.1)
   // the Lobby card: tap the name for Setup; the chevron (app.js) shows the details
   const goOpen = () => { if (unfinished()) showPlay(); else showSetup(); };
   $('#krCard').addEventListener('click', e => { if (!e.target.closest('button')) showSetup(); });
@@ -729,7 +998,8 @@
       played: st.played, pct: st.played ? Math.round(100 * st.cleared / st.played) : 0, bonus: st.bonus, streak: st.streak,
       unf: unfinished() ? unfText() : '', last: lastLine()
     }),
-    _R: () => R // for checks only
+    _R: () => R, // for checks only
+    _deal: (n, lv, kw) => dealRing(n, lv, kw) // for checks only (it does mark the seed as recently played)
   };
   if (UI.lobby) UI.lobby(); // the Lobby was drawn before this file loaded: fill in the KeyRing card
 })();

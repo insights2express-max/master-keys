@@ -9,7 +9,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Master Keys">
   <meta name="description" content="Master Keys: CrossKeys, a head-to-head crossword tile game, LockWord, a word-guessing game, and KeyRing, a word builder. Plays offline.">
-  <title>Master Keys · v11a</title>
+  <title>Master Keys · v11b</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="icon" href="icons/icon-192.png" type="image/png" sizes="192x192">
@@ -30,7 +30,7 @@
       <header class="brand">
         <img class="logo" src="icons/icon.svg" alt="" width="64" height="64">
         <div class="brand-txt">
-          <h1><span data-mk="suite">Master Keys</span> <span class="vpill" id="verPill">v11a</span></h1>
+          <h1><span data-mk="suite">Master Keys</span> <span class="vpill" id="verPill">v11b</span></h1>
           <p class="tag">Word games. Play anywhere, even offline.</p>
         </div>
       </header>
@@ -281,6 +281,7 @@
       <img class="ck-ico" src="icons/keyring.svg" alt="">
       <h2 class="vt-title ck-title"><span data-mk="ring">KeyRing</span><small id="krSub">Setup</small></h2>
       <button class="icon-btn snd-btn" data-snd type="button">🔇</button>
+      <button class="icon-btn" id="krNewG" type="button" aria-label="New Game: deal a new Ring" title="New Game: deal a new Ring">🆕</button>
       <button class="icon-btn" id="krSet" type="button" aria-label="KeyRing Setup" data-mk-aria="{ring} Setup" title="Setup">⚙</button>
       <button class="icon-btn" id="krHelp" type="button" aria-label="How To Play KeyRing" data-mk-aria="How To Play {ring}">?</button>
     </header>
@@ -295,7 +296,20 @@
         <label class="field"><span class="lbl">Challenge Level</span><select id="krLv"></select></label>
         <label class="field"><span class="lbl">Timer</span><select id="krTm"></select></label>
       </div>
-      <p class="opt-desc kr-desc">Challenge Level picks the slot words: everyday words at 1–3, rarer ones as it rises. Bonus words can be any real word.</p>
+      <p class="opt-desc kr-desc">Challenge Level picks the Key words: everyday words at 1–3, rarer ones as it rises. Bonus words can be any real word.</p>
+      <label class="field"><span class="lbl">Key words</span><select id="krKw"></select></label>
+      <p class="opt-desc kr-desc">How many words the Key grid holds. Auto follows the Challenge Level, and takes more (the + ) when the Ring spells more everyday words, so fewer are left as bonus words.</p>
+      <div class="field"><span class="lbl">Time's up pays for your letters</span>
+        <div class="seg" id="krTp"><button type="button" data-v="off">Off</button><button type="button" data-v="on">On</button></div>
+      </div>
+      <p class="opt-desc kr-desc">On: a timed Ring that runs out pays one letter's worth for each letter you filled. Off: bonus coins only.</p>
+      <div class="field"><span class="lbl">Key word colors</span>
+        <div class="seg" id="krCol"><button type="button" data-v="word">By word</button><button type="button" data-v="letter">By letter</button></div>
+      </div>
+      <div class="field"><span class="lbl">Layout</span>
+        <div class="seg" id="krLay"><button type="button" data-v="auto">Auto</button><button type="button" data-v="stack">Stacked</button><button type="button" data-v="side">Side by side</button></div>
+      </div>
+      <p class="opt-desc kr-desc">Auto picks the bigger Ring. Side by side needs a tablet or computer screen.</p>
       <button class="btn primary big" id="krStart" type="button">▶ Start KeyRing</button>
       <div class="vt-stats" id="krStats"></div>
     </div>
@@ -303,8 +317,10 @@
       <div class="kr-grid" id="krMain">
         <div class="kr-info" id="krInfo">
           <span data-kr-coins></span>
-          <button class="kr-pill" id="krProg" type="button" title="Words found"><span class="e">🔑</span> 0 / 0 words</button>
-          <span class="kr-pill kr-clock" id="krClock"><span class="e">⏱</span> <span id="krClk">0:00</span></span>
+          <button class="kr-pill" id="krProg" type="button" title="Key words found"><span class="e">🔑</span> 0 / 0 Key words</button>
+          <button class="kr-pill kr-clock" id="krClock" type="button" title="The clock: tap to pause"><span class="e">⏱</span> <span id="krClk">0:00</span></button>
+          <button class="kr-pill kr-pz-btn" id="krPause" type="button" title="Pause" aria-label="Pause">⏸</button>
+          <button class="kr-pill kr-lay" id="krLayP" type="button" title="Layout: Auto, Stacked or Side by side" hidden></button>
         </div>
         <div class="kr-slots" id="krSlots"></div>
         <div class="kr-msg" id="krMsg" aria-live="polite"></div>
@@ -323,12 +339,14 @@
               <button class="kr-hub" id="krHub" type="button" title="Shuffle: spin the letters (Space)" aria-label="Shuffle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h3.5c2 0 3.2 1 4.3 2.7l2.4 4.6C14.3 16 15.5 17 17.5 17H21M18 14l3 3-3 3M3 17h3.5c1.4 0 2.4-.5 3.2-1.4M14.3 8.4C15.1 7.5 16.1 7 17.5 7H21M18 4l3 3-3 3"/></svg></button>
             </div>
             <button class="kr-tag" id="krTag" type="button" title="Bonus words: tap for the list" aria-label="Bonus words: tap for the list">BONUS<b id="krTagN">0</b></button>
-            <button class="btn coinbtn kr-cb kr-hint" id="krHint" type="button" aria-label="Hint: show a slot's clue"><b>💡</b><span class="cl">Hint</span><span class="cp" id="krHintCp">🪙</span></button>
-            <button class="btn coinbtn kr-cb kr-drop" id="krDrop" type="button" aria-label="Key Drop: drop one letter into a slot"><b>🔑</b><span class="cl">Drop</span><span class="cp" id="krDropCp">🪙</span></button>
+            <button class="btn coinbtn kr-cb kr-time" id="krTime" type="button" aria-label="+30 seconds"><span class="kr-cl"><b>⏱</b>+30s</span><span class="cp" id="krTimeCp">🪙10</span></button>
+            <button class="btn coinbtn kr-cb kr-hint" id="krHint" type="button" aria-label="Hint: show a slot's clue"><span class="kr-cl"><b>💡</b>Hint</span><span class="cp" id="krHintCp">🪙</span></button>
+            <button class="btn coinbtn kr-cb kr-drop" id="krDrop" type="button" aria-label="Key Drop: drop one letter into a slot"><span class="kr-cl"><b>🔑</b>Drop</span><span class="cp" id="krDropCp">🪙</span></button>
           </div>
         </div>
+        <button class="kr-pz" id="krPz" type="button" hidden><b>⏸ Paused</b><span>Tap to go on</span></button>
         <div class="overbar kr-over" id="krOver" hidden></div><!-- v11a (CD-93): the win report, under the Ring once it is over -->
-        <p class="kr-tip"><kbd>A–Z</kbd> type · <kbd>Enter</kbd> submit · <kbd>⌫</kbd> back · <kbd>Esc</kbd> clear · <kbd>Space</kbd> shuffle</p>
+        <p class="kr-tip"><kbd>A–Z</kbd> type · <kbd>Enter</kbd> submit · <kbd>⌫</kbd> back · <kbd>Esc</kbd> clear · <kbd>Space</kbd> shuffle · <kbd>Tab</kbd> next button (<kbd>Enter</kbd> presses it)</p>
       </div>
     </div>
   </section>

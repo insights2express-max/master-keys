@@ -15,7 +15,7 @@
    v08j: grid colors, final-play view, clock-out final turn, menu defaults, phone two-finger drag) */
 'use strict';
 (() => {
-  const APP_VER = 'v11a'; // Project CP: shown as a pill beside the title and in the browser tab
+  const APP_VER = 'v11b'; // Project CP: shown as a pill beside the title and in the browser tab
   const NM = window.MK_NAMES || { suite: 'Master Keys', cross: 'CrossKeys', lock: 'LockWord' }; // v09: the game names (names.js)
   // v09a (JM CD-71: 1.2c, 1.3b): the two games' own icons, shown wherever the 🧩 / 🔐 emoji stood
   const GI = { cross: 'icons/crosskeys.svg', lock: 'icons/lockword.svg', ring: 'icons/keyring.svg' }; // v11: KeyRing
@@ -165,9 +165,14 @@
       const a = ctx(); if (!a) return;
       try { FX[name](a.currentTime + 0.01 + (delay || 0)); } catch (e) { /* ignore */ }
     }
+    const SPK = '<path d="M4 9.5h3.6L12.5 5v14l-4.9-4.5H4z" fill="currentColor"/>';
+    const SPK_ON = `<svg viewBox="0 0 24 24" aria-hidden="true">${SPK}<path d="M15.5 9a4.2 4.2 0 0 1 0 6M18 6.5a7.8 7.8 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`;
+    const SPK_OFF = `<svg viewBox="0 0 24 24" aria-hidden="true">${SPK}<path d="M15.5 9.5l5 5M20.5 9.5l-5 5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>`;
     function paint() {
       document.querySelectorAll('[data-snd]').forEach(b => {
-        b.textContent = on ? '🔊' : '🔇';
+        // v11b (JM CD-90: 4.1.3): a drawn speaker (it takes the button's color), red with a cross while muted, in every game
+        b.innerHTML = on ? SPK_ON : SPK_OFF;
+        b.classList.toggle('muted', !on);
         b.title = on ? 'Sound is on: tap to mute' : 'Sound is off: tap to turn it on';
         b.setAttribute('aria-label', b.title);
         b.setAttribute('aria-pressed', on ? 'true' : 'false');
@@ -1842,6 +1847,10 @@
   // Returns true when the tap should go ahead and spend.
   const ARM_MS = 3000;
   function disarm(b) { if (!b) return; b.classList.remove('armed'); clearTimeout(b._armT); b._armT = 0; }
+  // v11b (JM CD-90: 4.2.4.1–4.2.4.3; CD-95: 7.3–7.4): every game's result window: the Coins heading carries the balance,
+  // and the table ends with "This <game / word / ring>'s total earned coins:" (earned minus spent) instead of the balance
+  const coinHead = () => `<h3 class="res-h res-coinh"><span>🪙 Coins</span><span class="res-bal">Balance <b data-coins>${coins.bal}</b></span></h3>`;
+  const coinTotal = (label, net) => `<tr class="total"><td>${label}</td><td class="${net < 0 ? 'neg' : 'pos'}">${net < 0 ? '−' + -net : '+' + net}</td></tr>`;
   function armTap(btn, price) {
     if (btn.classList.contains('armed')) { disarm(btn); return true; }
     document.querySelectorAll('.btn.armed').forEach(disarm);
@@ -1861,12 +1870,22 @@
     list() { return store.get(HIST_KEY, []); },
     add(e) {
       const a = hist.list();
-      a.unshift(Object.assign({ t: Date.now() }, e));
+      const t = Date.now();
+      a.unshift(Object.assign({ t }, e));
       if (a.length > HIST_MAX) a.length = HIST_MAX;
       // if storage is full, keep fewer old results rather than lose the new one
       for (let n = a.length; n > 0; n = Math.floor(n * 0.7)) {
-        try { localStorage.setItem(HIST_KEY, JSON.stringify(a.slice(0, n))); return; } catch (x) { /* too big: trim */ }
+        try { localStorage.setItem(HIST_KEY, JSON.stringify(a.slice(0, n))); return t; } catch (x) { /* too big: trim */ }
       }
+      return t;
+    },
+    // v11b: replace an entry (found by its time) with a newer copy, e.g. a KeyRing Ring that ended again after ⏱ +30s
+    put(t, e) {
+      const a = hist.list(), i = a.findIndex(x => x.t === t);
+      if (i < 0) return hist.add(e);
+      a[i] = Object.assign({ t }, e);
+      try { localStorage.setItem(HIST_KEY, JSON.stringify(a)); } catch (x) { /* storage full: keep the old copy */ }
+      return t;
     },
     show: showHistory
   };
@@ -1922,7 +1941,7 @@
       <p class="help-note">Tap a heading to open it. Underlined names open their section.</p>
       ${sec('The Lobby', `
         <li>The Lobby is the first screen: the ${NM.suite} title, ${go('You')}, your ${go('Coins', 'coins')}, and one card per game.</li>
-        <li>The small buttons in the top corner: 🔇 ${go('Sound')}, 📜 ${go('Game History')}, ⚙ ${go(NM.suite + ' Settings')} and ? (this window).</li>
+        <li>The small buttons in the top corner: the speaker ${go('Sound')}, 📜 ${go('Game History')}, ⚙ ${go(NM.suite + ' Settings')} and ? (this window).</li>
         <li><b>☰</b> in every game takes you back to the Lobby. An unfinished game is kept, ready to resume.</li>`)}
       ${sec('You', `
         <li>Tap the face to choose your avatar from the icon list, or to upload your own picture (kept on this device).</li>
@@ -1948,7 +1967,7 @@
         <li>Filter it by game (All, ${gimg('cross')} ${NM.cross}, ${gimg('lock')} ${NM.lock}, ${gimg('ring')} ${NM.ring}), and tap any result to see its full result window again; ◂ History goes back to the list.</li>
         <li>It's kept on this device only, like your stats and coins.</li>`)}
       ${sec('Sound', `
-        <li>Sound effects are <b>off</b> until you turn them on. Tap <b>🔇</b> (in the Lobby and in every game's header) to turn them on; it becomes <b>🔊</b>. Tap again to mute. One switch covers every game, and it's remembered on this device.</li>`)}
+        <li>Sound effects are <b>off</b> until you turn them on. Tap the <b>speaker</b> (in the Lobby and in every game's header; red with a ✕ while muted) to turn them on. Tap again to mute. One switch covers every game, and it's remembered on this device.</li>`)}
       ${sec('Offline', `
         <li>Once it has loaded, ${NM.suite} plays offline: no connection needed. Your games, stats, coins and settings stay on this device.</li>`)}
       <div class="row"><button class="btn primary" data-a="ok">Close</button></div>`);
@@ -2126,7 +2145,7 @@
         <li><b>${NM.lock}</b> pays coins for every word you solve: see its <b>?</b>.</li>
         <li>Each turn report shows that turn's coins on a 🪙 line, and the result screen totals the game's coins.</li>`)}
       ${sec('Sound', `
-        <li>Sound effects are <b>off</b> until you turn them on. Tap <b>🔇</b> (top corner of the Lobby, and in every game's header) to turn them on; it becomes <b>🔊</b>. Tap again to mute. Your choice is remembered on this device.</li>
+        <li>Sound effects are <b>off</b> until you turn them on. Tap the <b>speaker</b> (top corner of the Lobby, and in every game's header; red with a ✕ while muted) to turn them on. Tap again to mute. Your choice is remembered on this device.</li>
         <li>The sounds are short and soft: a click when a tile lands, a thunk when one doesn't fit, a chime when a word is finished, a clink for coins, a tick each second in the last 10, a two-note tone for a PASS, and a short tune when the game ends. Your device's own volume still applies.</li>`)}
       ${sec('Strategy', `
         <li>Don't rush. A word left with only one empty cell is a gift to the Bot. Sometimes it pays to <b>hold</b> a tile until you can finish the word yourself.</li>
@@ -3402,9 +3421,9 @@
     if (cs.check) coinRows.push([`Check ×${(G.log || []).reduce((a, e) => a + (e.p === 0 ? (e.items || []).filter(x => x.k === 'check' && x.c).length : 0), 0)}`, cs.check]);
     const net = coinRows.reduce((a, x) => a + x[1], 0);
     const sg = v => (v < 0 ? '−' + -v : '+' + v);
-    const coinTbl = `<h3 class="res-h">🪙 Coins</h3><table class="score-table coin-tbl">`
+    const coinTbl = coinHead() + `<table class="score-table coin-tbl">`
       + (coinRows.length ? coinRows.map(x => `<tr><td>${esc(x[0])}</td><td class="${x[1] < 0 ? 'neg' : 'pos'}">${sg(x[1])}</td></tr>`).join('') : '<tr><td>No coins earned or spent</td><td>0</td></tr>')
-      + `<tr class="total"><td>This game ${sg(net)} · Balance</td><td data-coins>${coins.bal}</td></tr></table>`;
+      + coinTotal("This game's total earned coins:", net) + '</table>';
     // v08e (JM CD-36: 5.2, 5.3.1): the same layout as LockWord's result. One-line heading; the Record right under the
     // scores; no "Help you used" table (the Coins table already lists Hint ×N, Place ×N…); Play and Coins side by side
     // on wide screens; the buttons on a bar pinned to the bottom of the window.
@@ -3477,6 +3496,7 @@
     settings: () => settings,
     GI, gimg, // v09a: the game icons
     winLine, meWin, fitOver, // v11a (CD-93): the one-row win report shared by every game
+    coinHead, coinTotal, // v11b (CD-90: 4.2.4): the result windows' Coins heading and bottom line
     sound, // v08h: sound effects (and the 🔇 / 🔊 buttons) shared with LockWord
     _render: () => render(), _G: () => G // v08k: for timing checks only
   };
