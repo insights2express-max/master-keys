@@ -8,7 +8,7 @@
    v08d (CD-34: 1.1–1.2): coin buttons are blue, each icon on a white circle.
    v08e (CD-36: 1.1, 5.1, 5.3): icons on a navy circle; the result window matches CrossKeys's (one-line heading, tables side
    by side on wide screens, a pinned button bar; the Guesses-needed note opens from ⓘ).
-   v08f (CD-37): result buttons ⚙ Settings · ☰ Menu · Next word; ✕ / tap outside closes it and shows a game-over bar;
+   v08f (CD-37): result buttons ⚙ Settings · ☰ Lobby · Next word; ✕ / tap outside closes it and shows a game-over bar;
    How To Play in collapsible sections; the clock is a gray pill like CrossKeys's.
    v08g (CD-38 add'l 1): the ← → arrow keys wrap from one end of the row to the other.
    v08h (CD-41: 1.4): sound effects (off by default; 🔇 / 🔊 in the header): typed letters, guesses, not-a-word, ticks, solved / not solved.
@@ -409,7 +409,7 @@
     $('#vtPlay').classList.toggle('is-over', over);
     $('#vtOver').hidden = !over;
     $('#vtOver').innerHTML = over ? `<span class="ob-h">🏁 ${esc(R.resHead)}</span>
-      <span class="ob-btns"><button class="btn" type="button" data-ob="res">📊 Results</button><button class="btn" type="button" data-ob="menu">☰ Menu</button><button class="btn primary" type="button" data-ob="again">Next word</button></span>` : '';
+      <span class="ob-btns"><button class="btn" type="button" data-ob="res">📊 Results</button><button class="btn" type="button" data-ob="menu">☰ Lobby</button><button class="btn primary" type="button" data-ob="again">Next word</button></span>` : '';
     $('#vtHint span').textContent = R.hints ? 'Hint ✓' : `Hint 🪙${HINT_COINS}`;
     $('#vtHint').title = R.hints ? 'Show the clue again (free)' : `Show a clue for the word (${HINT_COINS} coins)`;
     $('#vtHint').classList.toggle('poor', !R.hints && UI.coins && UI.coins.bal < HINT_COINS);
@@ -721,12 +721,12 @@
     render(); // the game-over bar replaces the button row
     openResult();
   }
-  // v08f (JM CD-37: 2.1, 3.1): the same three buttons as CrossKeys's result: ⚙ Settings · ☰ Menu · Next word.
+  // v08f (JM CD-37: 2.1, 3.1): the same three buttons as CrossKeys's result: ⚙ Settings · ☰ Lobby · Next word.
   // ✕ or a tap outside closes it and shows the finished grid with its game-over bar (📊 Results reopens it).
   function openResult() {
     if (!R || !R.over || !R.resHtml) return;
     openModal(`${R.resHtml}
-      <div class="row res-bar"><button class="btn" data-a="setup">⚙ Settings</button><button class="btn" data-a="menu">☰ Menu</button><button class="btn primary" data-a="again">Next word</button></div>`, 'res', { close: render });
+      <div class="row res-bar"><button class="btn" data-a="setup">⚙ Settings</button><button class="btn" data-a="menu">☰ Lobby</button><button class="btn primary" data-a="again">Next word</button></div>`, 'res', { close: render });
     $('#sheet').onclick = e => {
       const b = e.target.closest('[data-a]'); if (!b) return;
       closeModal();
@@ -749,10 +749,11 @@
       <p class="help-note">Tap a heading to open it.</p>
       <div class="vt-help">
       ${sec('The Basics', `
+        <li>Open ${NM.lock} from its card in the ${NM.suite} Lobby: <b>🆕 New Game</b> starts a word at once with your last settings, <b>⚙ Setup</b> (or a tap on the card) shows the settings first, and <b>▶ Resume</b> appears while a word is unfinished. <b>☰</b> in the header goes back to the Lobby; an unfinished word waits, paused.</li>
         <li>Guess the hidden word. Type a word (on screen or your keyboard) and press <b>ENTER</b>. Every guess must be a real word of the right length.</li>
         <li>Each letter of your guess is then marked: <span class="vt-chip ok">green</span> right letter in the right spot, <span class="vt-chip in">yellow</span> in the word but in another spot, <span class="vt-chip no">red</span> not in the word. The keyboard keeps the best mark for each letter.</li>
         <li>Green letters carry into your next guess automatically, and typing starts at the first open square.</li>
-        <li>When the word is over, the result window opens. Close it (✕, or tap outside it) to see the finished grid; the bar under it has <b>📊 Results</b>, <b>☰ Menu</b> and <b>Next word</b>.</li>`)}
+        <li>When the word is over, the result window opens. Close it (✕, or tap outside it) to see the finished grid; the bar under it has <b>📊 Results</b>, <b>☰ Lobby</b> and <b>Next word</b>.</li>`)}
       ${sec('Typing and the Keys', `
         <li>Tap a square (or use the ← → arrow keys, which wrap around from one end to the other) to choose where the next letter goes; the chosen square glows blue. The <b>Space bar</b> (on phones and tablets, the <b>␣</b> key at the end of the middle row) jumps to the next open square to the right (after the last one, back to the first). The orange <b>⌫</b> clears a letter, and <b>✕</b> at the end of the row clears the whole guess.</li>
         <li><b>Key size:</b> the keys grow on their own to fill the space below the buttons, so fewer guesses (a shorter grid) give taller keys, up to twice the normal height. To make them shorter, drag the <b>⇕</b> handle at the right end of the button row down (drag up to raise them again); double-click (or double-tap) it for the tallest keys. Your choice is remembered on this device and follows the grid's size.</li>`)}
@@ -772,12 +773,12 @@
         <li><b>Scoring</b> (only when you solve it): <b>Classic</b> scores the word's letter values (as in the main game) plus 2 per letter; <b>Flat</b> scores 2 per letter. Both add <b>+5</b> for every guess you didn't need and, in timed rounds, a time bonus (1 point per 5 seconds left, up to 30). (Hint and Reveal cost coins, not points.)</li>
         <li><b>⚙ Settings</b> (in the header, or tap the line above the grid) change the game at any time; changes apply from the next word.</li>`)}
       ${sec('Your Stats', `
-        <li>Your stats (played, solved %, streaks, best time, guesses needed) are kept on this device. Every finished word also goes into <b>📜 Game History</b> on the menu, where you can reopen its full result.</li>
+        <li>Your stats (played, solved %, streaks, best time, guesses needed) are kept on this device. Every finished word also goes into <b>📜 Game History</b> in the Lobby, where you can reopen its full result.</li>
         <li><b>Guesses needed</b> (on the result window): one row for each number of guesses, from 1 up, plus ✗ for words not solved. The bar and its number show how many words you've solved in that many guesses, so your longest bar is your usual result. The highlighted bar is the word just played. On a computer, point at a row to see it in words. Tap <b>ⓘ</b> under the bars to read this there.</li>`)}
       ${sec('Make It Yours', `
         <li>Double-click (or double-tap) the title to rename the game, and tap the icon beside it to choose another or to upload your own picture. Both are remembered on this device.</li>`)}
       ${sec('Sound', `
-        <li>Sound effects are <b>off</b> until you tap <b>🔇</b> in the header (it becomes <b>🔊</b>); tap again to mute. The same switch covers ${NM.cross} and the menu.</li>
+        <li>Sound effects are <b>off</b> until you tap <b>🔇</b> in the header (it becomes <b>🔊</b>); tap again to mute. The same switch covers ${NM.cross} and the Lobby.</li>
         <li>You'll hear a soft click for each letter, a short tone when a guess goes in, a thunk for a word that isn't in the list, a clink for coins, a tick each second in the last 10, and a short tune when the word is solved or lost.</li>`)}
       </div>
       <div class="row"><button class="btn primary" data-a="ok">Close</button></div>`);
@@ -865,5 +866,19 @@
     const k = ['Enter', 'Backspace', 'ArrowLeft', 'ArrowRight'].includes(e.key) ? e.key : e.key.length === 1 ? e.key.toUpperCase() : '';
     if (k) { e.preventDefault(); key(k); }
   });
-  window.WordVault = { open: () => { open(); if (R && !R.over) startClock(); } };
+  // v10 (JM CD-76: 3.2; CD-79: 1.2.1): the Lobby card. ▶ Resume and ⚙ Setup open the game (an unfinished word shows
+  // PLAY PAUSED; otherwise the Setup panel); 🆕 New Game starts a new word at once with your last settings.
+  const goOpen = () => { open(); if (R && !R.over) startClock(); };
+  window.WordVault = {
+    open: goOpen,
+    setup: goOpen,
+    newGame: () => { goOpen(); newWord(false); },
+    help: () => help(),
+    lobby: () => ({
+      played: stats.played, pct: stats.played ? Math.round(100 * stats.won / stats.played) : 0, streak: stats.streak,
+      unf: R && !R.over ? `Unfinished word · ${R.rows.length} of ${R.tries} guesses used` : '',
+      last: `Level ${vs.level} · ${vs.len} letters · ${vs.tries} guesses`
+    })
+  };
+  if (UI.lobby) UI.lobby(); // the Lobby was drawn before this file loaded: fill in the LockWord card
 })();

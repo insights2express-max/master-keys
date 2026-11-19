@@ -1,4 +1,4 @@
-/* Master Keys — user interface: the menu and CrossKeys, fka Clue Duel (v09a: Night crossing-clue text, tile drawn in its cell at once + slow-drop recorder, game icons, code files renamed lockword.js / lockwords.js; v09: renamed Master Keys / CrossKeys / LockWord, names in names.js, LockWord Night look;
+/* Master Keys — user interface: the Lobby and CrossKeys, fka Clue Duel (v10: the Lobby with one card per game (🆕 New Game / ▶ Resume / ⚙ Setup), CrossKeys Setup screen, ⚙ Master Keys settings (Screen), ☰ back to the Lobby, How To Play split into the suite and each game; v09a: Night crossing-clue text, tile drawn in its cell at once + slow-drop recorder, game icons, code files renamed lockword.js / lockwords.js; v09: renamed Master Keys / CrossKeys / LockWord, names in names.js, LockWord Night look;
    v08r: mirrored top boxes (the Bot gets a per-TURN clock, names centered), long settings line wraps;
    v08q: Screen setting with Night (Charcoal), ⚙ "Changes now" / "From your next game", Letters in Hand 4–8 and changeable mid-game (next round), Full Hand +2 per tile, bigger hub, DONE under the hand on upright tablets, word progress on the clue card, drawn pictures, 1-letter picture captions;
    v08p: new top band (no clue bar; clocks by the scores, hub of buttons), floating turn messages, tap a clue for its card, orange ? and bars for missing letters and words, the Bot waits for your tap after red marks, the Bot's 2-second finish after your clock runs out, wide screens: names over avatars, wings for the buttons, big DONE under the grid;
@@ -15,7 +15,7 @@
    v08j: grid colors, final-play view, clock-out final turn, menu defaults, phone two-finger drag) */
 'use strict';
 (() => {
-  const APP_VER = 'v09a'; // Project CP: shown as a pill beside the title and in the browser tab
+  const APP_VER = 'v10'; // Project CP: shown as a pill beside the title and in the browser tab
   const NM = window.MK_NAMES || { suite: 'Master Keys', cross: 'CrossKeys', lock: 'LockWord' }; // v09: the game names (names.js)
   // v09a (JM CD-71: 1.2c, 1.3b): the two games' own icons, shown wherever the 🧩 / 🔐 emoji stood
   const GI = { cross: 'icons/crosskeys.svg', lock: 'icons/lockword.svg' };
@@ -332,7 +332,6 @@
     $('#scoringDesc').textContent = (E.MODES[settings.scoring] || E.MODES.classic).desc;
     $('#gridSel').value = GRID_SCHEMES.some(s => s[0] === settings.grid) ? settings.grid : 'a';
     $('#gridSample').innerHTML = gridSample($('#gridSel').value);
-    $('#screenSel').value = SCREENS.includes(settings.screen) ? settings.screen : 'auto'; // v08q
     // v08h (JM CD-41: 1.1): the folded Options row shows its five choices in one line
     const txt = id => { const s = $(id); return s.selectedIndex >= 0 ? s.options[s.selectedIndex].text : ''; };
     const tmr = txt('#timerSel').replace(/^Blitz · /, '').replace(/ per TURN$/, '/turn').replace(/ min each \(whole game\)$/, ' min each');
@@ -345,15 +344,53 @@
     fitOpts();
     $('#myAv').innerHTML = myAv();
     if (document.activeElement !== $('#myName')) $('#myName').value = settings.name || '';
-    const saved = store.get('cd.save', null);
-    $('#resumeBtn').hidden = !(saved && !saved.over);
+    renderLobby(store.get('cd.save', null));
     if (!$('#homeCoins').firstChild) $('#homeCoins').innerHTML = coinPill(); // v08
     renderCoins();
+  }
+  // v10 (JM CD-76: 3.2; CD-79: 1.2.1): the Lobby's game cards and the CrossKeys Setup stats row.
+  // Played / Won come from the all-time record (cd.stats); streaks and the top score from Game History (last 100).
+  function ckRecord() {
+    const st = store.get('cd.stats', {});
+    let n = 0, w = 0;
+    for (const k in st) { const r = st[k] || {}; w += r.w || 0; n += (r.w || 0) + (r.l || 0) + (r.d || 0); }
+    let streak = 0, best = 0, run = 0, cur = true, top = 0;
+    for (const h of hist.list()) {
+      if (h.g !== 'duel') continue;
+      if (h.win) { run++; best = Math.max(best, run); if (cur) streak++; } else { run = 0; cur = false; }
+      const s = parseInt(String(h.score || ''), 10);
+      if (s > top) top = s;
+    }
+    return { n, w, pct: n ? Math.round(100 * w / n) : 0, streak, best, top };
+  }
+  const recBoxes = a => a.map(([v, l]) => `<div><b>${v}</b><span>${l}</span></div>`).join('');
+  const statBoxes = a => a.map(([v, l]) => `<div class="vt-st"><b>${v}</b><span>${l}</span></div>`).join('');
+  function renderLobby(saved) {
+    const unf = !!(saved && !saved.over && saved.settings);
+    const r = ckRecord();
+    $('#ckRec').innerHTML = recBoxes([[r.n, 'Played'], [r.n ? r.pct + '%' : '–', 'Won'], [r.top || '–', 'Top score']]);
+    $('#ckStats').innerHTML = r.n ? statBoxes([[r.n, 'Played'], [r.pct + '%', 'Won'], [r.streak, 'Streak'], [r.best, 'Best streak'], [r.top || '–', 'Top score']])
+      : '<p class="vt-none">No games played yet. Pick your settings and start.</p>';
+    let ut = '';
+    if (unf) { const so = OPP[(saved.settings.skill || 1) - 1] || OPP[0]; const sc = saved.scores || [0, 0]; ut = `Unfinished game vs ${so.n} [${saved.settings.skill}] · You ${sc[0]} – ${sc[1]}`; }
+    $('#resumeBtn').hidden = !unf; $('#ckUnf').hidden = !unf; $('#ckUnf').textContent = ut;
+    $('#ckSetUnf').hidden = !unf; $('#ckSetUnfTxt').textContent = ut;
+    $('#ckNewBtn').classList.toggle('primary', !unf);
+    $('#startBtn').textContent = unf ? '🆕 New game' : `▶ Start ${NM.cross}`;
+    const o = OPP[settings.skill - 1], sz = { S: 'Small', M: 'Medium', L: 'Large' }[settings.size] || '';
+    $('#ckLast').textContent = `🆕 New Game uses your last settings: ${o.n} [${settings.skill}] · ${sz} grid`;
+    const L = window.WordVault && window.WordVault.lobby ? window.WordVault.lobby() : null;
+    if (L) {
+      $('#lwRec').innerHTML = recBoxes([[L.played, 'Played'], [L.played ? L.pct + '%' : '–', 'Solved'], [L.streak, 'Streak']]);
+      $('#lwResumeBtn').hidden = !L.unf; $('#lwUnf').hidden = !L.unf; $('#lwUnf').textContent = L.unf;
+      $('#lwNewBtn').classList.toggle('primary', !L.unf);
+      $('#lwLast').textContent = `🆕 New Game uses your last settings: ${L.last}`;
+    }
   }
   // v08i: the option boxes use the full size (+50 %) where they fit, and shrink only as much as a narrow phone needs
   function fitOpts() {
     const sum = $('#optsSum');
-    if (!sum || $('#home').hidden || $('#optsBox').open) return;
+    if (!sum || $('#ckSetup').hidden || $('#optsBox').open) return;
     let fs = 18.75;
     sum.style.fontSize = fs + 'px';
     const over = () => [...sum.children].some(r => r.scrollWidth > r.clientWidth + 1);
@@ -372,7 +409,19 @@
   // v08j: grid colors and the defaults buttons, at the foot of the open Options panel
   $('#gridSel').innerHTML = gridOpts();
   $('#gridSel').addEventListener('change', e => { settings.grid = e.target.value; saveSettings(); });
-  $('#screenSel').addEventListener('change', e => { settings.screen = e.target.value; saveSettings(); applyScreen(settings.screen); });
+  // v10 (JM CD-79: 1.3): Screen lives in ⚙ Master Keys settings in the Lobby (it changes every game); ⚙ in CrossKeys keeps a copy
+  const SCREEN_OPTS = '<option value="auto">Auto (follows your device)</option><option value="light">Light</option><option value="dark">Dark</option><option value="night">Night (dimmest)</option>';
+  function suiteSettings() {
+    openModal(`<h2>⚙ ${NM.suite} settings</h2>
+      <label class="field"><span class="lbl">Screen</span><select id="mkScreen">${SCREEN_OPTS}</select></label>
+      <p class="help-note"><b>Auto</b> follows your device's light or dark setting; <b>Light</b> and <b>Dark</b> stay put; <b>Night</b> is the dimmest look, for playing in the dark. It changes every game at once.</p>
+      <div class="row"><button class="btn primary" data-a="close">Close</button></div>`);
+    const s = $('#mkScreen');
+    s.value = SCREENS.includes(settings.screen) ? settings.screen : 'auto';
+    s.addEventListener('change', () => { settings.screen = s.value; saveSettings(); applyScreen(settings.screen); });
+    $('#sheet').onclick = e => { if (e.target.closest('[data-a]')) closeModal(); };
+  }
+  $('#mkSetBtn').addEventListener('click', suiteSettings);
   $('#saveDefBtn').addEventListener('click', () => {
     const d = {};
     for (const k of DEF_KEYS) d[k] = settings[k];
@@ -393,7 +442,7 @@
         if (!o) return;
         const d = cleanDefaults(o);
         store.set('cd.ownerDefaults', d);
-        if (!store.get('cd.settings', null)) { Object.assign(settings, d); if (!$('#home').hidden) renderHome(); }
+        if (!store.get('cd.settings', null)) { Object.assign(settings, d); renderHome(); }
       })
       .catch(() => { /* offline: keep the copy from the last visit */ });
   }
@@ -401,10 +450,22 @@
   $('#myName').addEventListener('keydown', e => { if (e.key === 'Enter') e.target.blur(); });
   $('#myAv').addEventListener('click', pickAvatar);
   $('#optsBox').addEventListener('toggle', e => { if (!!settings.optsOpen !== e.target.open) { settings.optsOpen = e.target.open; store.set('cd.settings', settings); } fitOpts(); }); // v08h: remembered
-  $('#howBtn').addEventListener('click', showHelp);
+  $('#howBtn').addEventListener('click', () => showHelp('suite')); // v10: the Lobby's ? = How To Play Master Keys
   $('#histBtn').addEventListener('click', () => showHistory()); // v08c (CD-30: 4.5)
   $('#startBtn').addEventListener('click', startNewGame);
   $('#resumeBtn').addEventListener('click', resumeGame);
+  // v10: the Lobby's CrossKeys card, and the CrossKeys Setup screen
+  function openCkSetup() { showScreen('cksetup'); renderHome(); $('#ckSetup').scrollTop = 0; fitOpts(); }
+  $('#ckNewBtn').addEventListener('click', startNewGame);
+  $('#ckSetupBtn').addEventListener('click', openCkSetup);
+  $('#ckSetResume').addEventListener('click', resumeGame);
+  $('#ckMenu').addEventListener('click', () => { showScreen('home'); renderHome(); });
+  $('#ckHelp').addEventListener('click', () => showHelp('cross'));
+  // tapping a card anywhere outside its buttons opens that game's Setup screen
+  $('#ckCard').addEventListener('click', e => { if (!e.target.closest('button')) openCkSetup(); });
+  $('#lwCard').addEventListener('click', e => { if (!e.target.closest('button') && window.WordVault) window.WordVault.setup(); });
+  $('#lwResumeBtn').addEventListener('click', () => { if (window.WordVault) window.WordVault.open(); });
+  $('#lwNewBtn').addEventListener('click', () => { if (window.WordVault) window.WordVault.newGame(); });
 
   // v08i (JM CD-42 add'l 1): LockWord's longer icon list plus your own picture (shrunk to a 128 px square, kept on
   // this device). The rivals' animals stay out, so you never look like your opponent.
@@ -457,7 +518,8 @@
   }
 
   function showScreen(id) {
-    $('#home').hidden = id !== 'home';
+    $('#home').hidden = id !== 'home'; // v10: 'home' = the Lobby
+    $('#ckSetup').hidden = id !== 'cksetup'; // v10: CrossKeys Setup
     $('#game').hidden = id !== 'game';
     $('#vault').hidden = id !== 'vault'; // v07c: LockWord
     if (id === 'home') { const vs = store.get('cd.vault.settings', {}); { const n = (vs.name || '').trim(); $('#vaultBtnName').textContent = n && n !== 'Word Vault' ? n : NM.lock; } const ico = $('#vaultBtnIco'); if (vs.icon === 'custom' && vs.custom) ico.innerHTML = `<img src="${vs.custom}" alt="">`; else { const ic = vs.icon && !(vs.icon === '🔐' && !vs.lwIco) ? vs.icon : 'lw'; if (ic === 'lw') ico.innerHTML = gimg('lock', ''); else ico.textContent = ic; } /* v09a: the LockWord icon is the default (the old default 🔐 moves to it once) */ fitOpts(); }
@@ -1392,7 +1454,7 @@
       const r = G.result, o = opp();
       const head = r.winner === 0 ? `🏆 ${myName() === 'You' ? 'You win' : esc(myName()) + ' wins'}` : r.winner === 1 ? `${o.a} ${esc(o.n)} wins` : '🤝 A draw';
       $('#overBar').innerHTML = `<span class="ob-h">🏁 Game over · ${head} · ${G.scores[0]}–${G.scores[1]}</span>
-        <span class="ob-btns">${ui.resSeen ? '<button class="btn" type="button" data-ob="res">📊 Results</button>' : '<button class="btn primary see-res" type="button" data-ob="res" title="Open the Results (Enter)">📊 See results ▸</button>'}<button class="btn" type="button" data-ob="menu">☰ Menu</button><button class="btn${ui.resSeen ? ' primary' : ''}" type="button" data-ob="again">Rematch</button></span>`;
+        <span class="ob-btns">${ui.resSeen ? '<button class="btn" type="button" data-ob="res">📊 Results</button>' : '<button class="btn primary see-res" type="button" data-ob="res" title="Open the Results (Enter)">📊 See results ▸</button>'}<button class="btn" type="button" data-ob="menu">☰ Lobby</button><button class="btn${ui.resSeen ? ' primary' : ''}" type="button" data-ob="again">Rematch</button></span>`;
       $('#overBar').dataset.on = obKey;
     }
     if (!over) { $('#overBar').innerHTML = ''; delete $('#overBar').dataset.on; }
@@ -1782,7 +1844,53 @@
   // v05 (JM, CD-10: 6.1.1): every feature labeled in the menu has its own section, in menu order, then the play sections.
   // v06 (JM, CD-11): title-case headings; every cross-reference is a link that opens its section (closing the others)
   // and scrolls to it; a Clue Bar section; Scoring lists the shared rules, then one part per mode with an example.
-  function showHelp() {
+  // v10 (JM CD-76: 3.2): How To Play splits in two. The Lobby's ? = How To Play Master Keys (the Lobby, You, the game
+  // cards, settings, coins, History, sound, offline), with a button for each game's own How To Play.
+  function showSuiteHelp() {
+    const sec = helpSec, go = (t, l) => `<a class="help-link" href="#" data-go="${helpId(t)}">${l || t}</a>`;
+    openModal(`
+      <h2>How To Play ${NM.suite} <span class="chip">${APP_VER}</span></h2>
+      <p>${NM.suite} is a set of word games. <b>${gimg('cross')} ${NM.cross}</b>: you and the Bot (a computer player) take turns filling the same crossword with letter tiles. <b>${gimg('lock')} ${NM.lock}</b>: crack a hidden word in a few guesses. Each game has its own How To Play: tap a button here, or the <b>?</b> inside the game.</p>
+      <div class="row help-games"><button class="btn" type="button" data-h="cross">${gimg('cross')} How To Play ${NM.cross}</button><button class="btn" type="button" data-h="lock">${gimg('lock')} How To Play ${NM.lock}</button></div>
+      <p class="help-note">Tap a heading to open it. Underlined names open their section.</p>
+      ${sec('The Lobby', `
+        <li>The Lobby is the first screen: the ${NM.suite} title, ${go('You')}, your ${go('Coins', 'coins')}, and one card per game.</li>
+        <li>The small buttons in the top corner: 🔇 ${go('Sound')}, 📜 ${go('Game History')}, ⚙ ${go(NM.suite + ' Settings')} and ? (this window).</li>
+        <li><b>☰</b> in every game takes you back to the Lobby. An unfinished game is kept, ready to resume.</li>`)}
+      ${sec('You', `
+        <li>Tap the face to choose your avatar from the icon list, or to upload your own picture (kept on this device).</li>
+        <li>Type your name in the box beside it. It shows in the games and on the Scoreboard. Left empty, you're "You".</li>`)}
+      ${sec('The Game Cards', `
+        <li>Each game has its own card: its icon, name and a line about it, then your record (games played, the share you won or solved, and a top score or streak).</li>
+        <li><b>🆕 New Game</b> starts a game at once with your last settings for that game (the line under the buttons says which). It's the quickest way to play your favorite setup again.</li>
+        <li><b>⚙ Setup</b>, or a tap anywhere else on the card, opens that game's <b>Setup screen</b>, where you choose its settings before you start.</li>
+        <li><b>▶ Resume</b> appears, with a line saying where you left off, when a game is unfinished. 🆕 New Game then asks first, because the unfinished game would be lost.</li>
+        <li>The dashed card holds the place of the games still to come.</li>`)}
+      ${sec(NM.suite + ' Settings', `
+        <li><b>⚙</b> in the Lobby's top corner holds the settings that change every game.</li>
+        <li><b>Screen</b>: <b>Auto</b> follows your device's light or dark setting; <b>Light</b> and <b>Dark</b> stay put; <b>Night</b> is the dimmest look (charcoal grays) for playing in the dark. ⚙ inside ${NM.cross} changes it too.</li>
+        <li>Each game's own settings are on its Setup screen and in the ⚙ inside the game.</li>`)}
+      ${sec('Coins', `
+        <li><b>🪙 Coins</b> are one currency shared by every game. You start with <b>${COIN.start}</b>. Your balance shows in the Lobby and inside each game; tap it for details and your latest coins.</li>
+        <li>You earn coins by playing well (finishing turns quickly in timed ${NM.cross} games, winning, solving ${NM.lock} words) and spend them on help like hints. Coin buttons are <b>blue</b> and take <b>two taps</b>, so you never spend by accident. Each game's How To Play has the details.</li>`)}
+      ${sec('Game History', `
+        <li><b>📜 Game History</b> (top corner of the Lobby) lists your last 100 results from every game, newest first: the date, the settings, the score and the coins won or spent. A green edge marks a win, a red edge a loss.</li>
+        <li>Filter it by game (All, ${gimg('cross')} ${NM.cross}, ${gimg('lock')} ${NM.lock}), and tap any result to see its full result window again; ◂ History goes back to the list.</li>
+        <li>It's kept on this device only, like your stats and coins.</li>`)}
+      ${sec('Sound', `
+        <li>Sound effects are <b>off</b> until you turn them on. Tap <b>🔇</b> (in the Lobby and in every game's header) to turn them on; it becomes <b>🔊</b>. Tap again to mute. One switch covers every game, and it's remembered on this device.</li>`)}
+      ${sec('Offline', `
+        <li>Once it has loaded, ${NM.suite} plays offline: no connection needed. Your games, stats, coins and settings stay on this device.</li>`)}
+      <div class="row"><button class="btn primary" data-a="ok">Close</button></div>`);
+    $('#sheet').onclick = e => {
+      if (helpClick(e)) return;
+      const h = e.target.closest('[data-h]');
+      if (h) { if (h.dataset.h === 'cross') showHelp('cross'); else if (window.WordVault) window.WordVault.help(); return; }
+      if (e.target.closest('[data-a]')) closeModal();
+    };
+  }
+  function showHelp(which) {
+    if (which === 'suite') { showSuiteHelp(); return; }
     const st = G && !G.over ? G : { settings };
     const cur = (st.settings && st.settings.scoring) || 'classic';
     const R = E.RULES;
@@ -1794,12 +1902,9 @@
     const chip = k => (k === cur ? ' <span class="chip">this game</span>' : '');
     const modeH = (k, extra) => `<li class="help-sub"><b>${esc(E.MODES[k].name)}</b>${chip(k)}${extra || ''}</li>`;
     openModal(`
-      <h2>How To Play ${NM.suite} <span class="chip">${APP_VER}</span></h2>
-      <p>${NM.suite} holds two word games: <b>${gimg('cross')} ${NM.cross}</b> and <b>${gimg('lock')} ${go(NM.lock)}</b>. In ${NM.cross}, you and the Bot (a computer player) take turns filling the same crossword with letter tiles. Every tile you place correctly scores, finishing words scores more, and the highest score wins.</p>
-      <p class="help-note">The first sections follow the menu, top to bottom. Tap a heading to open it. Underlined names open their section.</p>
-      ${sec('You', `
-        <li>Tap the face to choose your avatar from the icon list, or to upload your own picture (kept on this device).</li>
-        <li>Type your name in the box beside it. It shows above your score and on the Scoreboard. Left empty, you're "You".</li>`)}
+      <h2>How To Play ${gimg('cross')} ${NM.cross} <span class="chip">${APP_VER}</span></h2>
+      <p>In ${NM.cross}, you and the Bot (a computer player) take turns filling the same crossword with letter tiles. Every tile you place correctly scores, finishing words scores more, and the highest score wins.</p>
+      <p class="help-note">The first sections follow the ${NM.cross} Setup screen, top to bottom. Tap a heading to open it. Underlined names open their section. The Lobby, You, Game History, Sound and Offline are in How To Play ${NM.suite} (the ? in the Lobby).</p>
       ${sec('Bot', `
         <li>Each ${go('Challenge Level')} has its own Bot (a computer player), from Benny Bear 🐻 at level 1 to Professor Hoot 🦉 at level 10. Change the level and the Bot changes with it.</li>
         <li>Bots at levels 4–7 are <b>easygoing</b>: they play gentler than their puzzles, so the climb from 1 to 7 is gradual. Levels 8–10 are the <b>Master</b> levels, with a big step up in the Bot's skill.</li>
@@ -1815,11 +1920,11 @@
       ${sec('Grid Size', `
         <li><b>Small</b> (5 × 6), <b>Medium</b> (6 × 7) or <b>Large</b> (7 × 11). Bigger grids mean more words, longer games and bigger scores.</li>`)}
       ${sec('Options', `
-        <li>The five options you change least (${go('Letters in Hand')}, ${go('Bonus Squares')}, ${go('Clue Pics')}, ${go('Scoring')} and ${go('Timer')}) fold into one <b>▸ Options</b> row, so the menu fits on one screen. The row shows your choices in one line, like "6 letters · Floating bonus · Some pics · Classic · Untimed".</li>
+        <li>The five options you change least (${go('Letters in Hand')}, ${go('Bonus Squares')}, ${go('Clue Pics')}, ${go('Scoring')} and ${go('Timer')}) fold into one <b>▸ Options</b> row, so the Setup screen fits on one screen. The row shows your choices in one line, like "6 letters · Floating bonus · Some pics · Classic · Untimed".</li>
         <li>Tap it to open (▾) or close (▸) it. It stays the way you left it. ⚙ Settings in the game changes the same options.</li>
         <li><b>Grid Colors</b> (at the foot of Options, and in ⚙): five looks for the grid. <b>Board</b> (the default): empty cells are dark slots and played tiles are cream, with a colored bar for whose they are. <b>Inked</b>: no bars; your letters are blue, the Bot's red, starter letters black. <b>Inked Blue</b>: Inked, with this turn's tiles blue. <b>Painted</b>: solid blue and red tiles with white letters, light-gray starters. <b>Bold</b>: white empty cells and solid tiles. The change shows at once.</li>
-        <li><b>Screen</b> (under Grid Colors, and in ⚙): <b>Auto</b> follows your device's light or dark setting; <b>Light</b> and <b>Dark</b> stay put; <b>Night</b> is the dimmest look (charcoal grays, color only in the owner bars and clocks) for playing in the dark, with one fixed grid look.</li>
-        <li>The menu remembers your last choices. <b>⭐ Save as my defaults</b> keeps the Challenge Level, Grid Size and all the Options as your own defaults; <b>↺ Defaults</b> brings them back after you try something different (or the app's defaults, if you haven't saved any).</li>`)}
+        <li><b>Screen</b> (in ⚙ ${NM.suite} settings in the Lobby, and in ⚙ in the game; it changes every game): <b>Auto</b> follows your device's light or dark setting; <b>Light</b> and <b>Dark</b> stay put; <b>Night</b> is the dimmest look (charcoal grays, color only in the owner bars and clocks) for playing in the dark, with one fixed grid look.</li>
+        <li>The Setup screen remembers your last choices. <b>⭐ Save as my defaults</b> keeps the Challenge Level, Grid Size and all the Options as your own defaults; <b>↺ Defaults</b> brings them back after you try something different (or the app's defaults, if you haven't saved any).</li>`)}
       ${sec('Letters in Hand', `
         <li>How many tiles each player holds: 4 to 8. Your hand refills from the bag after every turn.</li>
         <li>You can change it during a game in ⚙ (under "Changes now"). The new size starts with the next full round, for both hands: a smaller hand sends random tiles back into the bag, a bigger one draws more.</li>
@@ -1880,9 +1985,10 @@
         <li>When a side's clock reaches zero, tiles it hasn't confirmed with <b>Done</b> don't count, and it <b>stops</b>, and tiles left in its hand count against it. If <b>your</b> clock runs out, the Bot places all the tiles it can (from its hand and the bag) in <b>one quick 2-second sweep</b>, and the game ends. If <b>the Bot's</b> clock runs out, you <b>play on alone</b>, turn after turn, until your hand and the bag are empty, the grid is full, you pass 3 times in a row, or your own clock runs out. The red notice stays until you tap.</li>
         <li>Clocks never run while a ${go('Turn Reports and The Scoreboard', 'turn report')} is waiting for your tap, or while the game is paused.</li>
         <li>In the last 10 seconds the grid's border flashes every second: <b>yellow</b> from 10 to 6, <b>red</b> from 5 to 1.</li>`)}
-      ${sec('Resume Game', `
-        <li><b>${gimg('cross')} ${NM.cross}</b> starts a fresh puzzle with the settings above. <b>${gimg('lock')} ${NM.lock}</b>, beside it, opens the word-guessing game.</li>
-        <li><b>Resume Game</b> appears when you have an unfinished game. Your game is saved after every turn and whenever you leave it (☰, between the two scores, takes you straight to the menu).</li>
+      ${sec('Start and Resume', `
+        <li><b>▶ Start ${NM.cross}</b>, at the foot of the Setup screen, starts a fresh puzzle with the settings above. In the Lobby, <b>🆕 New Game</b> on the ${NM.cross} card does the same in one tap, with your last settings.</li>
+        <li><b>▶ Resume</b> appears (on the card, and at the top of the Setup screen) when you have an unfinished game. Your game is saved after every turn and whenever you leave it (☰, between the two scores, takes you straight back to the Lobby). Starting a new game then asks first.</li>
+        <li>Under the Start button, your stats: games played, the share you won, your current and best winning streaks, and your top score (streaks and the top score count your last 100 games, from 📜 Game History).</li>
         <li><b>⚙</b> (among the buttons between the two scores) shows this game's settings in two parts. <b>Changes now</b>: Grid Colors and Screen change at once; Letters in Hand changes for both hands from the next round. <b>From your next game</b>: everything else. <b>New game with these</b> starts one now.</li>`)}
       ${sec('Clue Cards', `
         <li>Tap a clue in the grid (or point at it with a mouse) to see it enlarged on a clue card, with how many letters it has. Tap it again, or anywhere else, to close the card. Press and hold a clue to see the card only while you hold.</li>
@@ -1936,11 +2042,11 @@
         <li>The game also ends when the grid is full, by the <b>3 PASSES Rule</b> (${esc(PASS_RULE)}), or after a whole-game clock runs out and the other side has finished.</li>
         <li>A <b>⏭ 1/3</b> counter in the grid's top-left corner (where the logo sits) counts passes in a row: yellow after the 1st pass, red after the 2nd. A pass is a ⏭ Pass, a 🔄 Swap, a turn where every tile bounced, or a turn clock that ran out. The 2nd pass also shows a red <b>LAST CHANCE</b> notice that says what caused it and <b>holds the game until you tap</b> (the Bot waits and your clock stops). The counter goes away (and the logo comes back) once someone places a tile.</li>
         <li>When the game ends, the grid stays on screen and the last play's tiles and words glow, so you can see the final play. <b>📊 See results</b> (or Enter) opens the result window.</li>
-        <li>The result window shows both scores, your record against this Bot, both sides' play and your coins. Its buttons: <b>🔍 Grid</b> (look at the grid again), <b>⚙ Settings</b>, <b>☰ Menu</b> and <b>Rematch</b>.</li>
-        <li>Close it (✕, or tap outside it) to look at the finished grid. Your hand's row then becomes a <b>game-over bar</b> with <b>📊 Results</b> (opens the window again), <b>☰ Menu</b> and <b>Rematch</b>.</li>
+        <li>The result window shows both scores, your record against this Bot, both sides' play and your coins. Its buttons: <b>🔍 Grid</b> (look at the grid again), <b>⚙ Settings</b>, <b>☰ Lobby</b> and <b>Rematch</b>.</li>
+        <li>Close it (✕, or tap outside it) to look at the finished grid. Your hand's row then becomes a <b>game-over bar</b> with <b>📊 Results</b> (opens the window again), <b>☰ Lobby</b> and <b>Rematch</b>.</li>
         <li>Every window closes the same way: ✕ in its top-right corner, a tap outside it, or its <b>Close</b> button.</li>`)}
       ${sec('Coins', `
-        <li><b>🪙 Coins</b> are one currency shared by ${NM.cross} and ${go(NM.lock)}. You start with <b>${COIN.start}</b>. Your balance shows on the menu, in the game's info line and above the ${NM.lock} grid; tap it for details and your latest coins.</li>
+        <li><b>🪙 Coins</b> are one currency shared by ${NM.cross} and ${NM.lock}. You start with <b>${COIN.start}</b>. Your balance shows in the Lobby, in the game's info line and above the ${NM.lock} grid; tap it for details and your latest coins.</li>
         <li><b>Spend them on</b> 💡 Hint (${hintC}), 🔦 Scan (${SCAN_PER_TILE} per tile), 🎯 Place (the tile's value), ☑️ Check (${R.checkBase} + ${R.checkPerWrong} per wrong tile) and ⏱️ +30s (${R.timeCost}) in ${NM.cross}, and 🔎 Hint (5) and 💡 Reveal (40 ÷ the word's letters, like ¹⁄₅ 🪙8) in ${NM.lock}. These cost coins, not points. Coin buttons are <b>blue</b>. Without enough coins the button is dimmed, and a tap tells you what it costs.</li>
         <li><b>Two taps to buy:</b> the first tap on a coin button lights it up and shows "Tap again · 🪙N" (for Place, the price of the tile it found; for Check, 🪙5+) for 3 seconds; the second tap buys. Tapping anywhere else, or waiting, cancels it. This stops accidental spending.</li>
         <li><b>Speed coins</b> (timed games only): end a turn that placed tiles and earn <b>1 coin for every second left</b> on your clock. A 1-minute turn finished in 35 seconds pays 25. The most a turn can pay is ${COIN.perTile} per tile placed, but there's <b>no cap</b> when you place every tile in your hand. Time bought with +30s doesn't count.</li>
@@ -1949,20 +2055,9 @@
         <li><b>Winning</b> a game pays <b>+${COIN.win}</b>.</li>
         <li><b>${NM.lock}</b> pays coins for every word you solve: see its <b>?</b>.</li>
         <li>Each turn report shows that turn's coins on a 🪙 line, and the result screen totals the game's coins.</li>`)}
-      ${sec(NM.lock, `
-        <li><b>${NM.lock}</b> is a word-guessing mini-game, opened from its own button on the menu. Guess the hidden word in a set number of tries.</li>
-        <li>After each guess every letter is marked: <b>green</b> right letter in the right spot, <b>yellow</b> in the word but in another spot, <b>red</b> not in the word. Green letters carry into your next guess.</li>
-        <li>You choose the Challenge Level (vocabulary), the word's length (4–8 letters), the number of guesses (5–10), a timer and a scoring mode, and you can change them during play (⚙). Extras: 🔎 Hint (🪙5) shows a clue that gets trickier as the Challenge Level rises, 💡 Reveal places a letter (its coin price is that letter's share of the word: 40 ÷ letters, like ¹⁄₅ 🪙8), ✕ clears a guess, and tapping the clock pauses. Tap its <b>?</b> for the full rules.</li>
-        <li>Make it yours: double-click its title to rename it, and tap the icon beside the title to change it or upload your own picture.</li>`)}
-      ${sec('Game History', `
-        <li><b>📜 Game History</b> (the 📜 icon in the menu's top corner, beside ? How To Play) lists your last 100 results from both games, newest first: the date, the settings, the score and the coins won or spent. A green edge marks a win, a red edge a loss.</li>
-        <li>Filter it by game (All, ${gimg('cross')} ${NM.cross}, ${gimg('lock')} ${NM.lock}), and tap any result to see its full result window again; ◂ History goes back to the list.</li>
-        <li>It's kept on this device only, like your stats and coins.</li>`)}
       ${sec('Sound', `
-        <li>Sound effects are <b>off</b> until you turn them on. Tap <b>🔇</b> (top corner of the menu, and in both games' headers) to turn them on; it becomes <b>🔊</b>. Tap again to mute. Your choice is remembered on this device.</li>
+        <li>Sound effects are <b>off</b> until you turn them on. Tap <b>🔇</b> (top corner of the Lobby, and in every game's header) to turn them on; it becomes <b>🔊</b>. Tap again to mute. Your choice is remembered on this device.</li>
         <li>The sounds are short and soft: a click when a tile lands, a thunk when one doesn't fit, a chime when a word is finished, a clink for coins, a tick each second in the last 10, a two-note tone for a PASS, and a short tune when the game ends. Your device's own volume still applies.</li>`)}
-      ${sec('Offline', `
-        <li>Once it has loaded, the app plays offline: no connection needed. Your games, stats, coins and settings stay on this device.</li>`)}
       ${sec('Strategy', `
         <li>Don't rush. A word left with only one empty cell is a gift to the Bot. Sometimes it pays to <b>hold</b> a tile until you can finish the word yourself.</li>
         <li>It is often smart to save 2× squares for big turns because they double everything else you score that turn. Beware: the Bot can "steal" the bonus squares in the early rounds to keep you from scoring big.</li>`)}
@@ -2028,7 +2123,7 @@
       <h3 class="cd-sec">Changes now</h3>
       <label class="field cd-gridpick"><span class="lbl">Grid Colors</span><span class="gs-pick"><select data-k="grid">${gridOpts()}</select><span id="cdGridSample">${gridSample(settings.grid)}</span></span></label>
       <div class="vt-grid cd-set">
-        <label class="field"><span class="lbl">Screen</span><select data-k="screen">${$('#screenSel').innerHTML}</select></label>
+        <label class="field"><span class="lbl">Screen</span><select data-k="screen">${SCREEN_OPTS}</select></label>
         <label class="field"><span class="lbl">Letters in Hand${live ? ' <i>(next round)</i>' : ''}</span><select data-k="hand">${$('#handSel').innerHTML}</select></label>
       </div>
       <p class="help-note" id="cdHandNote"></p>
@@ -3270,13 +3365,13 @@
     ui.resSeen = false;
     render(); // the game-over bar replaces the hand
   }
-  // v08f (JM CD-37: 2.1, 3.1): the result window's buttons are ⚙ Settings · ☰ Menu · Rematch (the same three as Word
+  // v08f (JM CD-37: 2.1, 3.1): the result window's buttons are ⚙ Settings · ☰ Lobby · Rematch (the same three as Word
   // Vault's). ✕ or a tap outside closes it and shows the finished grid with its game-over bar (📊 Results reopens it).
   function showResults() {
     if (!G || !G.over || !ui.resBody) return;
     if (!ui.resSeen) { ui.resSeen = true; render(); } // the final-play glow ends once Results has been seen
     openModal(`${ui.resBody}
-      <div class="row res-bar"><button class="btn" data-a="grid" title="Close Results and look at the grid">🔍 Grid</button><button class="btn" data-a="set">⚙ Settings</button><button class="btn" data-a="menu">☰ Menu</button><button class="btn primary" data-a="again">Rematch</button></div>`, 'res', { close: render });
+      <div class="row res-bar"><button class="btn" data-a="grid" title="Close Results and look at the grid">🔍 Grid</button><button class="btn" data-a="set">⚙ Settings</button><button class="btn" data-a="menu">☰ Lobby</button><button class="btn primary" data-a="again">Rematch</button></div>`, 'res', { close: render });
     $('#sheet').onclick = e => {
       const b = e.target.closest('[data-a]');
       if (!b) return;
@@ -3306,7 +3401,7 @@
     $, esc, store, toast, openModal, closeModal, APP_VER, AVATARS, coins, coinPill, COIN, // v08: coins shared with LockWord
     armTap, history: hist, // v08c: two-tap coin buttons; Game History shared with LockWord
     helpSec, helpClick, // v08f: How To Play sections shared with LockWord
-    showScreen, goHome: () => { showScreen('home'); renderHome(); },
+    showScreen, goHome: () => { showScreen('home'); renderHome(); }, lobby: () => renderHome(), // v10: the Lobby (refreshed once LockWord has loaded)
     settings: () => settings,
     GI, gimg, // v09a: the game icons
     sound, // v08h: sound effects (and the 🔇 / 🔊 buttons) shared with LockWord

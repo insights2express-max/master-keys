@@ -17,20 +17,21 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- ===== Home / setup ===== -->
+  <!-- ===== Lobby (v10, JM CD-76: 3.1–3.3, CD-79): only what every game shares, plus one equal card per game ===== -->
   <section id="home" class="screen">
-    <div class="home-wrap">
+    <div class="home-wrap lobby-wrap">
+      <!-- sound, Game History, Master Keys settings and How To Play in the top corner -->
+      <div class="home-icons">
+        <button class="icon-btn snd-btn" data-snd type="button">🔇</button>
+        <button class="icon-btn" id="histBtn" type="button" title="Game History" aria-label="Game History">📜</button>
+        <button class="icon-btn" id="mkSetBtn" type="button" title="Master Keys settings" aria-label="Master Keys settings" data-mk-aria="{suite} settings">⚙</button>
+        <button class="icon-btn" id="howBtn" type="button" title="How To Play" aria-label="How To Play">?</button>
+      </div>
       <header class="brand">
         <img class="logo" src="icons/icon.svg" alt="" width="64" height="64">
         <div class="brand-txt">
-          <h1><span data-mk="suite">Master Keys</span> <span class="vpill" id="verPill">v09a</span></h1>
-          <p class="tag">Place your letters. Finish the words. Beat the Bot.</p>
-        </div>
-        <!-- v08h (JM CD-41: 1.3, 1.4.1): sound, Game History and How To Play as small icons in the top corner -->
-        <div class="home-icons">
-          <button class="icon-btn snd-btn" data-snd type="button">🔇</button>
-          <button class="icon-btn" id="histBtn" type="button" title="Game History" aria-label="Game History">📜</button>
-          <button class="icon-btn" id="howBtn" type="button" title="How To Play" aria-label="How To Play">?</button>
+          <h1><span data-mk="suite">Master Keys</span> <span class="vpill" id="verPill">v10</span></h1>
+          <p class="tag">Word games. Play anywhere, even offline.</p>
         </div>
       </header>
 
@@ -42,6 +43,48 @@
           <span class="home-coins" id="homeCoins"></span><!-- v08: your coin balance -->
         </div>
       </div>
+
+      <span class="lbl games-lbl">Games</span>
+      <div class="games">
+        <!-- each card: tap it (or ⚙ Setup) for the game's Setup screen; 🆕 New Game starts at once with your last settings -->
+        <div class="gcard" id="ckCard" data-g="cross">
+          <div class="ghead"><img class="gico" src="icons/crosskeys.svg" alt=""><div><p class="gname" data-mk="cross">CrossKeys</p><p class="gpitch">Head-to-head crossword tiles. Finish the words, beat the Bot.</p></div></div>
+          <div class="grec" id="ckRec"></div>
+          <div class="gres" id="ckUnf" hidden></div>
+          <div class="gbtns">
+            <button class="btn primary big" id="resumeBtn" type="button" hidden>▶ Resume</button>
+            <button class="btn big" id="ckNewBtn" type="button">🆕 New Game</button>
+            <button class="btn big" id="ckSetupBtn" type="button">⚙ Setup</button>
+          </div>
+          <p class="glast" id="ckLast"></p>
+        </div>
+        <div class="gcard" id="lwCard" data-g="lock">
+          <div class="ghead"><span class="gico" id="vaultBtnIco"><img src="icons/lockword.svg" alt=""></span><div><p class="gname" id="vaultBtnName">LockWord</p><p class="gpitch">Crack the hidden word in a few guesses.</p></div></div>
+          <div class="grec" id="lwRec"></div>
+          <div class="gres" id="lwUnf" hidden></div>
+          <div class="gbtns">
+            <button class="btn primary big" id="lwResumeBtn" type="button" hidden>▶ Resume</button>
+            <button class="btn big" id="lwNewBtn" type="button">🆕 New Game</button>
+            <button class="btn big" id="vaultBtn" type="button">⚙ Setup</button>
+          </div>
+          <p class="glast" id="lwLast"></p>
+        </div>
+        <div class="gcard soon"><b>🗝️</b>More games on the way</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CrossKeys Setup (v10): the settings that used to sit on the menu ===== -->
+  <section id="ckSetup" class="screen" hidden>
+    <header class="vt-top ck-top">
+      <button class="icon-btn" id="ckMenu" type="button" aria-label="Back to the Lobby" title="Back to the Lobby">☰</button>
+      <img class="ck-ico" src="icons/crosskeys.svg" alt="">
+      <h2 class="vt-title ck-title"><span data-mk="cross">CrossKeys</span><small>Setup</small></h2>
+      <button class="icon-btn snd-btn" data-snd type="button">🔇</button>
+      <button class="icon-btn" id="ckHelp" type="button" aria-label="How To Play CrossKeys" data-mk-aria="How To Play {cross}">?</button>
+    </header>
+    <div class="home-wrap ck-wrap">
+      <div class="unfin" id="ckSetUnf" hidden><span id="ckSetUnfTxt"></span><button class="btn primary" id="ckSetResume" type="button">▶ Resume</button></div>
 
       <!-- Opponent (2 rows) + Challenge Level (opponent skill and puzzle difficulty together) -->
       <div class="pair opp-row">
@@ -154,11 +197,7 @@
         <span class="lbl">Grid Colors</span>
         <span class="gs-pick"><select id="gridSel"></select><span id="gridSample"></span></span>
       </label>
-      <!-- v08q (JM CD-58 discussion 2; CD-59: 2.1c, 2.2, 2.3b): Screen = Auto / Light / Dark / Night (Charcoal) -->
-      <label class="field gs-field">
-        <span class="lbl">Screen</span>
-        <select id="screenSel"><option value="auto">Auto (follows your device)</option><option value="light">Light</option><option value="dark">Dark</option><option value="night">Night (dimmest)</option></select>
-      </label>
+      <!-- v10: Screen moved to ⚙ Master Keys settings in the Lobby (it changes every game) -->
       <div class="def-row">
         <button class="btn" id="saveDefBtn" type="button" title="Keep the Challenge Level, Grid Size and all these Options as your defaults">⭐ Save as my defaults</button>
         <button class="btn" id="resetDefBtn" type="button" title="Bring back your saved defaults (or the app's, if you haven't saved any)">↺ Defaults</button>
@@ -166,19 +205,15 @@
         </div>
       </details>
 
-      <!-- v08h (JM CD-41: 1.2): the two games side by side, as two equal buttons. v09: named CrossKeys and LockWord (names.js) -->
-      <div class="play-row">
-        <button class="btn primary big" id="startBtn" type="button"><img class="pb-ico" src="icons/crosskeys.svg" alt=""> <span data-mk="cross">CrossKeys</span></button>
-        <button class="btn big vault-btn" id="vaultBtn" type="button"><span id="vaultBtnIco"><img src="icons/lockword.svg" alt=""></span> <span id="vaultBtnName">LockWord</span></button>
-      </div>
-      <button class="btn big" id="resumeBtn" type="button" hidden>Resume Game</button>
+      <button class="btn primary big" id="startBtn" type="button">▶ Start <span data-mk="cross">CrossKeys</span></button>
+      <div class="vt-stats" id="ckStats"></div>
     </div>
   </section>
 
-  <!-- ===== LockWord, fka Word Vault (v07c, JM CD-21: 5.1–5.3): a word-guessing mini-game ===== -->
+  <!-- ===== LockWord, fka Word Vault (v07c, JM CD-21: 5.1–5.3): a word-guessing game (v10: a full game in the suite, opened from its Lobby card) ===== -->
   <section id="vault" class="screen" hidden>
     <header class="vt-top">
-      <button class="icon-btn" id="vtMenu" type="button" aria-label="Back to the menu" title="Back to the menu">☰</button>
+      <button class="icon-btn" id="vtMenu" type="button" aria-label="Back to the Lobby" title="Back to the Lobby">☰</button>
       <button class="vt-av" id="vtAv" type="button" aria-label="Choose the LockWord icon" data-mk-aria="Choose the {lock} icon" title="Choose an icon"><img src="icons/lockword.svg" alt=""></button>
       <h2 class="vt-title" id="vtTitle" title="Double-click to rename">LockWord</h2>
       <button class="vt-clock" id="vtClock" type="button" title="Pause" aria-label="Pause" hidden><b id="vtPauseIco">⏸️</b><span id="vtClockTxt">0:00</span></button>
@@ -235,7 +270,7 @@
       </div>
       <div class="hub" id="hub">
         <div class="hub-info"><span class="gameinfo bar" id="infoBar"></span><span class="hub-set" id="hubSet"></span></div>
-        <div class="hub-btns"><button class="icon-btn" id="menuBtn" type="button" aria-label="Menu">☰</button><span class="zslot" id="zoomSlot"></span><button class="icon-btn snd-btn" data-snd type="button">🔇</button><button class="icon-btn" id="setBtn" type="button" aria-label="CrossKeys settings" data-mk-aria="{cross} settings" title="Settings">⚙</button><button class="icon-btn" id="helpBtn" type="button" aria-label="How To Play">?</button></div>
+        <div class="hub-btns"><button class="icon-btn" id="menuBtn" type="button" aria-label="Back to the Lobby" title="Back to the Lobby">☰</button><span class="zslot" id="zoomSlot"></span><button class="icon-btn snd-btn" data-snd type="button">🔇</button><button class="icon-btn" id="setBtn" type="button" aria-label="CrossKeys settings" data-mk-aria="{cross} settings" title="Settings">⚙</button><button class="icon-btn" id="helpBtn" type="button" aria-label="How To Play">?</button></div>
       </div>
       <div class="pl opp" id="plOpp">
         <div class="nm" id="oppNm">Bot</div>
@@ -246,7 +281,7 @@
 
     <!-- v08p: the Scoreboard drops down from here on phones (tap either score); the old row's buttons stay hidden -->
     <div class="sheetbar" id="sheetbar">
-      <button class="icon-btn mini" id="menuBtn2" type="button" aria-label="Menu" hidden>☰</button>
+      <button class="icon-btn mini" id="menuBtn2" type="button" aria-label="Back to the Lobby" hidden>☰</button>
       <button class="sheet-toggle" id="sheetToggle" type="button" aria-expanded="false" hidden><span class="cec" id="sheetCec">▸</span> Scoreboard</button>
       <button class="icon-btn mini" id="setBtn2" type="button" aria-label="CrossKeys settings" data-mk-aria="{cross} settings" title="Settings" hidden>⚙</button>
       <button class="icon-btn mini" id="helpBtn2" type="button" aria-label="How To Play" hidden>?</button>

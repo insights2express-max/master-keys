@@ -1739,3 +1739,56 @@ img.pb-ico { display: inline-block; width: 28px; height: 28px; border-radius: 7p
 .hi-ico .gi { width: 28px; height: 28px; vertical-align: middle; border-radius: 7px; }
 .av-grid button.av-img img { display: block; width: 36px; height: 36px; margin: auto; border-radius: 9px; }
 html[data-screen="night"] :is(.gi, img.pb-ico, .cell.clue.corner img) { filter: brightness(.75) saturate(.7); }
+
+/* =====================================================================
+   v10 (JM CD-76: 3.1–3.3; CD-79): the Lobby (one card per game) and the CrossKeys Setup screen
+   ===================================================================== */
+#home, #ckSetup { overflow-y: auto; background: var(--bg); }
+.lobby-wrap { max-width: 760px; gap: 12px; padding-top: 10px; }
+.lobby-wrap > .home-icons { align-self: flex-end; }
+.lobby-wrap .brand { margin-top: -4px; }
+.lobby-wrap .brand .logo { width: 72px; height: 72px; border-radius: 18px; }
+.lobby-wrap .brand h1 { font-size: 40px; line-height: 1.05; }
+.lobby-wrap .brand .tag { font-size: 14px; margin-top: 4px; }
+@media (max-width: 520px) {
+  .lobby-wrap .brand .logo { width: 60px; height: 60px; border-radius: 15px; }
+  .lobby-wrap .brand h1 { font-size: 34px; }
+  .lobby-wrap .brand .tag { font-size: 13px; }
+}
+.lobby-wrap .me-row input { flex: 1; min-width: 0; }
+.games-lbl { margin-top: 2px; }
+.lbl.games-lbl { font-weight: 700; font-size: 14px; }
+.games { display: grid; grid-template-columns: 1fr; gap: 12px; }
+@media (min-width: 700px) { .games { grid-template-columns: 1fr 1fr; } }
+.gcard { background: var(--surface); border-radius: 18px; box-shadow: var(--shadow); padding: 14px; display: flex; flex-direction: column; gap: 10px; cursor: pointer; }
+@media (hover: hover) { .gcard:not(.soon):hover { box-shadow: var(--shadow), inset 0 0 0 2px var(--primary); } }
+.ghead { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px; align-items: center; }
+.ghead .gico, .ghead .gico img { width: 64px; height: 64px; border-radius: 24%; display: block; }
+.ghead span.gico { display: grid; place-items: center; font-family: var(--emoji); font-size: 44px; line-height: 1; }
+.gname { margin: 0; font-size: 22px; font-weight: 900; }
+.gpitch { margin: 2px 0 0; font-size: 14px; color: var(--muted); }
+.grec { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.grec div { background: var(--bg); border-radius: 10px; padding: 6px 4px; text-align: center; }
+.grec b { display: block; font-size: 17px; }
+.grec span { font-size: 11px; color: var(--muted); }
+.gres { background: var(--hl); border-radius: 10px; padding: 6px 10px; font-size: 13px; font-weight: 700; }
+.gbtns { display: flex; gap: 8px; }
+.gbtns .btn { flex: 1 1 0; min-width: 0; padding-left: 6px; padding-right: 6px; white-space: nowrap; font-size: 16px; }
+.gbtns .btn[hidden] { display: none; }
+.glast { margin: -2px 0 0; font-size: 12px; color: var(--muted); }
+.gcard.soon { border: 2px dashed var(--line); background: transparent; box-shadow: none; cursor: default; align-items: center; justify-content: center; text-align: center; color: var(--muted); min-height: 110px; gap: 4px; }
+.gcard.soon b { font-size: 28px; font-family: var(--emoji); }
+html[data-screen="night"] :is(.ghead .gico, .ck-ico) { filter: brightness(.75) saturate(.7); }
+/* CrossKeys Setup: a header like LockWord's (☰ · icon · title · 🔇 · ?), then the settings that used to be on the menu */
+.ck-top { grid-template-columns: auto auto minmax(0, 1fr) auto auto !important; }
+.ck-ico { width: 40px; height: 40px; border-radius: 10px; display: block; }
+.ck-title { line-height: 1.05; cursor: default; }
+.ck-title small { display: block; font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.ck-wrap { padding-top: 6px; }
+.unfin { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; align-items: center; background: var(--hl); border-radius: 12px; padding: 8px 10px; font-size: 14px; font-weight: 700; }
+.unfin[hidden] { display: none; }
+.help-games { flex-wrap: wrap; justify-content: flex-start; }
+.ghead #vaultBtnIco { width: 64px; height: 64px; line-height: 64px; border-radius: 24%; font-size: 44px; }
+.gres, .unfin { color: #3b2a0b; }
+html[data-screen="night"] :is(.gres, .unfin) { color: var(--ink); }
+@media (max-width: 520px) { .gbtns { flex-wrap: wrap; } .gbtns :is(#resumeBtn, #lwResumeBtn) { flex-basis: 100%; } }
