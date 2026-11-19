@@ -408,8 +408,9 @@
     const over = !!(R.over && R.resHtml);
     $('#vtPlay').classList.toggle('is-over', over);
     $('#vtOver').hidden = !over;
-    $('#vtOver').innerHTML = over ? `<span class="ob-h">🏁 ${esc(R.resHead)}</span>
+    $('#vtOver').innerHTML = over ? `${UI.winLine(R.resWin)}
       <span class="ob-btns"><button class="btn" type="button" data-ob="res">📊 Results</button><button class="btn" type="button" data-ob="menu">☰ Lobby</button><button class="btn primary" type="button" data-ob="again">Next word</button></span>` : '';
+    if (over) { $('#vtOver').style.setProperty('--gw', Math.round($('#vtBoard').getBoundingClientRect().width) + 'px'); UI.fitOver($('#vtOver')); } // v11a: as wide as the grid, text as large as one row allows
     $('#vtHint span').textContent = R.hints ? 'Hint ✓' : `Hint 🪙${HINT_COINS}`;
     $('#vtHint').title = R.hints ? 'Show the clue again (free)' : `Show a clue for the word (${HINT_COINS} coins)`;
     $('#vtHint').classList.toggle('poor', !R.hints && UI.coins && UI.coins.bal < HINT_COINS);
@@ -717,7 +718,8 @@
         <details class="res-info"><summary>ⓘ What do the bars mean?</summary><p class="vt-dist-note">Each row is a number of guesses (✗ = not solved). Its bar shows how many words you've solved in that many guesses, so a longer bar means it happens more often. The highlighted bar is this word.</p></details></section>` : ''}</div>`;
     addHistory(won ? `Solved ${w} in ${R.rows.length}/${R.tries}` : `${gaveUp ? 'Gave up' : 'Not solved'}: ${w}`, won ? `${sc.total} pts` : '—', body);
     R.resHtml = body;
-    R.resHead = `${face} ${head} · ${w}`;
+    // v11a (JM CD-93: 2.1 N, one report for every game): "<icon> Name WINS! 🏆 120 pts", or "🔒 The Lock WINS! 🏆 CRANE"
+    R.resWin = won ? Object.assign(UI.meWin(), { score: `${sc.total} pts` }) : { av: '🔒', who: 'The Lock', score: w };
     render(); // the game-over bar replaces the button row
     openResult();
   }

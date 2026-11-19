@@ -1,4 +1,4 @@
-/* Master Keys — user interface: the Lobby and CrossKeys, fka Clue Duel (v10b: 💡 Hint marks a cell only, no tile picked for you; v10a: Alfa Slab One titles, collapsible game cards (name = Setup, chevron = details), New Game fits, striped Hint cell; v10: the Lobby with one card per game (🆕 New Game / ▶ Resume / ⚙ Setup), CrossKeys Setup screen, ⚙ Master Keys settings (Screen), ☰ back to the Lobby, How To Play split into the suite and each game; v09a: Night crossing-clue text, tile drawn in its cell at once + slow-drop recorder, game icons, code files renamed lockword.js / lockwords.js; v09: renamed Master Keys / CrossKeys / LockWord, names in names.js, LockWord Night look;
+/* Master Keys — user interface: the Lobby and CrossKeys, fka Clue Duel (v11a: one-row win report shared by every game, "<icon> Name WINS! 🏆 score", ⚖️ for a draw; v10b: 💡 Hint marks a cell only, no tile picked for you; v10a: Alfa Slab One titles, collapsible game cards (name = Setup, chevron = details), New Game fits, striped Hint cell; v10: the Lobby with one card per game (🆕 New Game / ▶ Resume / ⚙ Setup), CrossKeys Setup screen, ⚙ Master Keys settings (Screen), ☰ back to the Lobby, How To Play split into the suite and each game; v09a: Night crossing-clue text, tile drawn in its cell at once + slow-drop recorder, game icons, code files renamed lockword.js / lockwords.js; v09: renamed Master Keys / CrossKeys / LockWord, names in names.js, LockWord Night look;
    v08r: mirrored top boxes (the Bot gets a per-TURN clock, names centered), long settings line wraps;
    v08q: Screen setting with Night (Charcoal), ⚙ "Changes now" / "From your next game", Letters in Hand 4–8 and changeable mid-game (next round), Full Hand +2 per tile, bigger hub, DONE under the hand on upright tablets, word progress on the clue card, drawn pictures, 1-letter picture captions;
    v08p: new top band (no clue bar; clocks by the scores, hub of buttons), floating turn messages, tap a clue for its card, orange ? and bars for missing letters and words, the Bot waits for your tap after red marks, the Bot's 2-second finish after your clock runs out, wide screens: names over avatars, wings for the buttons, big DONE under the grid;
@@ -15,7 +15,7 @@
    v08j: grid colors, final-play view, clock-out final turn, menu defaults, phone two-finger drag) */
 'use strict';
 (() => {
-  const APP_VER = 'v11'; // Project CP: shown as a pill beside the title and in the browser tab
+  const APP_VER = 'v11a'; // Project CP: shown as a pill beside the title and in the browser tab
   const NM = window.MK_NAMES || { suite: 'Master Keys', cross: 'CrossKeys', lock: 'LockWord' }; // v09: the game names (names.js)
   // v09a (JM CD-71: 1.2c, 1.3b): the two games' own icons, shown wherever the 🧩 / 🔐 emoji stood
   const GI = { cross: 'icons/crosskeys.svg', lock: 'icons/lockword.svg', ring: 'icons/keyring.svg' }; // v11: KeyRing
@@ -507,6 +507,35 @@
     '🔍', '🧪', '🎹', '🎮', '🕹️', '🏝️', '🌋', '⛰️', '🍩', '🍓', '🍉', '🎃', '🔑', '🗝️', '🧩', '🎁'];
   const AV_LIB = [...new Set(AVATARS.concat(AV_MORE))].filter(a => !OPP.some(o => o.a === a));
   function myAv() { return settings.avatar === 'custom' && settings.avPic ? `<img class="av-img" src="${settings.avPic}" alt="">` : esc(settings.avatar); }
+
+  // ---------- v11a (JM CD-93): one win report for every game ----------
+  // One row in the gold frame: "<icon> Name WINS! 🏆 score" (no "Game over", no 🏁), as large as the row allows.
+  // With no name set it reads "<icon> YOU WIN!". A draw reads "DRAW! ⚖️ 40–40" (⚖️ replaces 🤝, which looked like a heart).
+  const OB_MAX = 40, OB_MIN = 18; // below 18px a long name ends in … instead
+  const DRAW_ICO = '⚖️';
+  function meWin() { const n = (settings.name || '').trim(); return n ? { av: myAv(), who: esc(n) } : { av: myAv(), who: 'YOU', you: true }; }
+  function winLine(o) {
+    const verb = o.draw ? 'DRAW!' : o.you ? 'WIN!' : 'WINS!';
+    const who = o.draw ? '' : `<span class="ob-av">${o.av || ''}</span><span class="ob-who">${o.who}</span>`;
+    const label = o.draw ? `Draw, ${o.score}` : `${o.you ? 'You win' : String(o.who).replace(/<[^>]*>/g, '') + ' wins'}, ${o.score}`;
+    return `<span class="ob-h" role="status" aria-label="${esc(label)}"><span class="ob-line" aria-hidden="true">${who}<b class="ob-v">${verb}</b><span class="ob-sym">${o.draw ? DRAW_ICO : (o.sym || '🏆')}</span><span class="ob-sc">${o.score}</span></span></span>`;
+  }
+  // the largest font size at which the row fits on one line; a very long name ends in "…" at the smallest size
+  function fitOver(bar) {
+    const h = bar && !bar.hidden && bar.querySelector('.ob-h'), ln = h && h.querySelector('.ob-line');
+    if (!ln) return;
+    const cs = getComputedStyle(h);
+    const room = h.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - parseFloat(cs.borderLeftWidth) - parseFloat(cs.borderRightWidth);
+    if (room <= 0) return;
+    ln.style.fontSize = OB_MAX + 'px';
+    ln.style.width = 'max-content'; ln.style.maxWidth = 'none';
+    const need = ln.getBoundingClientRect().width;
+    ln.style.width = ''; ln.style.maxWidth = '';
+    if (need > room) ln.style.fontSize = Math.max(OB_MIN, Math.floor(OB_MAX * room / need * 0.97)) + 'px';
+  }
+  const fitOvers = () => document.querySelectorAll('.overbar:not([hidden])').forEach(fitOver);
+  window.addEventListener('resize', () => requestAnimationFrame(fitOvers));
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitOvers);
   function shrinkPicture(file, done) {
     const rd = new FileReader();
     rd.onload = () => {
@@ -1487,12 +1516,15 @@
     const obKey = over ? (ui.resSeen ? 'seen' : 'new') : ''; // v08j: the bar is redrawn once Results has been seen
     if (over && $('#overBar').dataset.on !== obKey) {
       const r = G.result, o = opp();
-      const head = r.winner === 0 ? `🏆 ${myName() === 'You' ? 'You win' : esc(myName()) + ' wins'}` : r.winner === 1 ? `${o.a} ${esc(o.n)} wins` : '🤝 A draw';
-      $('#overBar').innerHTML = `<span class="ob-h">🏁 Game over · ${head} · ${G.scores[0]}–${G.scores[1]}</span>
+      // v11a (JM CD-93): "<icon> Name WINS! 🏆 48–31", the winner's score first (1.3a)
+      const hi = Math.max(G.scores[0], G.scores[1]), lo = Math.min(G.scores[0], G.scores[1]);
+      const wl = r.winner === 0 ? meWin() : r.winner === 1 ? { av: o.a, who: esc(o.n) } : { draw: true };
+      $('#overBar').innerHTML = `${winLine(Object.assign(wl, { score: `${hi}–${lo}` }))}
         <span class="ob-btns">${ui.resSeen ? '<button class="btn" type="button" data-ob="res">📊 Results</button>' : '<button class="btn primary see-res" type="button" data-ob="res" title="Open the Results (Enter)">📊 See results ▸</button>'}<button class="btn" type="button" data-ob="menu">☰ Lobby</button><button class="btn${ui.resSeen ? ' primary' : ''}" type="button" data-ob="again">Rematch</button></span>`;
       $('#overBar').dataset.on = obKey;
     }
     if (!over) { $('#overBar').innerHTML = ''; delete $('#overBar').dataset.on; }
+    else fitOver($('#overBar')); // v11a (CD-93): as large as one row allows
     if (ui.pending.length) {
       // v08d (CD-34: 4.4): a tile count, not points (points would tell you which tiles are right)
       $('#doneTxt').textContent = `Done · ${ui.pending.length}`;
@@ -3338,7 +3370,7 @@
     stats[G.settings.skill] = rec;
     store.set('cd.stats', stats);
     const o = opp();
-    const face = r.winner === 0 ? '🏆' : r.winner === 1 ? o.a : '🤝';
+    const face = r.winner === 0 ? '🏆' : r.winner === 1 ? o.a : DRAW_ICO; // v11a (CD-93: 1.2.1): ⚖️ instead of 🤝
     sound.play(r.winner === 0 ? 'win' : r.winner === 1 ? 'lose' : 'draw', 0.5); // v08h
     const title = r.winner === 0 ? `${myName() === 'You' ? 'You win' : myName() + ' wins'}!` : r.winner === 1 ? `${o.n} wins` : 'It\'s a draw';
     const st = G.stats;
@@ -3444,6 +3476,7 @@
     showScreen, goHome: () => { showScreen('home'); renderHome(); }, lobby: () => renderHome(), // v10: the Lobby (refreshed once LockWord has loaded)
     settings: () => settings,
     GI, gimg, // v09a: the game icons
+    winLine, meWin, fitOver, // v11a (CD-93): the one-row win report shared by every game
     sound, // v08h: sound effects (and the 🔇 / 🔊 buttons) shared with LockWord
     _render: () => render(), _G: () => G // v08k: for timing checks only
   };

@@ -2018,3 +2018,22 @@ html[data-screen="night"] .kr-chips span.drp { background: #2a3442; color: #9fb3
 .gbtns #krResumeBtn { flex: 1 1 100%; }
 .gbtns #krNewBtn { flex: 2 1 0; }
 .gbtns #krSetupBtn { flex: 1 1 0; }
+/* ===== v11a (JM CD-93): one win report for every game, on ONE row: "<icon> Name WINS! 🏆 score" =====
+   No "Game over" / 🏁. The text is as large as the row allows (app.js fitOver sets .ob-line's font size, 18–40px). */
+.overbar { flex-direction: column; gap: 8px; }
+.overbar .ob-h {
+  box-sizing: border-box; width: var(--gw, 100%); max-width: 100%; padding: 6px 12px; font-size: 17px;
+  display: flex; justify-content: center; align-items: center;
+  border: 3px solid #d4a72c; border-radius: 12px; box-shadow: 0 0 10px rgba(212, 167, 44, .35);
+}
+.overbar .ob-line { display: flex; align-items: center; justify-content: center; gap: .28em; max-width: 100%; white-space: nowrap; line-height: 1.2; font-weight: 900; }
+.overbar .ob-line > * { flex: none; }
+.overbar .ob-line > .ob-who { flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.overbar .ob-av { display: inline-flex; align-items: center; }
+.overbar .ob-av img { display: block; width: 1.15em; height: 1.15em; border-radius: 50%; object-fit: cover; }
+.overbar .ob-av img.ob-gi { border-radius: 0; object-fit: contain; }
+.overbar .ob-v { letter-spacing: .02em; }
+/* KeyRing: the report sits under the Ring, in the tip's row */
+.kr-over { grid-area: tip; padding: 0 0 4px; }
+.kr-over .ob-h { width: min(100%, 560px); }
+#krMain.is-over .kr-tip { display: none; }

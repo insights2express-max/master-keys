@@ -179,6 +179,7 @@
     setHead(`Ring ${R.no} · ${R.n} letters`);
     buildRing();
     paintTag(); paintBtns(); tick(0);
+    paintOver(); // v11a (CD-93)
     fit(); requestAnimationFrame(fit);
     if (!R.started) {
       R.started = true;
@@ -263,13 +264,15 @@
     const wide = W0 >= 900 && H0 >= 480;
     main.classList.toggle('wide', wide);
     const coarse = matchMedia('(pointer: coarse)').matches;
-    const infoH = $('#krInfo').offsetHeight || 34, msgH = 46, tipH = coarse ? 0 : 22, gap = 8;
+    const infoH = $('#krInfo').offsetHeight || 34, msgH = 46, gap = 8;
+    // v11a (CD-93): once the Ring is over, the win report takes the tip's row (so the Ring leaves room for it)
+    const ob = $('#krOver'), tipH = !ob.hidden ? ob.offsetHeight : coarse ? 0 : 22, tipRow = !ob.hidden || !coarse;
     if (wide) {
       const colW = (W0 - 44 - 26) / 2.1; // the right column (1 of 2.1 shares)
       const H = H0 - 24 - infoH - msgH - tipH - gap * 4;
       rs = Math.min(colW, H, 560);
     } else {
-      const W = W0 - 24, H = H0 - 16 - infoH - msgH - tipH - gap * (coarse ? 3 : 4);
+      const W = W0 - 24, H = H0 - 16 - infoH - msgH - tipH - gap * (tipRow ? 4 : 3);
       rs = Math.min(W - 4, H - slotNeed(W, W < 500 ? 28 : 34), 560);
     }
     rs = Math.max(170, Math.floor(rs));
@@ -624,6 +627,10 @@
       });
     }
     R.resHtml = body;
+    // v11a (JM CD-93: 2.1 N): the same one-row win report as the other games, under the Ring
+    const sc = `${R.found.size}/${R.words.length} words`;
+    R.resWin = cleared ? Object.assign(UI.meWin(), { score: sc }) : { av: UI.gimg('ring', 'ob-gi'), who: 'The Ring', score: sc };
+    paintOver(); fit();
     UI.lobby();
     if (how === 'quit') return;
     snd(cleared ? 'win' : 'lose');
@@ -633,7 +640,7 @@
   function timeUp() { clearTrace(); endRing('time'); }
   function openResult() {
     if (!R || !R.resHtml) return;
-    openModal(`${R.resHtml}<div class="row res-bar"><button class="btn" data-a="setup">⚙ Setup</button><button class="btn" data-a="menu">☰ Lobby</button><button class="btn primary" data-a="next">▶ Next Ring</button></div>`, 'res', { close: () => { if (playOn()) msg('Ring over: tap the 🔑 words counter for the result', '', 5000); } });
+    openModal(`${R.resHtml}<div class="row res-bar"><button class="btn" data-a="setup">⚙ Setup</button><button class="btn" data-a="menu">☰ Lobby</button><button class="btn primary" data-a="next">▶ Next Ring</button></div>`, 'res', { close: () => { if (playOn()) msg('Ring over: 📊 Results reopens the result', '', 5000); } });
     $('#sheet').onclick = e => {
       const b = e.target.closest('[data-a]'); if (!b) return;
       closeModal();
@@ -643,6 +650,17 @@
     };
   }
   $('#krProg').addEventListener('click', () => { if (R && R.over) openResult(); });
+  function paintOver() {
+    const bar = $('#krOver'), over = !!(R && R.over && R.resWin);
+    $('#krMain').classList.toggle('is-over', over);
+    bar.hidden = !over;
+    bar.innerHTML = over ? `${UI.winLine(R.resWin)}<span class="ob-btns"><button class="btn" type="button" data-ob="res">📊 Results</button><button class="btn" type="button" data-ob="menu">☰ Lobby</button><button class="btn primary" type="button" data-ob="next">▶ Next Ring</button></span>` : '';
+    if (over) UI.fitOver(bar);
+  }
+  $('#krOver').addEventListener('click', e => {
+    const b = e.target.closest('[data-ob]'); if (!b) return;
+    if (b.dataset.ob === 'res') openResult(); else if (b.dataset.ob === 'next') newRing(true); else goLobby();
+  });
   function confetti() {
     const c = document.createElement('div'); c.className = 'kr-confetti';
     c.innerHTML = Array.from({ length: 40 }, (_, k) => `<i style="left:${Math.random() * 100}%;background:${['#f5b300', '#2c6bd8', '#1e9e4a', '#e0457b', '#4fc3f7'][k % 5]};animation-delay:${(Math.random() * 0.5).toFixed(2)}s"></i>`).join('');
