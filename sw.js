@@ -1,6 +1,6 @@
 /* Master Keys (fka Clue Duel) — service worker: caches the whole app so it plays offline.
    Bump CACHE whenever any file changes, so players get the update. */
-const CACHE = 'master-keys-v11b-1'; // v11b-1: KeyRing v11b (JM CD-90, CD-95), keyrings.js K02, red muted speaker, Coins heading with the balance; v11a-1: one-row win report in every game (CD-93); v11-1: KeyRing, the word builder (keyring.js, keyrings.js, icons/keyring.svg); v10b-1: Hint marks a cell only (no tile picked); v10a-1: Alfa Slab One titles (fonts/alfa-slab-one.woff2), collapsible game cards, New Game fits, striped Hint cell; v10-1: the Lobby (one card per game), CrossKeys Setup screen, Master Keys settings, How To Play split; v09a-3: v09a-3: Master Keys Lexicon L14.02 (data-only: drafts round 2); v09a-2: L14.01; v09a: Night crossing-clue text, quicker tile drops + slow-drop recorder, new icons, code files renamed lockword.js / lockwords.js
+const CACHE = 'master-keys-v11b-2'; // v11b-2: install fetches every file fresh (a stale v11a copy was cached as v11b-1); v11b-1: KeyRing v11b (JM CD-90, CD-95), keyrings.js K02, red muted speaker, Coins heading with the balance; v11a-1: one-row win report in every game (CD-93); v11-1: KeyRing, the word builder (keyring.js, keyrings.js, icons/keyring.svg); v10b-1: Hint marks a cell only (no tile picked); v10a-1: Alfa Slab One titles (fonts/alfa-slab-one.woff2), collapsible game cards, New Game fits, striped Hint cell; v10-1: the Lobby (one card per game), CrossKeys Setup screen, Master Keys settings, How To Play split; v09a-3: v09a-3: Master Keys Lexicon L14.02 (data-only: drafts round 2); v09a-2: L14.01; v09a: Night crossing-clue text, quicker tile drops + slow-drop recorder, new icons, code files renamed lockword.js / lockwords.js
 const ASSETS = [
   './',
   'index.html',
@@ -27,8 +27,10 @@ const ASSETS = [
   'fonts/alfa-slab-one.woff2'
 ];
 
+// v11b-2: every file is fetched fresh from the server (cache: 'reload'), never from the browser's own short-term copy; that
+// copy could still hold the previous version's files for a few minutes after a release and freeze them under the new name
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting()));
+  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS.map(u => new Request(u, { cache: 'reload' })))).then(() => self.skipWaiting()));
 });
 
 self.addEventListener('activate', e => {
