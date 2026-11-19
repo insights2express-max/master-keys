@@ -1,0 +1,882 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Master Keys · KeyRing clickable mockup for JM (RFI CD-87: 1.1–1.5; RFI CD-88). A preview only: the app is unchanged.
+     Our own look (Master Keys glass + 3D tiles); nothing is copied from the reference screenshot. -->
+<title>KeyRing Mockup · CD-88</title>
+<style>
+  @font-face { font-family: 'Alfa Slab One'; font-style: normal; font-weight: 400; font-display: swap; src: url('../fonts/alfa-slab-one.woff2') format('woff2'); }
+  /* ---------- the page around the mockup ---------- */
+  :root { --pg: #f4f1ea; --pcard: #ffffff; --pink: #1f2933; --pmuted: #5f6b76; --pline: #ddd6c8; --pacc: #2c6bd8; color-scheme: light; }
+  @media (prefers-color-scheme: dark) { :root { --pg: #15181c; --pcard: #1f242a; --pink: #e4e4e4; --pmuted: #9aa4ad; --pline: #333b44; --pacc: #6f9ff0; color-scheme: dark; } }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--pg); color: var(--pink); font: 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; overflow-x: hidden; }
+  main { max-width: 1320px; margin: 0 auto; padding: 16px; }
+  h1 { font-size: 22px; margin: 4px 0 2px; }
+  .lead { color: var(--pmuted); margin: 0 0 14px; max-width: 820px; }
+  .ctrls { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; margin-bottom: 10px; }
+  .ctrl { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .ctrl > span { font-size: 12px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; color: var(--pmuted); }
+  .pseg { display: inline-flex; border: 1px solid var(--pline); border-radius: 10px; overflow: hidden; background: var(--pcard); }
+  .pseg button { border: 0; background: none; color: var(--pink); font: inherit; font-size: 14px; padding: 6px 11px; cursor: pointer; }
+  .pseg button + button { border-left: 1px solid var(--pline); }
+  .pseg button.on { background: var(--pacc); color: #fff; font-weight: 700; }
+  .pchk { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; cursor: pointer; }
+  .jump { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 0 0 14px; font-size: 13px; color: var(--pmuted); }
+  .jump button { border: 1px solid var(--pline); background: var(--pcard); color: var(--pink); border-radius: 999px; padding: 3px 10px; font: inherit; font-size: 13px; cursor: pointer; }
+  .jump button.on { border-color: var(--pacc); color: var(--pacc); font-weight: 700; }
+  .stage { display: flex; flex-wrap: wrap; gap: 22px; align-items: flex-start; }
+  .stage .device { flex: none; margin: 0; max-width: 100%; }
+  .legend { flex: 1 1 300px; min-width: 0; background: var(--pcard); border: 1px solid var(--pline); border-radius: 14px; padding: 12px 14px; }
+  .legend h2 { font-size: 15px; margin: 0 0 6px; letter-spacing: .03em; text-transform: uppercase; }
+  .legend ol { margin: 0; padding-left: 0; list-style: none; }
+  .legend li { display: grid; grid-template-columns: 24px 1fr; gap: 6px; margin: 0 0 8px; font-size: 14px; }
+  .legend li b.n { display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: #e0457b; color: #fff; font-size: 12px; margin-top: 1px; }
+  .legend .flow { font-weight: 700; margin: 0 0 10px; }
+  .legend .foot { color: var(--pmuted); font-size: 13px; margin: 10px 0 0; }
+  .legend h3 { font-size: 13px; text-transform: uppercase; letter-spacing: .04em; margin: 12px 0 6px; color: var(--pmuted); }
+
+  /* ---------- the device frame ---------- */
+  .device { margin: 0 auto; border: 10px solid #111; border-radius: 38px; overflow: hidden; background: #111; box-shadow: 0 10px 40px rgba(0, 0, 0, .25); position: relative; }
+  .device.phone { width: 395px; height: 800px; }
+  .device.phone360 { width: 380px; height: 760px; }
+  .device.ipad { width: 788px; height: 1044px; border-radius: 28px; }
+  .device.desk { width: 1200px; height: 740px; border-radius: 12px; border-width: 8px; }
+
+  /* ---------- the app inside it: Master Keys v10b colors ---------- */
+  .app {
+    --bg: #ece6d8; --surface: #fbf8f1; --ink: #1f2933; --muted: #69727d; --line: #b9b19f; --hl: #fff0b8;
+    --btn: #ffffff; --btn-ink: #1f2933; --primary: #2c6bd8; --primary-ink: #ffffff; --coin: #9a6b00;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .10), 0 6px 18px rgba(0, 0, 0, .08);
+    --emoji: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Segoe UI Symbol", sans-serif;
+    --tfont: 'Alfa Slab One', Rockwell, 'Roboto Slab', Georgia, serif;
+    /* KeyRing */
+    --fx: radial-gradient(60% 45% at 12% 8%, rgba(44, 107, 216, .20), transparent 70%), radial-gradient(55% 40% at 92% 92%, rgba(245, 179, 0, .22), transparent 70%);
+    --glass: linear-gradient(160deg, rgba(255, 255, 255, .15), rgba(255, 255, 255, .03) 45%, rgba(0, 0, 0, .14)), rgba(22, 30, 40, .82);
+    --glass-edge: inset 0 1px 0 rgba(255, 255, 255, .22), inset 0 0 0 1px rgba(255, 255, 255, .1), 0 10px 26px rgba(0, 0, 0, .3);
+    --well: #0b1016; --tile-top: #fcebc0; --tile-bot: #efd18c; --tile-edge: #c39d4f; --tile-ink: #3b2a0b;
+    --drop-top: #d9e8ff; --drop-bot: #a9c8f5; --drop-edge: #6e95cf; --drop-ink: #173f8f;
+    --glow: #4fc3f7; --steel1: #f4f7fa; --steel2: #9aa7b3; --steel3: #5d6a77; --side: #0d131a;
+    --cb1: #4a8af0; --cb2: #2c6bd8; --cb-ring: #1c3d78;
+    --tag1: #ffe082; --tag2: #f5b300; --tag-ink: #3a2a00;
+    position: absolute; inset: 0; background: var(--bg); color: var(--ink); color-scheme: light;
+    font: 16px/1.35 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; overflow: hidden;
+    -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent;
+  }
+  .app[data-screen="dark"] {
+    --bg: #12181f; --surface: #1b232c; --ink: #e8edf2; --muted: #96a1ad; --line: #3a4552; --hl: #3a3420;
+    --btn: #26303b; --btn-ink: #e8edf2; --primary: #3f7fe8; --coin: #ffcc33;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 6px 18px rgba(0, 0, 0, .3); color-scheme: dark;
+    --fx: radial-gradient(60% 45% at 12% 8%, rgba(63, 127, 232, .22), transparent 70%), radial-gradient(55% 40% at 92% 92%, rgba(245, 179, 0, .10), transparent 70%);
+    --glass: linear-gradient(160deg, rgba(255, 255, 255, .12), rgba(255, 255, 255, .02) 45%, rgba(0, 0, 0, .2)), rgba(30, 40, 52, .78);
+  }
+  .app[data-screen="night"] {
+    --bg: #121212; --surface: #1c1c1c; --ink: #a6a6a6; --muted: #6a6a6a; --line: #2e2e2e; --hl: #34321f;
+    --btn: #262626; --btn-ink: #bdbdbd; --primary: #3d5878; --primary-ink: #d0d0d0; --coin: #a08530;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .5); color-scheme: dark;
+    --fx: none;
+    --glass: linear-gradient(160deg, rgba(255, 255, 255, .05), rgba(255, 255, 255, 0) 45%, rgba(0, 0, 0, .2)), #161616;
+    --glass-edge: inset 0 1px 0 rgba(255, 255, 255, .07), inset 0 0 0 1px rgba(255, 255, 255, .04), 0 8px 20px rgba(0, 0, 0, .5);
+    --well: #0e0e0e; --tile-top: #b9ad8e; --tile-bot: #9c8f6c; --tile-edge: #6f6448; --tile-ink: #111;
+    --drop-top: #7f8fa3; --drop-bot: #64748a; --drop-edge: #45525f; --drop-ink: #0d1520;
+    --glow: #6f8fb0; --steel1: #8f8f8f; --steel2: #555; --steel3: #333; --side: #070707;
+    --cb1: #3d5878; --cb2: #31475f; --cb-ring: #1d2a38;
+    --tag1: #a08530; --tag2: #7d6620; --tag-ink: #111;
+  }
+  .app[data-screen="night"] img.gi, .app[data-screen="night"] .kri { filter: brightness(.75) saturate(.7); }
+  .scr { position: absolute; inset: 0; overflow-y: auto; display: none; flex-direction: column; }
+  .scr.on { display: flex; }
+  .wrap { width: 100%; max-width: 720px; margin: 0 auto; padding: 14px 14px 22px; display: flex; flex-direction: column; gap: 12px; }
+  .lbl { font-size: 12px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+  .field { display: flex; flex-direction: column; gap: 4px; }
+  select, input[type=text] { font: inherit; font-size: 15px; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); width: 100%; }
+  .btn { font: inherit; font-weight: 700; border: 0; border-radius: 12px; padding: 10px 14px; background: var(--btn); color: var(--btn-ink); box-shadow: var(--shadow); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+  .btn.primary { background: var(--primary); color: var(--primary-ink); }
+  .btn.big { font-size: 18px; padding: 13px 16px; border-radius: 14px; }
+  .icon-btn { width: 38px; height: 38px; border: 0; border-radius: 11px; background: var(--btn); color: var(--btn-ink); box-shadow: var(--shadow); font-size: 18px; font-family: var(--emoji); cursor: pointer; display: inline-grid; place-items: center; padding: 0; }
+  img.gi, .kri { display: block; border-radius: 24%; }
+  .kri svg { display: block; width: 100%; height: 100%; }
+  .vpill { display: inline-block; vertical-align: middle; font: 800 12px system-ui, sans-serif; padding: 1px 7px; border-radius: 999px; background: var(--primary); color: var(--primary-ink); margin-left: 4px; }
+  .coin-pill { display: inline-flex; align-items: center; gap: 3px; border: 0; padding: 3px 10px 3px 7px; border-radius: 999px; font: 800 14px system-ui, sans-serif; font-variant-numeric: tabular-nums; color: #3a2a00; background: linear-gradient(#ffe082, #f5b300); box-shadow: inset 0 -2px 0 rgba(0, 0, 0, .18), 0 1px 2px rgba(0, 0, 0, .25); white-space: nowrap; }
+  .app[data-screen="night"] .coin-pill { background: linear-gradient(#a08530, #7d6620); color: #111; }
+  .coin-pill.bump { animation: bump .35s; }
+  @keyframes bump { 50% { transform: scale(1.15); } }
+
+  /* ---------- Lobby (v10b: collapsible cards) ---------- */
+  .corner { display: flex; gap: 6px; justify-content: flex-end; }
+  .brand { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px; align-items: center; margin-top: -4px; }
+  .brand img { width: 60px; height: 60px; border-radius: 24%; }
+  .brand h1 { margin: 0; font: 400 30px/1.05 var(--tfont); }
+  .tag { margin: 0; font-size: 13px; color: var(--muted); }
+  .me-row { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 8px; align-items: center; }
+  .me-av { width: 44px; height: 44px; border: 0; border-radius: 12px; background: var(--surface); box-shadow: var(--shadow); font-size: 24px; font-family: var(--emoji); }
+  .games { display: grid; grid-template-columns: 1fr; gap: 12px; align-items: start; }
+  .wide-lobby .games { grid-template-columns: 1fr 1fr; }
+  .gcard { background: var(--surface); border-radius: 18px; box-shadow: var(--shadow); padding: 10px 12px; display: flex; flex-direction: column; cursor: pointer; position: relative; }
+  .gcard.new { box-shadow: var(--shadow), inset 0 0 0 2px #f5b300; }
+  .ghead { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 10px; align-items: center; }
+  .ghead img, .ghead .kri { width: 48px; height: 48px; }
+  .gname { margin: 0; font: 400 21px/1.15 var(--tfont); }
+  .gname .newb { font: 800 11px system-ui, sans-serif; vertical-align: middle; background: #f5b300; color: #3a2a00; border-radius: 999px; padding: 1px 6px; margin-left: 4px; }
+  .gpitch { margin: 2px 0 0; font-size: 13px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .gchev { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--primary); background: var(--surface); color: var(--primary); display: grid; place-items: center; cursor: pointer; padding: 0; align-self: start; transition: background .2s, color .2s; }
+  .gchev svg { width: 20px; height: 20px; transition: transform .3s ease; }
+  .gcard.open .gchev { background: var(--primary); color: var(--primary-ink); }
+  .gcard.open .gchev svg { transform: rotate(180deg); }
+  .gbody { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .3s ease; }
+  .gbody > div { overflow: hidden; min-height: 0; display: flex; flex-direction: column; gap: 10px; }
+  .gcard.open .gbody { grid-template-rows: 1fr; }
+  .gcard.open .gbody > div { padding-top: 10px; }
+  .grec { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .grec div { background: var(--bg); border-radius: 10px; padding: 6px 4px; text-align: center; }
+  .grec b { display: block; font-size: 17px; }
+  .grec span { font-size: 11px; color: var(--muted); }
+  .gbtns { display: flex; flex-wrap: wrap; gap: 8px; }
+  .gbtns .btn { flex: 2 1 0; min-width: 0; white-space: nowrap; font-size: 16px; padding-left: 6px; padding-right: 6px; }
+  .gbtns .btn.set { flex: 1 1 0; }
+  .glast { font-size: 12px; color: var(--muted); margin: -4px 0 0; }
+  .gcard.soon { border: 2px dashed var(--line); background: transparent; box-shadow: none; cursor: default; flex-direction: row; align-items: center; gap: 8px; font-size: 14px; color: var(--muted); }
+  .gcard.soon b { font-size: 22px; font-family: var(--emoji); }
+
+  /* ---------- Setup screen ---------- */
+  .top { display: grid; grid-template-columns: auto auto minmax(0, 1fr) auto auto; gap: 8px; align-items: center; padding: 10px 12px 2px; }
+  .top img, .top .kri { width: 40px; height: 40px; border-radius: 10px; }
+  .top h2 { margin: 0; font: 400 24px/1.05 var(--tfont); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .top h2 small { display: block; font: 800 12px system-ui, sans-serif; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin-top: 2px; }
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .seg { display: grid; border-radius: 12px; overflow: hidden; box-shadow: var(--shadow); }
+  .seg.n6 { grid-template-columns: repeat(6, 1fr); }
+  .seg button { font: inherit; font-size: 17px; font-weight: 800; border: 0; padding: 9px 2px; background: var(--btn); color: var(--btn-ink); cursor: pointer; }
+  .seg button + button { border-left: 1px solid var(--line); }
+  .seg button.on { background: var(--primary); color: var(--primary-ink); }
+  .desc { font-size: 13px; color: var(--muted); margin: -4px 0 0; }
+  .stats { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+  .stats div { background: var(--surface); border-radius: 10px; box-shadow: var(--shadow); padding: 8px 2px; text-align: center; }
+  .stats b { display: block; font-size: 19px; }
+  .stats span { font-size: 11px; color: var(--muted); }
+  .preview-ring { display: flex; justify-content: center; gap: 6px; flex-wrap: wrap; }
+  .preview-ring span { width: 34px; height: 34px; border-radius: 22%; display: grid; place-items: center; font-weight: 900; color: var(--tile-ink);
+    background-image: radial-gradient(ellipse 80% 40% at 50% 20%, rgba(255, 255, 255, .62), rgba(255, 255, 255, 0) 70%), linear-gradient(var(--tile-top), var(--tile-bot)); box-shadow: inset 0 -3px 0 var(--tile-edge), 0 2px 3px rgba(0, 0, 0, .3); }
+
+  /* =========================================================================
+     KeyRing game screen
+     ========================================================================= */
+  #s-game { background: var(--fx), var(--bg); overflow: hidden; }
+  .kr-top { padding-bottom: 0; }
+  .kr-main { flex: 1; min-height: 0; display: grid; gap: 8px; padding: 6px 12px 10px;
+    grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr) auto auto auto;
+    grid-template-areas: "info" "slots" "msg" "play" "tip"; }
+  .wide .kr-main { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); grid-template-rows: auto auto minmax(0, 1fr) auto; column-gap: 22px;
+    grid-template-areas: "info info" "slots msg" "slots play" "slots tip"; padding: 8px 22px 16px; }
+  .kr-info { grid-area: info; display: flex; justify-content: center; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .pill { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 999px; background: var(--surface); box-shadow: var(--shadow); font-weight: 800; font-size: 14px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .pill .e { font-family: var(--emoji); }
+  .pill.clock.low { background: #cf3f3f; color: #fff; animation: pulse 1s infinite; }
+  @keyframes pulse { 50% { transform: scale(1.06); } }
+
+  /* the slot panel: dark glass, like LockWord's grid panel */
+  .kr-slots { grid-area: slots; min-height: 0; border-radius: 18px; background: var(--glass); box-shadow: var(--glass-edge);
+    -webkit-backdrop-filter: blur(10px) saturate(1.3); backdrop-filter: blur(10px) saturate(1.3);
+    display: flex; flex-direction: column; justify-content: center; align-items: center; gap: var(--rg, 8px); padding: 10px; overflow: hidden; }
+  .kr-row { display: flex; justify-content: center; gap: calc(var(--cs) * .7); }
+  .kr-word { display: flex; gap: calc(var(--cs) * .1); position: relative; padding: 3px; border-radius: 12px; cursor: pointer; transition: box-shadow .2s; }
+  .kr-word.sel { box-shadow: 0 0 0 2px var(--glow), 0 0 12px rgba(79, 195, 247, .55); }
+  .kr-word.flash { animation: rowflash .6s; }
+  @keyframes rowflash { 30% { box-shadow: 0 0 0 3px #f5b300, 0 0 16px rgba(245, 179, 0, .8); } }
+  .kr-word .hm { position: absolute; left: calc(var(--cs) * -.42); top: 50%; transform: translateY(-50%); font-size: calc(var(--cs) * .38); font-family: var(--emoji); }
+  .kr-c { width: var(--cs); height: var(--cs); border-radius: 22%; display: grid; place-items: center; font-weight: 900; font-size: calc(var(--cs) * .56); line-height: 1; position: relative;
+    background: radial-gradient(circle at 50% 125%, rgba(79, 195, 247, .12), transparent 60%), var(--well); color: #fff;
+    box-shadow: inset 0 3px 0 rgba(0, 0, 0, .5), inset 0 -2px 0 rgba(255, 255, 255, .12), 0 0 0 1px rgba(255, 255, 255, .06); }
+  .kr-c.f, .kr-c.d { box-shadow: inset 0 -4px 0 var(--edge), inset 0 1px 0 rgba(255, 255, 255, .7), 0 2px 3px rgba(0, 0, 0, .55); }
+  .kr-c.f { --edge: var(--tile-edge); color: var(--tile-ink); background-image: radial-gradient(ellipse 80% 40% at 50% 20%, rgba(255, 255, 255, .62), rgba(255, 255, 255, .14) 66%, rgba(255, 255, 255, 0) 70%), linear-gradient(var(--tile-top), var(--tile-bot)); }
+  .kr-c.d { --edge: var(--drop-edge); color: var(--drop-ink); background-image: radial-gradient(ellipse 80% 40% at 50% 20%, rgba(255, 255, 255, .6), rgba(255, 255, 255, 0) 70%), linear-gradient(var(--drop-top), var(--drop-bot)); }
+  .kr-c.pop { animation: pop .42s cubic-bezier(.3, 1.6, .5, 1) both; }
+  @keyframes pop { 0% { transform: translateY(-14px) scale(.6); opacity: 0; } 100% { transform: none; opacity: 1; } }
+
+  /* message strip: the word you are spelling, or what just happened */
+  .kr-msg { grid-area: msg; height: 46px; display: flex; justify-content: center; align-items: center; gap: 4px; text-align: center; font-weight: 800; font-size: 15px; cursor: default; }
+  .kr-msg .mt { padding: 6px 12px; border-radius: 12px; background: var(--surface); box-shadow: var(--shadow); max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .kr-msg .mt.good { background: #1e9e4a; color: #fff; }
+  .kr-msg .mt.bad { background: #cf3f3f; color: #fff; }
+  .kr-msg .mt.dup { background: var(--hl); color: #3b2a0b; }
+  .kr-msg .mt.clue { background: var(--primary); color: var(--primary-ink); white-space: normal; line-height: 1.2; }
+  .app[data-screen="night"] .kr-msg .mt.good { background: #2f6b45; color: #ddd; }
+  .app[data-screen="night"] .kr-msg .mt.bad { background: #7e3431; color: #ddd; }
+  .kr-msg .wl { width: 32px; height: 36px; border-radius: 8px; display: grid; place-items: center; font-weight: 900; font-size: 20px; color: #fff;
+    background: linear-gradient(#5b9bff, #2c6bd8); box-shadow: inset 0 -3px 0 #173f8f, 0 2px 3px rgba(0, 0, 0, .3); animation: pop .18s both; }
+  .app[data-screen="night"] .kr-msg .wl { background: linear-gradient(#4b6684, #3d5878); color: #ccc; box-shadow: inset 0 -3px 0 #24364a; }
+  .kr-msg.shake { animation: shake .4s; }
+  @keyframes shake { 20%, 60% { transform: translateX(-8px); } 40%, 80% { transform: translateX(8px); } }
+
+  /* play area: bonus tag | the Ring | coin buttons */
+  .kr-play { grid-area: play; display: grid; grid-template-columns: 62px auto 62px; justify-content: center; align-items: center; gap: 8px; }
+  .wide .kr-play { grid-template-columns: 80px auto 80px; gap: 16px; }
+  .side { display: flex; flex-direction: column; gap: 10px; align-items: center; }
+
+  /* the Ring: a 3D glass platform with a steel key ring; the letters are tiles hung on the ring */
+  .kr-ring { position: relative; width: var(--rs, 220px); height: var(--rs, 220px); touch-action: none; }
+  .kr-plat { position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle at 50% 30%, rgba(255, 255, 255, .22), rgba(255, 255, 255, .04) 55%, rgba(0, 0, 0, .2) 100%), var(--glass);
+    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+    box-shadow: inset 0 2px 0 rgba(255, 255, 255, .3), inset 0 0 0 1px rgba(255, 255, 255, .12), inset 0 -12px 20px rgba(0, 0, 0, .35),
+      0 calc(var(--rs) * .045) 0 -1px var(--side), 0 calc(var(--rs) * .045) 0 0 rgba(255, 255, 255, .07), 0 calc(var(--rs) * .09) 26px rgba(0, 0, 0, .35); }
+  .kr-ring svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+  .kr-line polyline { fill: none; stroke: var(--glow); stroke-width: calc(var(--ts) * .2); stroke-linecap: round; stroke-linejoin: round; opacity: .8; filter: drop-shadow(0 0 5px var(--glow)); }
+  .kr-t { position: absolute; width: var(--ts); height: var(--ts); transform: translate(-50%, -50%); border-radius: 24%; display: grid; place-items: center; z-index: 2;
+    font-weight: 900; font-size: calc(var(--ts) * .56); color: var(--tile-ink); cursor: pointer; transition: transform .12s;
+    background-image: radial-gradient(ellipse 80% 40% at 50% 20%, rgba(255, 255, 255, .65), rgba(255, 255, 255, .15) 66%, rgba(255, 255, 255, 0) 70%), linear-gradient(rgba(0, 0, 0, 0) 56%, rgba(0, 0, 0, .14)), linear-gradient(var(--tile-top), var(--tile-bot));
+    box-shadow: inset 0 -4px 0 var(--tile-edge), inset 0 1px 0 rgba(255, 255, 255, .7), 0 4px 0 rgba(0, 0, 0, .3), 0 7px 10px rgba(0, 0, 0, .35); }
+  .kr-t::after { /* the little link that hangs the tile on the ring */
+    content: ''; position: absolute; left: 50%; top: -5px; width: 9px; height: 9px; margin-left: -5px; border-radius: 50%; border: 2px solid var(--steel2); background: transparent; z-index: -1; }
+  .kr-t.on { color: #fff; transform: translate(-50%, -50%) scale(1.1);
+    background-image: radial-gradient(ellipse 80% 40% at 50% 20%, rgba(255, 255, 255, .5), rgba(255, 255, 255, 0) 70%), linear-gradient(#5b9bff, #2c6bd8);
+    box-shadow: inset 0 -4px 0 #173f8f, 0 0 0 3px #fff, 0 0 16px 3px rgba(79, 195, 247, .85), 0 6px 10px rgba(0, 0, 0, .35); }
+  .app[data-screen="night"] .kr-t.on { color: #d0d0d0; background-image: linear-gradient(#4b6684, #3d5878); box-shadow: inset 0 -4px 0 #24364a, 0 0 0 2px #888, 0 0 8px rgba(111, 143, 176, .5); }
+  .kr-hub { position: absolute; left: 50%; top: 50%; width: 27%; height: 27%; transform: translate(-50%, -50%); border-radius: 50%; border: 0; cursor: pointer; z-index: 1; padding: 0;
+    display: grid; place-items: center; color: #2b3a4a;
+    background: radial-gradient(circle at 38% 30%, var(--steel1), var(--steel2) 62%, var(--steel3));
+    box-shadow: inset 0 -3px 0 rgba(0, 0, 0, .3), inset 0 2px 0 rgba(255, 255, 255, .8), 0 4px 0 rgba(0, 0, 0, .35), 0 8px 12px rgba(0, 0, 0, .3); }
+  .kr-hub svg { position: static; width: 52%; height: 52%; }
+  .kr-hub:active { transform: translate(-50%, -48%); box-shadow: inset 0 -1px 0 rgba(0, 0, 0, .3), 0 2px 0 rgba(0, 0, 0, .35); }
+  .app[data-screen="night"] .kr-hub { color: #1a1a1a; }
+
+  /* coin buttons: blue keycaps with a navy icon circle (as in CrossKeys); two taps to buy */
+  .cbtn { width: 62px; border: 0; border-radius: 14px; padding: 6px 2px 5px; cursor: pointer; color: #fff; display: flex; flex-direction: column; align-items: center; gap: 2px;
+    background: linear-gradient(var(--cb1), var(--cb2)); border-bottom: 4px solid rgba(0, 0, 0, .3); box-shadow: 0 3px 8px rgba(0, 0, 0, .25); font: 800 12px system-ui, sans-serif; }
+  .wide .cbtn { width: 76px; font-size: 13px; }
+  .cbtn .ic { width: 30px; height: 30px; border-radius: 50%; background: var(--cb-ring); display: grid; place-items: center; font-family: var(--emoji); font-size: 17px; }
+  .cbtn .cp { font-size: 11px; opacity: .95; white-space: nowrap; }
+  .cbtn:active { transform: translateY(3px); border-bottom-width: 1px; }
+  .cbtn.armed { box-shadow: 0 0 0 3px #f5b300, 0 0 14px rgba(245, 179, 0, .8); }
+  .cbtn.armed .cp { color: #ffe082; }
+  .app[data-screen="night"] .cbtn { color: #ccc; }
+  /* the bonus tag: a key-fob tag that counts bonus words (tap for the list) */
+  .kr-tag { width: 58px; height: 78px; border: 0; padding: 18px 0 6px; cursor: pointer; position: relative; border-radius: 12px 12px 26px 26px; color: var(--tag-ink);
+    background: radial-gradient(ellipse 80% 30% at 50% 22%, rgba(255, 255, 255, .55), rgba(255, 255, 255, 0) 70%), linear-gradient(var(--tag1), var(--tag2));
+    box-shadow: inset 0 -4px 0 rgba(0, 0, 0, .2), 0 3px 8px rgba(0, 0, 0, .25); display: flex; flex-direction: column; align-items: center; justify-content: center; font: 800 10px system-ui, sans-serif; letter-spacing: .04em; }
+  .wide .kr-tag { width: 70px; height: 92px; }
+  .kr-tag::before { content: ''; position: absolute; top: 7px; left: 50%; width: 12px; height: 12px; margin-left: -6px; border-radius: 50%; background: var(--bg); box-shadow: inset 0 2px 2px rgba(0, 0, 0, .45); }
+  .kr-tag::after { content: ''; position: absolute; top: -12px; left: 50%; width: 16px; height: 18px; margin-left: -8px; border-radius: 50%; border: 3px solid var(--steel2); border-bottom-color: transparent; }
+  .kr-tag b { font-size: 24px; line-height: 1; font-variant-numeric: tabular-nums; }
+  .wide .kr-tag b { font-size: 30px; }
+  .kr-tag.bump { animation: tagswing .6s; transform-origin: 50% -10px; }
+  @keyframes tagswing { 20% { transform: rotate(12deg) scale(1.08); } 45% { transform: rotate(-9deg); } 70% { transform: rotate(5deg); } }
+  .kr-tag .plus { position: absolute; top: -6px; right: -12px; background: #1e9e4a; color: #fff; font-size: 12px; padding: 1px 6px; border-radius: 999px; animation: floatup 1s forwards; }
+  @keyframes floatup { to { transform: translateY(-22px); opacity: 0; } }
+  .kr-tip { grid-area: tip; text-align: center; font-size: 12px; color: var(--muted); }
+  .kr-tip kbd { font: 700 11px system-ui, sans-serif; background: var(--surface); border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 5px; padding: 0 5px; }
+  .phonedev .kr-tip { display: none; }
+
+  /* windows (Ring cleared, bonus list, How To Play) */
+  .kr-modal { position: absolute; inset: 0; z-index: 6; background: rgba(0, 0, 0, .5); display: none; align-items: center; justify-content: center; padding: 16px; }
+  .kr-modal.on { display: flex; }
+  .kr-box { width: 100%; max-width: 440px; max-height: 100%; overflow-y: auto; background: var(--surface); color: var(--ink); border-radius: 20px; padding: 16px; box-shadow: 0 20px 50px rgba(0, 0, 0, .45); position: relative; display: flex; flex-direction: column; gap: 12px; }
+  .kr-box h3 { margin: 0; font: 400 26px/1.1 var(--tfont); text-align: center; }
+  .kr-box .x { position: absolute; top: 10px; right: 10px; }
+  .kr-box .sub { margin: -6px 0 0; text-align: center; color: var(--muted); font-size: 14px; }
+  .kr-box table { width: 100%; border-collapse: collapse; font-size: 15px; }
+  .kr-box td { padding: 5px 4px; border-bottom: 1px solid var(--line); }
+  .kr-box td:last-child { text-align: right; font-weight: 800; font-variant-numeric: tabular-nums; }
+  .kr-box td.pos { color: #1e9e4a; } .kr-box td.neg { color: #cf3f3f; }
+  .kr-box tr.tot td { border-bottom: 0; font-weight: 900; font-size: 16px; }
+  .kr-box .done-words { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+  .kr-box .done-words span { padding: 3px 8px; border-radius: 8px; background: var(--bg); font-weight: 800; font-size: 13px; letter-spacing: .04em; }
+  .kr-box .done-words span.miss { background: #cf3f3f; color: #fff; }
+  .kr-box .done-words span.bon { background: var(--hl); color: #3b2a0b; }
+  .kr-box .rbtns { display: grid; grid-template-columns: 1fr 1fr 1.4fr; gap: 8px; }
+  .kr-box .rbtns .btn { padding-left: 4px; padding-right: 4px; white-space: nowrap; }
+  .kr-box .help h4 { margin: 10px 0 4px; font-size: 15px; }
+  .kr-box .help p, .kr-box .help li { font-size: 14px; line-height: 1.4; margin: 0 0 4px; }
+  .kr-box .help ul { margin: 0; padding-left: 18px; }
+  .kr-box .ring-stamp { width: 74px; height: 74px; margin: 0 auto -4px; }
+  .confetti { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 7; }
+  .confetti i { position: absolute; top: -10px; width: 8px; height: 12px; border-radius: 2px; animation: fall 1.6s ease-in forwards; }
+  @keyframes fall { to { transform: translateY(820px) rotate(540deg); opacity: .2; } }
+  @media (prefers-reduced-motion: reduce) { .kr-c.pop, .kr-tag.bump, .confetti i, .kr-msg.shake { animation: none; } }
+
+  /* numbered notes (pink pins) */
+  .pin { position: absolute; z-index: 8; width: 20px; height: 20px; border-radius: 50%; background: #e0457b; color: #fff; font: 800 12px/20px system-ui, sans-serif; text-align: center; box-shadow: 0 0 0 2px #fff; pointer-events: none; }
+  .nopins .pin { display: none; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Master Keys · KeyRing mockup</h1>
+  <p class="lead">A clickable preview of <b>KeyRing</b>, the first new game (RFI CD-87). The game screen really plays one sample Ring for each size from 3 to 8 letters: <b>swipe</b> or <b>drag</b> across the letters, <b>tap</b> them one by one, or <b>type</b> on a keyboard. Pick the size on the Setup screen. The pink numbers match the notes. The coins, records and the Lobby's other games are made up, and the app itself is unchanged.</p>
+
+  <div class="ctrls">
+    <div class="ctrl"><span>Device</span><div class="pseg" id="cDev"><button data-v="phone" class="on">Phone 375</button><button data-v="phone360">Phone 360</button><button data-v="ipad">iPad</button><button data-v="desk">Desktop</button></div></div>
+    <div class="ctrl"><span>Screen</span><div class="pseg" id="cScr"><button data-v="light" class="on">Light</button><button data-v="dark">Dark</button><button data-v="night">Night</button></div></div>
+    <label class="pchk"><input type="checkbox" id="cPins" checked> Show numbered notes</label>
+  </div>
+  <div class="jump" id="jump">Jump to:
+    <button data-s="lobby">Lobby</button><button data-s="setup">KeyRing Setup</button><button data-s="game">Game screen</button><button data-s="done">Ring cleared</button><button data-s="help">How To Play</button>
+  </div>
+
+  <div class="stage">
+    <div class="device phone" id="dev">
+      <div class="app" id="app" data-screen="light">
+
+        <!-- 1 · Lobby (v10b, with the new KeyRing card) -->
+        <section class="scr" id="s-lobby">
+          <div class="wrap">
+            <div class="corner">
+              <button class="icon-btn" title="Sound">🔇</button><button class="icon-btn" title="Game History">📜</button><button class="icon-btn" title="Master Keys settings">⚙</button><button class="icon-btn" title="How To Play">?</button>
+            </div>
+            <header class="brand">
+              <img src="../icons/icon.svg" alt="">
+              <div><h1>Master Keys <span class="vpill">v11</span></h1><p class="tag">Word games. Play anywhere, even offline.</p></div>
+            </header>
+            <div class="field"><span class="lbl">You</span>
+              <div class="me-row"><button class="me-av">🙂</button><input type="text" value="JM" aria-label="Your name"><span class="coin-pill" data-coins>🪙 245</span></div>
+            </div>
+            <span class="lbl">Games</span>
+            <div class="games">
+              <div class="gcard" data-go="none">
+                <div class="ghead"><img class="gi" src="../icons/crosskeys.svg" alt=""><div><p class="gname">CrossKeys</p><p class="gpitch">Head-to-head crossword tiles. Finish the words, beat the Bot.</p></div><button class="gchev" aria-label="Show details"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button></div>
+                <div class="gbody"><div><div class="grec"><div><b>42</b><span>Played</span></div><div><b>64%</b><span>Won</span></div><div><b>212</b><span>Top score</span></div></div>
+                  <div class="gbtns"><button class="btn big">🆕 New Game</button><button class="btn big set">⚙ Setup</button></div></div></div>
+              </div>
+              <div class="gcard" data-go="none">
+                <div class="ghead"><img class="gi" src="../icons/lockword.svg" alt=""><div><p class="gname">LockWord</p><p class="gpitch">Crack the hidden word in a few guesses.</p></div><button class="gchev" aria-label="Show details"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button></div>
+                <div class="gbody"><div><div class="grec"><div><b>30</b><span>Played</span></div><div><b>80%</b><span>Solved</span></div><div><b>5</b><span>Streak</span></div></div>
+                  <div class="gbtns"><button class="btn big">🆕 New Game</button><button class="btn big set">⚙ Setup</button></div></div></div>
+              </div>
+              <div class="gcard new open" data-pin="1" data-go="setup">
+                <div class="ghead"><span class="kri" data-kri></span><div><p class="gname">KeyRing <span class="newb">NEW</span></p><p class="gpitch">Spell words from a ring of letters. Fill every slot.</p></div><button class="gchev" aria-label="Show details"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button></div>
+                <div class="gbody"><div>
+                  <div class="grec"><div><b>12</b><span>Rings</span></div><div><b>92%</b><span>Cleared</span></div><div><b>57</b><span>Bonus words</span></div></div>
+                  <div class="gbtns"><button class="btn primary big" data-go="game">🆕 New Game</button><button class="btn big set" data-go="setup">⚙ Setup</button></div>
+                  <p class="glast" id="krLast">🆕 New Game uses your last settings: 6 letters · Level 3 · Untimed</p>
+                </div></div>
+              </div>
+              <div class="gcard soon"><b>🗝️</b>More games on the way</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2 · KeyRing Setup -->
+        <section class="scr" id="s-setup">
+          <header class="top">
+            <button class="icon-btn" data-go="lobby" title="Back to the Lobby">☰</button>
+            <span class="kri" data-kri></span>
+            <h2>KeyRing <small>Setup</small></h2>
+            <button class="icon-btn" title="Sound">🔇</button>
+            <button class="icon-btn" data-help title="How To Play KeyRing">?</button>
+          </header>
+          <div class="wrap">
+            <div class="field" data-pin="2"><span class="lbl">Letters on the Ring</span>
+              <div class="seg n6" id="nSeg"><button data-n="3">3</button><button data-n="4">4</button><button data-n="5">5</button><button data-n="6" class="on">6</button><button data-n="7">7</button><button data-n="8">8</button></div>
+            </div>
+            <div class="preview-ring" id="nPrev" aria-hidden="true"></div>
+            <p class="desc" id="nDesc"></p>
+            <div class="pair" data-pin="3">
+              <label class="field"><span class="lbl">Challenge Level</span><select id="lvSel"><option value="1">1 · Gentle</option><option value="2">2</option><option value="3" selected>3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10 · Master</option></select></label>
+              <label class="field"><span class="lbl">Timer</span><select id="tmSel"><option value="0" selected>Untimed</option><option value="60">1 min per Ring</option><option value="120">2 min per Ring</option><option value="180">3 min per Ring</option><option value="300">5 min per Ring</option></select></label>
+            </div>
+            <p class="desc">Challenge Level picks the slot words: everyday words at 1–3, harder words as it rises. Bonus words can be any real word.</p>
+            <button class="btn primary big" data-start>▶ Start KeyRing</button>
+            <div class="stats"><div><b>12</b><span>Rings</span></div><div><b>92%</b><span>Cleared</span></div><div><b>4</b><span>Streak</span></div><div><b>9</b><span>Best streak</span></div><div><b>57</b><span>Bonus words</span></div></div>
+          </div>
+        </section>
+
+        <!-- 3 · KeyRing game screen -->
+        <section class="scr" id="s-game">
+          <header class="top kr-top">
+            <button class="icon-btn" data-go="lobby" title="Back to the Lobby">☰</button>
+            <span class="kri" data-kri></span>
+            <h2>KeyRing <small id="gSub">Ring 13 · 6 letters</small></h2>
+            <button class="icon-btn" title="Sound">🔇</button>
+            <button class="icon-btn" data-help title="How To Play KeyRing">?</button>
+          </header>
+          <div class="kr-main" id="krMain">
+            <div class="kr-info">
+              <span class="coin-pill" data-coins>🪙 245</span>
+              <span class="pill" id="prog"><span class="e">🔑</span> 0 / 8 words</span>
+              <span class="pill clock" id="clock" data-pin="10"><span class="e">⏱</span> <span id="clk">0:00</span></span>
+            </div>
+            <div class="kr-slots" id="slots" data-pin="4"></div>
+            <div class="kr-msg" id="msg" data-pin="5"></div>
+            <div class="kr-play">
+              <div class="side"><button class="kr-tag" id="tag" data-pin="7" title="Bonus words: tap for the list">BONUS<b id="tagN">0</b></button></div>
+              <div class="kr-ring" id="ring" data-pin="6">
+                <div class="kr-plat"></div>
+                <svg class="kr-steel" viewBox="0 0 100 100" aria-hidden="true">
+                  <defs><linearGradient id="stl" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="var(--steel1)"/><stop offset=".5" stop-color="var(--steel2)"/><stop offset="1" stop-color="var(--steel3)"/></linearGradient></defs>
+                  <circle cx="50" cy="51.2" r="38" fill="none" stroke="rgba(0,0,0,.45)" stroke-width="3.6"/>
+                  <circle cx="50" cy="50" r="38" fill="none" stroke="url(#stl)" stroke-width="3.2"/>
+                  <path d="M 74.2 20.7 A 38 38 0 0 1 88.6 45" fill="none" stroke="url(#stl)" stroke-width="3.2" transform="translate(-1.6 1.4)"/>
+                  <circle cx="50" cy="49.2" r="38" fill="none" stroke="rgba(255,255,255,.55)" stroke-width=".5" stroke-dasharray="40 200" stroke-dashoffset="150"/>
+                </svg>
+                <svg class="kr-line" id="line" aria-hidden="true"><polyline points=""/></svg>
+                <button class="kr-hub" id="hub" data-pin="8" title="Shuffle: spin the letters (Space)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h3.5c2 0 3.2 1 4.3 2.7l2.4 4.6C14.3 16 15.5 17 17.5 17H21M18 14l3 3-3 3M3 17h3.5c1.4 0 2.4-.5 3.2-1.4M14.3 8.4C15.1 7.5 16.1 7 17.5 7H21M18 4l3 3-3 3"/></svg></button>
+              </div>
+              <div class="side">
+                <button class="cbtn" id="hintBtn" data-pin="9" title="Hint: show a slot's clue"><span class="ic">💡</span>Hint<span class="cp">🪙3</span></button>
+                <button class="cbtn" id="dropBtn" data-pin="11" title="Key Drop: 3 random letters into the slots"><span class="ic">🔑</span>Drop<span class="cp">🪙10</span></button>
+              </div>
+            </div>
+            <p class="kr-tip"><kbd>A–Z</kbd> type · <kbd>Enter</kbd> submit · <kbd>⌫</kbd> back · <kbd>Esc</kbd> clear · <kbd>Space</kbd> shuffle</p>
+          </div>
+        </section>
+
+        <div class="kr-modal" id="modal"><div class="kr-box" id="mbox"></div></div>
+      </div>
+    </div>
+
+    <aside class="legend">
+      <h2>What you see</h2>
+      <p class="flow">Lobby → KeyRing Setup → game screen → Ring cleared</p>
+      <ol>
+        <li><b class="n">1</b><span><b>Lobby card</b>, built like the others (collapsed by default; NEW badge for a while), placed before "More games". Details: Rings played, Cleared %, Bonus words; 🆕 New Game (last settings) and ⚙ Setup.</span></li>
+        <li><b class="n">2</b><span><b>Letters on the Ring: 3 to 8</b>, the Player's pick. The row of tiles under it shows the size.</span></li>
+        <li><b class="n">3</b><span><b>Challenge Level</b> (which words go in the slots) and the <b>Timer</b>: Untimed, or 1, 2, 3 or 5 minutes per Ring.</span></li>
+        <li><b class="n">4</b><span><b>The slots</b>, shortest first, in LockWord's dark glass panel. Short words share a row when it saves space. Tap a slot to pick it for 💡 Hint (it glows blue).</span></li>
+        <li><b class="n">5</b><span><b>Message strip:</b> the word you are spelling, then what happened (green = slot filled, gold = already found, red = not a word, blue = a clue).</span></li>
+        <li><b class="n">6</b><span><b>The Ring:</b> a 3D glass platform with a steel key ring; the letters are tiles hung on the ring. <b>Swipe</b> (touch) or <b>drag</b> (mouse) across them; go back one tile to undo it; let go to submit. Or <b>tap</b> letters one by one and tap the last one again to submit. Or <b>type</b> (keys shown under the Ring on iPad and desktop).</span></li>
+        <li><b class="n">7</b><span><b>Bonus tag</b> (our own design): a key-fob tag that counts this Ring's bonus words, real words that are not in a slot. Each new one pays 🪙1, and the tag swings. Tap it for the list.</span></li>
+        <li><b class="n">8</b><span><b>Shuffle</b> is the steel hub in the middle of the Ring: tap it and the letters spin to new places (free).</span></li>
+        <li><b class="n">9</b><span><b>💡 Hint, 🪙3</b> (two taps, as in the other games): shows the picked slot's clue (or the shortest empty slot's). A signal, not a solve: no letters are given. The slot keeps a 💡 mark; tap it to see the clue again, free.</span></li>
+        <li><b class="n">10</b><span><b>Clock:</b> counts down when timed (red in the last 10 seconds); a stopwatch when untimed.</span></li>
+        <li><b class="n">11</b><span><b>🔑 Key Drop, 🪙10</b> (the "solve" helper): drops 3 random letters into empty slot squares, in light blue so you can tell them from your own. A slot it completes counts as filled.</span></li>
+        <li><b class="n">12</b><span><b>Ring cleared</b> window: your words and bonus words, the coins (🪙5 for the Ring + 🪙1 per bonus word, minus what you spent), then ☰ Lobby · ⚙ Setup · ▶ Next Ring. When the timer runs out, a "Time's up" window shows the missed words in red instead.</span></li>
+      </ol>
+      <h3>Try this</h3>
+      <p class="foot" style="margin-top:0">Start a 6-letter Ring (letters of GARDEN). Find DEAR, then GRAD (a bonus word: the tag swings and coins go up). Try XYZ by typing to see "not a word". Use 💡 and 🔑 Drop. Jump to <b>Ring cleared</b> for the end window.</p>
+      <p class="foot">Not in this mockup: sounds, Game History, saving an unfinished Ring, and the level builder (those come with v11). The slot words here come from the Lexicon (levels 1–2) and the bonus words from ENABLE, as v11 will do.</p>
+    </aside>
+  </div>
+</main>
+
+<script>
+(() => {
+  const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+  const app = $('#app'), dev = $('#dev');
+  let cur = 'lobby';
+
+  // ---------- the KeyRing icon (a steel key ring with four letter tiles: K E Y S) ----------
+  const KRI = `<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="kis" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f4f7fa"/><stop offset=".5" stop-color="#a9b5c1"/><stop offset="1" stop-color="#5d6a77"/></linearGradient><linearGradient id="kit" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fcebc0"/><stop offset="1" stop-color="#efd18c"/></linearGradient></defs>
+    <rect width="512" height="512" rx="112" fill="#2b3a4a"/><circle cx="256" cy="262" r="150" fill="none" stroke="#1c2733" stroke-width="40"/><circle cx="256" cy="256" r="150" fill="none" stroke="url(#kis)" stroke-width="28"/><path d="M352 141 A150 150 0 0 1 404 230" fill="none" stroke="url(#kis)" stroke-width="28" transform="translate(-10 8)"/>
+    ${[[256, 106, 'K'], [406, 256, 'E'], [256, 406, 'Y'], [106, 256, 'S']].map(([x, y, c]) => `<g transform="translate(${x} ${y})"><rect x="-62" y="-62" width="124" height="124" rx="26" fill="#1c2733" transform="translate(0 8)"/><rect x="-62" y="-62" width="124" height="124" rx="26" fill="url(#kit)"/><rect x="-62" y="44" width="124" height="18" rx="9" fill="#c39d4f"/><rect x="-46" y="-54" width="92" height="30" rx="15" fill="#fff" opacity=".35"/><text x="0" y="30" text-anchor="middle" font-family="Arial Black, Arial, sans-serif" font-weight="900" font-size="86" fill="#3b2a0b">${c}</text></g>`).join('')}</svg>`;
+  $$('[data-kri]').forEach(el => el.innerHTML = KRI);
+
+  // ---------- one sample Ring per size (slot words + their Literal clue from the Lexicon; every real word from ENABLE) ----------
+  const LEVELS = {
+    3: { seed: 'TEA', slots: { ATE: 'Had a meal', EAT: 'Have a meal', TEA: 'Brewed drink' }, all: 'ATE EAT ETA TAE TEA' },
+    4: { seed: 'LEAP', slots: { APE: 'Gorilla', PAL: 'Friend', PEA: 'Green veggie', LEAP: 'Jump', PALE: 'Wan' }, all: 'ALE ALP APE LAP LEA PAL PEA LEAP PALE PEAL PLEA' },
+    5: { seed: 'PLATE', slots: { APT: 'Fitting', PAL: 'Friend', TEA: 'Brewed drink', LEAP: 'Jump', TALE: 'Story', PETAL: 'Flower part', PLATE: 'Dish' },
+      all: 'ALE ALP ALT APE APT ATE EAT ETA LAP LAT LEA LET PAL PAT PEA PET TAE TAP TEA TEL LATE LEAP LEPT PALE PATE PEAL PEAT PELT PLAT PLEA TAEL TALE TAPE TEAL TELA TEPA LEAPT LEPTA PALET PETAL PLATE PLEAT TEPAL' },
+    6: { seed: 'GARDEN', slots: { AGE: 'Years lived', END: 'Finish', DEAR: 'Beloved', GEAR: 'Equipment', GRADE: 'Mark', RANGE: 'Scope', DANGER: 'Peril', GARDEN: 'Plot' },
+      all: 'AGE AND ANE ARE DAG DEN EAR END ENG ERA ERG ERN GAD GAE GAN GAR GED GEN NAE NAG RAD RAG RAN RED REG AGED AGER DANG DARE DARN DEAN DEAR DRAG DREG EARN EGAD GAED GAEN GANE GEAR GNAR GRAD GRAN NARD NEAR NERD RAGE RAND RANG READ REND ANGER GRADE GRAND RAGED RANGE REDAN REGNA DANGER GANDER GARDEN RANGED' },
+    7: { seed: 'PAINTER', slots: { ART: 'Painting', PIE: 'Baked dessert', TIP: 'Gratuity', PAIN: 'Ache', PEAR: 'Fruit', PAINT: 'Color', TRAIN: 'Locomotive', PIRATE: 'Buccaneer', PAINTER: 'Artist' },
+      all: 'AIN AIR AIT ANE ANI ANT APE APT ARE ART ATE EAR EAT ERA ERN ETA IRE NAE NAP NET NIP NIT PAN PAR PAT PEA PEN PER PET PIA PIE PIN PIT RAN RAP RAT REI REP RET RIA RIN RIP TAE TAN TAP TAR TEA TEN TIE TIN TIP AIRN AIRT ANTE ANTI APER EARN ETNA NAPE NEAP NEAR NEAT NIPA NITE PAIN PAIR PANE PANT PARE PART PATE PEAN PEAR PEAT PEIN PENT PERI PERT PIAN PIER PINA PINE PINT PIRN PITA PRAT RAIN RANI RANT RAPT RATE REAP REIN RENT RIPE RITE TAIN TAPE TARE TARN TARP TEAR TEPA TERN TIER TINE TIRE TRAP TRIP ANTRE APTER ARPEN ATRIP ENTIA INAPT INEPT INERT INTER IRATE NITER NITRE PAINT PATEN PATER PATIN PEART PIETA PINTA PRATE PRINT REPIN RETIA RIANT RIPEN TAPER TAPIR TENIA TERAI TINEA TRAIN TRINE TRIPE ARPENT ENRAPT ENTRAP PANIER PANTIE PARENT PATINE PINETA PIRATE PTERIN RAPINE RATINE RETAIN RETINA TREPAN PAINTER PERTAIN REPAINT' },
+    8: { seed: 'DAUGHTER', slots: { HUG: 'Embrace', GUT: 'Belly', TEA: 'Brewed drink', HEAD: 'Noggin', DATE: 'Day', HURT: 'Injured', EARTH: 'Planet', GREAT: 'Excellent', HEART: 'Ticker', DAUGHTER: "A parent's girl" },
+      all: 'AGE ARE ART ATE DAG DAH DUE DUG EAR EAT EAU EDH ERA ERG ETA ETH GAD GAE GAR GAT GED GET GUT HAD HAE HAG HAT HER HET HUE HUG HUT RAD RAG RAH RAT RED REG RET RUE RUG RUT TAD TAE TAG TAR TAU TEA TED TEG THE TUG UGH URD UTA AGED AGER AGUE DARE DART DATE DAUT DEAR DRAG DRAT DREG DRUG DUET DURA DURE EATH EGAD GAED GATE GAUD GAUR GEAR GETA GHAT GRAD GRAT GRUE GUAR GUDE HADE HAED HAET HARD HARE HART HATE HAUT HEAD HEAR HEAT HERD HUED HUGE HURT RAGE RATE RATH READ RHEA RUDE RUED RUGA RUTH TAHR TARE TEAR THAE THRU THUD THUG TRAD TRUE TRUG UREA URGE ARGUE AUGER AUGHT DATER DEATH DERAT EARTH GARTH GATED GERAH GHAUT GRADE GRATE GREAT GUARD HARED HATED HATER HAUTE HEARD HEART HUGER RAGED RATED RATHE RETAG RUGAE TARED TARGE TEGUA TERGA TEUGH TRADE TREAD TRUED URATE URGED ARGUED DEARTH GATHER GRATED HATRED RUGATE THREAD TRUDGE DRAUGHT DAUGHTER' }
+  };
+  const S = { n: 6, lv: 3, timer: 0, coins: 245, ringNo: 13 };
+  let R = null;
+
+  // ---------- screens ----------
+  function show(s) {
+    cur = s;
+    $$('.scr').forEach(x => x.classList.toggle('on', x.id === 's-' + s));
+    $$('#jump button').forEach(b => b.classList.toggle('on', b.dataset.s === s));
+    if (s === 'game') { if (!R) deal(); requestAnimationFrame(fit); }
+    if (s === 'setup') paintSetup();
+    requestAnimationFrame(placePins);
+  }
+  app.addEventListener('click', e => {
+    const chev = e.target.closest('.gchev');
+    if (chev) { e.stopPropagation(); chev.closest('.gcard').classList.toggle('open'); setTimeout(placePins, 320); return; }
+    if (e.target.closest('[data-help]')) { openHelp(); return; }
+    if (e.target.closest('[data-start]')) { deal(); show('game'); return; }
+    const t = e.target.closest('[data-go]');
+    if (!t || t.dataset.go === 'none') return;
+    if (t.dataset.go === 'game') { deal(); }
+    show(t.dataset.go);
+  });
+  $$('#jump button').forEach(b => b.addEventListener('click', () => {
+    const s = b.dataset.s;
+    if (s === 'done') { if (!R || R.over) deal(); show('game'); R.words.forEach((w, i) => R.found.add(i)); renderSlots(); setTimeout(finish, 300); return; }
+    if (s === 'help') { if (cur === 'lobby') show('setup'); openHelp(); return; }
+    show(s);
+  }));
+
+  // ---------- Setup ----------
+  const N_DESC = { 3: 'A quick warm-up: 3 short words.', 4: 'About 5 slots of 3–4 letters.', 5: 'About 7 slots, up to 5 letters.', 6: 'About 8 slots, up to 6 letters.', 7: 'About 9 slots, up to 7 letters.', 8: 'About 10 slots, up to 8 letters: the longest Rings.' };
+  function paintSetup() {
+    $$('#nSeg button').forEach(b => b.classList.toggle('on', +b.dataset.n === S.n));
+    $('#nPrev').innerHTML = [...LEVELS[S.n].seed].sort().map(c => `<span>${c}</span>`).join('');
+    $('#nDesc').textContent = N_DESC[S.n];
+  }
+  $('#nSeg').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; S.n = +b.dataset.n; paintSetup(); lastLine(); });
+  $('#lvSel').addEventListener('change', e => { S.lv = +e.target.value; lastLine(); });
+  $('#tmSel').addEventListener('change', e => { S.timer = +e.target.value; lastLine(); });
+  function lastLine() { $('#krLast').textContent = `🆕 New Game uses your last settings: ${S.n} letters · Level ${S.lv} · ${S.timer ? S.timer / 60 + ' min per Ring' : 'Untimed'}`; }
+
+  // ---------- coins ----------
+  function paintCoins(bump) { $$('[data-coins]').forEach(p => { p.textContent = '🪙 ' + S.coins; if (bump) { p.classList.remove('bump'); void p.offsetWidth; p.classList.add('bump'); } }); }
+
+  // ---------- deal a Ring ----------
+  function shuffled(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+  function deal() {
+    const L = LEVELS[S.n];
+    const words = Object.keys(L.slots).sort((a, b) => a.length - b.length || a.localeCompare(b));
+    let letters;
+    do { letters = shuffled([...L.seed]); } while (S.n > 2 && letters.join('') === L.seed);
+    R = { L, words, found: new Set(), byDrop: new Set(), drop: words.map(() => new Set()), hinted: new Set(), bonus: [], all: new Set(L.all.split(' ')),
+      tiles: letters.map((ch, i) => ({ ch, k: i, ang: -90 + i * 360 / letters.length })), sel: -1, el: 0, over: false, spent: 0, bonusCoins: 0, hints: 0, drops: 0 };
+    trace = []; tapMode = false;
+    S.ringNo++;
+    $('#gSub').textContent = `Ring ${S.ringNo} · ${S.n} letters`;
+    buildRing(); fit(); paintTag(); tick(0);
+    msg(matchMedia('(pointer: coarse)').matches ? 'Swipe across the letters to spell a word' : 'Drag across the letters, or type a word', '', 4000);
+  }
+
+  // ---------- sizes ----------
+  let cs = 40, rs = 220, ts = 44;
+  function fit() {
+    if (!R || cur !== 'game') return;
+    const main = $('#krMain'), wide = app.classList.contains('wide');
+    const mw = main.clientWidth - (wide ? 44 : 24), mh = main.clientHeight - 16;
+    const side = wide ? 80 : 62, gap = wide ? 16 : 8;
+    if (wide) rs = Math.min(mw * .48 - 2 * side - 2 * gap, mh - 46 - 34 - 40 - 50, 420);
+    else rs = Math.min(mw - 2 * side - 2 * gap, mh * .40, 400);
+    rs = Math.max(150, Math.floor(rs));
+    const n = R.tiles.length;
+    ts = Math.round(Math.min(rs * (n <= 4 ? .27 : n === 5 ? .25 : n === 6 ? .23 : n === 7 ? .21 : .19), 78));
+    const ring = $('#ring');
+    ring.style.setProperty('--rs', rs + 'px'); ring.style.setProperty('--ts', ts + 'px');
+    $('#line').setAttribute('viewBox', `0 0 ${rs} ${rs}`);
+    placeTiles();
+    requestAnimationFrame(() => { renderSlots(); placePins(); });
+  }
+  // pack the slot words into rows (shortest first) and pick the row width that gives the biggest squares
+  function pack(C) {
+    const rows = []; let row = [], used = 0;
+    R.words.forEach((w, i) => {
+      const need = used ? used + 0.8 + w.length : w.length;
+      if (row.length && need > C) { rows.push(row); row = []; used = 0; }
+      used = used ? used + 0.8 + w.length : w.length; row.push(i);
+    });
+    if (row.length) rows.push(row);
+    return rows;
+  }
+  function renderSlots(pops) {
+    if (!R) return;
+    const box = $('#slots'), W = box.clientWidth - 24, H = box.clientHeight - 20;
+    const maxL = R.words[R.words.length - 1].length;
+    let best = null;
+    for (let C = maxL; C <= maxL * 2 + 2; C += 0.5) {
+      const rows = pack(C), size = Math.min(W / (C * 1.1 + 0.6), H / (rows.length * 1.32), 54);
+      if (!best || size > best.size + 0.5) best = { rows, size };
+    }
+    cs = Math.max(18, Math.floor(best.size));
+    box.style.setProperty('--cs', cs + 'px'); box.style.setProperty('--rg', Math.round(cs * .22) + 'px');
+    box.innerHTML = best.rows.map(r => `<div class="kr-row">${r.map(i => {
+      const w = R.words[i], f = R.found.has(i);
+      const cells = [...w].map((c, p) => {
+        const d = !f && R.drop[i].has(p), byD = f && R.byDrop.has(i) && R.drop[i].has(p);
+        const cls = f ? (byD ? 'd' : 'f') : d ? 'd' : '';
+        const pop = pops && pops[i] && pops[i].has(p) ? ` pop" style="animation-delay:${[...pops[i]].indexOf(p) * 55}ms` : '';
+        return `<span class="kr-c ${cls}${pop}">${f || d ? c : ''}</span>`;
+      }).join('');
+      return `<div class="kr-word${R.sel === i ? ' sel' : ''}" data-i="${i}" title="${w.length} letters">${R.hinted.has(i) && !f ? '<span class="hm">💡</span>' : ''}${cells}</div>`;
+    }).join('')}</div>`).join('');
+    $('#prog').innerHTML = `<span class="e">🔑</span> ${R.found.size} / ${R.words.length} words`;
+  }
+  $('#slots').addEventListener('click', e => {
+    const w = e.target.closest('.kr-word'); if (!w || !R || R.over) return;
+    const i = +w.dataset.i;
+    if (R.found.has(i)) { msg(`${R.words[i]}: ${R.L.slots[R.words[i]]}`, 'clue', 2600); return; }
+    R.sel = R.sel === i ? -1 : i;
+    renderSlots();
+    if (R.hinted.has(i)) msg(`💡 ${R.words[i].length} letters: ${R.L.slots[R.words[i]]}`, 'clue', 4000);
+    else if (R.sel === i) msg(`Slot picked (${R.words[i].length} letters): 💡 Hint shows its clue`, '', 2400);
+  });
+
+  // ---------- the Ring ----------
+  function buildRing() {
+    $$('#ring .kr-t').forEach(t => t.remove());
+    R.tiles.forEach((t, i) => { const el = document.createElement('div'); el.className = 'kr-t'; el.textContent = t.ch; el.dataset.i = i; t.el = el; $('#ring').appendChild(el); });
+  }
+  const pos = t => { const a = t.ang * Math.PI / 180, r = rs * .38; return [rs / 2 + r * Math.cos(a), rs / 2 + r * Math.sin(a)]; };
+  function placeTiles() { if (!R) return; R.tiles.forEach(t => { const [x, y] = pos(t); t.el.style.left = x + 'px'; t.el.style.top = y + 'px'; }); }
+  let spinning = 0;
+  function shuffle() {
+    if (!R || R.over || spinning) return;
+    clearTrace();
+    const n = R.tiles.length; let order;
+    do { order = shuffled([...Array(n).keys()]); } while (n > 1 && order.every((k, i) => k === R.tiles[i].k));
+    const from = R.tiles.map(t => t.ang), to = R.tiles.map((t, i) => { const tgt = -90 + order[i] * 360 / n; let d = ((tgt - t.ang) % 360 + 360) % 360; return t.ang + d + 360; });
+    R.tiles.forEach((t, i) => t.k = order[i]);
+    const t0 = performance.now(), dur = matchMedia('(prefers-reduced-motion: reduce)').matches ? 1 : 650;
+    spinning = 1;
+    (function step(now) {
+      const p = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - p, 3);
+      R.tiles.forEach((t, i) => t.ang = from[i] + (to[i] - from[i]) * e);
+      placeTiles();
+      if (p < 1) requestAnimationFrame(step); else { R.tiles.forEach(t => t.ang = ((t.ang + 90) % 360) - 90); spinning = 0; }
+    })(t0);
+  }
+  $('#hub').addEventListener('pointerdown', e => e.stopPropagation());
+  $('#hub').addEventListener('click', e => { e.stopPropagation(); shuffle(); });
+
+  // tracing: swipe / drag across the tiles, tap them one by one, or type
+  let trace = [], tapMode = false, dragging = false, ptr = null;
+  function hit(x, y) {
+    let best = null, bd = 1e9;
+    R.tiles.forEach((t, i) => { const [tx, ty] = pos(t), d = Math.hypot(tx - x, ty - y); if (d < bd) { bd = d; best = i; } });
+    return bd < ts * .62 ? best : null;
+  }
+  function local(e) { const r = $('#ring').getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; }
+  function add(i) { trace.push(i); R.tiles[i].el.classList.add('on'); drawLine(); showWord(); }
+  function pop() { const i = trace.pop(); if (i != null) R.tiles[i].el.classList.remove('on'); drawLine(); showWord(); }
+  function clearTrace() { trace.forEach(i => R && R.tiles[i] && R.tiles[i].el.classList.remove('on')); trace = []; tapMode = false; ptr = null; drawLine(); }
+  function drawLine() {
+    const pts = trace.map(i => pos(R.tiles[i]));
+    if (dragging && ptr && trace.length) pts.push(ptr);
+    $('#line polyline').setAttribute('points', pts.map(p => p.map(v => v.toFixed(1)).join(',')).join(' '));
+  }
+  function showWord() {
+    if (!trace.length) { msg(''); return; }
+    $('#msg').className = 'kr-msg';
+    $('#msg').innerHTML = trace.map(i => `<span class="wl">${R.tiles[i].ch}</span>`).join('') + (tapMode && !dragging ? '<span class="mt" style="margin-left:6px;font-size:12px">tap the last letter again</span>' : '');
+  }
+  const ring = $('#ring');
+  ring.addEventListener('pointerdown', e => {
+    if (!R || R.over || spinning) return;
+    const [x, y] = local(e), i = hit(x, y);
+    if (i == null) { if (trace.length) clearTrace(), msg(''); return; }
+    e.preventDefault();
+    try { ring.setPointerCapture(e.pointerId); } catch (err) { /* synthetic pointer */ }
+    if (tapMode && trace.length) {
+      if (i === trace[trace.length - 1]) { submit(); return; }
+      if (!trace.includes(i)) add(i);
+    } else { clearTrace(); add(i); }
+    dragging = true; ptr = [x, y];
+  });
+  ring.addEventListener('pointermove', e => {
+    if (!dragging || !R) return;
+    ptr = local(e);
+    const i = hit(...ptr);
+    if (i != null && i !== trace[trace.length - 1]) {
+      if (trace.length > 1 && i === trace[trace.length - 2]) pop();
+      else if (!trace.includes(i)) add(i);
+    }
+    drawLine();
+  });
+  function endDrag() {
+    if (!dragging) return;
+    dragging = false; ptr = null;
+    if (tapMode) { drawLine(); showWord(); return; }
+    if (trace.length >= 2) submit();
+    else { tapMode = true; drawLine(); showWord(); }
+  }
+  ring.addEventListener('pointerup', endDrag);
+  ring.addEventListener('pointercancel', () => { dragging = false; clearTrace(); msg(''); });
+  $('#msg').addEventListener('click', () => { if (tapMode && trace.length) submit(); });
+
+  // keyboard: type the word
+  document.addEventListener('keydown', e => {
+    if (cur !== 'game' || !R || $('#modal').classList.contains('on') || e.ctrlKey || e.metaKey || e.altKey) return;
+    if (/^[a-z]$/i.test(e.key)) {
+      if (R.over) return;
+      const c = e.key.toUpperCase(), i = R.tiles.findIndex((t, j) => t.ch === c && !trace.includes(j));
+      if (i < 0) { nudge(`No free ${c} on the Ring`); return; }
+      tapMode = true; add(i); showWord(); e.preventDefault();
+    } else if (e.key === 'Enter') { if (trace.length) submit(); e.preventDefault(); }
+    else if (e.key === 'Backspace') { pop(); if (!trace.length) tapMode = false; e.preventDefault(); }
+    else if (e.key === 'Escape') { clearTrace(); msg(''); }
+    else if (e.key === ' ') { shuffle(); e.preventDefault(); }
+  });
+
+  // ---------- messages ----------
+  let msgT = 0;
+  function msg(t, kind, ms) {
+    clearTimeout(msgT);
+    const m = $('#msg'); m.className = 'kr-msg';
+    m.innerHTML = t ? `<span class="mt ${kind || ''}">${t}</span>` : '';
+    if (t && ms) msgT = setTimeout(() => { if (!trace.length) msg(''); }, ms);
+  }
+  function nudge(t) { msg(t, 'bad', 1600); const m = $('#msg'); m.classList.remove('shake'); void m.offsetWidth; m.classList.add('shake'); }
+
+  // ---------- submit a word ----------
+  function submit() {
+    const w = trace.map(i => R.tiles[i].ch).join('');
+    clearTrace();
+    if (w.length < 3) { msg('Words need 3 letters or more', '', 1500); return; }
+    const i = R.words.indexOf(w);
+    if (i >= 0) {
+      if (R.found.has(i)) { msg(`${w} is already in a slot`, 'dup', 1800); flashRow(i); return; }
+      fill(i); return;
+    }
+    if (R.all.has(w)) {
+      if (R.bonus.includes(w)) { msg(`${w}: bonus word already found`, 'dup', 1800); return; }
+      R.bonus.push(w); R.bonusCoins++; S.coins++; paintCoins(true);
+      msg(`★ Bonus word ${w} · 🪙+1`, 'good', 1800); paintTag(true); return;
+    }
+    nudge(`${w} isn't in the word list`);
+  }
+  function fill(i) {
+    R.found.add(i);
+    const pops = { [i]: new Set([...R.words[i]].map((c, p) => p).filter(p => !R.drop[i].has(p))) };
+    if (R.sel === i) R.sel = -1;
+    renderSlots(pops);
+    msg(`✓ ${R.words[i]}`, 'good', 1400);
+    checkDone();
+  }
+  function flashRow(i) { const el = $(`.kr-word[data-i="${i}"]`); if (el) { el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); } }
+  function paintTag(bump) {
+    $('#tagN').textContent = R ? R.bonus.length : 0;
+    if (bump) { const t = $('#tag'); t.classList.remove('bump'); void t.offsetWidth; t.classList.add('bump'); const p = document.createElement('span'); p.className = 'plus'; p.textContent = '+1'; t.appendChild(p); setTimeout(() => p.remove(), 1000); }
+  }
+  $('#tag').addEventListener('click', () => {
+    if (!R) return;
+    openModal(`<h3>Bonus words</h3><p class="sub">Real words from this Ring that are not in a slot. Each new one pays 🪙1.</p>
+      <div class="done-words">${R.bonus.length ? R.bonus.map(w => `<span class="bon">${w}</span>`).join('') : '<span>None yet. Keep spelling!</span>'}</div>
+      <p class="sub" style="margin:0">This Ring: ${R.bonus.length} found · 🪙+${R.bonusCoins}</p>`);
+  });
+
+  // ---------- coin buttons: two taps to buy ----------
+  function coinBtn(btn, cost, label, fn) {
+    let armT = 0;
+    btn.addEventListener('click', () => {
+      if (!R || R.over) return;
+      if (btn.classList.contains('armed')) {
+        clearTimeout(armT); btn.classList.remove('armed'); btn.querySelector('.cp').textContent = '🪙' + cost;
+        if (S.coins < cost) { nudge(`Not enough coins: ${label} costs 🪙${cost}`); return; }
+        if (fn() === false) return;
+        S.coins -= cost; R.spent += cost; paintCoins(true);
+      } else {
+        btn.classList.add('armed'); btn.querySelector('.cp').textContent = 'Tap again';
+        armT = setTimeout(() => { btn.classList.remove('armed'); btn.querySelector('.cp').textContent = '🪙' + cost; }, 3000);
+      }
+    });
+  }
+  coinBtn($('#hintBtn'), 3, 'Hint', () => {
+    let i = R.sel >= 0 && !R.found.has(R.sel) ? R.sel : -1;
+    if (i < 0) i = R.words.findIndex((w, j) => !R.found.has(j) && !R.hinted.has(j));
+    if (i < 0) i = R.words.findIndex((w, j) => !R.found.has(j));
+    if (i < 0) return false;
+    if (R.hinted.has(i)) { msg(`💡 ${R.words[i].length} letters: ${R.L.slots[R.words[i]]} (already shown, free)`, 'clue', 4000); return false; }
+    R.hinted.add(i); R.hints++; R.sel = i; renderSlots();
+    msg(`💡 ${R.words[i].length} letters: ${R.L.slots[R.words[i]]}`, 'clue', 5000);
+  });
+  coinBtn($('#dropBtn'), 10, 'Key Drop', () => {
+    const open = [];
+    R.words.forEach((w, i) => { if (!R.found.has(i)) [...w].forEach((c, p) => { if (!R.drop[i].has(p)) open.push([i, p]); }); });
+    if (!open.length) return false;
+    const pick = shuffled(open).slice(0, 3), pops = {};
+    pick.forEach(([i, p]) => { R.drop[i].add(p); (pops[i] = pops[i] || new Set()).add(p); });
+    R.drops++;
+    let done = 0;
+    R.words.forEach((w, i) => { if (!R.found.has(i) && R.drop[i].size === w.length) { R.found.add(i); R.byDrop.add(i); done++; } });
+    renderSlots(pops);
+    msg(`🔑 Key Drop: ${pick.length} letters dropped in${done ? ` · ${done} slot${done > 1 ? 's' : ''} filled` : ''}`, '', 2200);
+    checkDone();
+  });
+
+  // ---------- clock ----------
+  let last = performance.now();
+  function tick(dt) {
+    if (!R) return;
+    if (dt && cur === 'game' && !R.over && !$('#modal').classList.contains('on') && !document.hidden) R.el += dt;
+    const sec = Math.floor(R.el / 1000), rem = S.timer ? Math.max(0, S.timer - sec) : sec;
+    const f = s => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+    $('#clk').textContent = f(rem);
+    $('#clock').classList.toggle('low', !!S.timer && rem <= 10 && !R.over);
+    if (S.timer && rem <= 0 && !R.over) timeUp();
+  }
+  setInterval(() => { const now = performance.now(); tick(now - last); last = now; }, 250);
+
+  // ---------- the end of a Ring ----------
+  function checkDone() { if (R.found.size === R.words.length && !R.over) { R.over = true; setTimeout(finish, 650); } }
+  const CLEAR = 5;
+  function finish() {
+    R.over = true;
+    S.coins += CLEAR; paintCoins(true);
+    const sec = Math.floor(R.el / 1000), t = `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, '0')}`;
+    const net = CLEAR + R.bonusCoins - R.spent;
+    const conf = document.createElement('div'); conf.className = 'confetti';
+    conf.innerHTML = Array.from({ length: 36 }, (_, k) => `<i style="left:${Math.random() * 100}%;background:${['#f5b300', '#2c6bd8', '#1e9e4a', '#e0457b', '#4fc3f7'][k % 5]};animation-delay:${Math.random() * .5}s"></i>`).join('');
+    if (app.dataset.screen !== 'night') { app.appendChild(conf); setTimeout(() => conf.remove(), 2400); }
+    openModal(`<div class="ring-stamp kri">${KRI}</div><h3>Ring cleared!</h3>
+      <p class="sub">${R.words.length} of ${R.words.length} words · ${R.bonus.length} bonus word${R.bonus.length === 1 ? '' : 's'} · ${S.timer ? 'time left ' + $('#clk').textContent : t}</p>
+      <div class="done-words">${R.words.map(w => `<span>${w}</span>`).join('')}${R.bonus.map(w => `<span class="bon">${w}</span>`).join('')}</div>
+      <table><tr><td>🔑 Ring cleared</td><td class="pos">+${CLEAR}</td></tr><tr><td>★ Bonus words (${R.bonus.length})</td><td class="pos">+${R.bonusCoins}</td></tr>
+      ${R.hints ? `<tr><td>💡 Hint × ${R.hints}</td><td class="neg">−${R.hints * 3}</td></tr>` : ''}${R.drops ? `<tr><td>🔑 Key Drop × ${R.drops}</td><td class="neg">−${R.drops * 10}</td></tr>` : ''}
+      <tr class="tot"><td>Coins this Ring</td><td class="${net >= 0 ? 'pos' : 'neg'}">${net >= 0 ? '+' : '−'}${Math.abs(net)}</td></tr></table>
+      <div class="rbtns" data-pin="12"><button class="btn" data-mgo="lobby">☰ Lobby</button><button class="btn" data-mgo="setup">⚙ Setup</button><button class="btn primary" data-mgo="next">▶ Next Ring</button></div>`, true);
+  }
+  function timeUp() {
+    R.over = true; clearTrace();
+    const miss = R.words.filter((w, i) => !R.found.has(i));
+    openModal(`<h3>⏱ Time's up</h3><p class="sub">${R.found.size} of ${R.words.length} words · ${R.bonus.length} bonus words (🪙+${R.bonusCoins}, yours to keep)</p>
+      <div class="done-words">${R.words.map((w, i) => `<span class="${R.found.has(i) ? '' : 'miss'}">${w}</span>`).join('')}</div>
+      <p class="sub" style="margin:0">Red = the words you missed.</p>
+      <div class="rbtns"><button class="btn" data-mgo="lobby">☰ Lobby</button><button class="btn" data-mgo="setup">⚙ Setup</button><button class="btn primary" data-mgo="next">▶ Next Ring</button></div>`, true);
+  }
+  function openModal(html, noX) {
+    $('#mbox').innerHTML = (noX ? '' : '<button class="icon-btn x" data-mclose title="Close">✕</button>') + html;
+    $('#modal').classList.add('on');
+    requestAnimationFrame(placePins);
+  }
+  function closeModal() { $('#modal').classList.remove('on'); requestAnimationFrame(placePins); }
+  $('#modal').addEventListener('click', e => {
+    if (e.target.id === 'modal' && (!R || !R.over)) { closeModal(); return; }
+    if (e.target.closest('[data-mclose]')) { closeModal(); return; }
+    const b = e.target.closest('[data-mgo]'); if (!b) return;
+    closeModal();
+    if (b.dataset.mgo === 'next') { deal(); show('game'); } else show(b.dataset.mgo);
+  });
+  function openHelp() {
+    openModal(`<h3>How To Play KeyRing</h3><div class="help">
+      <h4>The goal</h4><p>Spell words from the letters on the Ring to fill every slot. Each letter can be used once per word. A Ring is cleared when every slot is full.</p>
+      <h4>Spell a word</h4><ul><li><b>Swipe</b> (touch) or <b>drag</b> (mouse) across the letters, then let go. Slide back one letter to undo it.</li><li>Or <b>tap</b> the letters one by one, then tap the last one again.</li><li>Or <b>type</b> it on a keyboard and press <b>Enter</b> (<b>⌫</b> takes a letter back, <b>Esc</b> clears, <b>Space</b> shuffles).</li></ul>
+      <h4>Slots</h4><p>Each slot holds one word; its squares show how long the word is. Shortest words come first. Tap a slot to pick it for a Hint.</p>
+      <h4>Bonus words</h4><p>Any other real word you spell from the Ring is a bonus word: the gold tag counts them, and each new one pays 🪙1. Tap the tag to see them.</p>
+      <h4>The buttons</h4><ul><li><b>Shuffle</b> (the steel hub in the middle): the letters spin to new places. Free.</li><li><b>💡 Hint (🪙3)</b>: shows the clue for the slot you picked (or the shortest empty one). No letters are given away.</li><li><b>🔑 Key Drop (🪙10)</b>: drops 3 random letters into the empty squares.</li></ul>
+      <p>Coin buttons need two taps: the first shows "Tap again", the second buys.</p>
+      <h4>Timer</h4><p>Untimed, or 1, 2, 3 or 5 minutes per Ring (chosen on the Setup screen). When time runs out, the missed words are shown and your bonus coins are kept.</p>
+      <h4>Coins</h4><p>🪙5 for each cleared Ring, plus 🪙1 for each new bonus word. Coins are shared by every ${'Master Keys'} game.</p></div>`);
+  }
+
+  // ---------- page controls ----------
+  function seg(id, fn) { $$(id + ' button').forEach(b => b.addEventListener('click', () => { $$(id + ' button').forEach(x => x.classList.toggle('on', x === b)); fn(b.dataset.v); })); }
+  seg('#cDev', v => { dev.className = 'device ' + v; layout(); });
+  seg('#cScr', v => { app.dataset.screen = v; });
+  $('#cPins').addEventListener('change', e => app.classList.toggle('nopins', !e.target.checked));
+  function layout() {
+    const w = app.clientWidth;
+    app.classList.toggle('wide', w >= 900);
+    app.classList.toggle('wide-lobby', w >= 700);
+    app.classList.toggle('phonedev', w < 600);
+    fit(); placePins();
+  }
+  new ResizeObserver(layout).observe(app);
+
+  // pink number pins at the top-left corner of each noted element
+  function placePins() {
+    $$('.pin').forEach(p => p.remove());
+    const box = app.getBoundingClientRect();
+    const modalOn = $('#modal').classList.contains('on');
+    $$(modalOn ? '#modal [data-pin]' : '.scr.on [data-pin]').forEach(el => {
+      const r = el.getBoundingClientRect();
+      if (!r.width) return;
+      const p = document.createElement('span');
+      p.className = 'pin'; p.textContent = el.dataset.pin;
+      p.style.left = Math.max(2, r.left - box.left - 8) + 'px';
+      p.style.top = Math.max(2, r.top - box.top - 8) + 'px';
+      app.appendChild(p);
+    });
+  }
+  $$('.scr').forEach(s => s.addEventListener('scroll', () => placePins(), { passive: true }));
+
+  paintCoins(); paintSetup(); lastLine();
+  show('lobby');
+})();
+</script>
+</body>
+</html>
