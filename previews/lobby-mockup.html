@@ -1,0 +1,428 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Master Keys · clickable Lobby mockup for JM (RFI CD-76: 3.1–3.3). A preview only: the game is unchanged. -->
+<title>Lobby Mockup · CD-76</title>
+<style>
+  /* ---------- the page around the mockup ---------- */
+  :root { --pg: #f4f1ea; --pcard: #ffffff; --pink: #1f2933; --pmuted: #5f6b76; --pline: #ddd6c8; --pacc: #2c6bd8; color-scheme: light; }
+  @media (prefers-color-scheme: dark) { :root { --pg: #15181c; --pcard: #1f242a; --pink: #e4e4e4; --pmuted: #9aa4ad; --pline: #333b44; --pacc: #6f9ff0; color-scheme: dark; } }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--pg); color: var(--pink); font: 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 1240px; margin: 0 auto; padding: 16px; }
+  h1 { font-size: 22px; margin: 4px 0 2px; }
+  .lead { color: var(--pmuted); margin: 0 0 14px; max-width: 760px; }
+  .ctrls { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; margin-bottom: 10px; }
+  .ctrl { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .ctrl > span { font-size: 12px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; color: var(--pmuted); }
+  .pseg { display: inline-flex; border: 1px solid var(--pline); border-radius: 10px; overflow: hidden; background: var(--pcard); }
+  .pseg button { border: 0; background: none; color: var(--pink); font: inherit; font-size: 14px; padding: 6px 11px; cursor: pointer; }
+  .pseg button + button { border-left: 1px solid var(--pline); }
+  .pseg button.on { background: var(--pacc); color: #fff; font-weight: 700; }
+  .pchk { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; cursor: pointer; }
+  .jump { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 0 0 14px; font-size: 13px; color: var(--pmuted); }
+  .jump button { border: 1px solid var(--pline); background: var(--pcard); color: var(--pink); border-radius: 999px; padding: 3px 10px; font: inherit; font-size: 13px; cursor: pointer; }
+  .jump button.on { border-color: var(--pacc); color: var(--pacc); font-weight: 700; }
+  .stage { display: flex; flex-wrap: wrap; gap: 22px; align-items: flex-start; }
+  .stage .device { flex: none; margin: 0; }
+  .legend { flex: 1 1 280px; min-width: 0; background: var(--pcard); border: 1px solid var(--pline); border-radius: 14px; padding: 12px 14px; }
+  .legend h2 { font-size: 15px; margin: 0 0 6px; letter-spacing: .03em; text-transform: uppercase; }
+  .legend ol { margin: 0; padding-left: 0; list-style: none; }
+  .legend li { display: grid; grid-template-columns: 24px 1fr; gap: 6px; margin: 0 0 8px; font-size: 14px; }
+  .legend li b.n { display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: #e0457b; color: #fff; font-size: 12px; margin-top: 1px; }
+  .legend .flow { font-weight: 700; margin: 0 0 10px; }
+  .legend .foot { color: var(--pmuted); font-size: 13px; margin: 10px 0 0; }
+
+  /* ---------- the device frame ---------- */
+  .device { margin: 0 auto; border: 10px solid #111; border-radius: 38px; overflow: hidden; background: #111; box-shadow: 0 10px 40px rgba(0, 0, 0, .25); position: relative; }
+  .device.phone { width: min(390px, 100%); height: 800px; }
+  .device.ipad { width: min(820px, 100%); height: 1000px; border-radius: 28px; border-width: 14px; }
+
+  /* ---------- the app inside it: the same colors as Master Keys v09a ---------- */
+  .app {
+    --bg: #ece6d8; --surface: #fbf8f1; --ink: #1f2933; --muted: #69727d; --line: #b9b19f; --hl: #fff0b8;
+    --btn: #ffffff; --btn-ink: #1f2933; --primary: #2c6bd8; --primary-ink: #ffffff; --coin: #9a6b00;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .10), 0 6px 18px rgba(0, 0, 0, .08);
+    --emoji: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Segoe UI Symbol", sans-serif;
+    position: absolute; inset: 0; background: var(--bg); color: var(--ink); color-scheme: light;
+    font: 16px/1.35 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; overflow: hidden;
+  }
+  .app[data-screen="dark"] {
+    --bg: #12181f; --surface: #1b232c; --ink: #e8edf2; --muted: #96a1ad; --line: #3a4552; --hl: #3a3420;
+    --btn: #26303b; --btn-ink: #e8edf2; --primary: #3f7fe8; --coin: #ffcc33;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 6px 18px rgba(0, 0, 0, .3); color-scheme: dark;
+  }
+  .app[data-screen="night"] {
+    --bg: #121212; --surface: #1c1c1c; --ink: #a6a6a6; --muted: #6a6a6a; --line: #2e2e2e; --hl: #34321f;
+    --btn: #262626; --btn-ink: #bdbdbd; --primary: #3d5878; --primary-ink: #d0d0d0; --coin: #a08530;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .5); color-scheme: dark;
+  }
+  .app[data-screen="night"] img.gi { filter: brightness(.75) saturate(.7); }
+  .scr { position: absolute; inset: 0; overflow-y: auto; display: none; flex-direction: column; }
+  .scr.on { display: flex; }
+  .wrap { width: 100%; max-width: 720px; margin: 0 auto; padding: 14px 14px 22px; display: flex; flex-direction: column; gap: 12px; }
+  .lbl { font-size: 12px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+  .field { display: flex; flex-direction: column; gap: 4px; }
+  select, input[type=text] { font: inherit; font-size: 15px; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); width: 100%; }
+  .btn { font: inherit; font-weight: 700; border: 0; border-radius: 12px; padding: 10px 14px; background: var(--btn); color: var(--btn-ink); box-shadow: var(--shadow); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+  .btn.primary { background: var(--primary); color: var(--primary-ink); }
+  .btn.big { font-size: 18px; padding: 13px 16px; border-radius: 14px; }
+  .icon-btn { width: 38px; height: 38px; border: 0; border-radius: 11px; background: var(--btn); color: var(--btn-ink); box-shadow: var(--shadow); font-size: 18px; font-family: var(--emoji); cursor: pointer; display: inline-grid; place-items: center; padding: 0; }
+  img.gi { display: block; border-radius: 24%; }
+
+  /* splash screen: Android draws this from the app's icon, name and background color */
+  #s-splash { background: #ece6d8; color: #1f2933; align-items: center; justify-content: center; gap: 18px; cursor: pointer; }
+  #s-splash img { width: 128px; height: 128px; border-radius: 26%; animation: sp 1.4s ease-out; }
+  #s-splash p { margin: 0; font-size: 22px; font-weight: 800; }
+  #s-splash small { position: absolute; bottom: 16px; font-size: 12px; color: #69727d; }
+  @keyframes sp { from { transform: scale(.85); opacity: 0; } to { transform: none; opacity: 1; } }
+
+  /* Lobby */
+  .brand { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px; align-items: center; margin-top: -6px; }
+  .brand img { width: 60px; height: 60px; border-radius: 24%; }
+  .brand h1 { margin: 0; font-size: 26px; font-weight: 900; white-space: nowrap; }
+  .vpill { display: inline-block; vertical-align: middle; font-size: 12px; font-weight: 800; padding: 1px 7px; border-radius: 999px; background: var(--primary); color: var(--primary-ink); margin-left: 4px; }
+  .tag { margin: 0; font-size: 13px; color: var(--muted); }
+  .corner { order: -1; display: flex; gap: 6px; justify-content: flex-end; align-self: flex-end; }
+  .me-row { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 8px; align-items: center; }
+  .me-av { width: 44px; height: 44px; border: 0; border-radius: 12px; background: var(--surface); box-shadow: var(--shadow); font-size: 24px; font-family: var(--emoji); }
+  .coins { font-weight: 900; color: var(--coin); background: var(--surface); padding: 8px 10px; border-radius: 10px; box-shadow: var(--shadow); white-space: nowrap; }
+  .games { display: grid; grid-template-columns: 1fr; gap: 12px; }
+  .ipad .games { grid-template-columns: 1fr 1fr; }
+  .gcard { background: var(--surface); border-radius: 18px; box-shadow: var(--shadow); padding: 14px; display: flex; flex-direction: column; gap: 10px; cursor: pointer; position: relative; }
+  .gcard:hover { outline: 2px solid var(--primary); outline-offset: -2px; }
+  .ghead { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px; align-items: center; }
+  .ghead img { width: 64px; height: 64px; }
+  .gname { font-size: 22px; font-weight: 900; margin: 0; }
+  .gpitch { margin: 2px 0 0; font-size: 14px; color: var(--muted); }
+  .grec { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .grec div { background: var(--bg); border-radius: 10px; padding: 6px 4px; text-align: center; }
+  .grec b { display: block; font-size: 17px; }
+  .grec span { font-size: 11px; color: var(--muted); }
+  .gres { background: var(--hl); border-radius: 10px; padding: 6px 10px; font-size: 13px; font-weight: 700; }
+  .gbtns { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
+  .glast { font-size: 12px; color: var(--muted); margin: -4px 0 0; }
+  .gcard.soon { border: 2px dashed var(--line); background: transparent; box-shadow: none; cursor: default; align-items: center; justify-content: center; text-align: center; color: var(--muted); min-height: 120px; }
+  .gcard.soon:hover { outline: 0; }
+  .gcard.soon b { font-size: 26px; font-family: var(--emoji); }
+
+  /* Setup screens (built like LockWord's today) */
+  .top { display: grid; grid-template-columns: auto auto minmax(0, 1fr) auto auto; gap: 8px; align-items: center; padding: 10px 12px 2px; }
+  .top img { width: 40px; height: 40px; }
+  .top h2 { margin: 0; font-size: 24px; font-weight: 900; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .top h2 { line-height: 1.05; }
+  .top h2 small { display: block; font-size: 12px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .opp { display: flex; gap: 10px; align-items: center; background: var(--surface); border-radius: 12px; box-shadow: var(--shadow); padding: 6px 10px; }
+  .opp b { font-size: 28px; font-family: var(--emoji); }
+  .opp small { display: block; color: var(--muted); font-size: 12px; }
+  .seg { display: grid; grid-template-columns: repeat(3, 1fr); border-radius: 12px; overflow: hidden; box-shadow: var(--shadow); }
+  .seg button { font: inherit; font-size: 14px; font-weight: 700; border: 0; padding: 9px 4px; background: var(--btn); color: var(--btn-ink); cursor: pointer; }
+  .seg button + button { border-left: 1px solid var(--line); }
+  .seg button.on { background: var(--primary); color: var(--primary-ink); }
+  .seg small { display: block; font-weight: 500; font-size: 11px; opacity: .8; }
+  details.opts { background: var(--surface); border-radius: 12px; box-shadow: var(--shadow); padding: 8px 10px; }
+  details.opts summary { list-style: none; cursor: pointer; display: flex; gap: 8px; align-items: baseline; }
+  details.opts summary::-webkit-details-marker { display: none; }
+  details.opts .cec { transition: transform .2s; display: inline-block; }
+  details.opts[open] .cec { transform: rotate(90deg); }
+  .osum { font-size: 13px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .obody { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+  .obody .full { grid-column: 1 / -1; }
+  .defs { display: flex; gap: 8px; flex-wrap: wrap; }
+  .stats { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+  .stats div { background: var(--surface); border-radius: 10px; box-shadow: var(--shadow); padding: 8px 2px; text-align: center; }
+  .stats b { display: block; font-size: 19px; }
+  .stats span { font-size: 11px; color: var(--muted); }
+  .unfin { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; align-items: center; background: var(--hl); border-radius: 12px; padding: 8px 10px; font-size: 14px; font-weight: 700; }
+  .desc { font-size: 13px; color: var(--muted); margin: -4px 0 0; }
+
+  /* game screen stand-in */
+  .gamebox { flex: 1; margin: 10px 12px 14px; border: 2px dashed var(--line); border-radius: 16px; display: grid; place-items: center; text-align: center; color: var(--muted); padding: 20px; }
+  .gamebox b { display: block; font-size: 18px; color: var(--ink); margin-bottom: 6px; }
+
+  /* Master Keys settings sheet */
+  .sheet-bg { position: absolute; inset: 0; background: rgba(0, 0, 0, .45); display: none; align-items: flex-end; justify-content: center; z-index: 5; }
+  .sheet-bg.on { display: flex; }
+  .sheet { width: 100%; max-width: 520px; background: var(--bg); border-radius: 18px 18px 0 0; padding: 14px 14px 20px; display: flex; flex-direction: column; gap: 12px; }
+  .sheet h3 { margin: 0; font-size: 19px; display: flex; justify-content: space-between; align-items: center; }
+  .sheet p { margin: 0; font-size: 13px; color: var(--muted); }
+
+  /* numbered notes (pink pins) */
+  .pin { position: absolute; z-index: 4; width: 20px; height: 20px; border-radius: 50%; background: #e0457b; color: #fff; font: 800 12px/20px system-ui, sans-serif; text-align: center; box-shadow: 0 0 0 2px #fff; pointer-events: none; }
+  .nopins .pin { display: none; }
+  .has-pin { position: relative; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Master Keys · Lobby mockup</h1>
+  <p class="lead">A clickable preview of the new flow (RFI CD-76: 3.1–3.3): <b>splash screen → Lobby → Setup screen → game screen</b>. Tap the game cards and buttons, open ⚙ in the Lobby, and switch the device and Screen above. The pink numbers match the notes. A preview only: the game itself is unchanged.</p>
+
+  <div class="ctrls">
+    <div class="ctrl"><span>Device</span><div class="pseg" id="cDev"><button data-v="phone" class="on">Phone</button><button data-v="ipad">iPad</button></div></div>
+    <div class="ctrl"><span>Screen</span><div class="pseg" id="cScr"><button data-v="light" class="on">Light</button><button data-v="dark">Dark</button><button data-v="night">Night</button></div></div>
+    <label class="pchk"><input type="checkbox" id="cUnf" checked> Unfinished CrossKeys game</label>
+    <label class="pchk"><input type="checkbox" id="cPins" checked> Show numbered notes</label>
+  </div>
+  <div class="jump" id="jump">Jump to:
+    <button data-s="splash">Splash screen</button><button data-s="lobby">Lobby</button><button data-s="ck">CrossKeys Setup</button><button data-s="lw">LockWord Setup</button><button data-s="game">Game screen</button>
+  </div>
+
+  <div class="stage">
+    <div class="device phone" id="dev">
+      <div class="app" id="app" data-screen="light">
+
+        <!-- 1 · Splash screen -->
+        <section class="scr" id="s-splash" title="Tap to skip">
+          <img src="../icons/icon.svg" alt="">
+          <p>Master Keys</p>
+          <small>Splash screen · drawn by the phone while the app loads</small>
+        </section>
+
+        <!-- 2 · Lobby -->
+        <section class="scr" id="s-lobby">
+          <div class="wrap">
+            <header class="brand">
+              <img src="../icons/icon.svg" alt="">
+              <div>
+                <h1>Master Keys <span class="vpill">v10</span></h1>
+                <p class="tag">Word games. Beat the Bot.</p>
+              </div>
+            </header>
+            <div class="corner has-pin" data-pin="1">
+                <button class="icon-btn" title="Sound">🔈</button>
+                <button class="icon-btn" title="Game History (all games)">📜</button>
+                <button class="icon-btn has-pin" data-pin="2" id="mkSetBtn" title="Master Keys settings">⚙</button>
+                <button class="icon-btn" title="How To Play (the suite)">?</button>
+            </div>
+
+            <div class="field">
+              <span class="lbl">You</span>
+              <div class="me-row">
+                <button class="me-av">🙂</button>
+                <input type="text" value="JM" aria-label="Your name">
+                <span class="coins">🪙 245</span>
+              </div>
+            </div>
+
+            <span class="lbl">Games</span>
+            <div class="games">
+              <div class="gcard has-pin" data-pin="3" data-go="ck">
+                <div class="ghead">
+                  <img class="gi" src="../icons/crosskeys.svg" alt="">
+                  <div><p class="gname">CrossKeys</p><p class="gpitch">Head-to-head crossword tiles. Finish the words, beat the Bot.</p></div>
+                </div>
+                <div class="grec"><div><b>42</b><span>Played</span></div><div><b>64%</b><span>Won</span></div><div><b>212</b><span>Top score</span></div></div>
+                <div class="gres ck-unf">Unfinished game · Turn 6 · You 42 – Fox 38</div>
+                <div class="gbtns has-pin" data-pin="4">
+                  <button class="btn primary big" data-go="game" data-game="CrossKeys"><span class="ck-play">▶ Resume</span></button>
+                  <button class="btn big has-pin" data-pin="5" data-go="ck">⚙ Setup</button>
+                </div>
+                <p class="glast ck-last"></p>
+              </div>
+
+              <div class="gcard" data-go="lw">
+                <div class="ghead">
+                  <img class="gi" src="../icons/lockword.svg" alt="">
+                  <div><p class="gname">LockWord</p><p class="gpitch">Crack the hidden word in a few guesses.</p></div>
+                </div>
+                <div class="grec"><div><b>30</b><span>Played</span></div><div><b>80%</b><span>Solved</span></div><div><b>5</b><span>Streak</span></div></div>
+                <div class="gbtns">
+                  <button class="btn primary big" data-go="game" data-game="LockWord">▶ Play</button>
+                  <button class="btn big" data-go="lw">⚙ Setup</button>
+                </div>
+                <p class="glast">▶ Play uses your last settings: Level 3 · 5 letters · 6 guesses</p>
+              </div>
+
+              <div class="gcard soon has-pin" data-pin="6"><b>🗝️</b>More games on the way</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3 · CrossKeys Setup -->
+        <section class="scr" id="s-ck">
+          <header class="top">
+            <button class="icon-btn has-pin" data-pin="9" data-go="lobby" title="Back to the Lobby">☰</button>
+            <img class="gi" src="../icons/crosskeys.svg" alt="">
+            <h2>CrossKeys <small>Setup</small></h2>
+            <button class="icon-btn" title="Sound">🔈</button>
+            <button class="icon-btn" title="How To Play CrossKeys">?</button>
+          </header>
+          <div class="wrap">
+            <div class="unfin ck-unf"><span>Unfinished game · Turn 6 · You 42 – Fox 38</span><button class="btn primary" data-go="game" data-game="CrossKeys">▶ Resume</button></div>
+            <div class="pair has-pin" data-pin="7">
+              <div class="field"><span class="lbl">Bot</span><div class="opp"><b>🦊</b><div>Fox<small>Record: 27 won · 15 lost</small></div></div></div>
+              <label class="field"><span class="lbl">Challenge Level</span><select><option>1 · Gentle</option><option>2</option><option>3</option><option selected>4</option><option>5</option><option>10 · Ruthless</option></select></label>
+            </div>
+            <div class="field"><span class="lbl">Grid Size</span>
+              <div class="seg" id="sizeSeg"><button>Small<small>5 × 6</small></button><button class="on">Medium<small>6 × 7</small></button><button>Large<small>7 × 11</small></button></div>
+            </div>
+            <details class="opts">
+              <summary><span class="cec">▸</span><span class="lbl">Options</span><span class="osum">6 letters · Fixed bonus · Some pics · Classic · Untimed</span></summary>
+              <div class="obody">
+                <label class="field"><span class="lbl">Letters in Hand</span><select><option selected>6 letters</option></select></label>
+                <label class="field"><span class="lbl">Bonus Squares</span><select><option>Fixed</option></select></label>
+                <label class="field"><span class="lbl">Clue Pics</span><select><option>Some</option></select></label>
+                <label class="field"><span class="lbl">Scoring</span><select><option>Classic</option></select></label>
+                <label class="field"><span class="lbl">Timer</span><select><option>Untimed</option></select></label>
+                <label class="field"><span class="lbl">Grid Colors</span><select><option>Slots</option></select></label>
+                <div class="defs full"><button class="btn">⭐ Save as my defaults</button><button class="btn">↺ Defaults</button></div>
+              </div>
+            </details>
+            <button class="btn primary big" data-go="game" data-game="CrossKeys"><span class="ck-start">▶ New game</span></button>
+            <div class="stats has-pin" data-pin="8"><div><b>42</b><span>Played</span></div><div><b>64%</b><span>Won</span></div><div><b>3</b><span>Streak</span></div><div><b>7</b><span>Best streak</span></div><div><b>212</b><span>Top score</span></div></div>
+          </div>
+        </section>
+
+        <!-- 4 · LockWord Setup (as today, with ☰ back to the Lobby) -->
+        <section class="scr" id="s-lw">
+          <header class="top">
+            <button class="icon-btn" data-go="lobby" title="Back to the Lobby">☰</button>
+            <img class="gi" src="../icons/lockword.svg" alt="">
+            <h2>LockWord <small>Setup</small></h2>
+            <button class="icon-btn" title="Sound">🔈</button>
+            <button class="icon-btn" title="How To Play LockWord">?</button>
+          </header>
+          <div class="wrap">
+            <div class="pair">
+              <label class="field"><span class="lbl">Challenge Level</span><select><option>3</option></select></label>
+              <label class="field"><span class="lbl">Letters</span><select><option>5 letters</option></select></label>
+              <label class="field"><span class="lbl">Guesses</span><select><option>6 guesses</option></select></label>
+              <label class="field"><span class="lbl">Timer</span><select><option>Untimed</option></select></label>
+            </div>
+            <label class="field"><span class="lbl">Scoring</span><select><option>Classic</option></select></label>
+            <p class="desc">Classic: fewer guesses, more points.</p>
+            <button class="btn primary big" data-go="game" data-game="LockWord">🔓 Pick the Lock</button>
+            <div class="stats"><div><b>30</b><span>Played</span></div><div><b>80%</b><span>Solved</span></div><div><b>5</b><span>Streak</span></div><div><b>9</b><span>Best streak</span></div><div><b>58</b><span>Top score</span></div></div>
+          </div>
+        </section>
+
+        <!-- 5 · Game screen (unchanged; only ☰ changes) -->
+        <section class="scr" id="s-game">
+          <header class="top">
+            <button class="icon-btn" data-go="lobby" title="Menu">☰</button>
+            <img class="gi" id="gIco" src="../icons/crosskeys.svg" alt="">
+            <h2 id="gName">CrossKeys</h2>
+            <button class="icon-btn" title="Sound">🔈</button>
+            <button class="icon-btn" title="Settings">⚙</button>
+          </header>
+          <div class="gamebox"><div><b>The <span id="gName2">CrossKeys</span> game screen</b>Unchanged. Only ☰ is new: it opens the menu, whose top item is now “Back to the Lobby”.</div></div>
+        </section>
+
+        <!-- Master Keys settings (⚙ in the Lobby) -->
+        <div class="sheet-bg" id="mkSheet">
+          <div class="sheet">
+            <h3>Master Keys settings <button class="icon-btn" id="mkClose" title="Close">✕</button></h3>
+            <label class="field"><span class="lbl">Screen</span>
+              <select id="mkScreen"><option value="auto">Auto (follows your device)</option><option value="light">Light</option><option value="dark">Dark</option><option value="night">Night (dimmest)</option></select>
+            </label>
+            <p>Moved here from CrossKeys Options: it changes every game, so it belongs to the suite. (Sound, your name and picture are in the Lobby itself.)</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <aside class="legend">
+      <h2>What changes</h2>
+      <p class="flow">splash screen → Lobby → Setup screen → game screen</p>
+      <ol>
+        <li><b class="n">1</b><span><b>The Lobby holds only what every game shares:</b> you, your coins, sound, Game History (all games, with a tab per game, as now) and How To Play for the suite.</span></li>
+        <li><b class="n">2</b><span><b>⚙ Master Keys settings</b> (new): Screen (Auto / Light / Dark / Night) moves here from CrossKeys Options, because it changes every game.</span></li>
+        <li><b class="n">3</b><span><b>Equal game cards:</b> icon, one-line description and your record. LockWord is the same size as CrossKeys. Tapping the card opens its Setup screen.</span></li>
+        <li><b class="n">4</b><span><b>▶ Play starts at once with your last settings</b>, so CrossKeys is still one tap away. When a game is unfinished, the card says so and ▶ Play becomes ▶ Resume.</span></li>
+        <li><b class="n">5</b><span><b>⚙ Setup</b> opens the game's own Setup screen.</span></li>
+        <li><b class="n">6</b><span><b>“More games on the way”:</b> an optional placeholder for the next game from New Games research. Your call (RFI).</span></li>
+        <li><b class="n">7</b><span><b>CrossKeys Setup:</b> Bot, Challenge Level, Grid Size and Options move here from today's home screen, unchanged (Grid Colors and the defaults buttons included).</span></li>
+        <li><b class="n">8</b><span><b>A stats row</b> for CrossKeys, built like LockWord's.</span></li>
+        <li><b class="n">9</b><span><b>☰ goes back to the Lobby</b> from every Setup screen; in a game, ☰'s menu gets “Back to the Lobby”. The ? on a Setup screen opens that game's own How To Play.</span></li>
+      </ol>
+      <p class="foot">Unchanged: your saves, coins, settings, History and Lexicon edits. Only where things sit on screen changes. Numbers, names and records here are made up.</p>
+    </aside>
+  </div>
+</main>
+
+<script>
+(() => {
+  const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+  const app = $('#app'), dev = $('#dev');
+  let cur = 'splash', splashT = 0;
+
+  function show(s) {
+    cur = s; clearTimeout(splashT);
+    $$('.scr').forEach(x => x.classList.toggle('on', x.id === 's-' + s));
+    $$('#jump button').forEach(b => b.classList.toggle('on', b.dataset.s === s));
+    $('#mkSheet').classList.remove('on');
+    if (s === 'splash') splashT = setTimeout(() => show('lobby'), 1800);
+    requestAnimationFrame(placePins);
+  }
+  function setGame(name) {
+    $('#gName').textContent = $('#gName2').textContent = name;
+    $('#gIco').src = name === 'LockWord' ? '../icons/lockword.svg' : '../icons/crosskeys.svg';
+  }
+  app.addEventListener('click', e => {
+    const t = e.target.closest('[data-go]');
+    if (!t || !app.contains(t)) return;
+    e.stopPropagation();
+    if (t.dataset.game) setGame(t.dataset.game);
+    show(t.dataset.go);
+  });
+  $('#s-splash').addEventListener('click', () => show('lobby'));
+  $$('#jump button').forEach(b => b.addEventListener('click', () => { if (b.dataset.s === 'game') setGame('CrossKeys'); show(b.dataset.s); }));
+
+  // Grid Size buttons
+  $$('#sizeSeg button').forEach(b => b.addEventListener('click', () => $$('#sizeSeg button').forEach(x => x.classList.toggle('on', x === b))));
+
+  // device + screen controls
+  function seg(id, fn) { $$(id + ' button').forEach(b => b.addEventListener('click', () => { $$(id + ' button').forEach(x => x.classList.toggle('on', x === b)); fn(b.dataset.v); })); }
+  seg('#cDev', v => { dev.className = 'device ' + v; requestAnimationFrame(placePins); });
+  function setScreen(v) {
+    const eff = v === 'auto' ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : v;
+    app.dataset.screen = eff;
+    $('#mkScreen').value = v;
+    $$('#cScr button').forEach(x => x.classList.toggle('on', x.dataset.v === eff));
+  }
+  seg('#cScr', setScreen);
+  $('#mkScreen').addEventListener('change', e => setScreen(e.target.value));
+  $('#mkSetBtn').addEventListener('click', () => $('#mkSheet').classList.add('on'));
+  $('#mkClose').addEventListener('click', () => $('#mkSheet').classList.remove('on'));
+  $('#mkSheet').addEventListener('click', e => { if (e.target.id === 'mkSheet') e.currentTarget.classList.remove('on'); });
+
+  // unfinished CrossKeys game on / off
+  function setUnf(on) {
+    $$('.ck-unf').forEach(x => x.style.display = on ? '' : 'none');
+    $('.ck-play').textContent = on ? '▶ Resume' : '▶ Play';
+    $('.ck-start').textContent = on ? '▶ New game' : '▶ Start CrossKeys';
+    $('.ck-last').textContent = on ? '▶ Resume goes back to your game. For a new one, open ⚙ Setup.' : '▶ Play uses your last settings: Fox · Level 4 · Medium grid';
+    requestAnimationFrame(placePins);
+  }
+  $('#cUnf').addEventListener('change', e => setUnf(e.target.checked));
+  $('#cPins').addEventListener('change', e => app.classList.toggle('nopins', !e.target.checked));
+
+  // pink number pins at the top-left corner of each noted element
+  function placePins() {
+    $$('.pin').forEach(p => p.remove());
+    const box = app.getBoundingClientRect();
+    $$('.scr.on [data-pin]').forEach(el => {
+      const r = el.getBoundingClientRect();
+      if (!r.width) return;
+      const p = document.createElement('span');
+      p.className = 'pin'; p.textContent = el.dataset.pin;
+      p.style.left = Math.max(2, r.left - box.left - 8) + 'px';
+      p.style.top = Math.max(2, r.top - box.top - 8) + 'px';
+      app.appendChild(p);
+    });
+  }
+  $$('.scr').forEach(s => s.addEventListener('scroll', () => placePins(), { passive: true }));
+  addEventListener('resize', placePins);
+  $('details.opts').addEventListener('toggle', placePins);
+
+  setUnf(true);
+  show('splash');
+})();
+</script>
+</body>
+</html>
