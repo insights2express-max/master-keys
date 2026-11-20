@@ -1,0 +1,1010 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Master Keys · KeyCubes clickable mockup for JM (RFI CD-103 Phase A). A preview only: the app is unchanged.
+     Our own look (Master Keys glass, 3D tiles in dark slots, Steel coin buttons, the gold coin); nothing is copied from the
+     reference screenshots. Cube letters come from our own Lexicon letter counts. Words: ENABLE; clues: the Master Keys Lexicon.
+     Sample data built by tools/keycubes-mockup-data.ps1. -->
+<title>KeyCubes Mockup · v12 plan</title>
+<style>
+  @font-face { font-family: 'Alfa Slab One'; font-style: normal; font-weight: 400; font-display: swap; src: url('../fonts/alfa-slab-one.woff2') format('woff2'); }
+  /* ---------- the page around the mockup ---------- */
+  :root { --pg: #f4f1ea; --pcard: #ffffff; --pink: #1f2933; --pmuted: #5f6b76; --pline: #ddd6c8; --pacc: #2c6bd8; color-scheme: light; }
+  @media (prefers-color-scheme: dark) { :root { --pg: #15181c; --pcard: #1f242a; --pink: #e4e4e4; --pmuted: #9aa4ad; --pline: #333b44; --pacc: #6f9ff0; color-scheme: dark; } }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--pg); color: var(--pink); font: 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; overflow-x: hidden; }
+  main { max-width: 1320px; margin: 0 auto; padding: 16px; }
+  h1 { font-size: 22px; margin: 4px 0 2px; }
+  .lead { color: var(--pmuted); margin: 0 0 14px; max-width: 860px; }
+  .ctrls { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; margin-bottom: 10px; }
+  .ctrl { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .ctrl > span { font-size: 12px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; color: var(--pmuted); }
+  .pseg { display: inline-flex; border: 1px solid var(--pline); border-radius: 10px; overflow: hidden; background: var(--pcard); flex-wrap: wrap; }
+  .pseg button { border: 0; background: none; color: var(--pink); font: inherit; font-size: 14px; padding: 6px 11px; cursor: pointer; }
+  .pseg button + button { border-left: 1px solid var(--pline); }
+  .pseg button.on { background: var(--pacc); color: #fff; font-weight: 700; }
+  .pchk { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; cursor: pointer; }
+  .jump { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 0 0 14px; font-size: 13px; color: var(--pmuted); }
+  .jump button { border: 1px solid var(--pline); background: var(--pcard); color: var(--pink); border-radius: 999px; padding: 3px 10px; font: inherit; font-size: 13px; cursor: pointer; }
+  .jump button.on { border-color: var(--pacc); color: var(--pacc); font-weight: 700; }
+  .jump .sep { width: 1px; height: 18px; background: var(--pline); margin: 0 4px; }
+  .stage { display: flex; flex-wrap: wrap; gap: 22px; align-items: flex-start; }
+  .stage .device { flex: none; margin: 0; max-width: 100%; }
+  .legend { flex: 1 1 300px; min-width: 0; background: var(--pcard); border: 1px solid var(--pline); border-radius: 14px; padding: 12px 14px; }
+  .legend h2 { font-size: 15px; margin: 0 0 6px; letter-spacing: .03em; text-transform: uppercase; }
+  .legend ol { margin: 0; padding-left: 0; list-style: none; }
+  .legend li { display: grid; grid-template-columns: 24px 1fr; gap: 6px; margin: 0 0 8px; font-size: 14px; }
+  .legend li b.n { display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: #e0457b; color: #fff; font-size: 12px; margin-top: 1px; }
+  .legend .flow { font-weight: 700; margin: 0 0 10px; }
+  .legend .foot { color: var(--pmuted); font-size: 13px; margin: 10px 0 0; }
+  .legend h3 { font-size: 13px; text-transform: uppercase; letter-spacing: .04em; margin: 12px 0 6px; color: var(--pmuted); }
+  .legend table { border-collapse: collapse; font-size: 13px; margin: 4px 0; }
+  .legend td, .legend th { border: 1px solid var(--pline); padding: 2px 6px; text-align: center; }
+  .legend .cubes { display: flex; flex-wrap: wrap; gap: 4px; font: 700 12px ui-monospace, Consolas, monospace; }
+  .legend .cubes span { border: 1px solid var(--pline); border-radius: 6px; padding: 1px 5px; }
+  .live { display: inline-block; background: #e8f5e9; color: #1b5e20; border-radius: 8px; padding: 2px 8px; font-size: 13px; }
+  @media (prefers-color-scheme: dark) { .live { background: #1e3a24; color: #b7e4c0; } }
+  @media (max-width: 700px) { main { padding: 12px 16px; } }
+
+  /* ---------- the device frame ---------- */
+  .device { margin: 0 auto; border: 10px solid #111; border-radius: 38px; overflow: hidden; background: #111; box-shadow: 0 10px 40px rgba(0, 0, 0, .25); position: relative; }
+  .device.phone { width: 395px; height: 800px; }
+  .device.ipad { width: 788px; height: 1044px; border-radius: 28px; }
+  .device.desk { width: 1200px; height: 740px; border-radius: 12px; border-width: 8px; }
+
+  /* ---------- the app inside it: Master Keys v11e colors ---------- */
+  .app {
+    --bg: #ece6d8; --surface: #fbf8f1; --ink: #1f2933; --muted: #69727d; --line: #b9b19f; --hl: #fff0b8;
+    --btn: #ffffff; --btn-ink: #1f2933; --primary: #2c6bd8; --primary-ink: #ffffff;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .10), 0 6px 18px rgba(0, 0, 0, .08);
+    --emoji: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Segoe UI Symbol", sans-serif;
+    --tfont: 'Alfa Slab One', Rockwell, 'Roboto Slab', Georgia, serif;
+    --fx: radial-gradient(60% 45% at 12% 8%, rgba(44, 107, 216, .20), transparent 70%), radial-gradient(55% 40% at 92% 92%, rgba(245, 179, 0, .22), transparent 70%);
+    --glass: linear-gradient(160deg, rgba(255, 255, 255, .15), rgba(255, 255, 255, .03) 45%, rgba(0, 0, 0, .14)), rgba(22, 30, 40, .82);
+    --glass-edge: inset 0 1px 0 rgba(255, 255, 255, .22), inset 0 0 0 1px rgba(255, 255, 255, .1), 0 10px 26px rgba(0, 0, 0, .3);
+    --well: #0b1016; --tile-top: #fcebc0; --tile-bot: #efd18c; --tile-edge: #c39d4f; --tile-ink: #3b2a0b;
+    --on-top: #8fc1ff; --on-bot: #3d86ec; --on-edge: #1b4fa8; --on-ink: #fff;
+    --glow: #4fc3f7; --side: #0d131a;
+    position: absolute; inset: 0; background: var(--bg); color: var(--ink); color-scheme: light;
+    font: 16px/1.35 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; overflow: hidden;
+    -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent;
+  }
+  .app[data-screen="dark"] {
+    --bg: #12181f; --surface: #1b232c; --ink: #e8edf2; --muted: #96a1ad; --line: #3a4552; --hl: #3a3420;
+    --btn: #26303b; --btn-ink: #e8edf2; --primary: #3f7fe8;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 6px 18px rgba(0, 0, 0, .3); color-scheme: dark;
+    --fx: radial-gradient(60% 45% at 12% 8%, rgba(63, 127, 232, .22), transparent 70%), radial-gradient(55% 40% at 92% 92%, rgba(245, 179, 0, .10), transparent 70%);
+    --glass: linear-gradient(160deg, rgba(255, 255, 255, .12), rgba(255, 255, 255, .02) 45%, rgba(0, 0, 0, .2)), rgba(30, 40, 52, .78);
+  }
+  .app[data-screen="night"] {
+    --bg: #121212; --surface: #1c1c1c; --ink: #a6a6a6; --muted: #6a6a6a; --line: #2e2e2e; --hl: #34321f;
+    --btn: #262626; --btn-ink: #bdbdbd; --primary: #3d5878; --primary-ink: #d0d0d0;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .5); color-scheme: dark; --fx: none;
+    --glass: linear-gradient(160deg, rgba(255, 255, 255, .05), rgba(255, 255, 255, 0) 45%, rgba(0, 0, 0, .2)), #161616;
+    --glass-edge: inset 0 1px 0 rgba(255, 255, 255, .07), inset 0 0 0 1px rgba(255, 255, 255, .04), 0 8px 20px rgba(0, 0, 0, .5);
+    --well: #0e0e0e; --tile-top: #b9ad8e; --tile-bot: #9c8f6c; --tile-edge: #6f6448; --tile-ink: #111;
+    --on-top: #5e7896; --on-bot: #3d5878; --on-edge: #24364a; --on-ink: #d0d0d0; --glow: #6f8fb0; --side: #070707;
+  }
+  .app[data-screen="night"] img.gi, .app[data-screen="night"] .kci { filter: brightness(.75) saturate(.7); }
+  .scr { position: absolute; inset: 0; overflow-y: auto; display: none; flex-direction: column; }
+  .scr.on { display: flex; }
+  .wrap { width: 100%; max-width: 720px; margin: 0 auto; padding: 14px 14px 22px; display: flex; flex-direction: column; gap: 12px; }
+  .lbl { font-size: 12px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+  .field { display: flex; flex-direction: column; gap: 4px; }
+  select, input[type=text] { font: inherit; font-size: 15px; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); width: 100%; }
+  .btn { font: inherit; font-weight: 700; border: 0; border-radius: 12px; padding: 10px 14px; background: var(--btn); color: var(--btn-ink); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; position: relative;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .55), inset 0 -3px 0 rgba(0, 0, 0, .12), 0 2px 0 rgba(0, 0, 0, .14), 0 5px 10px rgba(0, 0, 0, .12); }
+  .app:not([data-screen="light"]) .btn:not(.primary):not(.coinbtn) { background: linear-gradient(165deg, rgba(255, 255, 255, .14), rgba(255, 255, 255, .02) 46%, rgba(0, 0, 0, .18)), var(--btn); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .2), inset 0 0 0 1px rgba(255, 255, 255, .07), 0 3px 8px rgba(0, 0, 0, .4); }
+  .btn.primary { background: var(--primary); color: var(--primary-ink);
+    box-shadow: inset 0 2px 0 rgba(255, 255, 255, .32), inset 0 -4px 0 rgba(0, 0, 0, .24), 0 3px 0 rgba(0, 0, 0, .32), 0 6px 12px rgba(0, 0, 0, .28); text-shadow: 0 -1px 0 rgba(0, 0, 0, .3), 0 1px 0 rgba(255, 255, 255, .16); }
+  .btn:active, .icon-btn:active { transform: translateY(2px); }
+  .btn.big { font-size: 18px; padding: 13px 16px; border-radius: 14px; }
+  .icon-btn { width: 38px; height: 38px; border: 0; border-radius: 11px; background: var(--btn); color: var(--btn-ink); box-shadow: var(--shadow); font-size: 20px; font-family: var(--emoji); cursor: pointer; display: inline-grid; place-items: center; padding: 0; }
+  img.gi, .kci { display: block; border-radius: 24%; }
+  .kci svg { display: block; width: 100%; height: 100%; }
+  .vpill { display: inline-block; vertical-align: middle; font: 800 12px system-ui, sans-serif; padding: 1px 7px; border-radius: 999px; background: var(--primary); color: var(--primary-ink); margin-left: 4px; }
+  /* the app-wide 3D gold coin and the v11e coin pill */
+  .mk-coin { width: 1.18em; height: 1.18em; vertical-align: -.22em; filter: drop-shadow(0 1px 1px rgba(0, 0, 0, .42)); }
+  .coin-pill { display: inline-flex; align-items: center; gap: 4px; padding: 3px 11px 3px 7px; border-radius: 999px; font: 900 15px system-ui, sans-serif; font-variant-numeric: tabular-nums; white-space: nowrap;
+    border: 2px solid transparent; color: #ffd75e;
+    background: linear-gradient(165deg, rgba(255, 255, 255, .16), rgba(255, 255, 255, .02) 46%, rgba(0, 0, 0, .28)) padding-box, linear-gradient(#10151d, #10151d) padding-box, linear-gradient(140deg, #fff3b0, #e7b416 38%, #8f6200 62%, #ffd75e) border-box;
+    box-shadow: 0 2px 0 #5e4100, 0 3px 7px rgba(0, 0, 0, .45), inset 0 1px 0 rgba(255, 255, 255, .16);
+    text-shadow: 0 1px 0 #a87400, 0 2px 0 #5e4100, 0 2px 5px rgba(0, 0, 0, .55); }
+  .coin-pill .mk-coin { width: 1.3em; height: 1.3em; }
+  .app[data-screen="night"] .coin-pill { color: #c9a646; filter: brightness(.8); }
+  .coin-pill.bump { animation: bump .35s; }
+  @keyframes bump { 50% { transform: scale(1.15); } }
+
+  /* ---------- Lobby (v10b collapsible cards) ---------- */
+  .corner { display: flex; gap: 6px; justify-content: flex-end; }
+  .brand { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px; align-items: center; margin-top: -4px; }
+  .brand img { width: 60px; height: 60px; border-radius: 24%; }
+  .brand h1 { margin: 0; font: 400 30px/1.05 var(--tfont); }
+  .tag { margin: 0; font-size: 13px; color: var(--muted); }
+  .me-row { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 8px; align-items: center; }
+  .me-av { width: 44px; height: 44px; border: 0; border-radius: 12px; background: var(--surface); box-shadow: var(--shadow); font-size: 24px; font-family: var(--emoji); }
+  .games { display: grid; grid-template-columns: 1fr; gap: 12px; align-items: start; }
+  .wide-lobby .games { grid-template-columns: 1fr 1fr; }
+  .gcard { background: var(--surface); border-radius: 18px; box-shadow: var(--shadow); padding: 10px 12px; display: flex; flex-direction: column; cursor: pointer; position: relative; }
+  .gcard.new { box-shadow: var(--shadow), inset 0 0 0 2px #f5b300; }
+  .ghead { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 10px; align-items: center; }
+  .ghead img, .ghead .kci { width: 48px; height: 48px; }
+  .gname { margin: 0; font: 400 21px/1.15 var(--tfont); }
+  .gname .newb { font: 800 11px system-ui, sans-serif; vertical-align: middle; background: #f5b300; color: #3a2a00; border-radius: 999px; padding: 1px 6px; margin-left: 4px; }
+  .gpitch { margin: 2px 0 0; font-size: 13px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .gchev { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--primary); background: var(--surface); color: var(--primary); display: grid; place-items: center; cursor: pointer; padding: 0; align-self: start; transition: background .2s, color .2s; }
+  .gchev svg { width: 20px; height: 20px; transition: transform .3s ease; }
+  .gcard.open .gchev { background: var(--primary); color: var(--primary-ink); }
+  .gcard.open .gchev svg { transform: rotate(180deg); }
+  .gbody { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .3s ease; }
+  .gbody > div { overflow: hidden; min-height: 0; display: flex; flex-direction: column; gap: 10px; }
+  .gcard.open .gbody { grid-template-rows: 1fr; }
+  .gcard.open .gbody > div { padding-top: 10px; }
+  .grec { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .grec div { background: var(--bg); border-radius: 10px; padding: 6px 4px; text-align: center; }
+  .grec b { display: block; font-size: 17px; }
+  .grec span { font-size: 11px; color: var(--muted); }
+  .gbtns { display: flex; flex-wrap: wrap; gap: 8px; }
+  .gbtns .btn { flex: 2 1 0; min-width: 0; white-space: nowrap; font-size: 16px; padding-left: 6px; padding-right: 6px; }
+  .gbtns .btn.set { flex: 1 1 0; }
+  .glast { font-size: 12px; color: var(--muted); margin: -4px 0 0; }
+  .gcard.soon { border: 2px dashed var(--line); background: transparent; box-shadow: none; cursor: default; flex-direction: row; align-items: center; gap: 8px; font-size: 14px; color: var(--muted); }
+  .gcard.soon b { font-size: 22px; font-family: var(--emoji); }
+
+  /* ---------- header + Setup ---------- */
+  .top { display: grid; grid-template-columns: auto auto minmax(0, 1fr) auto auto; gap: 8px; align-items: center; padding: 10px 12px 2px; }
+  .top .kci { width: 40px; height: 40px; border-radius: 10px; }
+  .top h2 { margin: 0; font: 400 24px/1.05 var(--tfont); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .top h2 small { display: block; font: 800 12px system-ui, sans-serif; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; }
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .seg { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; border-radius: 12px; overflow: hidden; box-shadow: var(--shadow); }
+  .seg button { font: inherit; font-size: 16px; font-weight: 800; border: 0; padding: 9px 2px; background: var(--btn); color: var(--btn-ink); cursor: pointer; line-height: 1.15; }
+  .seg button small { display: block; font-size: 10px; font-weight: 700; opacity: .75; }
+  .seg button + button { border-left: 1px solid var(--line); }
+  .seg button.on { background: var(--primary); color: var(--primary-ink); }
+  .seg button:disabled { opacity: .45; cursor: not-allowed; }
+  .desc { font-size: 13px; color: var(--muted); margin: -4px 0 0; }
+  details.more { background: var(--surface); border-radius: 12px; box-shadow: var(--shadow); padding: 8px 12px; }
+  details.more summary { cursor: pointer; font-weight: 800; font-size: 14px; list-style: none; }
+  details.more summary::-webkit-details-marker { display: none; }
+  details.more summary span { font-weight: 600; color: var(--muted); font-size: 12px; margin-left: 4px; }
+  details.more[open] summary { margin-bottom: 10px; }
+  details.more .field + .field, details.more .pair + .field, details.more .field + .pair { margin-top: 10px; }
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  .stats div { background: var(--surface); border-radius: 10px; box-shadow: var(--shadow); padding: 8px 2px; text-align: center; }
+  .stats b { display: block; font-size: 17px; }
+  .stats span { font-size: 11px; color: var(--muted); }
+  .prev-grid { display: grid; gap: 4px; justify-content: center; }
+  .prev-grid span { width: 30px; height: 30px; border-radius: 20%; display: grid; place-items: center; font-weight: 900; font-size: 15px; color: var(--tile-ink);
+    background-image: radial-gradient(ellipse 80% 40% at 50% 20%, rgba(255, 255, 255, .62), rgba(255, 255, 255, 0) 70%), linear-gradient(var(--tile-top), var(--tile-bot)); box-shadow: inset 0 -3px 0 var(--tile-edge), 0 2px 3px rgba(0, 0, 0, .3); }
+
+  /* =========================================================================
+     KeyCubes game screen
+     ========================================================================= */
+  #s-game { background: var(--fx), var(--bg); overflow: hidden; }
+  .kc-main { flex: 1; min-height: 0; display: grid; gap: 8px; padding: 6px 12px 10px;
+    grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto auto auto minmax(0, 1fr);
+    grid-template-areas: "bar" "msg" "tray" "btns" "found"; }
+  .wide .kc-main { grid-template-columns: auto minmax(0, 1fr); grid-template-rows: auto auto auto minmax(0, 1fr); column-gap: 22px; padding: 8px 22px 16px;
+    grid-template-areas: "bar bar" "tray msg" "tray btns" "tray found"; }
+  /* the duel bar: Player box | clock | Bot box, on dark glass */
+  .kc-bar { grid-area: bar; display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 8px; align-items: stretch; }
+  .side-box { border-radius: 16px; background: var(--glass); box-shadow: var(--glass-edge); color: #fff; padding: 6px 10px; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 8px; align-items: center; min-width: 0; position: relative; }
+  .side-box.bot { grid-template-columns: minmax(0, 1fr) auto; text-align: right; }
+  .side-box .av { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; font-size: 26px; font-family: var(--emoji); background: rgba(255, 255, 255, .12); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .25); grid-row: span 2; }
+  .side-box.bot .av { grid-column: 2; grid-row: 1 / span 2; }
+  .side-box .nm { font-weight: 800; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; opacity: .9; }
+  .side-box .sc { font: 900 22px/1 system-ui, sans-serif; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .side-box .sc small { font-size: 12px; font-weight: 700; opacity: .75; margin-left: 3px; }
+  .side-box.me { box-shadow: var(--glass-edge), inset 0 0 0 2px rgba(79, 195, 247, .65); }
+  .side-box .plus { position: absolute; top: -8px; right: 10px; background: #f5b300; color: #3a2a00; font: 900 12px system-ui; border-radius: 999px; padding: 1px 7px; opacity: 0; }
+  .side-box.bot .plus { right: auto; left: 10px; }
+  .side-box .plus.go { animation: plus 1s ease-out; }
+  @keyframes plus { 0% { opacity: 0; transform: translateY(6px); } 20% { opacity: 1; transform: none; } 80% { opacity: 1; } 100% { opacity: 0; transform: translateY(-6px); } }
+  .side-box.solo { grid-template-columns: minmax(0, 1fr) auto; text-align: right; }
+  .mid { display: flex; flex-direction: column; gap: 4px; align-items: center; justify-content: center; }
+  .clock { display: inline-flex; align-items: center; gap: 5px; padding: 5px 11px; border-radius: 999px; background: var(--glass); box-shadow: var(--glass-edge); color: #fff; font: 900 20px system-ui, sans-serif; font-variant-numeric: tabular-nums; white-space: nowrap; cursor: pointer; }
+  .clock .e { font-family: var(--emoji); font-size: 16px; }
+  .clock.y { background: #ffe600; color: #2a2400; }
+  .clock.r { background: #ff1a1a; color: #fff; }
+  .pz { width: 40px; height: 32px; border: 0; border-radius: 10px; cursor: pointer; display: grid; place-items: center; color: #fff; background: var(--glass); box-shadow: var(--glass-edge); }
+  .pz svg { width: 18px; height: 18px; }
+  .rnd { font: 800 11px system-ui; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+
+  /* message strip: the word being traced, or what just happened */
+  .kc-msg { grid-area: msg; min-height: 44px; display: flex; justify-content: center; align-items: center; gap: 3px; text-align: center; font-weight: 800; font-size: 15px; flex-wrap: wrap; }
+  .kc-msg .mt { padding: 6px 12px; border-radius: 12px; background: var(--surface); box-shadow: var(--shadow); max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .kc-msg .mt.good { background: #1e9e4a; color: #fff; }
+  .kc-msg .mt.bad { background: #cf3f3f; color: #fff; }
+  .kc-msg .mt.dup { background: #ff9800; color: #2a1600; }
+  .kc-msg .mt.clue { background: var(--primary); color: var(--primary-ink); white-space: normal; line-height: 1.2; cursor: pointer; }
+  .app[data-screen="night"] .kc-msg .mt.good { background: #2f6b45; color: #ddd; }
+  .app[data-screen="night"] .kc-msg .mt.bad { background: #7e3431; color: #ddd; }
+  .kc-msg .wl { min-width: 30px; height: 34px; padding: 0 4px; border-radius: 8px; display: grid; place-items: center; font-weight: 900; font-size: 19px; color: #fff;
+    background: linear-gradient(#5b9bff, #2c6bd8); box-shadow: inset 0 -3px 0 #173f8f, 0 2px 3px rgba(0, 0, 0, .3); animation: pop .18s both; }
+  .kc-msg .wl.no { background: linear-gradient(#ff7b7b, #cf3f3f); box-shadow: inset 0 -3px 0 #7e1f1f, 0 2px 3px rgba(0, 0, 0, .3); }
+  .kc-msg .wp { margin-left: 6px; font: 900 14px system-ui; color: var(--muted); }
+  .kc-msg.shake { animation: shake .4s; }
+  @keyframes shake { 20%, 60% { transform: translateX(-8px); } 40%, 80% { transform: translateX(8px); } }
+  @keyframes pop { 0% { transform: translateY(-10px) scale(.6); opacity: 0; } 100% { transform: none; opacity: 1; } }
+
+  /* the tray: a dark glass platform with a slot for every cube; the cubes are 3D tiles sitting in the slots */
+  .tray-wrap { grid-area: tray; display: flex; justify-content: center; align-items: flex-start; padding-bottom: 8px; }
+  .kc-tray { --rot: 0deg; position: relative; width: var(--ts, 320px); height: var(--ts, 320px); padding: calc(var(--ts) * .035); border-radius: calc(var(--ts) * .07);
+    background: var(--glass); -webkit-backdrop-filter: blur(10px) saturate(1.3); backdrop-filter: blur(10px) saturate(1.3);
+    box-shadow: inset 0 2px 0 rgba(255, 255, 255, .25), inset 0 0 0 1px rgba(255, 255, 255, .12), 0 calc(var(--ts) * .025) 0 -1px var(--side), 0 calc(var(--ts) * .025) 0 0 rgba(255, 255, 255, .07), 0 calc(var(--ts) * .05) 24px rgba(0, 0, 0, .35);
+    display: grid; grid-template-columns: repeat(var(--n), 1fr); grid-template-rows: repeat(var(--n), 1fr); gap: calc(var(--ts) * .022);
+    touch-action: none; transform: rotate(var(--rot)); transition: transform .45s cubic-bezier(.3, 1.3, .5, 1), box-shadow .2s; }
+  .kc-tray.snap, .kc-tray.snap .kc-face { transition: none !important; }
+  .kc-tray.turning .kc-cube { box-shadow: 0 0 0 1px rgba(0, 0, 0, .2), 0 2px 6px rgba(0, 0, 0, .3); }
+  .kc-tray.blur .kc-cube { filter: blur(13px); }
+  .kc-tray.blur .kc-face { opacity: 0; }
+  .kc-cell { position: relative; border-radius: 20%; background: radial-gradient(circle at 50% 120%, rgba(79, 195, 247, .12), transparent 60%), var(--well);
+    box-shadow: inset 0 3px 0 rgba(0, 0, 0, .55), inset 0 -2px 0 rgba(255, 255, 255, .1), 0 0 0 1px rgba(255, 255, 255, .05); }
+  .kc-cube { position: absolute; inset: 5% 5% 9%; border-radius: 18%; cursor: pointer; color: var(--tile-ink);
+    background-image: radial-gradient(ellipse 85% 42% at 50% 18%, rgba(255, 255, 255, .7), rgba(255, 255, 255, .14) 66%, rgba(255, 255, 255, 0) 70%), linear-gradient(rgba(0, 0, 0, 0) 58%, rgba(0, 0, 0, .12)), linear-gradient(var(--tile-top), var(--tile-bot));
+    box-shadow: inset 0 calc(var(--cs) * -.07) 0 var(--tile-edge), inset 0 1px 0 rgba(255, 255, 255, .8), inset 0 0 0 1px rgba(0, 0, 0, .08), 0 calc(var(--cs) * .045) 0 rgba(0, 0, 0, .35), 0 calc(var(--cs) * .08) calc(var(--cs) * .1) rgba(0, 0, 0, .35);
+    transition: transform .1s; }
+  .kc-face { position: absolute; inset: 0 0 7%; display: grid; place-items: center; transform: rotate(calc(var(--rot) * -1)); transition: transform .45s cubic-bezier(.3, 1.3, .5, 1); }
+  .kc-face b { font: 900 calc(var(--cs) * .46)/1 system-ui, "Segoe UI", Roboto, sans-serif; letter-spacing: -.02em; }
+  .kc-face b.qu { font-size: calc(var(--cs) * .36); }
+  .kc-face i { position: absolute; right: 9%; bottom: 4%; font: 800 calc(var(--cs) * .15)/1 system-ui, sans-serif; font-style: normal; opacity: .62; }
+  .kc-cube.on { color: var(--on-ink); transform: translateY(2px);
+    background-image: radial-gradient(ellipse 85% 42% at 50% 18%, rgba(255, 255, 255, .55), rgba(255, 255, 255, 0) 70%), linear-gradient(var(--on-top), var(--on-bot));
+    box-shadow: inset 0 calc(var(--cs) * -.06) 0 var(--on-edge), inset 0 1px 0 rgba(255, 255, 255, .6), 0 0 0 2px var(--glow), 0 0 12px rgba(79, 195, 247, .6); }
+  .kc-cube.ok { animation: okc .55s; }
+  @keyframes okc { 30% { background-image: linear-gradient(#8ef0a8, #1e9e4a); color: #fff; transform: translateY(-3px) scale(1.04); } }
+  .kc-cube.dupc { animation: dupc .55s; }
+  @keyframes dupc { 30% { background-image: linear-gradient(#ffd08a, #ff9800); } }
+  .kc-cube.hint::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+    background: repeating-linear-gradient(45deg, rgba(44, 107, 216, .38) 0 5px, rgba(44, 107, 216, 0) 5px 10px); box-shadow: inset 0 0 0 2px #2c6bd8; }
+  .kc-line { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; z-index: 3; }
+  .kc-line polyline { fill: none; stroke: var(--glow); stroke-width: calc(var(--cs) * .14); stroke-linecap: round; stroke-linejoin: round; opacity: .55; filter: drop-shadow(0 0 5px var(--glow)); }
+  .kc-pause { position: absolute; inset: 0; display: none; place-items: center; z-index: 5; cursor: pointer; }
+  .kc-tray.blur .kc-pause { display: grid; }
+  .kc-pause div { transform: rotate(calc(var(--rot) * -1)); background: var(--glass); box-shadow: var(--glass-edge); color: #fff; border-radius: 18px; padding: 18px 26px; text-align: center; font: 900 30px system-ui; }
+  .kc-pause div span { display: block; font-size: 14px; font-weight: 700; opacity: .85; margin-top: 4px; }
+  /* last 10 seconds: the tray flashes yellow (10–6) then red (5–1), once a second, with ticks (memory: game-defaults-timer-speed) */
+  .kc-tray.tf-y { box-shadow: 0 0 0 6px #ffe600, 0 0 26px 8px rgba(255, 230, 0, .75); }
+  .kc-tray.tf-r { box-shadow: 0 0 0 6px #ff1a1a, 0 0 26px 8px rgba(255, 26, 26, .75); }
+  .kc-tray.tf-a { animation: tfA 1s ease-out; } .kc-tray.tf-b { animation: tfB 1s ease-out; }
+  @keyframes tfA { 0% { filter: brightness(1.25); } 100% { filter: none; } }
+  @keyframes tfB { 0% { filter: brightness(1.25); } 100% { filter: none; } }
+
+  /* coin buttons (Button Colors: Steel default) */
+  .kc-btns { grid-area: btns; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+  .btn.coinbtn { min-width: 92px; height: 50px; padding: 4px 12px; border-radius: 14px; display: grid; grid-template-columns: auto auto; grid-template-rows: auto auto; column-gap: 6px; align-items: center; justify-items: start; font-size: 15px; line-height: 1.05; }
+  .btn.coinbtn .ic { grid-row: span 2; font-size: 22px; font-family: var(--emoji); filter: drop-shadow(0 1px 1px rgba(0, 0, 0, .35)); }
+  .btn.coinbtn .cp { font-size: 12px; font-weight: 900; }
+  .btn.coinbtn.free .cp { opacity: .8; }
+  .bs-b .btn.coinbtn { background: linear-gradient(180deg, #fbfcfd, #d3dae1 50%, #a3aeba); color: #0d3a8a;
+    box-shadow: inset 0 0 0 1.5px #7d8995, inset 0 2px 0 #fff, inset 0 -4px 0 #8692a0, 0 4px 0 #4f5a66, 0 7px 12px rgba(0, 0, 0, .35); text-shadow: 0 1px 0 rgba(255, 255, 255, .85), 0 -1px 0 rgba(0, 0, 0, .2); }
+  .bs-a .btn.coinbtn { background: linear-gradient(180deg, #6cb6ff, #2a7de8 52%, #155fc0); color: #fff;
+    box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, .38), inset 0 2px 0 rgba(255, 255, 255, .45), inset 0 -4px 0 #0e4f99, 0 4px 0 #0b3f7a, 0 7px 12px rgba(0, 0, 0, .35); text-shadow: 0 -1px 0 rgba(0, 0, 0, .35); }
+  .bs-c .btn.coinbtn { background: linear-gradient(180deg, #34507f, #1a2b4f 50%, #0b1427); color: #ffd75e;
+    box-shadow: inset 0 0 0 1.5px #e7b416, inset 0 2px 0 rgba(255, 255, 255, .2), inset 0 -4px 0 #050a14, 0 4px 0 #6e4c00, 0 7px 12px rgba(0, 0, 0, .4); text-shadow: 0 -1px 0 rgba(0, 0, 0, .6); }
+  .app[data-screen="night"] .btn.coinbtn { filter: brightness(.7) saturate(.6); }
+  .btn.coinbtn:active { transform: translateY(3px); }
+  .btn.coinbtn.armed { box-shadow: 0 0 0 3px #64b5ff, 0 0 14px rgba(100, 181, 255, .9); }
+  .btn > .arm-lab { display: none; }
+  .btn.armed > .arm-lab { display: grid; position: absolute; inset: 0; z-index: 2; border-radius: inherit; place-items: center; background: #0d47a1; color: #fff; font-weight: 900; font-size: 12px; line-height: 1.15; text-align: center; white-space: pre-line; text-shadow: none; }
+
+  /* the Player's words */
+  .kc-found { grid-area: found; min-height: 0; display: flex; flex-direction: column; border-radius: 16px; background: var(--surface); box-shadow: var(--shadow); padding: 8px 10px; }
+  .kc-found h4 { margin: 0 0 6px; font-size: 12px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); display: flex; justify-content: space-between; }
+  .chips { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-wrap: wrap; gap: 5px; align-content: flex-start; }
+  .chip { display: inline-flex; gap: 5px; align-items: baseline; padding: 3px 8px; border-radius: 9px; font-weight: 800; font-size: 14px; letter-spacing: .03em;
+    background: linear-gradient(#fdf3d6, #f1dca4); color: #3b2a0b; box-shadow: inset 0 -2px 0 #c9a456, 0 0 0 1px rgba(0, 0, 0, .55); }
+  .chip small { font-size: 11px; font-weight: 900; color: #1e7a3c; }
+  .chip.new { animation: pop .3s both; }
+  .app[data-screen="night"] .chip { filter: brightness(.75); }
+  .empty { color: var(--muted); font-size: 13px; }
+  .kc-tip { text-align: center; font-size: 12px; color: var(--muted); margin: 0; display: none; }
+  .wide .kc-tip { display: block; }
+  kbd { font: 700 11px ui-monospace, Consolas, monospace; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; padding: 0 4px; background: var(--surface); }
+
+  /* =========================================================================
+     Results
+     ========================================================================= */
+  #s-res { background: var(--fx), var(--bg); overflow: hidden; }
+  .res-main { flex: 1; min-height: 0; display: grid; gap: 8px; padding: 6px 12px 10px;
+    grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto auto auto minmax(0, 1fr) auto; grid-template-areas: "win" "sum" "tabs" "det" "list" "nav"; }
+  .wide .res-main { grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); grid-template-rows: auto auto auto minmax(0, 1fr) auto; column-gap: 20px; padding: 8px 22px 14px;
+    grid-template-areas: "win win" "sum tabs" "det list" "det list" "nav nav"; }
+  .winrow { grid-area: win; display: flex; justify-content: center; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 14px; white-space: nowrap; overflow: hidden;
+    font: 400 26px/1.15 var(--tfont); color: #3a2a00; border: 3px solid transparent;
+    background: linear-gradient(#fff6cf, #ffd75e) padding-box, linear-gradient(140deg, #fff3b0, #e7b416 38%, #8f6200 62%, #ffd75e) border-box;
+    box-shadow: 0 3px 0 #8f6200, 0 6px 14px rgba(0, 0, 0, .3); }
+  .winrow .e { font-family: var(--emoji); }
+  .app[data-screen="night"] .winrow { filter: brightness(.7); }
+  .sum { grid-area: sum; display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; align-items: center; }
+  .pill { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 999px; background: var(--surface); box-shadow: var(--shadow); font-weight: 800; font-size: 13px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .pill .e { font-family: var(--emoji); }
+  .pill.shared { background: #ffe0b3; color: #4a2c00; }
+  .app:not([data-screen="light"]) .pill.shared { background: #5a4220; color: #ffd9a0; }
+  .tabs { grid-area: tabs; display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; border-radius: 12px; overflow: hidden; box-shadow: var(--shadow); }
+  .tabs button { font: inherit; font-weight: 800; font-size: 13px; border: 0; padding: 8px 2px; background: var(--btn); color: var(--btn-ink); cursor: pointer; white-space: nowrap; }
+  .tabs button + button { border-left: 1px solid var(--line); }
+  .tabs button.on { background: var(--primary); color: var(--primary-ink); }
+  .det { grid-area: det; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px; align-items: start; background: var(--surface); border-radius: 16px; box-shadow: var(--shadow); padding: 10px; }
+  .wide .det { grid-template-columns: 1fr; justify-items: center; align-content: start; padding: 16px; }
+  .mini { position: relative; display: grid; gap: 3px; padding: 5px; border-radius: 12px; background: var(--glass); box-shadow: var(--glass-edge); }
+  .mini span { width: var(--ms); height: var(--ms); border-radius: 22%; display: grid; place-items: center; font: 900 calc(var(--ms) * .5)/1 system-ui; color: rgba(255, 255, 255, .55); background: var(--well); position: relative; }
+  .mini span.lit { color: var(--tile-ink); background-image: linear-gradient(var(--tile-top), var(--tile-bot)); box-shadow: inset 0 -3px 0 var(--tile-edge); }
+  .mini span.lit.st { color: #fff; background-image: linear-gradient(#5b9bff, #2c6bd8); box-shadow: inset 0 -3px 0 #173f8f; }
+  .mini span sup { position: absolute; top: 1px; left: 3px; font-size: 9px; font-weight: 900; }
+  .mini svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+  .mini polyline { fill: none; stroke: #ff9800; stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round; opacity: .8; }
+  .bd { min-width: 0; width: 100%; max-width: 360px; }
+  .bd h3 { margin: 0 0 6px; font: 400 24px/1.1 var(--tfont); letter-spacing: .02em; word-break: break-all; }
+  .bd table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .bd td { padding: 3px 6px; }
+  .bd td:last-child { text-align: right; font-weight: 900; font-variant-numeric: tabular-nums; }
+  .bd tr.tot td { background: #1e9e4a; color: #fff; font-size: 16px; }
+  .bd tr.tot.zero td { background: #ff9800; color: #2a1600; }
+  .bd tr.tot td:first-child { border-radius: 8px 0 0 8px; } .bd tr.tot td:last-child { border-radius: 0 8px 8px 0; }
+  .bd .who { font-size: 13px; color: var(--muted); margin: 6px 0 0; }
+  .clue { margin-top: 8px; padding: 7px 10px; border-radius: 10px; background: var(--primary); color: var(--primary-ink); font-weight: 700; font-size: 14px; }
+  .clue.none { background: var(--bg); color: var(--muted); font-weight: 600; }
+  .clue .e { font-family: var(--emoji); }
+  .list { grid-area: list; min-height: 0; overflow-y: auto; border-radius: 16px; background: var(--surface); box-shadow: var(--shadow); }
+  .row { display: grid; grid-template-columns: 44px minmax(0, 1fr) auto 22px; gap: 6px; align-items: center; padding: 7px 10px; border-bottom: 1px solid var(--line); cursor: pointer; font-weight: 800; }
+  .row:last-child { border-bottom: 0; }
+  .row .p { text-align: right; font-variant-numeric: tabular-nums; color: #1e7a3c; }
+  .app:not([data-screen="light"]) .row .p { color: #6ad38f; }
+  .row .w { letter-spacing: .05em; overflow: hidden; text-overflow: ellipsis; }
+  .row .tg { font-size: 11px; font-weight: 900; padding: 2px 7px; border-radius: 999px; background: var(--bg); color: var(--muted); white-space: nowrap; }
+  .row .tg.me { background: #d7ecff; color: #0d3a8a; } .row .tg.bot { background: #ead9ff; color: #4a1a8a; } .row .tg.both { background: #ffe0b3; color: #4a2c00; }
+  .app:not([data-screen="light"]) .row .tg.me { background: #1d3a5c; color: #bcdcff; } .app:not([data-screen="light"]) .row .tg.bot { background: #3a2558; color: #e1ccff; } .app:not([data-screen="light"]) .row .tg.both { background: #5a4220; color: #ffd9a0; }
+  .row .bk { font-family: var(--emoji); font-size: 15px; text-align: center; }
+  .row.both .p { color: var(--muted); text-decoration: line-through; }
+  .row.miss { color: var(--muted); font-weight: 600; }
+  .row.miss .p { color: var(--muted); }
+  .row.sel { background: var(--hl); }
+  .app:not([data-screen="light"]) .row.sel { background: #2d3a4a; }
+  .nav { grid-area: nav; display: flex; gap: 8px; }
+  .nav .btn { flex: 1 1 0; white-space: nowrap; padding-left: 6px; padding-right: 6px; }
+  .nav .btn.primary { flex: 1.6 1 0; }
+
+  /* modal (How To Play) */
+  .kc-modal { position: absolute; inset: 0; background: rgba(0, 0, 0, .5); display: none; place-items: center; z-index: 20; padding: 16px; }
+  .kc-modal.on { display: grid; }
+  .kc-box { background: var(--surface); color: var(--ink); border-radius: 18px; padding: 16px; max-width: 460px; width: 100%; max-height: 90%; overflow-y: auto; box-shadow: 0 10px 40px rgba(0, 0, 0, .4); font-size: 14px; }
+  .kc-box h3 { margin: 0 0 8px; font: 400 22px var(--tfont); }
+  .kc-box h4 { margin: 12px 0 4px; font-size: 13px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+  .kc-box p { margin: 0 0 6px; }
+
+  /* numbered notes */
+  .pin { position: absolute; z-index: 30; width: 20px; height: 20px; border-radius: 50%; background: #e0457b; color: #fff; font: 800 12px/20px system-ui; text-align: center; box-shadow: 0 1px 3px rgba(0, 0, 0, .4); pointer-events: none; }
+  .nopins .pin { display: none; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <linearGradient id="mkCoinFace" x1="0" y1="0" x2=".3" y2="1"><stop offset="0" stop-color="#fff6c9"/><stop offset=".42" stop-color="#ffd54a"/><stop offset="1" stop-color="#d99a00"/></linearGradient>
+  <linearGradient id="mkCoinIn" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e3a400"/><stop offset="1" stop-color="#ffe07a"/></linearGradient>
+</defs></svg>
+<main>
+  <h1>Master Keys · KeyCubes mockup (v12 plan)</h1>
+  <p class="lead">A clickable preview of <b>KeyCubes</b>, the letter-cube word hunt (Game Plan G2, RFI CD-103). The game screen really plays: <b>swipe</b> or <b>drag</b> across touching cubes, <b>tap</b> them one by one (tap the last one again to submit), or <b>type</b> and press Enter. The Bot hunts the same grid; a word you both find scores for nobody. Each grid size has three sample grids rolled from <b>our own cubes</b>; every word is checked against ENABLE and Lexicon words show their clue in the results. Coins, records and the Lobby's other games are made up, and the app itself is unchanged.</p>
+
+  <div class="ctrls">
+    <div class="ctrl"><span>Device</span><div class="pseg" id="cDev"><button data-v="phone" class="on">Phone</button><button data-v="ipad">iPad</button><button data-v="desk">Desktop</button></div></div>
+    <div class="ctrl"><span>Screen</span><div class="pseg" id="cScr"><button data-v="light" class="on">Light</button><button data-v="dark">Dark</button><button data-v="night">Night</button></div></div>
+    <label class="pchk"><input type="checkbox" id="cPins" checked> Show numbered notes</label>
+  </div>
+  <div class="jump" id="jump">Jump to:
+    <button data-s="lobby">Lobby</button><button data-s="setup">Setup</button><button data-j="g4">Duel 4×4</button><button data-j="g5">Duel 5×5</button><button data-j="solo">Solo 4×4</button><button data-j="res">Results</button>
+    <span class="sep"></span>Mockup only: <button id="mLast">⏩ Last 12 seconds</button><button id="mEnd">⏹ End round now</button>
+  </div>
+
+  <div class="stage">
+    <div class="device phone" id="dev">
+      <div class="app bs-b" id="app" data-screen="light">
+
+        <!-- 1 · Lobby (v10b cards, with the new KeyCubes card) -->
+        <section class="scr" id="s-lobby">
+          <div class="wrap">
+            <div class="corner"><button class="icon-btn" title="Sound">🔇</button><button class="icon-btn" title="Game History">📜</button><button class="icon-btn" title="Master Keys settings">⚙</button><button class="icon-btn" title="How To Play">?</button></div>
+            <header class="brand">
+              <img src="../icons/icon.svg" alt="">
+              <div><h1>Master Keys <span class="vpill">v12</span></h1><p class="tag">Word games. Play anywhere, even offline.</p></div>
+            </header>
+            <div class="field"><span class="lbl">You</span>
+              <div class="me-row"><button class="me-av">🙂</button><input type="text" value="JM" aria-label="Your name"><span class="coin-pill" data-coins></span></div>
+            </div>
+            <span class="lbl">Games</span>
+            <div class="games">
+              <div class="gcard"><div class="ghead"><img class="gi" src="../icons/crosskeys.svg" alt=""><div><p class="gname">CrossKeys</p><p class="gpitch">Head-to-head crossword tiles. Finish the words, beat the Bot.</p></div><button class="gchev" aria-label="Show details"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button></div></div>
+              <div class="gcard"><div class="ghead"><img class="gi" src="../icons/lockword.svg" alt=""><div><p class="gname">LockWord</p><p class="gpitch">Crack the hidden word in a few guesses.</p></div><button class="gchev" aria-label="Show details"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button></div></div>
+              <div class="gcard"><div class="ghead"><img class="gi" src="../icons/keyring.svg" alt=""><div><p class="gname">KeyRing</p><p class="gpitch">Spell words from a ring of letters. Fill every slot.</p></div><button class="gchev" aria-label="Show details"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button></div></div>
+              <div class="gcard new open" data-pin="1">
+                <div class="ghead"><span class="kci" data-kci></span><div><p class="gname">KeyCubes <span class="newb">NEW</span></p><p class="gpitch">Trace words through a grid of letter cubes. Out-hunt the Bot.</p></div><button class="gchev" aria-label="Show details"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button></div>
+                <div class="gbody"><div>
+                  <div class="grec"><div><b>14</b><span>Matches</span></div><div><b>57%</b><span>Won</span></div><div><b>QUIRK</b><span>Best word</span></div></div>
+                  <div class="gbtns"><button class="btn primary big" data-start>🆕 New Game</button><button class="btn big set" data-go="setup">⚙ Setup</button></div>
+                  <p class="glast" id="kcLast"></p>
+                </div></div>
+              </div>
+              <div class="gcard soon"><b>🗝️</b>More games on the way</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2 · KeyCubes Setup -->
+        <section class="scr" id="s-setup">
+          <header class="top">
+            <button class="icon-btn" data-go="lobby" title="Back to the Lobby">☰</button>
+            <span class="kci" data-kci></span>
+            <h2>KeyCubes <small>Setup</small></h2>
+            <button class="icon-btn" title="Sound">🔇</button>
+            <button class="icon-btn" data-help title="How To Play KeyCubes">?</button>
+          </header>
+          <div class="wrap">
+            <div class="field" data-pin="2"><span class="lbl">Play</span>
+              <div class="seg" id="mSeg"><button data-v="duel" class="on">⚔ Duel<small>vs the Bot</small></button><button data-v="solo">🎯 Solo<small>practice</small></button></div>
+            </div>
+            <div class="field" data-pin="3"><span class="lbl">Grid</span>
+              <div class="seg" id="nSeg"><button data-v="4" class="on">4×4<small>16 cubes</small></button><button data-v="5">5×5<small>25 cubes</small></button><button data-v="6" disabled title="A later build">6×6<small>later</small></button></div>
+            </div>
+            <div class="prev-grid" id="nPrev" aria-hidden="true"></div>
+            <div class="pair" data-pin="4">
+              <label class="field"><span class="lbl">Timer</span><select id="tmSel"><option value="60">1 min</option><option value="120">2 min</option><option value="180" selected>3 min</option><option value="240">4 min</option><option value="0">Untimed (Solo)</option></select></label>
+              <label class="field" id="lvField"><span class="lbl">Bot level</span><select id="lvSel"><option value="1">1 · Gentle</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5" selected>5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10 · Master</option></select></label>
+            </div>
+            <p class="desc" id="lvDesc"></p>
+            <button class="btn primary big" data-start>▶ Start KeyCubes</button>
+            <details class="more" data-pin="5"><summary>▸ More options <span id="moreSum"></span></summary>
+              <div class="pair">
+                <label class="field"><span class="lbl">Shortest word</span><select id="minSel"><option value="auto" selected>Auto (by grid)</option><option value="3">3 letters</option><option value="4">4 letters</option></select></label>
+                <label class="field"><span class="lbl">Rounds per match</span><select id="rdSel"><option value="1">1 round</option><option value="3" selected>3 rounds</option><option value="5">5 rounds</option></select></label>
+              </div>
+              <label class="field"><span class="lbl">Scoring</span><select id="scSel"><option value="lp" selected>Letter points + length bonus</option><option value="len">Word length only</option></select></label>
+              <label class="field"><span class="lbl">Button Colors</span><select id="bsSel"><option value="b" selected>Steel</option><option value="a">Sapphire</option><option value="c">Navy &amp; gold</option></select></label>
+            </details>
+            <div class="stats"><div><b>14</b><span>Matches</span></div><div><b>57%</b><span>Won</span></div><div><b>312</b><span>Words</span></div><div><b>QUIRK</b><span>Best word</span></div></div>
+          </div>
+        </section>
+
+        <!-- 3 · KeyCubes game screen -->
+        <section class="scr" id="s-game">
+          <header class="top">
+            <button class="icon-btn" data-go="lobby" title="Back to the Lobby">☰</button>
+            <span class="kci" data-kci></span>
+            <h2>KeyCubes <small id="gSub">Round 1 of 3</small></h2>
+            <button class="icon-btn" title="Sound">🔇</button>
+            <button class="icon-btn" data-help title="How To Play KeyCubes">?</button>
+          </header>
+          <div class="kc-main" id="kcMain">
+            <div class="kc-bar" id="bar" data-pin="6">
+              <div class="side-box me"><span class="av">🙂</span><span class="nm">JM</span><span class="sc" id="meSc">0<small>pts</small></span><span class="plus" id="mePlus"></span></div>
+              <div class="mid"><span class="clock" id="clock" title="Pause"><span class="e">⏱</span><span id="clk">3:00</span></span><button class="pz" id="pz" title="Pause"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="5" y="4" width="5" height="16" rx="1.5"/><rect x="14" y="4" width="5" height="16" rx="1.5"/></svg></button></div>
+              <div class="side-box bot" id="botBox"><span class="av">🤖</span><span class="nm" id="botNm">Bot · L5</span><span class="sc" id="botSc">0<small>words</small></span><span class="plus" id="botPlus">+1</span></div>
+            </div>
+            <div class="kc-msg" id="msg" data-pin="7"></div>
+            <div class="tray-wrap"><div class="kc-tray" id="tray" data-pin="8"></div></div>
+            <div class="kc-btns" id="btns">
+              <button class="btn coinbtn" id="hintBtn" data-pin="9" title="Hint: the clue for a word you have not found"><span class="ic">💡</span>Hint<span class="cp" id="hintCp"></span><span class="arm-lab"></span></button>
+              <button class="btn coinbtn free" id="turnBtn" title="Turn the grid a quarter turn (free)"><span class="ic">🔄</span>Turn<span class="cp">free</span></button>
+              <button class="btn coinbtn free" id="doneBtn" title="End this Solo round"><span class="ic">🏁</span>Done<span class="cp">Solo</span></button>
+            </div>
+            <div class="kc-found" data-pin="10"><h4><span id="fHead">Your words</span><span id="fPts"></span></h4><div class="chips" id="chips"></div></div>
+            <p class="kc-tip"><kbd>A–Z</kbd> type · <kbd>Enter</kbd> submit · <kbd>⌫</kbd> back · <kbd>Esc</kbd> clear · <kbd>Space</kbd> pause</p>
+          </div>
+        </section>
+
+        <!-- 4 · Round results -->
+        <section class="scr" id="s-res">
+          <header class="top">
+            <button class="icon-btn" data-go="lobby" title="Back to the Lobby">☰</button>
+            <span class="kci" data-kci></span>
+            <h2>KeyCubes <small id="rSub">Round 1 of 3 · results</small></h2>
+            <button class="icon-btn" title="Sound">🔇</button>
+            <button class="icon-btn" data-help title="How To Play KeyCubes">?</button>
+          </header>
+          <div class="res-main">
+            <div class="winrow" id="winrow" data-pin="11"></div>
+            <div class="sum" id="sum" data-pin="12"></div>
+            <div class="tabs" id="tabs" data-pin="13"></div>
+            <div class="det" id="det" data-pin="14"></div>
+            <div class="list" id="list"></div>
+            <div class="nav" data-pin="15"><button class="btn" data-go="lobby">☰ Lobby</button><button class="btn" data-go="setup">⚙ Setup</button><button class="btn primary" id="nextBtn">▶ Next round</button></div>
+          </div>
+        </section>
+
+        <div class="kc-modal" id="modal"><div class="kc-box" id="mbox"></div></div>
+      </div>
+    </div>
+
+    <aside class="legend">
+      <h2>What you see</h2>
+      <p class="flow">Lobby → KeyCubes Setup → game screen → round results → next round</p>
+      <ol>
+        <li><b class="n">1</b><span><b>Lobby card</b>, built like the others (NEW badge for a while): Matches, Won %, Best word; 🆕 New Game (last settings) and ⚙ Setup. Our own icon: four 3D letter cubes.</span></li>
+        <li><b class="n">2</b><span><b>Play:</b> ⚔ Duel with the Bot (the main game, JM CD-103: 2.1a) or 🎯 Solo practice (no Bot).</span></li>
+        <li><b class="n">3</b><span><b>Grid:</b> 4×4 or 5×5 (6×6 comes in a later build). The row of cubes under it previews the size.</span></li>
+        <li><b class="n">4</b><span><b>Timer</b> (1, 2, 3 or 4 min; Untimed in Solo only) and <b>Bot level</b> 1–10 (which words the Bot knows and how many it finds). Both are asked in the RFI.</span></li>
+        <li><b class="n">5</b><span><b>More options:</b> Shortest word, Rounds per match, Scoring (switch it to compare the two ways), Button Colors (Steel by default).</span></li>
+        <li><b class="n">6</b><span><b>Duel bar</b> on dark glass: you (points so far, before shared words cancel), the clock with ⏸ Pause (tap the clock too), and the Bot (its word count only: its words stay hidden until the end). A gold "+1" pops when it finds one.</span></li>
+        <li><b class="n">7</b><span><b>Message strip:</b> the word you are tracing (blue tiles), then what happened: green = new word + points, orange = already found, red = not a word / too short / not on the grid. A Hint shows here in blue.</span></li>
+        <li><b class="n">8</b><span><b>The tray:</b> a dark glass platform with a slot for every cube; the cubes are 3D tiles (KeyRing's) with a small letter-point value. A trace joins touching cubes across, down or diagonally, each cube once. Last 10 seconds: the tray flashes yellow (10–6) then red (5–1), with ticks in the app.</span></li>
+        <li><b class="n">9</b><span><b>Coin buttons</b> (Steel): 💡 <b>Hint</b> (two taps) shows the clue and length of a Lexicon word you have not found and stripes its first cube: a signal, not a solve. 🔄 <b>Turn</b> (free) gives the grid a quarter turn, which helps you see new words. 🏁 <b>Done</b> ends a Solo round.</span></li>
+        <li><b class="n">10</b><span><b>Your words</b>, newest first, with points.</span></li>
+        <li><b class="n">11</b><span><b>One-row win report</b> in the gold frame (as in every game): "🙂 YOU WIN! 🏆 86–54", "🤖 The Bot WINS!", or "⚖️ DRAW!". Solo: your score and words.</span></li>
+        <li><b class="n">12</b><span><b>Summary:</b> each side's words, the shared words that scored nothing, the match score so far, and the coins.</span></li>
+        <li><b class="n">13</b><span><b>Tabs:</b> Your words · Bot's words · All words (every word in the grid, found or missed).</span></li>
+        <li><b class="n">14</b><span><b>Word card:</b> a mini grid lights the word's path (blue = first cube), the score breakdown (letter points + length bonus = total, or 0 when both found it), and the <b>clue reveal</b> for Lexicon words (the learning reveal from the Game Plan).</span></li>
+        <li><b class="n">15</b><span>☰ Lobby · ⚙ Setup · ▶ Next round (a fresh grid; after the last round, ▶ New match).</span></li>
+      </ol>
+      <h3>Sample scoring (asked in the RFI)</h3>
+      <p class="foot" style="margin-top:0"><b>Letter points + length bonus:</b> each letter's value comes from how often it appears in our Lexicon (common = 1, rare = 10). Length bonus:</p>
+      <table><tr><th>Letters</th><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9+</td></tr><tr><th>Bonus</th><td>0</td><td>+2</td><td>+4</td><td>+7</td><td>+11</td><td>+16</td><td>+5 each</td></tr><tr><th>Length only</th><td>1</td><td>2</td><td>3</td><td>5</td><td>8</td><td>12</td><td>+4 each</td></tr></table>
+      <p class="foot" id="ptsLine"></p>
+      <h3>Our cubes (asked in the RFI)</h3>
+      <p class="foot" style="margin-top:0">Six faces each. Every letter gets at least one face; the rest follow our Lexicon's letter counts. Q is always the "Qu" face. 4×4 set (16 cubes):</p>
+      <div class="cubes" id="cubes4"></div>
+      <h3>Try this</h3>
+      <p class="foot" style="margin-top:0">Start a 4×4 duel, trace a few words, try a nonsense word by typing, use 💡 Hint and 🔄 Turn, then press <b>⏩ Last 12 seconds</b> to see the flash, or <b>⏹ End round now</b>. In the results, tap words to see their path, points and clue. The 5×5 grids have a Qu cube (QUIET, QUIRK, LIQUID…).</p>
+      <p class="foot">Not in this mockup: sounds, the roll animation, Game History, saving an unfinished match, and the Bot's real level tables (those come with v12).</p>
+    </aside>
+  </div>
+</main>
+
+<script>
+(() => {
+  const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+  const app = $('#app'), dev = $('#dev'), tray = $('#tray');
+  const D = {"g4":{"n":4,"cubes":[["E","A","T","N","U","P"],["E","O","T","N","U","P"],["E","O","T","S","U","F"],["E","O","I","S","B","F"],["E","O","I","S","B","K"],["E","O","I","S","B","K"],["E","O","I","S","G","V"],["E","R","I","C","G","V"],["E","R","L","C","G","W"],["A","R","L","C","H","W"],["A","R","L","C","H","Y"],["A","R","L","D","H","Y"],["A","R","L","D","M","J"],["A","T","N","D","M","QU"],["A","T","N","D","M","X"],["A","T","N","U","P","Z"]],"grids":[{"seed":304,"grid":["A","T","O","P","G","H","I","D","C","M","N","L","T","I","E","A"],"words":[{"w":"ALE","p":[15,11,14],"c":"Pub drink","v":2},{"w":"ALINE","p":[15,11,6,10,14],"c":"","v":6},{"w":"ALIT","p":[15,11,6,1],"c":"Landed","v":5},{"w":"AND","p":[15,10,7],"c":"Plus","v":1},{"w":"ANE","p":[15,10,14],"c":"","v":6},{"w":"ANEMIC","p":[15,10,14,9,13,8],"c":"","v":3},{"w":"ANI","p":[15,10,6],"c":"","v":6},{"w":"ANIL","p":[15,10,6,11],"c":"","v":6},{"w":"ANILE","p":[15,10,6,11,14],"c":"","v":6},{"w":"ANIME","p":[15,10,6,9,14],"c":"","v":6},{"w":"ANIMI","p":[15,10,6,9,13],"c":"","v":6},{"w":"ATOP","p":[0,1,2,3],"c":"On top of","v":2},{"w":"CHAT","p":[8,5,0,1],"c":"","v":2},{"w":"CHI","p":[8,5,6],"c":"Life force","v":3},{"w":"CHID","p":[8,5,6,7],"c":"","v":6},{"w":"CHILD","p":[8,5,6,11,7],"c":"Kid","v":1},{"w":"CHILE","p":[8,5,6,11,14],"c":"","v":6},{"w":"CHIME","p":[8,5,6,9,14],"c":"Bell sound","v":1},{"w":"CHIN","p":[8,5,6,10],"c":"Jaw point","v":1},{"w":"CHINA","p":[8,5,6,10,15],"c":"","v":3},{"w":"CHINE","p":[8,5,6,10,14],"c":"","v":6},{"w":"CHIP","p":[8,5,6,3],"c":"Snack crisp","v":1},{"w":"CHIT","p":[8,5,6,1],"c":"","v":6},{"w":"CHOP","p":[8,5,2,3],"c":"","v":2},{"w":"CHOPIN","p":[8,5,2,3,6,10],"c":"","v":6},{"w":"CHOPINE","p":[8,5,2,3,6,10,14],"c":"","v":6},{"w":"CINE","p":[8,13,10,14],"c":"","v":6},{"w":"DIM","p":[7,6,9],"c":"Not bright","v":1},{"w":"DIME","p":[7,6,9,14],"c":"Ten cents","v":1},{"w":"DIN","p":[7,6,10],"c":"Loud noise","v":2},{"w":"DINE","p":[7,6,10,14],"c":"Eat","v":1},{"w":"DIP","p":[7,6,3],"c":"Chip spread","v":1},{"w":"DIT","p":[7,6,1],"c":"","v":6},{"w":"DITA","p":[7,6,1,0],"c":"","v":6},{"w":"DOIT","p":[7,2,6,1],"c":"","v":6},{"w":"DOT","p":[7,2,1],"c":"Small spot","v":1},{"w":"DOTH","p":[7,2,1,5],"c":"","v":6},{"w":"ELAN","p":[14,11,15,10],"c":"Flair","v":4},{"w":"ELAND","p":[14,11,15,10,7],"c":"","v":6},{"w":"ELD","p":[14,11,7],"c":"","v":6},{"w":"EMIC","p":[14,9,13,8],"c":"","v":6},{"w":"EMIT","p":[14,9,6,1],"c":"Give off","v":2},{"w":"END","p":[14,10,7],"c":"Finish","v":1},{"w":"GAT","p":[4,0,1],"c":"","v":6},{"w":"GHAT","p":[4,5,0,1],"c":"","v":6},{"w":"GHI","p":[4,5,6],"c":"","v":6},{"w":"HAG","p":[5,0,4],"c":"","v":3},{"w":"HAT","p":[5,0,1],"c":"Head cover","v":1},{"w":"HID","p":[5,6,7],"c":"Concealed","v":1},{"w":"HILA","p":[5,6,11,15],"c":"","v":6},{"w":"HIM","p":[5,6,9],"c":"That man","v":1},{"w":"HIN","p":[5,6,10],"c":"","v":6},{"w":"HIND","p":[5,6,10,7],"c":"","v":3},{"w":"HIP","p":[5,6,3],"c":"Joint","v":1},{"w":"HIT","p":[5,6,1],"c":"Strike","v":1},{"w":"HOD","p":[5,2,7],"c":"","v":6},{"w":"HOP","p":[5,2,3],"c":"Jump","v":1},{"w":"HOT","p":[5,2,1],"c":"Very warm","v":1},{"w":"ICH","p":[13,8,5],"c":"","v":6},{"w":"IDLE","p":[6,7,11,14],"c":"Inactive","v":1},{"w":"ILEA","p":[6,11,14,15],"c":"","v":6},{"w":"IMID","p":[13,9,6,7],"c":"","v":6},{"w":"IMIDO","p":[13,9,6,7,2],"c":"","v":6},{"w":"IMINE","p":[6,9,13,10,14],"c":"","v":6},{"w":"IOTA","p":[6,2,1,0],"c":"Tiny bit","v":3},{"w":"ITCH","p":[13,12,8,5],"c":"Need to scratch","v":1},{"w":"LAND","p":[11,15,10,7],"c":"Ground","v":1},{"w":"LANE","p":[11,15,10,14],"c":"Path","v":1},{"w":"LEA","p":[11,14,15],"c":"","v":6},{"w":"LEAN","p":[11,14,15,10],"c":"Thin","v":1},{"w":"LEI","p":[11,14,13],"c":"Hawaiian garland","v":2},{"w":"LEND","p":[11,14,10,7],"c":"Loan","v":1},{"w":"LID","p":[11,6,7],"c":"Cover","v":1},{"w":"LIDO","p":[11,6,7,2],"c":"","v":6},{"w":"LIME","p":[11,6,9,14],"c":"Green citrus","v":1},{"w":"LIMEN","p":[11,6,9,14,10],"c":"","v":6},{"w":"LIMINA","p":[11,6,9,13,10,15],"c":"","v":6},{"w":"LIMIT","p":[11,6,9,13,12],"c":"Cap","v":1},{"w":"LIMN","p":[11,6,9,10],"c":"","v":6},{"w":"LIMNIC","p":[11,6,9,10,13,8],"c":"","v":6},{"w":"LIN","p":[11,6,10],"c":"","v":6},{"w":"LINE","p":[11,6,10,14],"c":"Row","v":1},{"w":"LIP","p":[11,6,3],"c":"Mouth edge","v":1},{"w":"LIT","p":[11,6,1],"c":"Burning","v":1},{"w":"LITHO","p":[11,6,1,5,2],"c":"","v":6},{"w":"MEAL","p":[9,14,15,11],"c":"Dinner","v":1},{"w":"MEAN","p":[9,14,15,10],"c":"Unkind","v":1},{"w":"MEL","p":[9,14,11],"c":"","v":6},{"w":"MELANIC","p":[9,14,11,15,10,13,8],"c":"","v":6},{"w":"MELD","p":[9,14,11,7],"c":"","v":6},{"w":"MEN","p":[9,14,10],"c":"Gents","v":1},{"w":"MEND","p":[9,14,10,7],"c":"","v":2},{"w":"MHO","p":[9,5,2],"c":"","v":6},{"w":"MID","p":[9,6,7],"c":"Middle","v":1},{"w":"MIEN","p":[9,13,14,10],"c":"Bearing","v":5},{"w":"MIL","p":[9,6,11],"c":"","v":6},{"w":"MILD","p":[9,6,11,7],"c":"Gentle","v":1},{"w":"MILE","p":[9,6,11,14],"c":"5,280 feet","v":1},{"w":"MINA","p":[9,6,10,15],"c":"","v":6},{"w":"MINAE","p":[9,6,10,15,14],"c":"","v":6},{"w":"MIND","p":[9,6,10,7],"c":"Brain","v":1},{"w":"MINE","p":[9,6,10,14],"c":"Dig","v":1},{"w":"MINI","p":[9,6,10,13],"c":"","v":6},{"w":"NAE","p":[10,15,14],"c":"","v":6},{"w":"NIL","p":[10,6,11],"c":"Zero","v":2},{"w":"NIM","p":[10,6,9],"c":"","v":6},{"w":"NIP","p":[10,6,3],"c":"","v":3},{"w":"NIT","p":[10,6,1],"c":"Lice egg","v":3},{"w":"OHM","p":[2,5,9],"c":"Resistance unit","v":3},{"w":"OHMIC","p":[2,5,9,13,8],"c":"","v":6},{"w":"OIL","p":[2,6,11],"c":"Crude","v":1},{"w":"OPINE","p":[2,3,6,10,14],"c":"","v":6},{"w":"PILE","p":[3,6,11,14],"c":"Heap","v":1},{"w":"PILEA","p":[3,6,11,14,15],"c":"","v":6},{"w":"PILEI","p":[3,6,11,14,13],"c":"","v":6},{"w":"PIN","p":[3,6,10],"c":"Sewing needle","v":1},{"w":"PINA","p":[3,6,10,15],"c":"","v":6},{"w":"PINE","p":[3,6,10,14],"c":"Evergreen","v":1},{"w":"PINEAL","p":[3,6,10,14,15,11],"c":"","v":6},{"w":"PIT","p":[3,6,1],"c":"Hole","v":1},{"w":"PITA","p":[3,6,1,0],"c":"","v":6},{"w":"PITH","p":[3,6,1,5],"c":"Core","v":4},{"w":"POD","p":[3,2,7],"c":"Pea case","v":2},{"w":"POH","p":[3,2,5],"c":"","v":6},{"w":"POI","p":[3,2,6],"c":"","v":6},{"w":"POIND","p":[3,2,6,10,7],"c":"","v":6},{"w":"POT","p":[3,2,1],"c":"Cooking pan","v":1},{"w":"TAG","p":[1,0,4],"c":"Label","v":1},{"w":"TAHINI","p":[1,0,5,6,10,13],"c":"","v":6},{"w":"THIN","p":[1,5,6,10],"c":"Slim","v":1},{"w":"THINE","p":[1,5,6,10,14],"c":"","v":6},{"w":"THIO","p":[1,5,6,2],"c":"","v":6},{"w":"THO","p":[1,5,2],"c":"","v":6},{"w":"TIC","p":[12,13,8],"c":"Twitch","v":2},{"w":"TIE","p":[12,13,14],"c":"Neckwear","v":1},{"w":"TIL","p":[1,6,11],"c":"","v":6},{"w":"TILE","p":[1,6,11,14],"c":"Square piece","v":1},{"w":"TIME","p":[1,6,9,14],"c":"Clock","v":1},{"w":"TIMID","p":[12,13,9,6,7],"c":"","v":3},{"w":"TIN","p":[1,6,10],"c":"Metal","v":1},{"w":"TINE","p":[1,6,10,14],"c":"","v":6},{"w":"TINEA","p":[1,6,10,14,15],"c":"","v":6},{"w":"TINEAL","p":[1,6,10,14,15,11],"c":"","v":6},{"w":"TIP","p":[1,6,3],"c":"Gratuity","v":1},{"w":"TOD","p":[1,2,7],"c":"","v":6},{"w":"TOIL","p":[1,2,6,11],"c":"","v":3},{"w":"TOILE","p":[1,2,6,11,14],"c":"","v":6},{"w":"TOP","p":[1,2,3],"c":"Summit","v":1},{"w":"TOPI","p":[1,2,3,6],"c":"","v":6}]},{"seed":20,"grid":["G","I","D","V","W","E","I","N","B","A","O","D","P","D","R","L"],"words":[{"w":"ABED","p":[9,8,5,2],"c":"","v":6},{"w":"ADO","p":[9,13,10],"c":"Fuss","v":2},{"w":"AEON","p":[9,5,10,7],"c":"Very long time","v":4},{"w":"AID","p":[9,6,2],"c":"Help","v":1},{"w":"AIDE","p":[9,6,2,5],"c":"Assistant","v":2},{"w":"AIN","p":[9,6,7],"c":"","v":6},{"w":"AROID","p":[9,14,10,6,2],"c":"","v":6},{"w":"AWE","p":[9,4,5],"c":"Wonder","v":2},{"w":"AWED","p":[9,4,5,2],"c":"","v":3},{"w":"BAD","p":[8,9,13],"c":"Not good","v":1},{"w":"BAP","p":[8,9,12],"c":"","v":6},{"w":"BAR","p":[8,9,14],"c":"Pub","v":1},{"w":"BARD","p":[8,9,14,11],"c":"","v":3},{"w":"BARON","p":[8,9,14,10,7],"c":"","v":3},{"w":"BEAD","p":[8,5,9,13],"c":"Small bauble","v":1},{"w":"BEAR","p":[8,5,9,14],"c":"Grizzly","v":1},{"w":"BEARD","p":[8,5,9,14,11],"c":"Whiskers","v":1},{"w":"BED","p":[8,5,2],"c":"Sleeping spot","v":1},{"w":"BEG","p":[8,5,0],"c":"Plead","v":1},{"w":"BEWIG","p":[8,5,4,1,0],"c":"","v":6},{"w":"DAB","p":[13,9,8],"c":"Small amount","v":2},{"w":"DAP","p":[13,9,12],"c":"","v":6},{"w":"DAW","p":[13,9,4],"c":"","v":6},{"w":"DAWED","p":[13,9,4,5,2],"c":"","v":6},{"w":"DEAD","p":[2,5,9,13],"c":"","v":1},{"w":"DEAR","p":[2,5,9,14],"c":"Beloved","v":1},{"w":"DEB","p":[2,5,8],"c":"Society girl","v":4},{"w":"DEBAR","p":[2,5,8,9,14],"c":"","v":6},{"w":"DEODAR","p":[2,5,10,13,9,14],"c":"","v":6},{"w":"DEW","p":[2,5,4],"c":"Morning moisture","v":1},{"w":"DEWAR","p":[2,5,4,9,14],"c":"","v":6},{"w":"DID","p":[2,6,11],"c":"","v":1},{"w":"DIDIE","p":[11,6,2,1,5],"c":"","v":6},{"w":"DIDO","p":[2,6,11,10],"c":"","v":6},{"w":"DIE","p":[2,1,5],"c":"","v":1},{"w":"DIED","p":[11,6,5,2],"c":"","v":1},{"w":"DIG","p":[2,1,0],"c":"Excavate","v":1},{"w":"DIN","p":[2,6,7],"c":"Loud noise","v":2},{"w":"DIOL","p":[2,6,10,15],"c":"","v":6},{"w":"DOE","p":[11,10,5],"c":"Female deer","v":1},{"w":"DOL","p":[11,10,15],"c":"","v":6},{"w":"DON","p":[11,10,7],"c":"Put on, as a coat","v":3},{"w":"DOR","p":[11,10,14],"c":"","v":6},{"w":"DRAB","p":[11,14,9,8],"c":"","v":3},{"w":"DRAIN","p":[11,14,9,6,7],"c":"Sink hole","v":1},{"w":"DRAW","p":[11,14,9,4],"c":"Sketch","v":1},{"w":"EAR","p":[5,9,14],"c":"Hearing organ","v":1},{"w":"EARL","p":[5,9,14,15],"c":"Nobleman","v":2},{"w":"EON","p":[5,10,7],"c":"Long time","v":2},{"w":"GEAR","p":[0,5,9,14],"c":"Equipment","v":1},{"w":"GED","p":[0,5,2],"c":"","v":6},{"w":"GEOID","p":[0,5,10,6,2],"c":"","v":6},{"w":"GID","p":[0,1,2],"c":"","v":6},{"w":"GIE","p":[0,1,5],"c":"","v":6},{"w":"GIED","p":[0,1,5,2],"c":"","v":6},{"w":"IDEA","p":[1,2,5,9],"c":"Thought","v":1},{"w":"IDOL","p":[6,11,10,15],"c":"Star","v":2},{"w":"INDIE","p":[6,7,2,1,5],"c":"","v":6},{"w":"INDOL","p":[6,7,11,10,15],"c":"","v":6},{"w":"ION","p":[6,10,7],"c":"Charged atom","v":2},{"w":"LOAD","p":[15,10,9,13],"c":"Burden","v":1},{"w":"LOIN","p":[15,10,6,7],"c":"","v":3},{"w":"LORD","p":[15,10,14,11],"c":"Noble","v":1},{"w":"NIDE","p":[7,6,2,5],"c":"","v":6},{"w":"NIDI","p":[7,6,2,1],"c":"","v":6},{"w":"NOD","p":[7,10,11],"c":"Head signal","v":1},{"w":"NODI","p":[7,10,11,6],"c":"","v":6},{"w":"NOR","p":[7,10,14],"c":"Neither\u0027s partner","v":1},{"w":"OAR","p":[10,9,14],"c":"Rowing blade","v":1},{"w":"OLD","p":[10,15,11],"c":"Aged","v":1},{"w":"OLDIE","p":[10,15,11,6,5],"c":"","v":6},{"w":"ORA","p":[10,14,9],"c":"","v":6},{"w":"ORAD","p":[10,14,9,13],"c":"","v":6},{"w":"ORDAIN","p":[10,14,13,9,6,7],"c":"","v":3},{"w":"PAD","p":[12,9,13],"c":"Notebook","v":1},{"w":"PADRONI","p":[12,9,13,14,10,7,6],"c":"","v":6},{"w":"PAEON","p":[12,9,5,10,7],"c":"","v":6},{"w":"PAID","p":[12,9,6,2],"c":"Settled","v":1},{"w":"PAIN","p":[12,9,6,7],"c":"Ache","v":1},{"w":"PAR","p":[12,9,14],"c":"","v":2},{"w":"PARD","p":[12,9,14,11],"c":"","v":6},{"w":"PARDI","p":[12,9,14,11,6],"c":"","v":6},{"w":"PARDIE","p":[12,9,14,11,6,5],"c":"","v":6},{"w":"PARDON","p":[12,9,14,11,10,7],"c":"","v":2},{"w":"PARODIED","p":[12,9,14,10,11,6,5,2],"c":"","v":3},{"w":"PAROL","p":[12,9,14,10,15],"c":"","v":6},{"w":"PAW","p":[12,9,4],"c":"Animal\u0027s foot","v":1},{"w":"PAWED","p":[12,9,4,5,2],"c":"","v":3},{"w":"RAD","p":[14,9,13],"c":"","v":6},{"w":"RADON","p":[14,9,13,10,7],"c":"","v":6},{"w":"RAID","p":[14,9,6,2],"c":"Attack","v":1},{"w":"RAIN","p":[14,9,6,7],"c":"Shower","v":1},{"w":"RAP","p":[14,9,12],"c":"Hip-hop","v":1},{"w":"RAW","p":[14,9,4],"c":"Uncooked","v":1},{"w":"ROAD","p":[14,10,9,13],"c":"Street","v":1},{"w":"ROADBED","p":[14,10,9,13,8,5,2],"c":"","v":6},{"w":"ROD","p":[14,10,11],"c":"Pole","v":1},{"w":"ROE","p":[14,10,5],"c":"Fish eggs","v":2},{"w":"VIA","p":[3,6,9],"c":"By way of","v":2},{"w":"VIDE","p":[3,6,2,5],"c":"","v":6},{"w":"VIDEO","p":[3,6,2,5,10],"c":"Clip","v":1},{"w":"VIE","p":[3,6,5],"c":"Compete","v":2},{"w":"VIED","p":[3,6,5,2],"c":"","v":3},{"w":"VIEW","p":[3,6,5,4],"c":"Sight","v":1},{"w":"VINO","p":[3,6,7,10],"c":"","v":6},{"w":"VIOL","p":[3,6,10,15],"c":"","v":6},{"w":"WAB","p":[4,9,8],"c":"","v":6},{"w":"WAD","p":[4,9,13],"c":"Bundle","v":2},{"w":"WAE","p":[4,9,5],"c":"","v":6},{"w":"WAIN","p":[4,9,6,7],"c":"","v":6},{"w":"WAP","p":[4,9,12],"c":"","v":6},{"w":"WAR","p":[4,9,14],"c":"Battle","v":1},{"w":"WARD","p":[4,9,14,11],"c":"","v":2},{"w":"WEAR","p":[4,5,9,14],"c":"Don","v":1},{"w":"WEB","p":[4,5,8],"c":"Spider\u0027s home","v":1},{"w":"WED","p":[4,5,2],"c":"","v":2},{"w":"WIDE","p":[4,1,2,5],"c":"Broad","v":1},{"w":"WIG","p":[4,1,0],"c":"Fake hair","v":1},{"w":"WIGEON","p":[4,1,0,5,10,7],"c":"","v":6}]},{"seed":204,"grid":["E","L","I","E","T","O","L","H","P","I","I","D","M","M","R","B"],"words":[{"w":"BID","p":[15,10,11],"c":"Auction offer","v":1},{"w":"BILE","p":[15,10,6,3],"c":"","v":3},{"w":"BILL","p":[15,10,6,1],"c":"Invoice","v":1},{"w":"BILLET","p":[15,10,6,1,0,4],"c":"","v":6},{"w":"BILLIE","p":[15,10,6,1,2,3],"c":"","v":6},{"w":"BIO","p":[15,10,5],"c":"Life story","v":2},{"w":"BIRD","p":[15,10,14,11],"c":"Feathered flyer","v":1},{"w":"BRIDLE","p":[15,14,10,11,6,3],"c":"","v":3},{"w":"BRILL","p":[15,14,9,6,1],"c":"","v":6},{"w":"BRIM","p":[15,14,9,12],"c":"Hat\u0027s edge","v":2},{"w":"BRIO","p":[15,14,9,5],"c":"Vigor","v":4},{"w":"BRIT","p":[15,14,9,4],"c":"","v":6},{"w":"DIB","p":[11,10,15],"c":"","v":6},{"w":"DILL","p":[11,10,6,1],"c":"","v":3},{"w":"DIM","p":[11,10,13],"c":"Not bright","v":1},{"w":"DIOL","p":[11,10,5,1],"c":"","v":6},{"w":"DRIB","p":[11,14,10,15],"c":"","v":6},{"w":"DRILL","p":[11,14,9,6,1],"c":"Bore","v":1},{"w":"DRIP","p":[11,14,9,8],"c":"","v":2},{"w":"DRIPT","p":[11,14,9,8,4],"c":"","v":6},{"w":"ELD","p":[3,6,11],"c":"","v":6},{"w":"ELHI","p":[3,6,7,2],"c":"","v":6},{"w":"ELITE","p":[3,6,9,4,0],"c":"Best","v":2},{"w":"ELL","p":[0,1,6],"c":"","v":6},{"w":"ETOILE","p":[0,4,5,2,6,3],"c":"","v":6},{"w":"HEIL","p":[7,3,2,1],"c":"","v":6},{"w":"HELD","p":[7,3,6,11],"c":"","v":1},{"w":"HELIO","p":[7,3,6,2,5],"c":"","v":6},{"w":"HELLO","p":[7,3,6,1,5],"c":"Hi","v":1},{"w":"HELO","p":[7,3,6,5],"c":"","v":6},{"w":"HELOT","p":[7,3,6,5,4],"c":"","v":6},{"w":"HID","p":[7,10,11],"c":"Concealed","v":1},{"w":"HIE","p":[7,2,3],"c":"","v":6},{"w":"HILI","p":[7,2,6,9],"c":"","v":6},{"w":"HILL","p":[7,2,1,6],"c":"Mound","v":1},{"w":"HILLO","p":[7,2,1,6,5],"c":"","v":6},{"w":"HILLTOP","p":[7,2,6,1,4,5,8],"c":"","v":6},{"w":"HILT","p":[7,2,1,4],"c":"","v":3},{"w":"HIM","p":[7,10,13],"c":"That man","v":1},{"w":"IDLE","p":[10,11,6,3],"c":"Inactive","v":1},{"w":"ILL","p":[2,1,6],"c":"Sick","v":1},{"w":"ILLITE","p":[2,1,6,9,4,0],"c":"","v":6},{"w":"IMID","p":[9,13,10,11],"c":"","v":6},{"w":"IMP","p":[9,12,8],"c":"Mischief maker","v":2},{"w":"IMPI","p":[10,13,8,9],"c":"","v":6},{"w":"IMPOLITE","p":[10,13,8,5,6,9,4,0],"c":"","v":3},{"w":"IOLITE","p":[2,5,6,9,4,0],"c":"","v":6},{"w":"IRID","p":[9,14,10,11],"c":"","v":6},{"w":"LEI","p":[6,3,2],"c":"Hawaiian garland","v":2},{"w":"LET","p":[1,0,4],"c":"Allow","v":1},{"w":"LIB","p":[6,10,15],"c":"","v":6},{"w":"LIBRI","p":[6,10,15,14,9],"c":"","v":6},{"w":"LID","p":[6,10,11],"c":"Cover","v":1},{"w":"LIE","p":[1,2,3],"c":"Fib","v":1},{"w":"LILT","p":[6,2,1,4],"c":"","v":3},{"w":"LIMIT","p":[6,10,13,9,4],"c":"Cap","v":1},{"w":"LIMP","p":[6,9,12,8],"c":"","v":3},{"w":"LIP","p":[6,9,8],"c":"Mouth edge","v":1},{"w":"LIPOID","p":[6,9,8,5,10,11],"c":"","v":6},{"w":"LIRI","p":[6,9,14,10],"c":"","v":6},{"w":"LIT","p":[6,9,4],"c":"Burning","v":1},{"w":"LITE","p":[6,9,4,0],"c":"","v":6},{"w":"LOP","p":[1,5,8],"c":"","v":3},{"w":"LOT","p":[1,5,4],"c":"Parking area","v":1},{"w":"LOTI","p":[1,5,4,9],"c":"","v":6},{"w":"MIB","p":[13,10,15],"c":"","v":6},{"w":"MID","p":[13,10,11],"c":"Middle","v":1},{"w":"MIL","p":[12,9,6],"c":"","v":6},{"w":"MILD","p":[12,9,6,11],"c":"Gentle","v":1},{"w":"MILE","p":[12,9,6,3],"c":"5,280 feet","v":1},{"w":"MILL","p":[12,9,6,1],"c":"","v":2},{"w":"MILLE","p":[12,9,6,1,0],"c":"","v":6},{"w":"MILLET","p":[12,9,6,1,0,4],"c":"","v":6},{"w":"MILO","p":[12,9,6,5],"c":"","v":6},{"w":"MIM","p":[12,9,13],"c":"","v":6},{"w":"MIR","p":[12,9,14],"c":"","v":6},{"w":"MIRI","p":[12,9,14,10],"c":"","v":6},{"w":"MITE","p":[12,9,4,0],"c":"","v":3},{"w":"OIL","p":[5,2,1],"c":"Crude","v":1},{"w":"OLD","p":[5,6,11],"c":"Aged","v":1},{"w":"OLE","p":[5,1,0],"c":"Bullfight cheer","v":3},{"w":"OPT","p":[5,8,4],"c":"Choose","v":2},{"w":"PILE","p":[8,9,6,3],"c":"Heap","v":1},{"w":"PILEI","p":[8,9,6,3,2],"c":"","v":6},{"w":"PILI","p":[8,9,6,2],"c":"","v":6},{"w":"PILL","p":[8,9,6,1],"c":"Tablet","v":1},{"w":"PILOT","p":[8,9,6,5,4],"c":"Aviator","v":1},{"w":"PIOLET","p":[8,9,5,1,0,4],"c":"","v":6},{"w":"PIT","p":[8,9,4],"c":"Hole","v":1},{"w":"POET","p":[8,5,0,4],"c":"Rhymer","v":1},{"w":"POI","p":[8,5,2],"c":"","v":6},{"w":"POL","p":[8,5,1],"c":"","v":6},{"w":"POLE","p":[8,5,1,0],"c":"Rod","v":1},{"w":"POLITE","p":[8,5,6,9,4,0],"c":"","v":2},{"w":"POLL","p":[8,5,1,6],"c":"Survey","v":1},{"w":"POT","p":[8,5,4],"c":"Cooking pan","v":1},{"w":"RIB","p":[14,10,15],"c":"Bone","v":1},{"w":"RID","p":[14,10,11],"c":"Free of","v":1},{"w":"RILE","p":[14,9,6,3],"c":"","v":3},{"w":"RILL","p":[14,9,6,1],"c":"","v":6},{"w":"RILLE","p":[14,9,6,1,0],"c":"","v":6},{"w":"RILLET","p":[14,9,6,1,0,4],"c":"","v":6},{"w":"RIM","p":[14,9,12],"c":"Edge","v":1},{"w":"RIOT","p":[14,9,5,4],"c":"Uprising","v":1},{"w":"RIP","p":[14,9,8],"c":"Tear","v":1},{"w":"RITE","p":[14,9,4,0],"c":"","v":3},{"w":"TEL","p":[4,0,1],"c":"","v":6},{"w":"TELL","p":[4,0,1,6],"c":"Narrate","v":1},{"w":"TELOI","p":[4,0,1,5,2],"c":"","v":6},{"w":"TIL","p":[4,9,6],"c":"","v":6},{"w":"TILE","p":[4,9,6,3],"c":"Square piece","v":1},{"w":"TILL","p":[4,9,6,1],"c":"","v":1},{"w":"TIMID","p":[4,9,13,10,11],"c":"","v":3},{"w":"TIP","p":[4,9,8],"c":"Gratuity","v":1},{"w":"TOE","p":[4,5,0],"c":"Foot digit","v":1},{"w":"TOIL","p":[4,5,2,1],"c":"","v":3},{"w":"TOILE","p":[4,5,2,1,0],"c":"","v":6},{"w":"TOLD","p":[4,5,6,11],"c":"Said","v":1},{"w":"TOLE","p":[4,5,1,0],"c":"","v":6},{"w":"TOLL","p":[4,5,1,6],"c":"Fee","v":1},{"w":"TOP","p":[4,5,8],"c":"Summit","v":1},{"w":"TOPI","p":[4,5,8,9],"c":"","v":6}]}]},"g5":{"n":5,"cubes":[["E","A","T","N","D","B"],["E","A","T","N","D","B"],["E","A","T","N","D","G"],["E","A","T","N","H","G"],["E","O","T","N","H","G"],["E","O","T","N","H","G"],["E","O","T","N","H","F"],["E","O","T","S","H","F"],["E","O","I","S","M","F"],["E","O","I","S","M","K"],["E","O","I","S","M","K"],["E","O","I","S","M","K"],["E","O","I","S","M","W"],["E","O","I","S","P","W"],["E","R","I","S","P","W"],["E","R","I","C","P","Y"],["A","R","L","C","P","Y"],["A","R","L","C","P","Y"],["A","R","L","C","U","V"],["A","R","L","C","U","V"],["A","R","L","C","U","Z"],["A","R","L","C","U","Z"],["A","R","L","D","U","J"],["A","R","L","D","B","QU"],["A","T","N","D","B","X"]],"grids":[{"seed":189,"grid":["E","R","H","P","A","Y","O","G","A","C","N","L","D","K","R","E","I","QU","I","D","T","U","M","A","E"],"words":[{"w":"AAH","p":[4,8,2],"c":"","v":6},{"w":"ACARI","p":[4,9,8,14,18],"c":"","v":6},{"w":"ACARID","p":[4,9,8,14,18,12],"c":"","v":6},{"w":"ACRID","p":[4,9,14,18,12],"c":"Pungent","v":4},{"w":"ACRIDINE","p":[4,9,14,18,12,16,10,15],"c":"","v":6},{"w":"ACRIDLY","p":[4,9,14,18,12,11,5],"c":"","v":6},{"w":"ADIEU","p":[8,12,16,15,21],"c":"","v":6},{"w":"ADIT","p":[8,12,16,20],"c":"","v":6},{"w":"ADO","p":[8,12,6],"c":"Fuss","v":2},{"w":"ADORE","p":[8,12,6,1,0],"c":"","v":3},{"w":"AGLET","p":[8,7,11,15,20],"c":"","v":6},{"w":"AGLY","p":[8,7,11,5],"c":"","v":6},{"w":"AGO","p":[8,7,6],"c":"In the past","v":1},{"w":"AGON","p":[8,7,6,10],"c":"","v":6},{"w":"AGONE","p":[8,7,6,10,15],"c":"","v":6},{"w":"AGONY","p":[8,7,6,10,5],"c":"","v":2},{"w":"AHOLD","p":[8,2,6,11,12],"c":"","v":6},{"w":"AHOY","p":[8,2,6,5],"c":"","v":3},{"w":"AID","p":[23,18,12],"c":"Help","v":1},{"w":"AIDE","p":[23,18,19,24],"c":"Assistant","v":2},{"w":"AIM","p":[23,18,22],"c":"Point at a target","v":1},{"w":"AIR","p":[23,18,14],"c":"What we breathe","v":1},{"w":"AMI","p":[23,22,16],"c":"","v":6},{"w":"AMID","p":[23,22,16,12],"c":"Among","v":2},{"w":"AMIDE","p":[23,22,18,19,24],"c":"","v":6},{"w":"AMIDIN","p":[23,22,18,12,16,10],"c":"","v":6},{"w":"AMIDINE","p":[23,22,18,12,16,10,15],"c":"","v":6},{"w":"AMIDO","p":[23,22,16,12,6],"c":"","v":6},{"w":"AMIDOL","p":[23,22,16,12,6,11],"c":"","v":6},{"w":"AMIDONE","p":[23,22,16,12,6,10,15],"c":"","v":6},{"w":"AMIE","p":[23,22,16,15],"c":"","v":6},{"w":"AMIN","p":[23,22,16,10],"c":"","v":6},{"w":"AMINE","p":[23,22,16,10,15],"c":"","v":6},{"w":"AMINO","p":[23,22,16,10,6],"c":"","v":6},{"w":"AMIR","p":[23,22,18,14],"c":"","v":6},{"w":"AMU","p":[23,22,21],"c":"","v":6},{"w":"ARC","p":[8,14,9],"c":"Curved line","v":2},{"w":"ARIA","p":[8,14,18,23],"c":"Opera solo","v":2},{"w":"ARID","p":[8,14,18,12],"c":"Very dry","v":2},{"w":"ARIDLY","p":[8,14,18,12,11,5],"c":"","v":6},{"w":"ARK","p":[8,14,13],"c":"Noah\u0027s boat","v":2},{"w":"CAD","p":[9,8,12],"c":"Canadian dollar code","v":3},{"w":"CADI","p":[9,8,12,16],"c":"","v":6},{"w":"CAP","p":[9,4,3],"c":"Hat","v":1},{"w":"CAPH","p":[9,4,3,2],"c":"","v":6},{"w":"CAR","p":[9,8,14],"c":"Auto","v":1},{"w":"CARD","p":[9,8,14,19],"c":"Deck piece","v":1},{"w":"CARDIA","p":[9,8,14,19,18,23],"c":"","v":6},{"w":"CARDIAE","p":[9,8,14,19,18,23,24],"c":"","v":6},{"w":"CARIED","p":[9,8,14,18,24,19],"c":"","v":6},{"w":"CARK","p":[9,8,14,13],"c":"","v":6},{"w":"CRADLE","p":[9,14,8,12,11,15],"c":"Baby\u0027s bed","v":1},{"w":"CRAG","p":[9,14,8,7],"c":"","v":3},{"w":"CRIED","p":[9,14,18,24,19],"c":"","v":2},{"w":"DAG","p":[12,8,7],"c":"","v":6},{"w":"DAH","p":[12,8,2],"c":"","v":6},{"w":"DAK","p":[12,8,13],"c":"","v":6},{"w":"DAM","p":[19,23,22],"c":"Beaver\u0027s barrier","v":1},{"w":"DAP","p":[12,8,3],"c":"","v":6},{"w":"DARK","p":[12,8,14,13],"c":"Unlit","v":1},{"w":"DARKIE","p":[12,8,14,13,18,24],"c":"","v":6},{"w":"DEAIR","p":[19,24,23,18,14],"c":"","v":6},{"w":"DIAMIN","p":[12,18,23,22,16,10],"c":"","v":6},{"w":"DIAMINE","p":[12,18,23,22,16,10,15],"c":"","v":6},{"w":"DID","p":[12,18,19],"c":"","v":1},{"w":"DIDIE","p":[19,18,12,16,15],"c":"","v":6},{"w":"DIDO","p":[19,18,12,6],"c":"","v":6},{"w":"DIE","p":[12,16,15],"c":"","v":1},{"w":"DIED","p":[12,18,24,19],"c":"","v":1},{"w":"DIEL","p":[12,16,15,11],"c":"","v":6},{"w":"DIET","p":[12,16,15,20],"c":"Food plan","v":1},{"w":"DIM","p":[12,16,22],"c":"Not bright","v":1},{"w":"DIN","p":[12,16,10],"c":"Loud noise","v":2},{"w":"DINE","p":[12,16,10,15],"c":"Eat","v":1},{"w":"DIRK","p":[12,18,14,13],"c":"","v":6},{"w":"DIT","p":[12,16,20],"c":"","v":6},{"w":"DITE","p":[12,16,20,15],"c":"","v":6},{"w":"DOE","p":[12,6,0],"c":"Female deer","v":1},{"w":"DOER","p":[12,6,0,1],"c":"","v":3},{"w":"DOG","p":[12,6,7],"c":"Barking pet","v":1},{"w":"DOL","p":[12,6,11],"c":"","v":6},{"w":"DOLE","p":[12,6,11,15],"c":"","v":2},{"w":"DON","p":[12,6,10],"c":"Put on, as a coat","v":3},{"w":"DONE","p":[12,6,10,15],"c":"","v":1},{"w":"DOR","p":[12,6,1],"c":"","v":6},{"w":"DORE","p":[12,6,1,0],"c":"","v":6},{"w":"DORY","p":[12,6,1,5],"c":"","v":6},{"w":"DRAG","p":[19,14,8,7],"c":"","v":2},{"w":"DRAGLINE","p":[19,14,8,7,11,16,10,15],"c":"","v":6},{"w":"DRAGON","p":[19,14,8,7,6,10],"c":"Mythic beast","v":1},{"w":"DRAGONET","p":[19,14,8,7,6,10,15,20],"c":"","v":6},{"w":"ELD","p":[15,11,12],"c":"","v":6},{"w":"ENOL","p":[15,10,6,11],"c":"","v":6},{"w":"EON","p":[0,6,10],"c":"Long time","v":2},{"w":"ERG","p":[0,1,7],"c":"","v":6},{"w":"ERGO","p":[0,1,7,6],"c":"Therefore","v":4},{"w":"ETUI","p":[15,20,21,16],"c":"Needle case","v":5},{"w":"EYNE","p":[0,5,10,15],"c":"","v":6},{"w":"GAD","p":[7,8,12],"c":"","v":6},{"w":"GADI","p":[7,8,12,16],"c":"","v":6},{"w":"GADID","p":[7,8,12,18,19],"c":"","v":6},{"w":"GAP","p":[7,8,3],"c":"Opening","v":1},{"w":"GAR","p":[7,8,14],"c":"","v":6},{"w":"GLEN","p":[7,11,15,10],"c":"","v":3},{"w":"GLIM","p":[7,11,16,22],"c":"","v":6},{"w":"GLORY","p":[7,11,6,1,5],"c":"","v":2},{"w":"GOD","p":[7,6,12],"c":"Deity","v":2},{"w":"GODLY","p":[7,6,12,11,5],"c":"","v":3},{"w":"GOER","p":[7,6,0,1],"c":"","v":6},{"w":"GOLD","p":[7,6,11,12],"c":"Precious metal","v":1},{"w":"GONE","p":[7,6,10,15],"c":"Departed","v":1},{"w":"GONIDIA","p":[7,6,10,16,12,18,23],"c":"","v":6},{"w":"GONIUM","p":[7,6,10,16,21,22],"c":"","v":6},{"w":"GOR","p":[7,6,1],"c":"","v":6},{"w":"GORE","p":[7,6,1,0],"c":"","v":3},{"w":"GORY","p":[7,6,1,5],"c":"","v":3},{"w":"GOY","p":[7,6,5],"c":"","v":6},{"w":"GREY","p":[7,1,0,5],"c":"","v":6},{"w":"GROYNE","p":[7,1,6,5,10,15],"c":"","v":6},{"w":"HACK","p":[2,8,9,13],"c":"","v":1},{"w":"HACKIE","p":[2,8,9,13,18,24],"c":"","v":6},{"w":"HAD","p":[2,8,12],"c":"Owned","v":1},{"w":"HAG","p":[2,8,7],"c":"","v":3},{"w":"HAGDON","p":[2,8,7,12,6,10],"c":"","v":6},{"w":"HAKIM","p":[2,8,13,18,22],"c":"","v":6},{"w":"HAP","p":[2,8,3],"c":"","v":6},{"w":"HARD","p":[2,8,14,19],"c":"Difficult","v":1},{"w":"HARK","p":[2,8,14,13],"c":"","v":3},{"w":"HOD","p":[2,6,12],"c":"","v":6},{"w":"HOE","p":[2,6,0],"c":"Garden tool","v":2},{"w":"HOER","p":[2,6,0,1],"c":"","v":6},{"w":"HOG","p":[2,6,7],"c":"Pig","v":1},{"w":"HOLD","p":[2,6,11,12],"c":"Grasp","v":1},{"w":"HOLE","p":[2,6,11,15],"c":"Pit","v":1},{"w":"HOLY","p":[2,6,11,5],"c":"","v":2},{"w":"HON","p":[2,6,10],"c":"","v":6},{"w":"HONE","p":[2,6,10,15],"c":"Sharpen","v":3},{"w":"HOY","p":[2,6,5],"c":"","v":6},{"w":"HOYLE","p":[2,6,5,11,15],"c":"","v":6},{"w":"IDEA","p":[18,19,24,23],"c":"Thought","v":1},{"w":"IDLE","p":[16,12,11,15],"c":"Inactive","v":1},{"w":"IDLY","p":[16,12,11,5],"c":"","v":3},{"w":"IDOL","p":[16,12,6,11],"c":"Star","v":2},{"w":"ILEUM","p":[16,11,15,21,22],"c":"","v":6},{"w":"IMID","p":[16,22,18,12],"c":"","v":6},{"w":"IMIDE","p":[16,22,18,19,24],"c":"","v":6},{"w":"IMIDO","p":[16,22,18,12,6],"c":"","v":6},{"w":"IMINE","p":[18,22,16,10,15],"c":"","v":6},{"w":"IMINO","p":[18,22,16,10,6],"c":"","v":6},{"w":"INLET","p":[16,10,11,15,20],"c":"Bay","v":3},{"w":"INLY","p":[16,10,11,5],"c":"","v":6},{"w":"IRK","p":[18,14,13],"c":"","v":3},{"w":"KADI","p":[13,8,12,16],"c":"","v":6},{"w":"KAPA","p":[13,8,3,4],"c":"","v":6},{"w":"KAPH","p":[13,8,3,2],"c":"","v":6},{"w":"KID","p":[13,18,12],"c":"Child","v":1},{"w":"KIR","p":[13,18,14],"c":"","v":6},{"w":"LEI","p":[11,15,16],"c":"Hawaiian garland","v":2},{"w":"LENO","p":[11,15,10,6],"c":"","v":6},{"w":"LET","p":[11,15,20],"c":"Allow","v":1},{"w":"LEU","p":[11,15,21],"c":"","v":6},{"w":"LID","p":[11,16,12],"c":"Cover","v":1},{"w":"LIDAR","p":[11,16,12,8,14],"c":"","v":6},{"w":"LIDO","p":[11,16,12,6],"c":"","v":6},{"w":"LIE","p":[11,16,15],"c":"Fib","v":1},{"w":"LIEN","p":[11,16,15,10],"c":"","v":6},{"w":"LIEU","p":[11,16,15,21],"c":"In ___ of","v":4},{"w":"LIMA","p":[11,16,22,23],"c":"","v":6},{"w":"LIN","p":[11,16,10],"c":"","v":6},{"w":"LINE","p":[11,16,10,15],"c":"Row","v":1},{"w":"LINO","p":[11,16,10,6],"c":"","v":6},{"w":"LINY","p":[11,16,10,5],"c":"","v":6},{"w":"LIQUID","p":[11,16,17,18,12],"c":"","v":2},{"w":"LIT","p":[11,16,20],"c":"Burning","v":1},{"w":"LITE","p":[11,16,20,15],"c":"","v":6},{"w":"LITU","p":[11,16,20,21],"c":"","v":6},{"w":"LOG","p":[11,6,7],"c":"Tree trunk piece","v":1},{"w":"LONE","p":[11,6,10,15],"c":"","v":3},{"w":"LORE","p":[11,6,1,0],"c":"Folklore","v":3},{"w":"LORY","p":[11,6,1,5],"c":"","v":6},{"w":"LYE","p":[11,5,0],"c":"Soap ingredient","v":3},{"w":"LYRE","p":[11,5,1,0],"c":"","v":3},{"w":"MAD","p":[22,23,19],"c":"Angry","v":1},{"w":"MADE","p":[22,23,19,24],"c":"Created","v":1},{"w":"MADEIRA","p":[22,23,19,24,18,14,8],"c":"","v":6},{"w":"MAE","p":[22,23,24],"c":"","v":6},{"w":"MAID","p":[22,23,18,12],"c":"","v":3},{"w":"MAIR","p":[22,23,18,14],"c":"","v":6},{"w":"MAQUI","p":[22,23,17,16],"c":"","v":6},{"w":"MID","p":[22,16,12],"c":"Middle","v":1},{"w":"MIDI","p":[22,16,12,18],"c":"","v":6},{"w":"MIDLINE","p":[22,18,12,11,16,10,15],"c":"","v":6},{"w":"MIEN","p":[22,16,15,10],"c":"Bearing","v":5},{"w":"MIKADO","p":[22,18,13,8,12,6],"c":"","v":6},{"w":"MIKRA","p":[22,18,13,14,8],"c":"","v":6},{"w":"MIL","p":[22,16,11],"c":"","v":6},{"w":"MILD","p":[22,16,11,12],"c":"Gentle","v":1},{"w":"MILE","p":[22,16,11,15],"c":"5,280 feet","v":1},{"w":"MILO","p":[22,16,11,6],"c":"","v":6},{"w":"MINE","p":[22,16,10,15],"c":"Dig","v":1},{"w":"MINOR","p":[22,16,10,6,1],"c":"Small","v":1},{"w":"MIR","p":[22,18,14],"c":"","v":6},{"w":"MIRADOR","p":[22,18,14,8,12,6,1],"c":"","v":6},{"w":"MIRK","p":[22,18,14,13],"c":"","v":6},{"w":"MITE","p":[22,16,20,15],"c":"","v":3},{"w":"MUT","p":[22,21,20],"c":"","v":6},{"w":"MUTE","p":[22,21,20,15],"c":"","v":3},{"w":"MUTELY","p":[22,21,20,15,11,5],"c":"","v":3},{"w":"MUTINE","p":[22,21,20,16,10,15],"c":"","v":6},{"w":"MUTINY","p":[22,21,20,16,10,5],"c":"","v":3},{"w":"NET","p":[10,15,20],"c":"Mesh","v":1},{"w":"NEUM","p":[10,15,21,22],"c":"","v":6},{"w":"NIDI","p":[10,16,12,18],"c":"","v":6},{"w":"NIL","p":[10,16,11],"c":"Zero","v":2},{"w":"NIM","p":[10,16,22],"c":"","v":6},{"w":"NIT","p":[10,16,20],"c":"Lice egg","v":3},{"w":"NITE","p":[10,16,20,15],"c":"","v":6},{"w":"NOD","p":[10,6,12],"c":"Head signal","v":1},{"w":"NODI","p":[10,6,12,16],"c":"","v":6},{"w":"NOG","p":[10,6,7],"c":"","v":6},{"w":"NOH","p":[10,6,2],"c":"","v":6},{"w":"NOR","p":[10,6,1],"c":"Neither\u0027s partner","v":1},{"w":"ODIUM","p":[6,12,16,21,22],"c":"","v":6},{"w":"OGLE","p":[6,7,11,15],"c":"Stare","v":3},{"w":"OGRE","p":[6,7,1,0],"c":"","v":3},{"w":"OLD","p":[6,11,12],"c":"Aged","v":1},{"w":"OLDIE","p":[6,11,12,16,15],"c":"","v":6},{"w":"OLE","p":[6,11,15],"c":"Bullfight cheer","v":3},{"w":"OLEIN","p":[6,11,15,16,10],"c":"","v":6},{"w":"OLEUM","p":[6,11,15,21,22],"c":"","v":6},{"w":"ONE","p":[6,10,15],"c":"Single","v":1},{"w":"ONIUM","p":[6,10,16,21,22],"c":"","v":6},{"w":"ONLY","p":[6,10,11,5],"c":"Sole","v":1},{"w":"ORE","p":[6,1,0],"c":"Raw metal","v":2},{"w":"OYER","p":[6,5,0,1],"c":"","v":6},{"w":"PAC","p":[3,4,9],"c":"","v":6},{"w":"PACA","p":[3,4,9,8],"c":"","v":6},{"w":"PACK","p":[3,4,9,13],"c":"Bundle","v":1},{"w":"PAD","p":[3,8,12],"c":"Notebook","v":1},{"w":"PADI","p":[3,8,12,16],"c":"","v":6},{"w":"PADLE","p":[3,8,12,11,15],"c":"","v":6},{"w":"PAGOD","p":[3,8,7,6,12],"c":"","v":6},{"w":"PAH","p":[3,8,2],"c":"","v":6},{"w":"PAR","p":[3,8,14],"c":"","v":2},{"w":"PARD","p":[3,8,14,19],"c":"","v":6},{"w":"PARDI","p":[3,8,14,19,18],"c":"","v":6},{"w":"PARDIE","p":[3,8,14,19,18,24],"c":"","v":6},{"w":"PARK","p":[3,8,14,13],"c":"Green space","v":1},{"w":"PHON","p":[3,2,6,10],"c":"","v":6},{"w":"PHONE","p":[3,2,6,10,15],"c":"Telephone","v":1},{"w":"PHONILY","p":[3,2,6,10,16,11,5],"c":"","v":6},{"w":"PHONY","p":[3,2,6,10,5],"c":"","v":3},{"w":"QUA","p":[17,23],"c":"","v":3},{"w":"QUAD","p":[17,23,19],"c":"","v":6},{"w":"QUAI","p":[17,23,18],"c":"","v":6},{"w":"QUID","p":[17,16,12],"c":"","v":6},{"w":"QUIET","p":[17,16,15,20],"c":"Silent","v":1},{"w":"QUIN","p":[17,16,10],"c":"","v":6},{"w":"QUINOL","p":[17,16,10,6,11],"c":"","v":6},{"w":"QUIRK","p":[17,18,14,13],"c":"Oddity","v":3},{"w":"QUIT","p":[17,16,20],"c":"Leave","v":1},{"w":"QUITE","p":[17,16,20,15],"c":"","v":1},{"w":"RACK","p":[14,8,9,13],"c":"Shelf","v":1},{"w":"RAD","p":[14,8,12],"c":"","v":6},{"w":"RADIUM","p":[14,8,12,16,21,22],"c":"","v":3},{"w":"RADON","p":[14,8,12,6,10],"c":"","v":6},{"w":"RAG","p":[14,8,7],"c":"Cloth","v":1},{"w":"RAH","p":[14,8,2],"c":"","v":6},{"w":"RAKI","p":[14,8,13,18],"c":"","v":6},{"w":"RAP","p":[14,8,3],"c":"Hip-hop","v":1},{"w":"RHO","p":[1,2,6],"c":"Greek P","v":4},{"w":"RHODIUM","p":[1,2,6,12,16,21,22],"c":"","v":6},{"w":"RIA","p":[14,18,23],"c":"","v":6},{"w":"RID","p":[14,18,12],"c":"Free of","v":1},{"w":"RIDE","p":[14,18,19,24],"c":"Journey","v":1},{"w":"RIM","p":[14,18,22],"c":"Edge","v":1},{"w":"ROD","p":[1,6,12],"c":"Pole","v":1},{"w":"ROE","p":[1,6,0],"c":"Fish eggs","v":2},{"w":"ROLE","p":[1,6,11,15],"c":"Part","v":1},{"w":"RYE","p":[1,5,0],"c":"Bread grain","v":2},{"w":"TEL","p":[20,15,11],"c":"","v":6},{"w":"TELIUM","p":[20,15,11,16,21,22],"c":"","v":6},{"w":"TEN","p":[20,15,10],"c":"Decade","v":1},{"w":"TENOR","p":[20,15,10,6,1],"c":"","v":3},{"w":"TIDIED","p":[20,16,12,18,24,19],"c":"","v":2},{"w":"TIE","p":[20,16,15],"c":"Neckwear","v":1},{"w":"TIL","p":[20,16,11],"c":"","v":6},{"w":"TILE","p":[20,16,11,15],"c":"Square piece","v":1},{"w":"TIMID","p":[20,16,22,18,12],"c":"","v":3},{"w":"TIMIDLY","p":[20,16,22,18,12,11,5],"c":"","v":3},{"w":"TIN","p":[20,16,10],"c":"Metal","v":1},{"w":"TINE","p":[20,16,10,15],"c":"","v":6},{"w":"TINY","p":[20,16,10,5],"c":"Small","v":1},{"w":"TUI","p":[20,21,16],"c":"","v":6},{"w":"TUMID","p":[20,21,22,16,12],"c":"","v":6},{"w":"TUMIDLY","p":[20,21,22,16,12,11,5],"c":"","v":6},{"w":"UTILE","p":[21,20,16,11,15],"c":"","v":6},{"w":"YOD","p":[5,6,12],"c":"","v":6},{"w":"YODLE","p":[5,6,12,11,15],"c":"","v":6},{"w":"YOGA","p":[5,6,7,8],"c":"Mindful stretch","v":1},{"w":"YOGH","p":[5,6,7,2],"c":"","v":6},{"w":"YON","p":[5,6,10],"c":"","v":6},{"w":"YONI","p":[5,6,10,16],"c":"","v":6},{"w":"YORE","p":[5,6,1,0],"c":"","v":6}]},{"seed":122,"grid":["K","S","O","R","E","A","C","QU","L","A","D","Y","A","I","O","D","D","N","W","T","I","Y","H","C","A"],"words":[{"w":"ACHY","p":[24,23,22,21],"c":"","v":6},{"w":"ACQUIT","p":[5,6,7,13,19],"c":"","v":3},{"w":"ACT","p":[24,23,19],"c":"Perform on stage","v":1},{"w":"ACTIN","p":[24,23,19,13,17],"c":"","v":6},{"w":"ACTINAL","p":[24,23,19,13,17,12,8],"c":"","v":6},{"w":"ADD","p":[5,10,15],"c":"Sum up","v":1},{"w":"AERO","p":[9,4,3,2],"c":"","v":6},{"w":"AIL","p":[9,13,8],"c":"Be sick","v":3},{"w":"AIN","p":[9,13,17],"c":"","v":6},{"w":"AIT","p":[9,13,19],"c":"","v":6},{"w":"AITCH","p":[9,13,19,23,22],"c":"","v":6},{"w":"ALA","p":[9,8,12],"c":"In the style of","v":3},{"w":"ALACK","p":[9,8,12,6,0],"c":"","v":6},{"w":"ALAE","p":[12,8,9,4],"c":"","v":6},{"w":"ALAN","p":[9,8,12,17],"c":"","v":6},{"w":"ALAND","p":[9,8,12,17,16],"c":"","v":6},{"w":"ALAR","p":[12,8,9,3],"c":"","v":6},{"w":"ALE","p":[9,8,4],"c":"Pub drink","v":2},{"w":"ALIT","p":[9,8,13,19],"c":"Landed","v":5},{"w":"ALOIN","p":[9,8,14,13,17],"c":"","v":6},{"w":"ALOW","p":[9,8,14,18],"c":"","v":6},{"w":"AND","p":[12,17,16],"c":"Plus","v":1},{"w":"ANI","p":[12,17,13],"c":"","v":6},{"w":"ANIL","p":[12,17,13,8],"c":"","v":6},{"w":"ANILE","p":[12,17,13,8,4],"c":"","v":6},{"w":"ANY","p":[12,17,11],"c":"Some","v":1},{"w":"ARE","p":[9,3,4],"c":"Form of \"to be\"","v":1},{"w":"ASK","p":[5,1,0],"c":"Inquire","v":1},{"w":"ATWAIN","p":[24,19,18,12,13,17],"c":"","v":6},{"w":"AWA","p":[12,18,24],"c":"","v":6},{"w":"AWAIT","p":[24,18,12,13,19],"c":"","v":2},{"w":"AWAY","p":[24,18,12,11],"c":"Gone","v":1},{"w":"AWN","p":[12,18,17],"c":"","v":6},{"w":"AWNY","p":[12,18,17,11],"c":"","v":6},{"w":"AWOL","p":[12,18,14,8],"c":"","v":6},{"w":"CAD","p":[6,5,10],"c":"Canadian dollar code","v":3},{"w":"CADDY","p":[6,5,10,15,11],"c":"","v":6},{"w":"CADI","p":[6,12,16,20],"c":"","v":6},{"w":"CAIN","p":[6,12,13,17],"c":"","v":6},{"w":"CALO","p":[6,12,8,2],"c":"","v":6},{"w":"CAN","p":[6,12,17],"c":"Tin","v":1},{"w":"CANDID","p":[6,12,17,16,20,15],"c":"","v":3},{"w":"CANDY","p":[6,12,17,16,11],"c":"Sweets","v":1},{"w":"CASK","p":[6,5,1,0],"c":"","v":3},{"w":"CAT","p":[23,24,19],"c":"Feline","v":1},{"w":"CAW","p":[6,12,18],"c":"Crow\u0027s call","v":2},{"w":"CAY","p":[6,5,11],"c":"","v":6},{"w":"COL","p":[6,2,8],"c":"","v":6},{"w":"COLA","p":[6,2,8,9],"c":"","v":6},{"w":"COLE","p":[6,2,8,4],"c":"","v":6},{"w":"COLIN","p":[6,2,8,13,17],"c":"","v":6},{"w":"COQUINA","p":[6,2,7,13,17,12],"c":"","v":6},{"w":"COQUITO","p":[6,2,7,13,19,14],"c":"","v":6},{"w":"COR","p":[6,2,3],"c":"","v":6},{"w":"CORAL","p":[6,2,3,9,8],"c":"Reef builder","v":1},{"w":"CORE","p":[6,2,3,4],"c":"Center","v":1},{"w":"COS","p":[6,2,1],"c":"","v":6},{"w":"CYAN","p":[6,11,12,17],"c":"","v":6},{"w":"DAK","p":[10,5,0],"c":"","v":6},{"w":"DAKS","p":[10,5,0,1],"c":"","v":6},{"w":"DAL","p":[16,12,8],"c":"","v":6},{"w":"DALE","p":[16,12,8,4],"c":"","v":6},{"w":"DANIO","p":[16,12,17,13,14],"c":"","v":6},{"w":"DAW","p":[16,12,18],"c":"","v":6},{"w":"DAWN","p":[16,12,18,17],"c":"Sunrise","v":1},{"w":"DAWT","p":[16,12,18,19],"c":"","v":6},{"w":"DAY","p":[10,5,11],"c":"24 hours","v":1},{"w":"DID","p":[15,20,16],"c":"","v":1},{"w":"DIDY","p":[15,20,16,11],"c":"","v":6},{"w":"DYAD","p":[10,11,12,16],"c":"","v":6},{"w":"EAR","p":[4,9,3],"c":"Hearing organ","v":1},{"w":"EARL","p":[4,9,3,8],"c":"Nobleman","v":2},{"w":"EARLOCK","p":[4,9,3,8,2,6,0],"c":"","v":6},{"w":"EARLOCKS","p":[4,9,3,8,2,6,0,1],"c":"","v":6},{"w":"ELAIN","p":[4,8,9,13,17],"c":"","v":6},{"w":"ELAN","p":[4,8,12,17],"c":"Flair","v":4},{"w":"ELAND","p":[4,8,12,17,16],"c":"","v":6},{"w":"ELOIN","p":[4,8,14,13,17],"c":"","v":6},{"w":"ERA","p":[4,3,9],"c":"Age","v":1},{"w":"EROS","p":[4,3,2,1],"c":"","v":6},{"w":"HWAN","p":[22,18,12,17],"c":"","v":6},{"w":"ILEA","p":[13,8,4,9],"c":"","v":6},{"w":"INCH","p":[13,17,23,22],"c":"Small unit","v":1},{"w":"IOTA","p":[13,14,19,24],"c":"Tiny bit","v":3},{"w":"ITCH","p":[13,19,23,22],"c":"Need to scratch","v":1},{"w":"ITCHY","p":[13,19,23,22,21],"c":"","v":3},{"w":"KAS","p":[0,5,1],"c":"","v":6},{"w":"KAY","p":[0,5,11],"c":"","v":6},{"w":"LAC","p":[8,12,6],"c":"","v":6},{"w":"LACK","p":[8,12,6,0],"c":"","v":1},{"w":"LACKS","p":[8,12,6,0,1],"c":"","v":1},{"w":"LACS","p":[8,12,6,1],"c":"","v":6},{"w":"LACY","p":[8,12,6,11],"c":"","v":3},{"w":"LAD","p":[8,12,16],"c":"Boy","v":1},{"w":"LADY","p":[8,12,16,11],"c":"Woman","v":1},{"w":"LAIN","p":[8,9,13,17],"c":"","v":1},{"w":"LAND","p":[8,12,17,16],"c":"Ground","v":1},{"w":"LAR","p":[8,9,3],"c":"","v":6},{"w":"LAW","p":[8,12,18],"c":"Rule","v":1},{"w":"LAWN","p":[8,12,18,17],"c":"Grass","v":1},{"w":"LAWNY","p":[8,12,18,17,11],"c":"","v":6},{"w":"LAY","p":[8,12,11],"c":"Put down","v":1},{"w":"LEA","p":[8,4,9],"c":"","v":6},{"w":"LEAR","p":[8,4,9,3],"c":"","v":6},{"w":"LIAR","p":[8,13,9,3],"c":"Fibber","v":1},{"w":"LIN","p":[8,13,17],"c":"","v":6},{"w":"LINAC","p":[8,13,17,12,6],"c":"","v":6},{"w":"LINACS","p":[8,13,17,12,6,1],"c":"","v":6},{"w":"LINDY","p":[8,13,17,16,11],"c":"","v":6},{"w":"LINY","p":[8,13,17,11],"c":"","v":6},{"w":"LIQUOR","p":[8,13,7,2,3],"c":"","v":2},{"w":"LIT","p":[8,13,19],"c":"Burning","v":1},{"w":"LOCA","p":[8,2,6,5],"c":"","v":6},{"w":"LOCK","p":[8,2,6,0],"c":"Fasten","v":1},{"w":"LOCKS","p":[8,2,6,0,1],"c":"","v":1},{"w":"LOIN","p":[8,14,13,17],"c":"","v":3},{"w":"LORE","p":[8,2,3,4],"c":"Folklore","v":3},{"w":"LOT","p":[8,14,19],"c":"Parking area","v":1},{"w":"LOTA","p":[8,14,19,24],"c":"","v":6},{"w":"LOTI","p":[8,14,19,13],"c":"","v":6},{"w":"LOW","p":[8,14,18],"c":"Not high","v":1},{"w":"LOWN","p":[8,14,18,17],"c":"","v":6},{"w":"NAIL","p":[17,12,13,8],"c":"Fingernail","v":1},{"w":"NAILER","p":[17,12,13,8,4,3],"c":"","v":6},{"w":"NAW","p":[17,12,18],"c":"","v":6},{"w":"NAY","p":[17,12,11],"c":"No vote","v":2},{"w":"NIL","p":[17,13,8],"c":"Zero","v":2},{"w":"NIT","p":[17,13,19],"c":"Lice egg","v":3},{"w":"NYALA","p":[17,11,12,8,9],"c":"","v":6},{"w":"OAR","p":[14,9,3],"c":"Rowing blade","v":1},{"w":"OARLOCK","p":[14,9,3,8,2,6,0],"c":"","v":6},{"w":"OARLOCKS","p":[14,9,3,8,2,6,0,1],"c":"","v":6},{"w":"OCA","p":[2,6,5],"c":"","v":6},{"w":"OCAS","p":[2,6,5,1],"c":"","v":6},{"w":"OIL","p":[14,13,8],"c":"Crude","v":1},{"w":"OILER","p":[14,13,8,4,3],"c":"","v":6},{"w":"OLE","p":[2,8,4],"c":"Bullfight cheer","v":3},{"w":"OLEA","p":[2,8,4,9],"c":"","v":6},{"w":"OLIO","p":[2,8,13,14],"c":"Hodgepodge","v":5},{"w":"ORA","p":[2,3,9],"c":"","v":6},{"w":"ORAL","p":[2,3,9,8],"c":"Spoken","v":2},{"w":"ORE","p":[2,3,4],"c":"Raw metal","v":2},{"w":"ORLE","p":[2,3,8,4],"c":"","v":6},{"w":"OWN","p":[14,18,17],"c":"Possess","v":1},{"w":"QUA","p":[7,12],"c":"","v":3},{"w":"QUACK","p":[7,12,6,0],"c":"","v":3},{"w":"QUACKS","p":[7,12,6,0,1],"c":"","v":3},{"w":"QUAD","p":[7,12,16],"c":"","v":6},{"w":"QUAI","p":[7,12,13],"c":"","v":6},{"w":"QUAIL","p":[7,12,13,8],"c":"Small game bird","v":3},{"w":"QUALE","p":[7,12,8,4],"c":"","v":6},{"w":"QUALIA","p":[7,12,8,13,9],"c":"","v":6},{"w":"QUAY","p":[7,12,11],"c":"Wharf","v":4},{"w":"QUIN","p":[7,13,17],"c":"","v":6},{"w":"QUIT","p":[7,13,19],"c":"Leave","v":1},{"w":"QUITCH","p":[7,13,19,23,22],"c":"","v":6},{"w":"RAIA","p":[3,9,13,12],"c":"","v":6},{"w":"RAIL","p":[3,9,13,8],"c":"Train track","v":1},{"w":"RAIN","p":[3,9,13,17],"c":"Shower","v":1},{"w":"RAINY","p":[3,9,13,17,11],"c":"","v":3},{"w":"RALE","p":[3,9,8,4],"c":"","v":6},{"w":"REAL","p":[3,4,9,8],"c":"Genuine","v":1},{"w":"REALIA","p":[3,4,9,8,13,12],"c":"","v":6},{"w":"RELAY","p":[3,4,8,12,11],"c":"","v":2},{"w":"RELIT","p":[3,4,8,13,19],"c":"","v":6},{"w":"RELOCK","p":[3,4,8,2,6,0],"c":"","v":6},{"w":"RELOCKS","p":[3,4,8,2,6,0,1],"c":"","v":6},{"w":"ROC","p":[3,2,6],"c":"Mythic bird","v":5},{"w":"ROCK","p":[3,2,6,0],"c":"Stone","v":1},{"w":"ROCKS","p":[3,2,6,0,1],"c":"","v":2},{"w":"ROCS","p":[3,2,6,1],"c":"","v":6},{"w":"ROLE","p":[3,2,8,4],"c":"Part","v":1},{"w":"SAC","p":[1,5,6],"c":"Pouch","v":3},{"w":"SACK","p":[1,5,6,0],"c":"","v":2},{"w":"SAD","p":[1,5,10],"c":"Unhappy","v":1},{"w":"SAY","p":[1,5,11],"c":"Speak","v":1},{"w":"SCAD","p":[1,6,5,10],"c":"","v":6},{"w":"SCALAR","p":[1,6,12,8,9,3],"c":"","v":3},{"w":"SCALARE","p":[1,6,12,8,9,3,4],"c":"","v":6},{"w":"SCALE","p":[1,6,12,8,4],"c":"Weigh","v":1},{"w":"SCALER","p":[1,6,12,8,4,3],"c":"","v":6},{"w":"SCAN","p":[1,6,12,17],"c":"Survey","v":2},{"w":"SCORE","p":[1,6,2,3,4],"c":"Points","v":1},{"w":"SKA","p":[1,0,5],"c":"","v":6},{"w":"SOCK","p":[1,2,6,0],"c":"Hosiery","v":1},{"w":"SOL","p":[1,2,8],"c":"","v":6},{"w":"SOLA","p":[1,2,8,9],"c":"","v":6},{"w":"SOLAN","p":[1,2,8,12,17],"c":"","v":6},{"w":"SOLAND","p":[1,2,8,12,17,16],"c":"","v":6},{"w":"SOLAR","p":[1,2,8,9,3],"c":"Of the sun","v":2},{"w":"SOLE","p":[1,2,8,4],"c":"Only","v":1},{"w":"SOLI","p":[1,2,8,13],"c":"","v":6},{"w":"SOLO","p":[1,2,8,14],"c":"","v":2},{"w":"SORA","p":[1,2,3,9],"c":"","v":6},{"w":"SORE","p":[1,2,3,4],"c":"","v":2},{"w":"SOREL","p":[1,2,3,4,8],"c":"","v":6},{"w":"SQUAD","p":[1,7,12,16],"c":"","v":2},{"w":"SQUALOR","p":[1,7,12,8,2,3],"c":"","v":3},{"w":"SQUAW","p":[1,7,12,18],"c":"","v":6},{"w":"SQUINCH","p":[1,7,13,17,23,22],"c":"","v":6},{"w":"TACH","p":[19,24,23,22],"c":"","v":6},{"w":"TAW","p":[19,24,18],"c":"","v":6},{"w":"TAWNY","p":[19,24,18,17,11],"c":"","v":3},{"w":"TIL","p":[19,13,8],"c":"","v":6},{"w":"TILE","p":[19,13,8,4],"c":"Square piece","v":1},{"w":"TILER","p":[19,13,8,4,3],"c":"","v":6},{"w":"TIN","p":[19,13,17],"c":"Metal","v":1},{"w":"TINY","p":[19,13,17,11],"c":"Small","v":1},{"w":"TOIL","p":[19,14,13,8],"c":"","v":3},{"w":"TOILE","p":[19,14,13,8,4],"c":"","v":6},{"w":"TOILER","p":[19,14,13,8,4,3],"c":"","v":6},{"w":"TOLA","p":[19,14,8,9],"c":"","v":6},{"w":"TOLAN","p":[19,14,8,12,17],"c":"","v":6},{"w":"TOLE","p":[19,14,8,4],"c":"","v":6},{"w":"TOW","p":[19,14,18],"c":"Pull a car","v":2},{"w":"TOWN","p":[19,14,18,17],"c":"Village","v":1},{"w":"TOWNY","p":[19,14,18,17,11],"c":"","v":6},{"w":"TWA","p":[19,18,12],"c":"","v":6},{"w":"TWAIN","p":[19,18,12,13,17],"c":"","v":6},{"w":"TWIN","p":[19,18,13,17],"c":"Double","v":1},{"w":"TWINY","p":[19,18,13,17,11],"c":"","v":6},{"w":"TWO","p":[19,18,14],"c":"Pair","v":1},{"w":"WACK","p":[18,12,6,0],"c":"","v":6},{"w":"WACKS","p":[18,12,6,0,1],"c":"","v":6},{"w":"WAD","p":[18,12,16],"c":"Bundle","v":2},{"w":"WADDY","p":[18,12,16,10,11],"c":"","v":6},{"w":"WADI","p":[18,12,16,20],"c":"","v":6},{"w":"WADY","p":[18,12,16,11],"c":"","v":6},{"w":"WAIL","p":[18,12,13,8],"c":"","v":3},{"w":"WAILER","p":[18,12,13,8,4,3],"c":"","v":6},{"w":"WAIN","p":[18,12,13,17],"c":"","v":6},{"w":"WAIT","p":[18,12,13,19],"c":"Hold on","v":1},{"w":"WALE","p":[18,12,8,4],"c":"","v":6},{"w":"WALER","p":[18,12,8,4,3],"c":"","v":6},{"w":"WAN","p":[18,12,17],"c":"","v":3},{"w":"WAND","p":[18,12,17,16],"c":"Magic stick","v":1},{"w":"WANY","p":[18,12,17,11],"c":"","v":6},{"w":"WAT","p":[18,24,19],"c":"","v":6},{"w":"WATCH","p":[18,24,19,23,22],"c":"Look","v":1},{"w":"WAY","p":[18,12,11],"c":"Path","v":1},{"w":"WHY","p":[18,22,21],"c":"For what reason","v":1},{"w":"WILE","p":[18,13,8,4],"c":"","v":6},{"w":"WIN","p":[18,13,17],"c":"Victory","v":1},{"w":"WINCH","p":[18,13,17,23,22],"c":"","v":3},{"w":"WIND","p":[18,13,17,16],"c":"Breeze","v":1},{"w":"WINDY","p":[18,13,17,16,11],"c":"","v":3},{"w":"WINY","p":[18,13,17,11],"c":"","v":6},{"w":"WIT","p":[18,13,19],"c":"Humor","v":1},{"w":"WITCH","p":[18,13,19,23,22],"c":"Broom rider","v":1},{"w":"WITCHY","p":[18,13,19,23,22,21],"c":"","v":6},{"w":"WOT","p":[18,14,19],"c":"","v":3},{"w":"YACK","p":[11,5,6,0],"c":"","v":6},{"w":"YACKS","p":[11,5,6,0,1],"c":"","v":6},{"w":"YAK","p":[11,5,0],"c":"Shaggy ox","v":1},{"w":"YAKS","p":[11,5,0,1],"c":"","v":3},{"w":"YAW","p":[11,12,18],"c":"","v":6},{"w":"YAWN","p":[11,12,18,17],"c":"Sleepy gape","v":2},{"w":"YID","p":[21,20,15],"c":"","v":6}]},{"seed":319,"grid":["S","E","T","P","M","QU","N","A","L","G","O","A","A","O","A","Y","L","T","R","R","G","F","U","M","T"],"words":[{"w":"AAL","p":[7,11,16],"c":"","v":6},{"w":"AGO","p":[14,9,13],"c":"In the past","v":1},{"w":"AGORA","p":[14,9,13,18,12],"c":"","v":6},{"w":"ALA","p":[7,8,12],"c":"In the style of","v":3},{"w":"ALAE","p":[12,8,7,1],"c":"","v":6},{"w":"ALAN","p":[7,8,12,6],"c":"","v":6},{"w":"ALANE","p":[7,8,12,6,1],"c":"","v":6},{"w":"ALANS","p":[7,8,12,6,0],"c":"","v":6},{"w":"ALANT","p":[7,8,12,6,2],"c":"","v":6},{"w":"ALAR","p":[7,8,12,18],"c":"","v":6},{"w":"ALARM","p":[7,8,12,18,23],"c":"Alert","v":1},{"w":"ALARUM","p":[7,8,12,18,22,23],"c":"","v":6},{"w":"ALATE","p":[12,8,7,2,1],"c":"","v":6},{"w":"ALATES","p":[12,8,7,2,1,0],"c":"","v":6},{"w":"ALGA","p":[7,8,9,14],"c":"","v":3},{"w":"ALGOR","p":[7,8,9,13,18],"c":"","v":6},{"w":"ALONE","p":[11,16,10,6,1],"c":"Solo","v":1},{"w":"ALP","p":[7,8,3],"c":"Swiss peak","v":2},{"w":"ALT","p":[7,8,2],"c":"Keyboard key","v":3},{"w":"ALTAR","p":[11,16,17,12,18],"c":"","v":3},{"w":"ALTO","p":[11,16,17,13],"c":"Low female voice","v":2},{"w":"ALUM","p":[11,16,22,23],"c":"","v":6},{"w":"ANA","p":[7,6,11],"c":"","v":6},{"w":"ANALOG","p":[7,6,12,8,13,9],"c":"Non-digital","v":1},{"w":"ANE","p":[7,6,1],"c":"","v":6},{"w":"ANES","p":[7,6,1,0],"c":"","v":6},{"w":"ANOA","p":[7,6,10,11],"c":"","v":6},{"w":"ANT","p":[7,6,2],"c":"Tiny insect","v":1},{"w":"ANTA","p":[11,6,2,7],"c":"","v":6},{"w":"ANTAE","p":[11,6,2,7,1],"c":"","v":6},{"w":"ANTE","p":[7,6,2,1],"c":"Poker stake","v":2},{"w":"ANTES","p":[7,6,2,1,0],"c":"","v":6},{"w":"AORTA","p":[7,13,18,17,11],"c":"","v":3},{"w":"AORTAL","p":[7,13,18,17,11,16],"c":"","v":6},{"w":"APT","p":[7,3,2],"c":"Fitting","v":2},{"w":"ARM","p":[12,18,23],"c":"Limb","v":1},{"w":"ARRANT","p":[14,19,18,12,6,2],"c":"","v":6},{"w":"ART","p":[12,18,17],"c":"Painting","v":1},{"w":"ARTAL","p":[12,18,17,11,16],"c":"","v":6},{"w":"ARTFUL","p":[12,18,17,21,22,16],"c":"","v":3},{"w":"ARUM","p":[12,18,22,23],"c":"","v":6},{"w":"ATE","p":[7,2,1],"c":"Had a meal","v":1},{"w":"ATES","p":[7,2,1,0],"c":"","v":6},{"w":"ATLANTES","p":[11,17,16,12,6,2,1,0],"c":"","v":6},{"w":"ATLATL","p":[7,2,8,12,17,16],"c":"","v":6},{"w":"EAT","p":[1,7,2],"c":"Have a meal","v":1},{"w":"ENOL","p":[1,6,10,16],"c":"","v":6},{"w":"ENS","p":[1,6,0],"c":"","v":6},{"w":"EQUAL","p":[1,5,11,16],"c":"Same","v":1},{"w":"EQUATOR","p":[1,5,11,17,13,18],"c":"","v":3},{"w":"ETA","p":[1,2,7],"c":"Arrival estimate","v":3},{"w":"ETNA","p":[1,2,6,7],"c":"","v":6},{"w":"FLAN","p":[21,16,11,6],"c":"","v":6},{"w":"FLANES","p":[21,16,11,6,1,0],"c":"","v":6},{"w":"FLANS","p":[21,16,11,6,0],"c":"","v":6},{"w":"FLAT","p":[21,16,11,17],"c":"Level","v":1},{"w":"FLAY","p":[21,16,11,15],"c":"","v":6},{"w":"FLOAT","p":[21,16,10,11,17],"c":"Drift","v":1},{"w":"FLU","p":[21,16,22],"c":"Illness","v":1},{"w":"FLY","p":[21,16,15],"c":"Buzzing insect","v":1},{"w":"FUR","p":[21,22,18],"c":"Animal coat","v":1},{"w":"FURAN","p":[21,22,18,12,6],"c":"","v":6},{"w":"FURANE","p":[21,22,18,12,6,1],"c":"","v":6},{"w":"FURANES","p":[21,22,18,12,6,1,0],"c":"","v":6},{"w":"FURANS","p":[21,22,18,12,6,0],"c":"","v":6},{"w":"FUROR","p":[21,22,18,13,19],"c":"Uproar","v":5},{"w":"GAL","p":[9,14,8],"c":"Woman","v":1},{"w":"GALA","p":[9,14,8,7],"c":"Party","v":2},{"w":"GAOL","p":[9,14,13,8],"c":"","v":6},{"w":"GAR","p":[9,14,18],"c":"","v":6},{"w":"GLANS","p":[9,8,7,6,0],"c":"","v":6},{"w":"GLOAT","p":[9,8,13,7,2],"c":"Crow","v":3},{"w":"GLUM","p":[20,16,22,23],"c":"","v":3},{"w":"GLUT","p":[20,16,22,17],"c":"","v":3},{"w":"GOA","p":[9,13,7],"c":"","v":6},{"w":"GOAL","p":[9,13,7,8],"c":"Aim","v":1},{"w":"GOAT","p":[9,13,7,2],"c":"Billy","v":1},{"w":"GOR","p":[9,13,18],"c":"","v":6},{"w":"GORAL","p":[9,13,18,12,8],"c":"","v":6},{"w":"GOT","p":[9,13,17],"c":"Obtained","v":1},{"w":"LAG","p":[8,14,9],"c":"Delay","v":1},{"w":"LANATE","p":[8,12,6,7,2,1],"c":"","v":6},{"w":"LANE","p":[8,7,6,1],"c":"Path","v":1},{"w":"LANES","p":[8,7,6,1,0],"c":"","v":3},{"w":"LAP","p":[8,7,3],"c":"Track circuit","v":1},{"w":"LAR","p":[8,12,18],"c":"","v":6},{"w":"LARUM","p":[8,12,18,22,23],"c":"","v":6},{"w":"LAT","p":[8,7,2],"c":"","v":6},{"w":"LATE","p":[8,7,2,1],"c":"Tardy","v":1},{"w":"LATEN","p":[8,7,2,1,6],"c":"","v":6},{"w":"LATENS","p":[8,7,2,1,6,0],"c":"","v":6},{"w":"LAY","p":[16,11,15],"c":"Put down","v":1},{"w":"LOAN","p":[8,13,7,6],"c":"Lend","v":1},{"w":"LOANS","p":[8,13,7,6,0],"c":"","v":2},{"w":"LOG","p":[8,13,9],"c":"Tree trunk piece","v":1},{"w":"LONE","p":[16,10,6,1],"c":"","v":3},{"w":"LOQUAT","p":[16,10,5,11,17],"c":"","v":6},{"w":"LORAL","p":[8,13,18,12,16],"c":"","v":6},{"w":"LORAN","p":[8,13,18,12,6],"c":"","v":6},{"w":"LORANS","p":[8,13,18,12,6,0],"c":"","v":6},{"w":"LOT","p":[8,13,17],"c":"Parking area","v":1},{"w":"LOTA","p":[8,13,17,11],"c":"","v":6},{"w":"LUM","p":[16,22,23],"c":"","v":6},{"w":"MURA","p":[23,22,18,12],"c":"","v":6},{"w":"MURAL","p":[23,22,18,12,8],"c":"Wall painting","v":3},{"w":"MURR","p":[23,22,18,19],"c":"","v":6},{"w":"MURRA","p":[23,22,18,19,14],"c":"","v":6},{"w":"MUT","p":[23,22,17],"c":"","v":6},{"w":"MUTANT","p":[23,22,17,11,6,2],"c":"","v":3},{"w":"NAE","p":[6,7,1],"c":"","v":6},{"w":"NAP","p":[6,7,3],"c":"Short sleep","v":1},{"w":"NATAL","p":[6,11,17,12,8],"c":"","v":6},{"w":"NATES","p":[6,7,2,1,0],"c":"","v":6},{"w":"NATURAL","p":[6,11,17,22,18,12,8],"c":"","v":1},{"w":"NAY","p":[6,11,15],"c":"No vote","v":2},{"w":"NEAP","p":[6,1,7,3],"c":"","v":6},{"w":"NEAT","p":[6,1,7,2],"c":"Tidy","v":1},{"w":"NET","p":[6,1,2],"c":"Mesh","v":1},{"w":"OAR","p":[13,12,18],"c":"Rowing blade","v":1},{"w":"OAT","p":[10,11,17],"c":"Grain","v":1},{"w":"OATEN","p":[13,7,2,1,6],"c":"","v":6},{"w":"ONE","p":[10,6,1],"c":"Single","v":1},{"w":"ONES","p":[10,6,1,0],"c":"","v":1},{"w":"ONS","p":[10,6,0],"c":"","v":6},{"w":"ONSET","p":[10,6,0,1,2],"c":"","v":3},{"w":"ORA","p":[13,18,12],"c":"","v":6},{"w":"ORAL","p":[13,18,12,8],"c":"Spoken","v":2},{"w":"ORRA","p":[13,18,19,14],"c":"","v":6},{"w":"ORT","p":[13,18,17],"c":"Table scrap","v":5},{"w":"OTALGY","p":[13,17,11,16,20,15],"c":"","v":6},{"w":"PAL","p":[3,7,8],"c":"Friend","v":1},{"w":"PALATAL","p":[3,7,8,12,17,11,16],"c":"","v":6},{"w":"PALM","p":[3,7,8,4],"c":"Hand part","v":1},{"w":"PAN","p":[3,7,6],"c":"Frying ___","v":1},{"w":"PANE","p":[3,7,6,1],"c":"Window glass","v":3},{"w":"PANES","p":[3,7,6,1,0],"c":"","v":3},{"w":"PANS","p":[3,7,6,0],"c":"","v":3},{"w":"PANT","p":[3,7,6,2],"c":"","v":2},{"w":"PAT","p":[3,7,2],"c":"Tap lightly","v":1},{"w":"PATE","p":[3,7,2,1],"c":"","v":3},{"w":"PATEN","p":[3,7,2,1,6],"c":"","v":6},{"w":"PATENS","p":[3,7,2,1,6,0],"c":"","v":6},{"w":"PATES","p":[3,7,2,1,0],"c":"","v":3},{"w":"PLAN","p":[3,8,7,6],"c":"Scheme","v":1},{"w":"PLANAR","p":[3,8,7,6,12,18],"c":"","v":3},{"w":"PLANATE","p":[3,8,12,6,7,2,1],"c":"","v":6},{"w":"PLANE","p":[3,8,7,6,1],"c":"Aircraft","v":1},{"w":"PLANES","p":[3,8,7,6,1,0],"c":"","v":2},{"w":"PLANET","p":[3,8,7,6,1,2],"c":"World","v":1},{"w":"PLANS","p":[3,8,7,6,0],"c":"","v":1},{"w":"PLANT","p":[3,8,7,6,2],"c":"Flora","v":1},{"w":"PLAT","p":[3,8,7,2],"c":"","v":6},{"w":"PLATAN","p":[3,8,12,17,11,6],"c":"","v":6},{"w":"PLATANE","p":[3,8,12,17,11,6,1],"c":"","v":6},{"w":"PLATANES","p":[3,8,12,17,11,6,1,0],"c":"","v":6},{"w":"PLATANS","p":[3,8,12,17,11,6,0],"c":"","v":6},{"w":"PLATE","p":[3,8,7,2,1],"c":"Dish","v":1},{"w":"PLATEN","p":[3,8,7,2,1,6],"c":"","v":6},{"w":"PLATENS","p":[3,8,7,2,1,6,0],"c":"","v":6},{"w":"PLATES","p":[3,8,7,2,1,0],"c":"","v":2},{"w":"PLOT","p":[3,8,13,17],"c":"Story","v":1},{"w":"QUA","p":[5,11],"c":"","v":3},{"w":"QUANT","p":[5,11,6,2],"c":"","v":6},{"w":"QUANTA","p":[5,11,6,2,7],"c":"","v":6},{"w":"QUANTAL","p":[5,11,6,2,7,8],"c":"","v":6},{"w":"QUAY","p":[5,11,15],"c":"Wharf","v":4},{"w":"QUEAN","p":[5,1,7,6],"c":"","v":6},{"w":"QUEANS","p":[5,1,7,6,0],"c":"","v":6},{"w":"RAG","p":[18,14,9],"c":"Cloth","v":1},{"w":"RAGLAN","p":[18,14,9,8,7,6],"c":"","v":6},{"w":"RAGLANS","p":[18,14,9,8,7,6,0],"c":"","v":6},{"w":"RAN","p":[18,12,6],"c":"Sprinted","v":1},{"w":"RANT","p":[18,12,6,2],"c":"","v":2},{"w":"RAT","p":[18,12,17],"c":"Rodent","v":1},{"w":"RATAL","p":[18,12,17,11,16],"c":"","v":6},{"w":"RATAN","p":[18,12,17,11,6],"c":"","v":6},{"w":"RATANS","p":[18,12,17,11,6,0],"c":"","v":6},{"w":"RATO","p":[18,12,17,13],"c":"","v":6},{"w":"ROAN","p":[18,13,7,6],"c":"","v":6},{"w":"ROANS","p":[18,13,7,6,0],"c":"","v":6},{"w":"ROAR","p":[18,13,14,19],"c":"Lion sound","v":1},{"w":"ROT","p":[18,13,17],"c":"Decay","v":1},{"w":"ROTA","p":[18,13,17,11],"c":"","v":6},{"w":"ROTL","p":[18,13,17,16],"c":"","v":6},{"w":"RULY","p":[18,22,16,15],"c":"","v":6},{"w":"RUM","p":[18,22,23],"c":"Pirate drink","v":2},{"w":"RUT","p":[18,22,17],"c":"Groove in a road","v":2},{"w":"SEA","p":[0,1,7],"c":"Ocean","v":1},{"w":"SEAL","p":[0,1,7,8],"c":"Sea mammal","v":1},{"w":"SEALANT","p":[0,1,7,8,12,6,2],"c":"","v":6},{"w":"SEAT","p":[0,1,7,2],"c":"Chair","v":1},{"w":"SEN","p":[0,1,6],"c":"","v":6},{"w":"SENATOR","p":[0,1,6,11,17,13,18],"c":"","v":3},{"w":"SENT","p":[0,1,6,2],"c":"","v":1},{"w":"SET","p":[0,1,2],"c":"Group","v":1},{"w":"SETA","p":[0,1,2,7],"c":"","v":6},{"w":"SETAL","p":[0,1,2,7,8],"c":"","v":6},{"w":"SNAP","p":[0,6,7,3],"c":"Break with a crack","v":1},{"w":"SNEAP","p":[0,6,1,7,3],"c":"","v":6},{"w":"SQUAT","p":[0,5,11,17],"c":"Crouch","v":3},{"w":"SQUATLY","p":[0,5,11,17,16,15],"c":"","v":6},{"w":"SQUEAL","p":[0,5,1,7,8],"c":"","v":3},{"w":"TAE","p":[2,7,1],"c":"","v":6},{"w":"TALA","p":[2,7,8,12],"c":"","v":6},{"w":"TALAR","p":[2,7,8,12,18],"c":"","v":6},{"w":"TALON","p":[17,11,16,10,6],"c":"Claw","v":3},{"w":"TALONS","p":[17,11,16,10,6,0],"c":"","v":3},{"w":"TAN","p":[2,7,6],"c":"Bronze","v":1},{"w":"TANS","p":[2,7,6,0],"c":"","v":3},{"w":"TAO","p":[2,7,13],"c":"The Way","v":4},{"w":"TAP","p":[2,7,3],"c":"Faucet","v":1},{"w":"TAR","p":[17,12,18],"c":"Road goo","v":1},{"w":"TARO","p":[17,12,18,13],"c":"","v":6},{"w":"TART","p":[17,12,18,24],"c":"","v":3},{"w":"TEA","p":[2,1,7],"c":"Brewed drink","v":1},{"w":"TEAL","p":[2,1,7,8],"c":"","v":6},{"w":"TEN","p":[2,1,6],"c":"Decade","v":1},{"w":"TENS","p":[2,1,6,0],"c":"","v":2},{"w":"TOG","p":[17,13,9],"c":"","v":6},{"w":"TOGA","p":[17,13,9,14],"c":"Roman robe","v":3},{"w":"TOLA","p":[17,13,8,7],"c":"","v":6},{"w":"TOLAN","p":[17,13,8,7,6],"c":"","v":6},{"w":"TOLANE","p":[17,13,8,7,6,1],"c":"","v":6},{"w":"TOLANES","p":[17,13,8,7,6,1,0],"c":"","v":6},{"w":"TOLANS","p":[17,13,8,7,6,0],"c":"","v":6},{"w":"TOR","p":[17,13,18],"c":"","v":6},{"w":"TORA","p":[17,13,18,12],"c":"","v":6},{"w":"TORR","p":[17,13,18,19],"c":"","v":6},{"w":"TORT","p":[17,13,18,24],"c":"","v":6},{"w":"TORULA","p":[17,13,18,22,16,11],"c":"","v":6},{"w":"TRANS","p":[17,18,12,6,0],"c":"","v":6},{"w":"TROT","p":[24,18,13,17],"c":"","v":3},{"w":"TRULY","p":[17,18,22,16,15],"c":"","v":1},{"w":"ULAN","p":[22,16,11,6],"c":"","v":6},{"w":"ULANS","p":[22,16,11,6,0],"c":"","v":6},{"w":"ULTRA","p":[22,16,17,18,12],"c":"","v":3},{"w":"UTA","p":[22,17,11],"c":"","v":6},{"w":"YON","p":[15,10,6],"c":"","v":6}]}]},"pts":{"E":1,"A":1,"R":1,"O":1,"T":1,"I":2,"S":2,"N":2,"L":2,"C":2,"D":2,"U":3,"P":3,"H":3,"M":3,"B":3,"G":3,"Y":4,"F":4,"W":4,"K":4,"V":5,"Z":8,"J":8,"X":8,"Q":10},"freq":{"E":11.67,"A":9.49,"R":7.35,"O":7.17,"T":6.58,"I":5.95,"S":5.77,"N":5.68,"L":5.51,"C":4.63,"D":3.55,"U":3.34,"P":3.29,"H":2.94,"M":2.9,"B":2.62,"G":2.59,"Y":1.8,"F":1.71,"W":1.63,"K":1.54,"V":1.1,"Z":0.39,"J":0.32,"X":0.29,"Q":0.17}};
+  const COIN = '<svg class="mk-coin" viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="13.5" rx="10.5" ry="10.3" fill="#7a5100"/><circle cx="12" cy="12" r="10.5" fill="url(#mkCoinFace)" stroke="#a56f00" stroke-width=".9"/><circle cx="12" cy="12" r="7.4" fill="url(#mkCoinIn)" stroke="#c48a00" stroke-width="1"/><path d="M12 7.7l1.24 2.52 2.78.4-2.01 1.96.47 2.77L12 14.05l-2.48 1.3.47-2.77-2.01-1.96 2.78-.4z" fill="#ffe58a" stroke="#a87400" stroke-width=".6"/><path d="M6.4 7.9a6.9 6.9 0 0 1 8.8-2.4" fill="none" stroke="#fffbe0" stroke-width="1.4" stroke-linecap="round" opacity=".9"/></svg>';
+  const fmtN = n => Number(n).toLocaleString('en-US');
+
+  // ---------- the KeyCubes icon: four 3D letter cubes (K E Y S) in their slots on a slate tile ----------
+  const KCI = `<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="kct" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fcebc0"/><stop offset="1" stop-color="#efd18c"/></linearGradient><linearGradient id="kcb" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3b5068"/><stop offset="1" stop-color="#1c2733"/></linearGradient></defs>
+    <rect width="512" height="512" rx="112" fill="url(#kcb)"/><rect x="56" y="56" width="400" height="400" rx="56" fill="#0b1016" opacity=".55"/>
+    ${[[160, 160, 'K'], [352, 160, 'E'], [160, 352, 'Y'], [352, 352, 'S']].map(([x, y, c]) => `<g transform="translate(${x} ${y})"><rect x="-80" y="-80" width="160" height="160" rx="30" fill="#0b1016"/><rect x="-72" y="-74" width="144" height="150" rx="28" fill="#8a6a2c"/><rect x="-72" y="-78" width="144" height="138" rx="28" fill="url(#kct)"/><rect x="-56" y="-70" width="112" height="34" rx="17" fill="#fff" opacity=".4"/><text x="0" y="22" text-anchor="middle" font-family="Arial Black, Arial, sans-serif" font-weight="900" font-size="100" fill="#3b2a0b">${c}</text></g>`).join('')}</svg>`;
+  $$('[data-kci]').forEach(el => el.innerHTML = KCI);
+
+  // ---------- scoring ----------
+  const PTS = D.pts;
+  const pt = c => c === 'QU' ? PTS.Q : PTS[c];
+  const lenBonus = L => L <= 3 ? 0 : L === 4 ? 2 : L === 5 ? 4 : L === 6 ? 7 : L === 7 ? 11 : 16 + (L - 8) * 5;
+  const lenOnly = L => L <= 3 ? 1 : L === 4 ? 2 : L === 5 ? 3 : L === 6 ? 5 : L === 7 ? 8 : 12 + (L - 8) * 4;
+  function score(word, path) {
+    const L = word.length;
+    if (S.sc === 'len') return { lp: 0, lb: lenOnly(L), t: lenOnly(L) };
+    const lp = path.reduce((a, i) => a + pt(G.cells[i]), 0), lb = lenBonus(L);
+    return { lp, lb, t: lp + lb };
+  }
+
+  // ---------- settings and state ----------
+  const S = { mode: 'duel', n: 4, timer: 180, lv: 5, min: 'auto', rounds: 3, sc: 'lp', bs: 'b', coins: 1245 };
+  const minLen = () => S.min === 'auto' ? (G ? G.n : S.n) - 1 : +S.min;
+  let G = null, cur = 'lobby', gridPick = { 4: 0, 5: 0 }, match = null;
+
+  function rng(seed) { let s = seed >>> 0 || 1; return () => (s = (s * 1664525 + 1013904223) >>> 0) / 4294967296; }
+
+  function newRound() {
+    const n = S.n, set = D['g' + n], gi = gridPick[n] % set.grids.length, g = set.grids[gi];
+    gridPick[n]++;
+    const words = new Map(g.words.map(o => [o.w, o]));
+    G = { n, cells: g.grid.slice(), words, mine: [], mineSet: new Set(), bot: [], botN: 0, botSet: new Set(), solo: S.mode === 'solo',
+      T: S.mode === 'solo' ? S.timer : (S.timer || 180), left: 0, el: 0, paused: false, over: false, rot: 0, hint: null, spent: 0, seed: g.seed };
+    G.left = G.T;
+    if (!G.solo) planBot(g);
+    if (!match || match.done) match = { round: 0, me: 0, bot: 0, done: false };
+    match.round++;
+    return G;
+  }
+  // The Bot "knows" words up to a familiarity level (Lexicon level, else everyday-word lists) and finds a share of them.
+  function planBot(g) {
+    const L = S.lv, cap = [1, 1, 2, 2, 3, 3, 4, 4, 5, 6][L - 1], share = .22 + .06 * L, r = rng(g.seed * 31 + L), mn = minLen();
+    const pool = g.words.filter(o => o.w.length >= mn && o.v <= cap && r() < share);
+    const T = G.T;
+    G.bot = pool.map(o => ({ w: o.w, t: 6 + r() * (T - 10) })).sort((a, b) => a.t - b.t);
+    G.botSet = new Set(G.bot.map(b => b.w));
+  }
+
+  // ---------- screens ----------
+  function show(s) {
+    cur = s;
+    $$('.scr').forEach(x => x.classList.toggle('on', x.id === 's-' + s));
+    $$('#jump button[data-s]').forEach(b => b.classList.toggle('on', b.dataset.s === s));
+    if (s === 'setup') paintSetup();
+    if (s === 'lobby') paintLobby();
+    requestAnimationFrame(() => { fit(); placePins(); });
+  }
+  function paintCoins(bump) { $$('[data-coins]').forEach(p => { p.innerHTML = COIN + '<b>' + fmtN(S.coins) + '</b>'; if (bump) { p.classList.remove('bump'); void p.offsetWidth; p.classList.add('bump'); } }); }
+  function lastLine() { return `🆕 New Game uses your last settings: ${S.mode === 'duel' ? 'Duel · Bot level ' + S.lv : 'Solo'} · ${S.n}×${S.n} · ${S.timer ? S.timer / 60 + ' min' : 'Untimed'}`; }
+  function paintLobby() { $('#kcLast').textContent = lastLine(); paintCoins(); }
+  function paintSetup() {
+    $$('#mSeg button').forEach(b => b.classList.toggle('on', b.dataset.v === S.mode));
+    $$('#nSeg button').forEach(b => b.classList.toggle('on', +b.dataset.v === S.n));
+    const g = D['g' + S.n].grids[gridPick[S.n] % 3].grid, pv = $('#nPrev');
+    pv.style.gridTemplateColumns = `repeat(${S.n}, 30px)`;
+    pv.innerHTML = g.map(c => `<span>${c === 'QU' ? 'Qu' : c}</span>`).join('');
+    $('#lvField').style.visibility = S.mode === 'duel' ? '' : 'hidden';
+    const un = $('#tmSel option[value="0"]'); un.disabled = S.mode === 'duel';
+    if (S.mode === 'duel' && S.timer === 0) { S.timer = 180; }
+    $('#tmSel').value = String(S.timer);
+    const caps = ['everyday words only', 'everyday words only', 'common words', 'common words', 'a wider vocabulary', 'a wider vocabulary', 'harder words', 'harder words', 'almost any word', 'any word'];
+    $('#lvDesc').textContent = S.mode === 'duel'
+      ? `Bot level ${S.lv}: it knows ${caps[S.lv - 1]} and finds about ${Math.round((.22 + .06 * S.lv) * 100)}% of them in a round. Words you both find score for nobody.`
+      : 'Solo practice: no Bot. Untimed is allowed; beat your own best score for each grid size.';
+    $('#moreSum').textContent = `· shortest ${S.min === 'auto' ? 'Auto' : S.min} · ${S.rounds} round${S.rounds > 1 ? 's' : ''} · ${S.sc === 'lp' ? 'letters + length' : 'length only'} · ${({ a: 'Sapphire', b: 'Steel', c: 'Navy & gold' })[S.bs]}`;
+  }
+
+  // ---------- game screen ----------
+  let trace = [], tapMode = false, dragging = false, moved = false, typed = '';
+  function start(keepMatch) {
+    if (!keepMatch) match = null;
+    newRound(); buildTray(); paintGame(); show('game'); msg('');
+  }
+  // Turn: the grid's letters keep their neighbors, only the view turns. Each cube is drawn in its turned place,
+  // so the 3D light always falls from the top.
+  function dispOrder() {
+    const n = G.n, k = ((G.rot / 90) % 4 + 4) % 4, at = new Array(n * n);
+    for (let i = 0; i < n * n; i++) { let r = Math.floor(i / n), c = i % n; for (let t = 0; t < k; t++) [r, c] = [c, n - 1 - r]; at[r * n + c] = i; }
+    return at;
+  }
+  function buildTray() {
+    tray.style.setProperty('--n', G.n); tray.style.setProperty('--rot', '0deg');
+    tray.classList.remove('turning', 'tf-y', 'tf-r', 'tf-a', 'tf-b');
+    tray.innerHTML = dispOrder().map(i => { const c = G.cells[i]; return `<div class="kc-cell"><div class="kc-cube${G.hint && !G.hint.done && G.words.get(G.hint.w).p[0] === i ? ' hint' : ''}" data-i="${i}"><div class="kc-face"><b class="${c === 'QU' ? 'qu' : ''}">${c === 'QU' ? 'Qu' : c}</b><i>${pt(c)}</i></div></div></div>`; }).join('')
+      + '<svg class="kc-line" id="line" aria-hidden="true"><polyline points=""/></svg><div class="kc-pause"><div>⏸ Paused<span>Tap to resume play</span></div></div>';
+    tray.querySelector('.kc-pause').addEventListener('pointerdown', e => { e.stopPropagation(); setPause(false); });
+  }
+  const cubeEl = i => tray.querySelector(`.kc-cube[data-i="${i}"]`);
+  function paintGame() {
+    $('#gSub').textContent = G.solo ? `Solo practice · ${G.n}×${G.n}` : `Round ${match.round} of ${S.rounds} · ${G.n}×${G.n}`;
+    const bb = $('#botBox');
+    if (G.solo) { bb.className = 'side-box solo'; bb.querySelector('.av').textContent = '🎯'; $('#botNm').textContent = 'Best 4×4'; }
+    else { bb.className = 'side-box bot'; bb.querySelector('.av').textContent = '🤖'; $('#botNm').textContent = `Bot · L${S.lv}`; }
+    $('#doneBtn').style.display = G.solo ? '' : 'none';
+    $('#hintCp').innerHTML = COIN + '3';
+    paintScores(); paintClock(); paintChips();
+  }
+  function myPts() { return G.mine.reduce((a, m) => a + m.s.t, 0); }
+  function paintScores() {
+    $('#meSc').innerHTML = myPts() + '<small>pts · ' + G.mine.length + (G.mine.length === 1 ? ' word' : ' words') + '</small>';
+    if (G.solo) $('#botSc').innerHTML = (G.n === 4 ? 96 : 140) + '<small>pts</small>';
+    else $('#botSc').innerHTML = G.botN + '<small>' + (G.botN === 1 ? 'word' : 'words') + '</small>';
+  }
+  function paintClock() {
+    const c = $('#clock'), t = G.T ? Math.max(0, Math.ceil(G.left)) : Math.floor(G.el);
+    $('#clk').textContent = Math.floor(t / 60) + ':' + String(t % 60).padStart(2, '0');
+    c.classList.toggle('y', !!G.T && t <= 10 && t > 5 && !G.over); c.classList.toggle('r', !!G.T && t <= 5 && !G.over);
+  }
+  function paintChips(newW) {
+    const ch = $('#chips');
+    $('#fHead').textContent = `Your words: ${G.mine.length}`;
+    $('#fPts').textContent = myPts() + ' pts';
+    ch.innerHTML = G.mine.length ? G.mine.slice().reverse().map(m => `<span class="chip${m.w === newW ? ' new' : ''}">${m.w}<small>${m.s.t}</small></span>`).join('')
+      : '<span class="empty">Words you find go here. Trace touching cubes: across, down or diagonally.</span>';
+  }
+
+  // the clock
+  let lastT = 0, lastSec = null;
+  function loop(now) {
+    const dt = lastT ? Math.min(1, (now - lastT) / 1000) : 0; lastT = now;
+    if (G && cur === 'game' && !G.over && !G.paused) {
+      G.el += dt;
+      if (G.T) {
+        G.left -= dt;
+        while (!G.solo && G.botN < G.bot.length && G.bot[G.botN].t <= G.el) { G.botN++; botPop(); }
+        const s = Math.ceil(G.left);
+        if (s !== lastSec) {
+          lastSec = s;
+          tray.classList.remove('tf-y', 'tf-r', 'tf-a', 'tf-b');
+          if (s <= 10 && s >= 1) { void tray.offsetWidth; tray.classList.add(s > 5 ? 'tf-y' : 'tf-r', s % 2 ? 'tf-a' : 'tf-b'); }
+        }
+        if (G.left <= 0) { G.left = 0; paintClock(); endRound(); }
+      }
+      paintClock();
+    }
+    requestAnimationFrame(loop);
+  }
+  function botPop() { paintScores(); const p = $('#botPlus'); p.classList.remove('go'); void p.offsetWidth; p.classList.add('go'); }
+  function setPause(on) {
+    if (!G || G.over) return; G.paused = on;
+    tray.classList.toggle('blur', on);
+    $('#pz').innerHTML = on ? '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l13-7.5z"/></svg>' : '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="5" y="4" width="5" height="16" rx="1.5"/><rect x="14" y="4" width="5" height="16" rx="1.5"/></svg>';
+    clearTrace();
+  }
+
+  // ---------- trace input: swipe / drag / tap / type ----------
+  const adj = (a, b) => { const n = G.n; return a !== b && Math.abs(a % n - b % n) <= 1 && Math.abs(Math.floor(a / n) - Math.floor(b / n)) <= 1; };
+  function hit(x, y) {
+    let best = -1, bd = 1e9;
+    tray.querySelectorAll('.kc-cube').forEach(el => { const r = el.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2, d = Math.hypot(x - cx, y - cy);
+      if (d < r.width * .42 && d < bd) { bd = d; best = +el.dataset.i; } });
+    return best;
+  }
+  function paintTrace() {
+    tray.querySelectorAll('.kc-cube.on').forEach(el => el.classList.remove('on'));
+    trace.forEach(i => cubeEl(i).classList.add('on'));
+    const pts = trace.map(i => { const c = cubeEl(i), cell = c.parentElement; return (cell.offsetLeft + cell.offsetWidth / 2) + ',' + (cell.offsetTop + cell.offsetHeight * .47); });
+    tray.querySelector('#line polyline').setAttribute('points', pts.join(' '));
+    const w = trace.map(i => G.cells[i]).join('');
+    if (trace.length) { $('#msg').innerHTML = trace.map(i => `<span class="wl">${G.cells[i] === 'QU' ? 'Qu' : G.cells[i]}</span>`).join('') + (trace.length >= 2 ? `<span class="wp">${w.length} letters</span>` : ''); }
+  }
+  function clearTrace() { trace = []; tapMode = false; typed = ''; if (G) paintTrace(); }
+  function add(i) { trace.push(i); paintTrace(); }
+  function back() { trace.pop(); paintTrace(); if (!trace.length) msg(''); }
+  tray.addEventListener('pointerdown', e => {
+    if (!G || G.over || G.paused) return;
+    const i = hit(e.clientX, e.clientY); if (i < 0) return;
+    e.preventDefault(); tray.setPointerCapture(e.pointerId); dragging = true; moved = false; typed = '';
+    if (!trace.length) { add(i); return; }
+    const last = trace[trace.length - 1];
+    if (tapMode) {
+      if (i === last) { dragging = false; submit(); return; }
+      if (i === trace[trace.length - 2]) { back(); return; }
+      if (adj(last, i) && !trace.includes(i)) { add(i); return; }
+    }
+    trace = []; tapMode = false; add(i);
+  });
+  tray.addEventListener('pointermove', e => {
+    if (!dragging || !trace.length) return;
+    const i = hit(e.clientX, e.clientY); if (i < 0) return;
+    const last = trace[trace.length - 1];
+    if (i === last) return;
+    if (i === trace[trace.length - 2]) { back(); moved = true; return; }
+    if (adj(last, i) && !trace.includes(i)) { add(i); moved = true; }
+  });
+  const up = () => { if (!dragging) return; dragging = false; if (moved && trace.length >= 2) submit(); else tapMode = true; };
+  tray.addEventListener('pointerup', up); tray.addEventListener('pointercancel', up);
+
+  // typing: find any path that spells what was typed
+  function findPath(word) {
+    const n2 = G.cells.length;
+    const dfs = (i, k, used, path) => {
+      const c = G.cells[i]; if (word.substr(k, c.length) !== c) return null;
+      const k2 = k + c.length; path.push(i); used[i] = 1;
+      if (k2 === word.length) return path.slice();
+      for (let j = 0; j < n2; j++) if (!used[j] && adj(i, j)) { const r = dfs(j, k2, used, path); if (r) return r; }
+      path.pop(); used[i] = 0; return null;
+    };
+    for (let i = 0; i < n2; i++) { const r = dfs(i, 0, {}, []); if (r) return r; }
+    return null;
+  }
+  function paintTyped() {
+    if (!typed) { clearTrace(); msg(''); return; }
+    const p = findPath(typed);
+    if (p) { trace = p; tapMode = true; paintTrace(); }
+    else { trace = []; paintTrace(); $('#msg').innerHTML = typed.split('').map(c => `<span class="wl no">${c}</span>`).join('') + '<span class="wp">not on the grid</span>'; }
+  }
+  document.addEventListener('keydown', e => {
+    if (cur !== 'game' || !G || G.over || e.ctrlKey || e.metaKey || e.altKey) return;
+    if (e.target.closest && e.target.closest('select, input')) return;
+    if (e.key === ' ') { e.preventDefault(); setPause(!G.paused); return; }
+    if (G.paused) return;
+    if (/^[a-z]$/i.test(e.key)) { typed += e.key.toUpperCase(); paintTyped(); e.preventDefault(); }
+    else if (e.key === 'Backspace') { typed = typed.slice(0, -1); paintTyped(); e.preventDefault(); }
+    else if (e.key === 'Escape') { clearTrace(); msg(''); }
+    else if (e.key === 'Enter') { e.preventDefault(); if (trace.length) submit(); else if (typed) nudge('Not on the grid'); }
+  });
+
+  // ---------- words ----------
+  function msg(html, kind, ms) {
+    const m = $('#msg');
+    m.innerHTML = html ? `<span class="mt ${kind || ''}">${html}</span>` : (G && G.hint && !G.hint.done ? hintHtml() : '');
+    clearTimeout(msg.t);
+    if (ms) msg.t = setTimeout(() => { if (!trace.length) msg(''); }, ms);
+  }
+  function nudge(t) { msg(t, 'bad', 1500); const m = $('#msg'); m.classList.remove('shake'); void m.offsetWidth; m.classList.add('shake'); }
+  function flashCubes(path, cls) { path.forEach(i => { const c = cubeEl(i); c.classList.remove(cls); void c.offsetWidth; c.classList.add(cls); }); }
+  function submit() {
+    const path = trace.slice(), w = path.map(i => G.cells[i]).join('');
+    trace = []; tapMode = false; typed = ''; paintTrace();
+    if (path.length < 2 || w.length < minLen()) { nudge(`Too short: ${minLen()}+ letters`); return; }
+    if (G.mineSet.has(w)) { msg(`${w}: already found`, 'dup', 1500); flashCubes(path, 'dupc'); return; }
+    if (!G.words.has(w)) { nudge(`${w}: not a word`); return; }
+    const s = score(w, path);
+    G.mine.push({ w, path, s }); G.mineSet.add(w);
+    if (G.hint && G.hint.w === w) { G.hint.done = true; tray.querySelectorAll('.hint').forEach(c => c.classList.remove('hint')); }
+    msg(`${w} +${s.t}`, 'good', 1400); flashCubes(path, 'ok');
+    const p = $('#mePlus'); p.textContent = '+' + s.t; p.classList.remove('go'); void p.offsetWidth; p.classList.add('go');
+    paintScores(); paintChips(w);
+  }
+
+  // ---------- coin buttons ----------
+  function armTap(btn, label, fn) {
+    btn.addEventListener('click', () => {
+      if (!G || G.over || G.paused) return;
+      if (btn.classList.contains('armed')) { btn.classList.remove('armed'); clearTimeout(btn.t); fn(); return; }
+      $$('.coinbtn.armed').forEach(b => b.classList.remove('armed'));
+      btn.querySelector('.arm-lab').innerHTML = label; btn.classList.add('armed');
+      btn.t = setTimeout(() => btn.classList.remove('armed'), 2600);
+    });
+  }
+  function hintHtml() { const h = G.hint; return `<span class="mt clue" title="The Hint stays here until you find the word">💡 ${h.w.length} letters: ${G.words.get(h.w).c}</span>`; }
+  armTap($('#hintBtn'), 'Tap again\n' + COIN + '3', () => {
+    const mn = minLen();
+    const cand = [...G.words.values()].filter(o => o.c && o.w.length >= mn && !G.mineSet.has(o.w) && (!G.hint || G.hint.w !== o.w)).sort((a, b) => a.v - b.v || a.w.length - b.w.length);
+    if (!cand.length) { msg('No more clued words to hint', 'dup', 1500); return; }
+    const pick = cand[Math.floor(Math.random() * Math.min(6, cand.length))];
+    tray.querySelectorAll('.hint').forEach(c => c.classList.remove('hint'));
+    G.hint = { w: pick.w }; cubeEl(pick.p[0]).classList.add('hint');
+    S.coins -= 3; G.spent += 3; paintCoins(true); msg('');
+  });
+  $('#msg').addEventListener('click', e => { if (e.target.closest('.clue')) return; });
+  $('#turnBtn').addEventListener('click', () => {
+    if (!G || G.over || G.paused || tray.classList.contains('turning')) return;
+    trace = []; tapMode = false; typed = ''; paintTrace();
+    tray.classList.add('turning'); tray.style.setProperty('--rot', '90deg');
+    setTimeout(() => { G.rot += 90; tray.classList.add('snap'); buildTray(); void tray.offsetWidth; tray.classList.remove('snap'); }, 470);
+  });
+  $('#doneBtn').addEventListener('click', () => { if (G && G.solo && !G.over) endRound(); });
+  $('#pz').addEventListener('click', () => setPause(!G.paused));
+  $('#clock').addEventListener('click', () => setPause(!G.paused));
+
+  // ---------- end of round ----------
+  let tab = 'me', selW = null;
+  function endRound() {
+    if (!G || G.over) return;
+    G.over = true; G.paused = false; tray.classList.remove('blur', 'tf-y', 'tf-r'); clearTrace();
+    if (!G.solo) G.botN = G.bot.length;
+    const mn = minLen();
+    G.all = [...G.words.values()].filter(o => o.w.length >= mn).map(o => ({ w: o.w, path: o.p, c: o.c, s: score(o.w, o.p) }));
+    G.meTot = G.mine.reduce((a, m) => a + (G.botSet.has(m.w) ? 0 : m.s.t), 0);
+    G.botTot = G.solo ? 0 : G.bot.reduce((a, b) => a + (G.mineSet.has(b.w) ? 0 : score(b.w, G.words.get(b.w).p).t), 0);
+    G.shared = G.mine.filter(m => G.botSet.has(m.w)).length;
+    if (!G.solo) { match.me += G.meTot; match.bot += G.botTot; if (match.round >= S.rounds) match.done = true; }
+    G.earn = G.solo ? 0 : (G.meTot > G.botTot ? 10 : G.meTot === G.botTot ? 5 : 0);
+    S.coins += G.earn; paintCoins();
+    tab = G.mine.length || G.solo ? 'me' : 'bot'; selW = null;
+    setTimeout(() => { paintResults(); show('res'); }, 500);
+  }
+  function paintResults() {
+    $('#rSub').textContent = G.solo ? `Solo practice · ${G.n}×${G.n} · results` : `Round ${match.round} of ${S.rounds} · results`;
+    const wr = $('#winrow');
+    if (G.solo) wr.innerHTML = `<span class="e">🙂</span> ${G.meTot} pts · ${G.mine.length} words`;
+    else if (G.meTot > G.botTot) wr.innerHTML = `<span class="e">🙂</span> YOU WIN! <span class="e">🏆</span> ${G.meTot}–${G.botTot}`;
+    else if (G.meTot < G.botTot) wr.innerHTML = `<span class="e">🤖</span> The Bot WINS! <span class="e">🏆</span> ${G.botTot}–${G.meTot}`;
+    else wr.innerHTML = `<span class="e">⚖️</span> DRAW! ${G.meTot}–${G.botTot}`;
+    fitWin();
+    const all = G.all.length, pct = Math.round(100 * G.mine.length / Math.max(1, all));
+    $('#sum').innerHTML = G.solo
+      ? `<span class="pill"><span class="e">🙂</span> ${G.mine.length} of ${all} words (${pct}%)</span><span class="pill"><span class="e">🎯</span> Best ${G.n}×${G.n}: ${G.n === 4 ? 96 : 140} pts</span><span class="pill">${COIN} Solo: no coins</span>`
+      : `<span class="pill"><span class="e">🙂</span> ${G.mine.length} words</span><span class="pill"><span class="e">🤖</span> ${G.bot.length} words</span><span class="pill shared">✕ ${G.shared} shared: 0 pts</span>`
+        + `<span class="pill">Match ${match.done ? '(final)' : 'so far'}: You ${match.me} – Bot ${match.bot}</span>`
+        + `<span class="pill">${COIN} ${G.earn ? (G.earn === 10 ? 'Win +10' : 'Draw +5') : 'No win coins'}${G.spent ? ' · Hints −' + G.spent : ''}</span>`;
+    const tabs = G.solo ? [['me', `Words found (${G.mine.length})`], ['all', `All words (${all})`]]
+      : [['me', `Your words (${G.mine.length})`], ['bot', `Bot's words (${G.bot.length})`], ['all', `All words (${all})`]];
+    $('#tabs').innerHTML = tabs.map(([k, t]) => `<button data-t="${k}" class="${k === tab ? 'on' : ''}">${t}</button>`).join('');
+    $('#nextBtn').textContent = G.solo ? '▶ New grid' : match.done ? '▶ New match' : '▶ Next round';
+    paintList();
+  }
+  function rows() {
+    const tagOf = w => { const m = G.mineSet.has(w), b = G.botSet.has(w); return m && b ? 'both' : m ? 'me' : b ? 'bot' : 'miss'; };
+    let L;
+    if (tab === 'me') L = G.mine.map(m => ({ w: m.w, path: m.path, s: m.s, c: G.words.get(m.w).c }));
+    else if (tab === 'bot') L = G.bot.map(b => { const o = G.words.get(b.w); return { w: b.w, path: o.p, s: score(b.w, o.p), c: o.c }; });
+    else L = G.all.slice();
+    L.forEach(r => r.tag = tagOf(r.w));
+    return L.sort((a, b) => b.s.t - a.s.t || a.w.localeCompare(b.w));
+  }
+  function paintList() {
+    const L = rows();
+    if (!selW || !L.some(r => r.w === selW)) selW = L.length ? L[0].w : null;
+    const lab = { me: G.solo ? 'Found' : 'You', bot: 'Bot', both: 'Both', miss: 'Missed' };
+    $('#list').innerHTML = L.length ? L.map(r => `<div class="row ${r.tag === 'both' ? 'both' : ''} ${r.tag === 'miss' ? 'miss' : ''} ${r.w === selW ? 'sel' : ''}" data-w="${r.w}"><span class="p">${r.s.t}</span><span class="w">${r.w}</span><span class="tg ${r.tag}">${lab[r.tag]}</span><span class="bk" title="${r.c ? 'Has a Lexicon clue' : ''}">${r.c ? '📖' : ''}</span></div>`).join('')
+      : `<div class="row miss" style="cursor:default"><span></span><span class="w">No words this round</span><span></span><span></span></div>`;
+    paintDet(L.find(r => r.w === selW));
+  }
+  function paintDet(r) {
+    const d = $('#det');
+    if (!r) { d.innerHTML = '<p class="empty">Pick a word in the list.</p>'; return; }
+    const n = G.n, ms = app.classList.contains('wide') ? 46 : (n === 4 ? 30 : 24);
+    const pos = {}; r.path.forEach((i, k) => pos[i] = k + 1);
+    const order = dispOrder(), dp = {}; order.forEach((li, d) => dp[li] = d); // the mini grid matches the Player's last Turn
+    const cells = order.map(i => { const c = G.cells[i]; return `<span class="${pos[i] ? 'lit' + (pos[i] === 1 ? ' st' : '') : ''}">${pos[i] ? `<sup>${pos[i]}</sup>` : ''}${c === 'QU' ? 'Qu' : c}</span>`; }).join('');
+    const step = ms + 3, xy = i => [5 + (dp[i] % n) * step + ms / 2, 5 + Math.floor(dp[i] / n) * step + ms / 2];
+    const line = r.path.map(i => xy(i).join(',')).join(' ');
+    const both = r.tag === 'both', by = { me: G.solo ? 'You found it.' : 'Only you found it.', bot: 'Only the Bot found it.', both: 'You both found it, so it scores for nobody.', miss: 'Nobody found it.' }[r.tag];
+    const tb = S.sc === 'len' ? `<tr><td>Word length (${r.w.length})</td><td>${r.s.lb}</td></tr>` : `<tr><td>Letter points</td><td>${r.s.lp}</td></tr><tr><td>Length bonus (${r.w.length} letters)</td><td>+${r.s.lb}</td></tr>`;
+    d.innerHTML = `<div class="mini" style="--ms:${ms}px;grid-template-columns:repeat(${n}, ${ms}px)">${cells}<svg aria-hidden="true"><polyline points="${line}"/></svg></div>
+      <div class="bd"><h3>${r.w}</h3><table>${tb}<tr class="tot${both ? ' zero' : ''}"><td>${both ? 'Shared word' : 'Total'}</td><td>${both ? '0' : r.s.t}</td></tr></table>
+      <p class="who">${by}</p>
+      ${r.c ? `<div class="clue"><span class="e">📖</span> Clue: ${r.c}</div>` : `<div class="clue none">Not in the Lexicon yet: no clue to show.</div>`}</div>`;
+  }
+  $('#tabs').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; tab = b.dataset.t; selW = null; $$('#tabs button').forEach(x => x.classList.toggle('on', x === b)); paintList(); });
+  $('#list').addEventListener('click', e => { const r = e.target.closest('.row[data-w]'); if (!r) return; selW = r.dataset.w; $$('#list .row').forEach(x => x.classList.toggle('sel', x === r)); paintDet(rows().find(x => x.w === selW)); });
+  $('#nextBtn').addEventListener('click', () => start(!G.solo && !match.done));
+  function fitWin() { const w = $('#winrow'); let f = 30; w.style.fontSize = f + 'px'; while (w.scrollWidth > w.clientWidth && f > 16) { f -= 1; w.style.fontSize = f + 'px'; } }
+
+  // ---------- layout ----------
+  function fit() {
+    const W = app.clientWidth, H = app.clientHeight, wide = W >= 700 && W > H;
+    app.classList.toggle('wide', wide);
+    app.classList.toggle('wide-lobby', W >= 700);
+    if (cur === 'game' && G) {
+      const hdr = $('#s-game .top').offsetHeight, bar = $('#bar').offsetHeight;
+      let size;
+      if (wide) size = Math.min(H - hdr - bar - 50, (W - 70) * .55);
+      else size = Math.min(W - 24, H - hdr - bar - 44 - $('#btns').offsetHeight - 110 - 50, 640);
+      size = Math.max(220, Math.floor(size));
+      tray.style.setProperty('--ts', size + 'px');
+      tray.style.setProperty('--cs', (size * .93 / G.n) + 'px');
+      paintTrace();
+    }
+    if (cur === 'res' && G && G.all) { fitWin(); paintList(); }
+  }
+  window.addEventListener('resize', () => { fit(); placePins(); });
+
+  // ---------- numbered notes ----------
+  function placePins() {
+    $$('#app > .pin').forEach(p => p.remove());
+    const ar = app.getBoundingClientRect();
+    $$('#app .scr.on [data-pin]').forEach(el => {
+      const r = el.getBoundingClientRect(); if (!r.width) return;
+      const p = document.createElement('span'); p.className = 'pin'; p.textContent = el.dataset.pin;
+      p.style.left = Math.min(ar.width - 22, Math.max(2, r.right - ar.left - 14)) + 'px'; p.style.top = Math.max(2, r.top - ar.top - 8) + 'px';
+      app.appendChild(p);
+    });
+  }
+  $$('.scr').forEach(s => s.addEventListener('scroll', placePins));
+
+  // ---------- How To Play (short) ----------
+  function openHelp() {
+    $('#mbox').innerHTML = `<h3>How To Play KeyCubes</h3>
+      <p>Find as many words as you can in the grid of letter cubes before the clock runs out.</p>
+      <h4>Tracing</h4><p>Join touching cubes: across, down or diagonally. Each cube once per word. Swipe or drag and let go, tap cubes one by one and tap the last again, or type and press Enter. "Qu" is one cube.</p>
+      <h4>Words</h4><p>Any real word of ${minLen()}+ letters counts (ENABLE word list). Lexicon words show their clue in the results.</p>
+      <h4>Duel</h4><p>The Bot hunts the same grid. A word you both find scores for nobody. Highest score wins the round; the match is ${S.rounds} round${S.rounds > 1 ? 's' : ''}.</p>
+      <h4>Scoring</h4><p>${S.sc === 'lp' ? 'Letter points (the small number on each cube) plus a length bonus.' : 'By word length: longer words score much more.'}</p>
+      <h4>Buttons</h4><p>💡 Hint (${COIN}3): the clue and length of a word you have not found, and its first cube is striped. 🔄 Turn: a quarter turn of the grid (free). ⏸ Pause.</p>
+      <p style="text-align:right;margin-top:10px"><button class="btn primary" id="hClose">OK</button></p>`;
+    $('#modal').classList.add('on'); $('#hClose').onclick = () => $('#modal').classList.remove('on');
+  }
+  $('#modal').addEventListener('click', e => { if (e.target.id === 'modal') $('#modal').classList.remove('on'); });
+
+  // ---------- wiring ----------
+  app.addEventListener('click', e => {
+    const go = e.target.closest('[data-go]'); if (go) { if (cur === 'game' && G && !G.over) G.paused = true; show(go.dataset.go); return; }
+    if (e.target.closest('[data-start]')) { start(); return; }
+    if (e.target.closest('[data-help]')) { openHelp(); return; }
+    const ch = e.target.closest('.gchev'); if (ch) { ch.closest('.gcard').classList.toggle('open'); setTimeout(placePins, 320); }
+  });
+  const seg = (sel, fn) => $(sel).addEventListener('click', e => { const b = e.target.closest('button'); if (!b || b.disabled) return; fn(b.dataset.v); paintSetup(); placePins(); });
+  seg('#mSeg', v => { S.mode = v; if (v === 'solo') S.timer = S.timer || 0; });
+  seg('#nSeg', v => { S.n = +v; });
+  $('#tmSel').onchange = e => { S.timer = +e.target.value; paintSetup(); };
+  $('#lvSel').onchange = e => { S.lv = +e.target.value; paintSetup(); };
+  $('#minSel').onchange = e => { S.min = e.target.value; paintSetup(); };
+  $('#rdSel').onchange = e => { S.rounds = +e.target.value; paintSetup(); };
+  $('#scSel').onchange = e => { S.sc = e.target.value; paintSetup(); };
+  $('#bsSel').onchange = e => { S.bs = e.target.value; app.classList.remove('bs-a', 'bs-b', 'bs-c'); app.classList.add('bs-' + S.bs); paintSetup(); };
+  $('details.more').addEventListener('toggle', () => { $('details.more summary').firstChild.textContent = ($('details.more').open ? '▾' : '▸') + ' More options '; placePins(); });
+
+  $('#cDev').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; $$('#cDev button').forEach(x => x.classList.toggle('on', x === b)); dev.className = 'device ' + b.dataset.v; requestAnimationFrame(() => { fit(); placePins(); }); });
+  $('#cScr').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; $$('#cScr button').forEach(x => x.classList.toggle('on', x === b)); app.dataset.screen = b.dataset.v; });
+  $('#cPins').addEventListener('change', e => app.classList.toggle('nopins', !e.target.checked));
+  $('#jump').addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    if (b.dataset.s) { show(b.dataset.s); return; }
+    const j = b.dataset.j;
+    if (j === 'g4' || j === 'g5') { S.mode = 'duel'; S.n = j === 'g4' ? 4 : 5; if (!S.timer) S.timer = 180; start(); }
+    if (j === 'solo') { S.mode = 'solo'; S.n = 4; S.timer = 0; start(); }
+    if (j === 'res') { // a sample round: the Player found some words
+      if (!G || cur !== 'game') { S.mode = 'duel'; start(); }
+      const r = rng(7), mn = minLen();
+      [...G.words.values()].filter(o => o.w.length >= mn && o.v <= 3 && r() < .4).forEach(o => { if (!G.mineSet.has(o.w)) { G.mine.push({ w: o.w, path: o.p, s: score(o.w, o.p) }); G.mineSet.add(o.w); } });
+      endRound();
+    }
+  });
+  $('#mLast').addEventListener('click', () => { if (G && cur === 'game' && !G.over && G.T) { const skip = G.left - 12; G.left = 12; G.el += skip; } });
+  $('#mEnd').addEventListener('click', () => { if (G && cur === 'game' && !G.over) endRound(); });
+
+  // legend: letter points and our 4×4 cube set
+  const byPts = {}; Object.keys(PTS).forEach(k => (byPts[PTS[k]] = byPts[PTS[k]] || []).push(k === 'Q' ? 'Qu' : k));
+  $('#ptsLine').innerHTML = 'Letter points (from our Lexicon counts): ' + Object.keys(byPts).sort((a, b) => a - b).map(p => `<b>${p}</b> ${byPts[p].join(' ')}`).join(' · ');
+  $('#cubes4').innerHTML = D.g4.cubes.map(c => `<span>${c.map(x => x === 'QU' ? 'Qu' : x).join(' ')}</span>`).join('');
+
+  paintCoins(); show('lobby'); requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
