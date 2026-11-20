@@ -2388,3 +2388,13 @@ html[data-screen="night"] .btn:not(.primary):not(.coinbtn):not(.kr-cp), html[dat
   background: linear-gradient(170deg, rgba(255, 255, 255, .1), rgba(255, 255, 255, 0) 40%); }
 .kr-pz b { display: flex; align-items: center; gap: .25em; }
 .kr-pzi { width: .9em; height: .9em; }
+/* =====================================================================
+   v11f (JM CD-107, CD-110)
+   ===================================================================== */
+/* LockWord: ENTER gets a medium bright-green outline; the space key is inverted (black on medium gray) */
+.vt-k[data-k="Enter"] { box-shadow: inset 0 0 0 2.5px #2fe35f, 0 0 6px rgba(47, 227, 95, .45); }
+html[data-screen="night"] .vt-k[data-k="Enter"] { box-shadow: inset 0 0 0 2.5px #3f8f55; }
+.vt-k.spc { background: #8a929b; color: #000; }
+html[data-screen="night"] .vt-k.spc { background: #5a5f66; color: #000; }
+/* KeyRing: if the Key grid ever runs tall, it grows downward, never up under the colors switch */
+#keyring .kr-slots { justify-content: safe center; }

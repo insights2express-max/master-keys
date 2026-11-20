@@ -25,6 +25,8 @@
    - Any -, the Word / Letter switch in the Key grid's corner, a bigger Pause panel, no second coil on the Ring.
    v11e (JM CD-102, CD-105): Ring Button Colors (Steel first); clean Key Words steps, the same on every device; thicker corner
    pieces with appliqué text; the app-wide 3D gold coin; no pegs on the tiles; glass Pause panel; bigger switch on tablets.
+   v11f (JM CD-107, CD-110): 3-letter Rings deal at every level again; corner-piece text shrinks to stay inside its piece; the
+   Key grid stays below the colors switch; speed coins capped at 20 per minute on the clock.
    Saved on this device: settings 'cd.kr.settings', stats 'cd.kr.stats', an unfinished Ring 'cd.kr.save', recent seeds 'cd.kr.recent'. */
 'use strict';
 (function () {
@@ -164,7 +166,7 @@
     const cands = all.filter(e => e.l <= cap && inSk(e.wsk, lv));
     const rank = e => e.l + (clueLess(e) ? 0.5 : 0) + Math.random() * 0.9;
     const byRank = a => a.map(e => ({ e, k: rank(e) })).sort((x, y) => x.k - y.k).map(x => x.e);
-    const fullMax = lv <= 3 ? 0 : lv <= 7 ? 1 : 99;
+    const fullMax = n <= 3 ? 99 : lv <= 3 ? 0 : lv <= 7 ? 1 : 99; // v11f (CD-107 add. 3.1): a 3-letter Ring's Key words all use every letter
     const full = byRank(cands.filter(e => e.w.length === n)).slice(0, Math.min(fullMax, hi - 1));
     const nm1Max = n >= 5 ? (lv <= 3 ? 3 : lv <= 7 ? 5 : 99) : 99;
     const nm1 = new Set(byRank(cands.filter(e => e.w.length === n - 1)).slice(0, nm1Max));
@@ -395,7 +397,7 @@
   // how tall the slot panel must be for squares of at least `c` pixels, at a panel width W
   function slotNeed(W, c) {
     const C = Math.max(maxLen(), Math.floor(((W - 24) / c - 0.6) / 1.1));
-    return pack(C).length * c * 1.32 + 46; // v11d: + the colors switch row at the top of the Key grid
+    const r = pack(C).length; return r * (c * 1.22 + 6) + (r - 1) * c * 0.22 + (W >= 676 ? 62 : 50); // v11f: rows as drawn + the box's padding (switch row)
   }
   function fit() {
     if (!R || !playOn()) return;
@@ -415,7 +417,8 @@
     // gives the bigger Ring (side by side only wins on wide, short screens); Setup or the layout pill can force either.
     const Ws = W0 - 24, Hs = H0 - 16 - infoH - msgH - tipH - gap * (tipRow ? 4 : 3);
     // the Key grid's squares stay at least 28 px on phones (24 px on short phones, so the Ring keeps its room), 34 px on tablets
-    const rsStack = Math.min(Ws - 4, Hs - slotNeed(Ws, Ws < 500 ? (H0 < 700 ? 24 : 28) : 34), 640);
+    // v11f: with 13+ Key words on a phone, the squares may go down to 22 px so the Ring keeps a playable size
+    const rsStack = Math.min(Ws - 4, Hs - slotNeed(Ws, Ws < 500 ? (R.words.length >= 13 ? 22 : H0 < 700 ? 24 : 28) : 34), 640);
     const colW = (W0 - 44 - 26) / 2.1; // side by side: the Ring's column (1 of 2.1 shares)
     const rsSide = sideOk ? Math.min(colW, H0 - 24 - infoH - msgH - tipH - gap * 4, 640) : 0;
     const lay = ks.layout;
@@ -431,7 +434,8 @@
     main.style.setProperty('--rs', rs + 'px');
     main.style.setProperty('--sw', sw + 'px');
     main.style.setProperty('--ts', ts + 'px');
-    paintCorners(sw);    $('#krLine').setAttribute('viewBox', `0 0 ${rs} ${rs}`);
+    paintCorners(sw);
+    fitCornerText();    $('#krLine').setAttribute('viewBox', `0 0 ${rs} ${rs}`);
     placeTiles();
     renderSlots(); // reading the panel's size makes the browser lay it out first, so no frame wait is needed
   }
@@ -457,6 +461,7 @@
     const q = Math.min(cx, cy) - rho / Math.SQRT2; // the corner square that lies wholly outside the Ring
     const s = Math.round(q + rs * 0.14), rad = Math.max(10, s * 0.14);
     $('#krMain').style.setProperty('--cps', s + 'px');
+    geo = { cx, cy, rho };
     for (const [sel, fx, fy] of CORNERS) {
       const d = cornerPath(s, cx, cy, rho, rad, fx, fy);
       const svg = document.querySelector(sel + ' .kr-cps');
@@ -465,19 +470,39 @@
       svg.innerHTML = `<path class="e" d="${d}" transform="translate(0 ${depth})"/><path class="b" d="${d}"/><path class="g" d="${d}"/><path class="r" d="${d}"/>`;
     }
   }
+  // v11f (CD-107: 3.1.1): each text row in a corner piece (name, price, BONUS count) must stay outside the curve that follows
+  // the Ring; a row that crosses it (a long Hint price on iPad) shrinks a step at a time until it fits
+  let geo = null;
+  function fitCornerText() {
+    if (!geo) return;
+    const st = document.querySelector('#krRing').parentNode.getBoundingClientRect();
+    for (const [sel] of CORNERS) {
+      for (const el of document.querySelectorAll(sel + ' .kr-cpc > *')) {
+        el.style.fontSize = '';
+        for (let k = 0; k < 8; k++) {
+          const r = el.getBoundingClientRect(); if (!r.width) break;
+          const x0 = r.left - st.left, x1 = r.right - st.left, y0 = r.top - st.top, y1 = r.bottom - st.top;
+          const nx = Math.max(x0, Math.min(geo.cx, x1)), ny = Math.max(y0, Math.min(geo.cy, y1)); // the row's point nearest the Ring
+          if (Math.hypot(nx - geo.cx, ny - geo.cy) >= geo.rho + 2) break;
+          el.style.fontSize = (parseFloat(getComputedStyle(el).fontSize) * 0.9).toFixed(1) + 'px';
+        }
+      }
+    }
+  }
   window.addEventListener('resize', () => { if (playOn()) fit(); });
   if (window.ResizeObserver) new ResizeObserver(() => { if (playOn()) fit(); }).observe($('#krMain'));
 
   // ---------- slots ----------
   function renderSlots(pops) {
     if (!R) return;
-    const box = $('#krSlots'), W = box.clientWidth - 24, H = box.clientHeight - 46; // v11d: the top padding leaves room for the colors switch
+    const box = $('#krSlots'), bs = getComputedStyle(box), W = box.clientWidth - 24;
+    const H = box.clientHeight - parseFloat(bs.paddingTop) - parseFloat(bs.paddingBottom) - 4; // v11f (CD-107: 3.3.1): the box's real padding (the colors switch row)
     if (W <= 0 || H <= 0) return;
     const ml = maxLen();
     let best = null;
     // v11c: rows may hold as many letters as the width allows (as fit() plans), not just about two words' worth
     for (let C = ml; C <= Math.max(ml * 2 + 2, Math.floor((W / 20 - 0.6) / 1.1)); C += 0.5) {
-      const rows = pack(C), size = Math.min(W / (C * 1.1 + 0.6), H / (rows.length * 1.32), 56);
+      const rows = pack(C), size = Math.min(W / (C * 1.1 + 0.6), (H - 6 * rows.length) / (rows.length * 1.22 + (rows.length - 1) * 0.22), 56); // v11f: each row is cs + 6 px of padding, rows are 0.22 cs apart
       if (!best || size > best.size + 0.5) best = { rows, size };
     }
     cs = Math.max(16, Math.floor(best.size));
@@ -757,6 +782,7 @@
     else if (pool.length) { const c = pool.map(hintCost), lo = Math.min(...c), hi = Math.max(...c); hp = '' + (lo === hi ? lo : `${lo}–${hi}`); }
     $('#krHintCp').textContent = hp;
     $('#krHint').classList.toggle('long', hp.length > 3);
+    fitCornerText();
     $('#krDropCp').textContent = dropCost();
     $('#krHint').title = `Hint: show a slot's clue (🪙${hp})`;
     $('#krDrop').title = `Key Drop: drop one letter into a slot (🪙${dropCost()})`;
@@ -937,7 +963,7 @@
     // v11c (JM CD-97 add. 3): a timed Ring cleared before its clock ran out pays 1 coin per second left on the ORIGINAL clock
     // (seconds bought with ⏱ +30s never pay); untimed Rings pay no speed coins
     if (newlyCleared && R.timer0) {
-      const speed = Math.max(0, Math.floor(R.timer0 - R.el / 1000));
+      const speed = Math.min(Math.round(20 * R.timer0 / 60), Math.max(0, Math.floor(R.timer0 - R.el / 1000))); // v11f (CD-110: 2.1b): capped at 20 per minute on the clock
       if (speed) { R.speedCoins += speed; if (UI.coins) UI.coins.add(speed, `${NM.ring}: speed (${speed} s left)`); }
     }
     if (first) { R.streak0 = st.streak; st.played++; }
@@ -964,7 +990,7 @@
     const per = Math.round(R.v * 100) / 100;
     const coinTbl = UI.coinHead() + `<table class="score-table coin-tbl kr-coins">`
       + (R.paid ? row(cleared ? `🔑 Ring cleared: ${mine} of ${R.L} letters yours, at ${COIN}${per} each` : `⏱ Time's up: ${mine} of ${R.L} letters yours, at ${COIN}${per} each`, R.paid) : '')
-      + (R.speedCoins ? row(`⏱ Speed: 1 per second left on the clock`, R.speedCoins) : '')
+      + (R.speedCoins ? row(`⏱ Speed: 1 per second left (up to ${Math.round(20 * R.timer0 / 60)})`, R.speedCoins) : '')
       + row(`★ Bonus words (${R.bonus.length})`, R.bonusCoins)
       + (R.hints ? row(`💡 Hint × ${R.hints}`, -R.hintCoins) : '')
       + (R.drops ? row(`🔑 Key Drop × ${R.drops}`, -R.dropCoins) : '')
@@ -1067,7 +1093,7 @@
         <li>Each Ring is worth <b>100 coins</b>, shared over its letter squares: one letter is worth 100 ÷ the Ring's letters (with 50 letters, 🪙2 each).</li>
         <li><b>💡 Hint</b> costs one letter's worth for each letter in its slot (a 5-letter slot at 🪙2 a letter = 🪙10). <b>🔑 Key Drop</b> costs one letter's worth. <b>⏱ +30s</b> costs 🪙${TIME_COST}.</li>
         <li><b>Ring cleared:</b> one letter's worth for every letter you filled yourself, so a Ring cleared with no Key Drop pays 🪙100. Hints don't lower it (they cost coins already).</li>
-        <li><b>Speed:</b> a timed Ring cleared before the clock runs out pays <b>🪙1 for every second left</b> on its own clock (seconds bought with ⏱ +30s don't pay). Untimed Rings pay no speed coins.</li>
+        <li><b>Speed:</b> a timed Ring cleared before the clock runs out pays <b>🪙1 for every second left</b> on its own clock, up to <b>🪙20 per minute</b> on that clock (1 min: 20; 2 min: 40; 3 min: 60; 5 min: 100). Seconds bought with ⏱ +30s don't pay; untimed Rings pay no speed coins.</li>
         <li><b>Bonus words:</b> 🪙1 each. When time runs out, you keep your bonus coins; the Ring itself pays nothing, unless <b>Time's up pays for your letters</b> is on in Setup (then one letter's worth for each letter you filled).</li>
         <li>The result window shows your balance beside <b>Coins</b>, and the Ring's total at the bottom. Coins are shared by every ${NM.suite} game; tap your balance for the details.</li>`)}
       ${sec('Setup', `
