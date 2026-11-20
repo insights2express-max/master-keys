@@ -23,6 +23,8 @@
    v11d (JM CD-98, CD-100): corner-piece coin buttons and BONUS that follow the Ring (Button style: Sapphire / Steel / Navy & gold),
    gold coins, Hint skips Key words with no clue yet, Most 12–18 on tablets and computers, Bonus Words Quantity Fewest / Some / Many /
    - Any -, the Word / Letter switch in the Key grid's corner, a bigger Pause panel, no second coil on the Ring.
+   v11e (JM CD-102, CD-105): Ring Button Colors (Steel first); clean Key Words steps, the same on every device; thicker corner
+   pieces with appliqué text; the app-wide 3D gold coin; no pegs on the tiles; glass Pause panel; bigger switch on tablets.
    Saved on this device: settings 'cd.kr.settings', stats 'cd.kr.stats', an unfinished Ring 'cd.kr.save', recent seeds 'cd.kr.recent'. */
 'use strict';
 (function () {
@@ -37,9 +39,10 @@
   // ---------- settings and stats ----------
   // v11b: kw = Key words (auto / few / some / many), colors = Key word colors (word / letter), layout (auto / stack / side),
   // timePay = a timed-out Ring pays for the letters you filled (CD-95: 2.1–2.2, off at first)
-  const DEF = { n: 6, lv: 3, timer: 0, kw: 'auto', bw: 'fewest', colors: 'word', layout: 'auto', timePay: false, bs: 'a' }; // v11d: bs = coin-button style // v11c: bw = Bonus Words Quantity
+  const DEF = { n: 6, lv: 3, timer: 0, kw: 'auto', bw: 'fewest', colors: 'word', layout: 'auto', timePay: false, bs: 'b' }; // v11d: bs = Ring Button Colors (v11e, CD-105: 1.2: Steel first) // v11c: bw = Bonus Words Quantity
   const ks = Object.assign({}, DEF, store.get('cd.kr.settings', {}));
   if (ks.bw === 'plenty') ks.bw = 'many'; // v11d: renamed
+  if (!ks.bsPicked) ks.bs = 'b'; // v11e: Steel is the default until the Player picks a look
   const saveKs = () => store.set('cd.kr.settings', ks);
   const blankStats = () => ({ played: 0, cleared: 0, streak: 0, best: 0, bonus: 0, fastest: {} });
   const st = Object.assign(blankStats(), store.get('cd.kr.stats', {}));
@@ -53,7 +56,7 @@
   const TIME_COST = 10, TIME_ADD = 30; // ⏱ +30s (CD-90: 4.1.4.1)
   // v11d (CD-98 add. 2.3): the coin drawn in the suite's gold (as the coin pill), for the corner pieces and the result window.
   // Its gradient (#krCoinG) lives in the page's hidden SVG defs.
-  const COIN = '<svg class="kr-coin" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10.6" fill="url(#krCoinG)" stroke="#a87400" stroke-width="1.3"/><circle cx="12" cy="12" r="7.4" fill="none" stroke="#c99000" stroke-width="1.2" opacity=".8"/><path d="M8.3 7.9a5.4 5.4 0 0 1 6.9-.6" fill="none" stroke="#fff7cf" stroke-width="1.5" stroke-linecap="round" opacity=".85"/></svg>';
+  const COIN = '🪙'; // v11e: app.js swaps every 🪙 on the page for the app-wide 3D gold coin
 
   // ---------- words ----------
   // bonus words: ENABLE, 3 letters from keyrings.js, 4–8 from LockWord's lockwords.js (sorted, fixed-length strings)
@@ -131,15 +134,13 @@
   const CAP = [1, 1, 2, 2, 3, 3, 4, 4, 5, 5];
   // v11c (JM CD-97: 1.2.1–1.2.1.1.3): Key Words Quantity, by letters on the Ring: [fewest, most]. "Auto" follows the
   // Challenge Level (1–3 Few, 4–6 Some, 7–8 Many, 9–10 Most). Most reaches 20 on the bigger Rings.
+  // v11e (JM CD-105: 2.2a): Key Words Quantity in clean steps that don't overlap, the same on every device (Most ends at 18 so
+  // the Ring keeps a good size on phones): [fewest, most] by letters on the Ring.
   const KW = {
-    3: { few: [2, 3], some: [3, 4], many: [4, 6], most: [5, 8] }, 4: { few: [3, 5], some: [5, 7], many: [7, 10], most: [8, 14] },
-    5: { few: [4, 6], some: [6, 9], many: [9, 12], most: [12, 18] }, 6: { few: [5, 8], some: [8, 11], many: [11, 15], most: [12, 20] },
-    7: { few: [6, 9], some: [9, 13], many: [13, 16], most: [12, 20] }, 8: { few: [6, 9], some: [9, 13], many: [13, 16], most: [12, 20] }
-  };
-  // v11d (CD-100: 2.2.1): on tablets and computers Most stops at 18 (phones keep 20)
-  const isPhone = () => Math.min(screen.width || innerWidth, screen.height || innerHeight) < 600;
-  if (!isPhone()) for (const n of [6, 7, 8]) KW[n].most = [12, 18];
-  const KW_NAMES = { auto: 'Auto', few: 'Few', some: 'Some', many: 'Many', most: 'Most' }; // Auto follows the Challenge Level
+    3: { few: [2, 2], some: [3, 3], many: [4, 4], most: [5, 6] }, 4: { few: [3, 4], some: [5, 6], many: [7, 9], most: [10, 12] },
+    5: { few: [4, 5], some: [6, 8], many: [9, 11], most: [12, 14] }, 6: { few: [5, 7], some: [8, 10], many: [11, 13], most: [14, 17] },
+    7: { few: [6, 8], some: [9, 11], many: [12, 14], most: [15, 18] }, 8: { few: [6, 8], some: [9, 11], many: [12, 14], most: [15, 18] }
+  };  const KW_NAMES = { auto: 'Auto', few: 'Few', some: 'Some', many: 'Many', most: 'Most' }; // Auto follows the Challenge Level
   const kwOf = (kw, lv) => KW[3][kw] ? kw : lv <= 3 ? 'few' : lv <= 6 ? 'some' : lv <= 8 ? 'many' : 'most';
   // v11c (JM CD-97: 1.1.1): Bonus Words Quantity: how many words a Ring leaves outside the Key grid
   const BW_NAMES = { fewest: 'Fewest', some: 'Some', many: 'Many', any: '- Any -' }; // v11d (CD-100: 2.3.1): Plenty is now Many
@@ -320,14 +321,14 @@
     // v11b: Key words (the counts depend on the letters), colors, layout, and the time's-up pay switch
     $('#krKw').innerHTML = ['auto', 'few', 'some', 'many', 'most'].map(k => {
       const r = KW[ks.n][kwOf(k, ks.lv)];
-      return `<option value="${k}">${KW_NAMES[k]}: ${r[0]}–${r[1]}</option>`;
+      return `<option value="${k}">${KW_NAMES[k]}: ${r[0] === r[1] ? r[0] : r[0] + '–' + r[1]}</option>`;
     }).join('');
     $('#krKw').value = ks.kw;
     $('#krBw').value = BW_NAMES[ks.bw] ? ks.bw : 'fewest';
     const seg = (id, v) => { for (const b of document.querySelectorAll(`#${id} button`)) { const on = b.dataset.v === String(v); b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); } };
-    seg('krCol', ks.colors); seg('krLay', ks.layout); seg('krTp', ks.timePay ? 'on' : 'off'); seg('krBs', ks.bs);
+    seg('krCol', ks.colors); seg('krLay', ks.layout); seg('krTp', ks.timePay ? 'on' : 'off'); $('#krBs').value = ks.bs;
     paintBs();
-    $('#krOptsSum').textContent = `Time's up pays: ${ks.timePay ? 'On' : 'Off'} · Colors: by ${ks.colors === 'letter' ? 'letter' : 'word'} · Layout: ${ks.layout === 'stack' ? 'Stacked' : ks.layout === 'side' ? 'Side by side' : 'Auto'} · Buttons: ${{ a: 'Sapphire', b: 'Steel', c: 'Navy & gold' }[ks.bs] || 'Sapphire'}`;
+    $('#krOptsSum').textContent = `Time's up pays: ${ks.timePay ? 'On' : 'Off'} · Colors: by ${ks.colors === 'letter' ? 'letter' : 'word'} · Layout: ${ks.layout === 'stack' ? 'Stacked' : ks.layout === 'side' ? 'Side by side' : 'Auto'} · Ring buttons: ${{ a: 'Sapphire', b: 'Steel', c: 'Navy & gold' }[ks.bs] || 'Steel'}`;
     const unf = unfinished();
     $('#krSetUnf').hidden = !unf;
     if (unf) $('#krSetUnfTxt').textContent = unfText();
@@ -350,9 +351,9 @@
   segPick('#krCol', v => { ks.colors = v; });
   segPick('#krLay', v => { ks.layout = v; });
   segPick('#krTp', v => { ks.timePay = v === 'on'; });
-  segPick('#krBs', v => { ks.bs = v; paintBs(); });
+  $('#krBs').addEventListener('change', e => { ks.bs = e.target.value; ks.bsPicked = true; saveKs(); paintBs(); paintSetup(); });
   // v11d (CD-98 add. 2.4; CD-100: 2.1.1): the coin-button redesign in three looks to try in play: A Sapphire, B Steel, C Navy & gold
-  function paintBs() { const k = $('#keyring'); for (const v of ['a', 'b', 'c']) k.classList.toggle('kr-bs-' + v, (ks.bs || 'a') === v); }
+  function paintBs() { if (UI.setLook) UI.setLook($('#keyring'), ks.bs); }
   paintBs();
   $('#krStart').addEventListener('click', () => newRing());
   $('#krSetResume').addEventListener('click', () => { if (unfinished()) showPlay(); });
@@ -460,7 +461,8 @@
       const d = cornerPath(s, cx, cy, rho, rad, fx, fy);
       const svg = document.querySelector(sel + ' .kr-cps');
       svg.setAttribute('viewBox', `0 0 ${s} ${s}`);
-      svg.innerHTML = `<path class="b" d="${d}"/><path class="g" d="${d}"/><path class="r" d="${d}"/>`;
+      const depth = Math.max(3, Math.round(s * 0.045)); // v11e (CD-102: 1.1.3): a thick edge under each piece, so it reads as a real button
+      svg.innerHTML = `<path class="e" d="${d}" transform="translate(0 ${depth})"/><path class="b" d="${d}"/><path class="g" d="${d}"/><path class="r" d="${d}"/>`;
     }
   }
   window.addEventListener('resize', () => { if (playOn()) fit(); });
@@ -754,6 +756,7 @@
     else if (R.sel >= 0 && pool.includes(R.sel)) hp = '' + hintCost(R.sel);
     else if (pool.length) { const c = pool.map(hintCost), lo = Math.min(...c), hi = Math.max(...c); hp = '' + (lo === hi ? lo : `${lo}–${hi}`); }
     $('#krHintCp').textContent = hp;
+    $('#krHint').classList.toggle('long', hp.length > 3);
     $('#krDropCp').textContent = dropCost();
     $('#krHint').title = `Hint: show a slot's clue (🪙${hp})`;
     $('#krDrop').title = `Key Drop: drop one letter into a slot (🪙${dropCost()})`;
@@ -762,10 +765,7 @@
   }
   function arm(btn, price) {
     if (!UI.armTap) return true;
-    const go = UI.armTap(btn, price);
-    // v11d: the corner pieces show "Tap again / 🪙N" inside their own shape (their content area carries it)
-    const c = btn.querySelector('.kr-cpc'); if (c) c.dataset.arm = btn.classList.contains('armed') ? `Tap again\n🪙${price}` : '';
-    return go;
+    return UI.armTap(btn, price); // v11e: app.js puts the "Tap again / 🪙N" label in the piece (styled per corner in style.css)
   }
   $('#krHint').addEventListener('click', () => {
     if (!R || R.over || R.paused) return;
@@ -960,7 +960,7 @@
     const groups = grp('kr-kw', keyW.length, 'Key word', keyW.map(i => `<span class="${R.byDrop.has(i) ? 'drp' : ''}">${R.words[i]}</span>`).join(''), R.byDrop.size ? 'Light blue = filled by Key Drop' : '')
       + grp('kr-bw', R.bonus.length, 'Bonus word', R.bonus.map(w => `<span>${w}</span>`).join(''))
       + (missW.length ? grp('kr-mw', missW.length, 'Missed word', missW.map(i => `<span>${R.words[i]}</span>`).join('')) : '');
-    const row = (l, v) => `<tr><td>${l}</td><td class="${v < 0 ? 'neg' : 'pos'}">${v < 0 ? '−' + -v : '+' + v}</td></tr>`;
+    const row = (l, v) => `<tr><td>${l}</td><td class="${v < 0 ? 'neg' : 'pos'}">${v < 0 ? '−' + UI.fmtN(-v) : '+' + UI.fmtN(v)}</td></tr>`;
     const per = Math.round(R.v * 100) / 100;
     const coinTbl = UI.coinHead() + `<table class="score-table coin-tbl kr-coins">`
       + (R.paid ? row(cleared ? `🔑 Ring cleared: ${mine} of ${R.L} letters yours, at ${COIN}${per} each` : `⏱ Time's up: ${mine} of ${R.L} letters yours, at ${COIN}${per} each`, R.paid) : '')
@@ -972,8 +972,8 @@
       + UI.coinTotal("This ring's total earned coins:", net) + '</table>';
     const pct = st.played ? Math.round(100 * st.cleared / st.played) : 0;
     const stats = `<h3 class="res-h">📊 Your stats</h3><div class="vt-res-stats">
-      <div><b>${st.played}</b><span>Rings</span></div><div><b>${pct}%</b><span>Cleared</span></div><div><b>${st.streak}</b><span>Streak</span></div>
-      <div><b>${st.best}</b><span>Best streak</span></div><div><b>${st.bonus}</b><span>Bonus words</span></div><div><b>${st.fastest[R.n] ? fmt(Math.floor(st.fastest[R.n] / 1000)) : '–'}</b><span>Fastest ${R.n}-letter</span></div></div>`;
+      <div><b>${UI.fmtN(st.played)}</b><span>Rings</span></div><div><b>${pct}%</b><span>Cleared</span></div><div><b>${st.streak}</b><span>Streak</span></div>
+      <div><b>${st.best}</b><span>Best streak</span></div><div><b>${UI.fmtN(st.bonus)}</b><span>Bonus words</span></div><div><b>${st.fastest[R.n] ? fmt(Math.floor(st.fastest[R.n] / 1000)) : '–'}</b><span>Fastest ${R.n}-letter</span></div></div>`;
     const body = `<div class="res-top kr-rtop"><span class="res-face">${face}</span><span class="res-title">${head}</span><span class="kr-rtime">${tShow}</span></div>
       ${groups}
       ${!cleared ? '<p class="help-note kr-note">Your bonus coins are yours to keep. ⏱ +30s opens the Ring again.</p>' : ''}
@@ -1062,7 +1062,7 @@
         <li><b>⏱ +30s</b> (top-right corner, 🪙${TIME_COST}) adds 30 seconds to a timed Ring. Once any Ring ends (cleared or out of time, timed or not), it opens the Ring again for 30 seconds more, to hunt bonus words or to finish it; a Ring finished in extra time counts as cleared. It's in the result window too.</li>
         <li><b>⏸ Pause</b> (beside the clock, or tap the clock) stops the clock and hides the Ring and the Key grid; tap <b>▶</b> or the clock to go on.</li>
         <li>In the last 10 seconds of a timed Ring, the Ring flashes every second: <b>yellow</b> from 10 to 6, <b>red</b> from 5 to 1, with a tick each second.</li>
-        <li>The coin buttons sit in the Ring's corners, shaped to follow it. They take <b>two taps</b>: the first darkens the button and shows its price, the second buys. <b>Button style</b> (⚙ Setup › More options) picks their look: Sapphire, Steel or Navy &amp; gold.</li>`)}
+        <li>The coin buttons sit in the Ring's corners, shaped to follow it. They take <b>two taps</b>: the first darkens the button and shows its price, the second buys. <b>Ring Button Colors</b> (⚙ Setup › More options) picks their look: Steel (the default), Sapphire or Navy &amp; gold.</li>`)}
       ${sec('Coins', `
         <li>Each Ring is worth <b>100 coins</b>, shared over its letter squares: one letter is worth 100 ÷ the Ring's letters (with 50 letters, 🪙2 each).</li>
         <li><b>💡 Hint</b> costs one letter's worth for each letter in its slot (a 5-letter slot at 🪙2 a letter = 🪙10). <b>🔑 Key Drop</b> costs one letter's worth. <b>⏱ +30s</b> costs 🪙${TIME_COST}.</li>
@@ -1073,7 +1073,7 @@
       ${sec('Setup', `
         <li><b>Letters on the Ring</b>: 3 to 8. More letters give more and longer Key words.</li>
         <li><b>Challenge Level</b> (1–10) picks the Key words: everyday words at 1–3, rarer ones as it rises. From level 6 the clues turn figurative. Bonus words can be any real word at every level.</li>
-        <li><b>Key Words Quantity</b>: how many words the Key grid holds: <b>Few</b>, <b>Some</b>, <b>Many</b> or <b>Most</b> (12–20 on phones, 12–18 on tablets and computers; the counts depend on the letters), or <b>Auto</b>, which follows the Challenge Level (1–3 Few, 4–6 Some, 7–8 Many, 9–10 Most). <b>Bonus Words Quantity</b>: how many other real words the Ring spells: Fewest, Some, Many or - Any -.</li>
+        <li><b>Key Words Quantity</b>: how many words the Key grid holds: <b>Few</b>, <b>Some</b>, <b>Many</b> or <b>Most</b> (the counts depend on the letters: with 7 letters, Few 6–8, Some 9–11, Many 12–14, Most 15–18), or <b>Auto</b>, which follows the Challenge Level (1–3 Few, 4–6 Some, 7–8 Many, 9–10 Most). <b>Bonus Words Quantity</b>: how many other real words the Ring spells: Fewest, Some, Many or - Any -.</li>
         <li>The Challenge Level also sets how long the Key words run: at levels 1–3 only the Ring's own word uses every letter, at 4–7 at most two words do, and at 8–10 three or more do when the letters allow. Higher levels also bring rarer words.</li>
         <li><b>Timer</b>: Untimed (the clock counts up), or 1, 2, 3 or 5 minutes per Ring (it counts down, and turns red in the last 10 seconds). <b>Time's up pays for your letters</b>: Off (as standard) or On.</li>
         <li><b>Key word colors</b>: <b>By word</b> (each word one color) or <b>By letter</b> (every tile its own color). No two neighbors match.</li>

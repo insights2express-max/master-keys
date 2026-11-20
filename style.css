@@ -2252,23 +2252,23 @@ html[data-screen="night"] .kr-grp.kr-mw { background: #555; color: #111; border-
 #keyring .kr-cp.kr-kf { outline: none; }
 .kr-cp.kr-kf path.r { stroke: #ffd43b !important; stroke-width: 6; }
 /* A · Sapphire glass: deep-blue glass, polished steel rim, white letters and icons */
-#keyring.kr-bs-a .kr-cp path.b { fill: url(#krSapA); }
-#keyring.kr-bs-a .kr-cp.kr-bonus path.b { fill: url(#krPurA); }
-#keyring.kr-bs-a .kr-cp path.r { stroke: url(#krSteelR); }
-#keyring.kr-bs-a .kr-cp path.g { opacity: .95; }
+#keyring.mk-bs-a .kr-cp path.b { fill: url(#krSapA); }
+#keyring.mk-bs-a .kr-cp.kr-bonus path.b { fill: url(#krPurA); }
+#keyring.mk-bs-a .kr-cp path.r { stroke: url(#krSteelR); }
+#keyring.mk-bs-a .kr-cp path.g { opacity: .95; }
 /* B · Steel: a brushed-steel plate, dark steel rim, deep-blue enamel letters (BONUS in purple) */
-#keyring.kr-bs-b .kr-cp path.b { fill: url(#krSteelB); }
-#keyring.kr-bs-b .kr-cp path.r { stroke: url(#krSteelDk); stroke-width: 2.5; }
-#keyring.kr-bs-b .kr-cp path.g { opacity: .7; }
-#keyring.kr-bs-b .kr-cp { color: #0d3a8a; }
-#keyring.kr-bs-b .kr-cp.kr-bonus { color: #6a2bc4; }
-#keyring.kr-bs-b .kr-cpc { text-shadow: 0 1px 0 rgba(255, 255, 255, .75); }
+#keyring.mk-bs-b .kr-cp path.b { fill: url(#krSteelB); }
+#keyring.mk-bs-b .kr-cp path.r { stroke: url(#krSteelDk); stroke-width: 2.5; }
+#keyring.mk-bs-b .kr-cp path.g { opacity: .7; }
+#keyring.mk-bs-b .kr-cp { color: #0d3a8a; }
+#keyring.mk-bs-b .kr-cp.kr-bonus { color: #6a2bc4; }
+#keyring.mk-bs-b .kr-cpc { text-shadow: 0 1px 0 rgba(255, 255, 255, .75); }
 /* C · Navy & gold: navy lacquer (BONUS plum), a thin gold rim, gold letters and icons */
-#keyring.kr-bs-c .kr-cp path.b { fill: url(#krNavyC); }
-#keyring.kr-bs-c .kr-cp.kr-bonus path.b { fill: url(#krPlumC); }
-#keyring.kr-bs-c .kr-cp path.r { stroke: url(#krGoldR); stroke-width: 2.5; }
-#keyring.kr-bs-c .kr-cp path.g { opacity: .3; }
-#keyring.kr-bs-c .kr-cp { color: #ffd75e; }
+#keyring.mk-bs-c .kr-cp path.b { fill: url(#krNavyC); }
+#keyring.mk-bs-c .kr-cp.kr-bonus path.b { fill: url(#krPlumC); }
+#keyring.mk-bs-c .kr-cp path.r { stroke: url(#krGoldR); stroke-width: 2.5; }
+#keyring.mk-bs-c .kr-cp path.g { opacity: .3; }
+#keyring.mk-bs-c .kr-cp { color: #ffd75e; }
 html[data-screen="night"] #keyring .kr-cp { filter: drop-shadow(0 3px 4px rgba(0, 0, 0, .5)) brightness(.72) saturate(.7); }
 /* Pause hides the corner pieces' contents too */
 #krMain.paused .kr-cp { filter: blur(13px) saturate(.6); }
@@ -2283,3 +2283,108 @@ html[data-screen="night"] #keyring .kr-cp { filter: drop-shadow(0 3px 4px rgba(0
 .kr-pz { padding: 34px 56px; gap: 10px; border-radius: 26px; font-size: 52px; }
 .kr-pz span { font-size: 24px; }
 @media (max-width: 420px) { .kr-pz { padding: 26px 34px; font-size: 44px; } .kr-pz span { font-size: 20px; } }
+/* =====================================================================
+   v11e (JM CD-102, CD-105): one 3D gold coin and a new coin pill everywhere; Button Colors (Sapphire / Steel / Navy & gold)
+   in every game; glass (dark buttons) or 3D relief (colored buttons) on every button; KeyRing polish.
+   ===================================================================== */
+/* the app-wide coin (app.js MK_COIN replaces every 🪙) */
+.mk-ci { display: inline-flex; vertical-align: -.2em; line-height: 1; }
+.mk-coin { width: 1.18em; height: 1.18em; filter: drop-shadow(0 1px 1px rgba(0, 0, 0, .42)); }
+/* the coin pill: dark glass, a bold 3D gold edge, big 3D gold numbers and the 3D coin (CD-102 add. 1.2.1) */
+.coin-pill {
+  border: 2px solid transparent; color: #ffd75e;
+  background: linear-gradient(165deg, rgba(255, 255, 255, .16), rgba(255, 255, 255, .02) 46%, rgba(0, 0, 0, .28)) padding-box,
+    linear-gradient(#10151d, #10151d) padding-box,
+    linear-gradient(140deg, #fff3b0, #e7b416 38%, #8f6200 62%, #ffd75e) border-box;
+  box-shadow: 0 2px 0 #5e4100, 0 3px 7px rgba(0, 0, 0, .45), inset 0 1px 0 rgba(255, 255, 255, .16);
+  text-shadow: 0 1px 0 #a87400, 0 2px 0 #5e4100, 0 2px 5px rgba(0, 0, 0, .55);
+}
+.coin-pill b, .coin-pill [data-coins] { font-size: 1.16em; font-weight: 900; line-height: 1; letter-spacing: .01em; color: inherit !important; }
+.coin-pill .mk-coin { width: 1.3em; height: 1.3em; }
+html[data-screen="night"] .coin-pill { color: #c9a646; }
+/* the armed label is a real element now (it holds the drawn coin); the old ::after label is retired */
+.btn.armed::after { display: none !important; }
+.btn > .arm-lab { display: none; }
+.btn.armed > .arm-lab { display: grid; position: absolute; inset: 0; z-index: 2; border-radius: inherit; place-items: center; padding: 0 3px;
+  background: #ffc61a; color: #241800; font-weight: 900; font-size: 12px; line-height: 1.15; text-align: center; white-space: pre-line; overflow: hidden;
+  animation: armPulse .6s ease-in-out infinite alternate; pointer-events: none; }
+.btn.coinbtn.armed > .arm-lab { background: #0d47a1; color: #fff; animation-name: armPulseBlue; }
+@media (prefers-reduced-motion: reduce) { .btn.armed > .arm-lab { animation: none; } }
+/* KeyRing corner pieces: the label sits in the piece's own corner, on the darkened shape */
+.btn.kr-cp.armed > .arm-lab { background: none !important; animation: none; place-items: initial; display: flex; flex-direction: column; padding: calc(var(--cps, 90px) * .1);
+  font-size: calc(var(--cps, 90px) * .14); color: #fff; text-shadow: 0 1px 2px rgba(0, 0, 0, .7); }
+.kr-cp.kr-bonus > .arm-lab, .kr-cp.kr-time > .arm-lab { justify-content: flex-start; }
+.kr-cp.kr-hint > .arm-lab, .kr-cp.kr-drop > .arm-lab { justify-content: flex-end; }
+.kr-cp.kr-bonus > .arm-lab, .kr-cp.kr-hint > .arm-lab { align-items: flex-start; text-align: left; }
+.kr-cp.kr-time > .arm-lab, .kr-cp.kr-drop > .arm-lab { align-items: flex-end; text-align: right; }
+
+/* BUTTON COLORS: the coin buttons in CrossKeys and LockWord (CD-105: 1.1a; Steel first). Strong 3D relief; no white circles. */
+[class*="mk-bs-"] .btn.coinbtn > b { background: none !important; box-shadow: none !important; filter: drop-shadow(0 1px 1px rgba(0, 0, 0, .35)); }
+.mk-bs-a .btn.coinbtn { background: linear-gradient(180deg, #6cb6ff, #2a7de8 52%, #155fc0); color: #fff;
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, .38), inset 0 2px 0 rgba(255, 255, 255, .45), inset 0 -4px 0 #0e4f99, 0 4px 0 #0b3f7a, 0 7px 12px rgba(0, 0, 0, .35);
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, .35), 0 1px 0 rgba(255, 255, 255, .22); }
+.mk-bs-b .btn.coinbtn { background: linear-gradient(180deg, #fbfcfd, #d3dae1 50%, #a3aeba); color: #0d3a8a;
+  box-shadow: inset 0 0 0 1.5px #7d8995, inset 0 2px 0 #fff, inset 0 -4px 0 #8692a0, 0 4px 0 #4f5a66, 0 7px 12px rgba(0, 0, 0, .35);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, .85), 0 -1px 0 rgba(0, 0, 0, .2); }
+.mk-bs-c .btn.coinbtn { background: linear-gradient(180deg, #34507f, #1a2b4f 50%, #0b1427); color: #ffd75e;
+  box-shadow: inset 0 0 0 1.5px #e7b416, inset 0 2px 0 rgba(255, 255, 255, .2), inset 0 -4px 0 #050a14, 0 4px 0 #6e4c00, 0 7px 12px rgba(0, 0, 0, .4);
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, .6), 0 1px 0 rgba(255, 255, 255, .14); }
+[class*="mk-bs-"] .btn.coinbtn:active { transform: translateY(3px); }
+[class*="mk-bs-"] .btn.coinbtn.armed { box-shadow: 0 0 0 3px #64b5ff, 0 0 14px rgba(100, 181, 255, .9); }
+
+/* EVERY BUTTON (CD-105: 1.3b): colored buttons get a pronounced 3D relief and "appliqué" text ... */
+.btn.primary { box-shadow: inset 0 2px 0 rgba(255, 255, 255, .32), inset 0 -4px 0 rgba(0, 0, 0, .24), 0 3px 0 rgba(0, 0, 0, .32), 0 6px 12px rgba(0, 0, 0, .28);
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, .3), 0 1px 0 rgba(255, 255, 255, .16); }
+.btn:not(.kr-cp):active, .icon-btn:active { transform: translateY(2px); }
+/* ... light (non-glass) buttons on the Light screen get a softer 3D relief ... */
+.btn:not(.primary):not(.coinbtn):not(.kr-cp), .icon-btn {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .9), inset 0 -3px 0 rgba(0, 0, 0, .1), 0 2px 0 rgba(0, 0, 0, .16), 0 4px 8px rgba(0, 0, 0, .12);
+}
+/* ... and the dark ("black") buttons on Dark and Night screens get a subtle glass-on-glass layer */
+@media (prefers-color-scheme: dark) {
+  .btn:not(.primary):not(.coinbtn):not(.kr-cp), .icon-btn {
+    background-image: linear-gradient(160deg, rgba(255, 255, 255, .14), rgba(255, 255, 255, .03) 48%, rgba(0, 0, 0, .18));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .22), inset 0 0 0 1px rgba(255, 255, 255, .08), 0 0 0 1px rgba(0, 0, 0, .35), 0 3px 8px rgba(0, 0, 0, .35);
+  }
+}
+html[data-screen="night"] .btn:not(.primary):not(.coinbtn):not(.kr-cp), html[data-screen="night"] .icon-btn {
+  background-image: linear-gradient(160deg, rgba(255, 255, 255, .07), rgba(255, 255, 255, 0) 48%, rgba(0, 0, 0, .2));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .1), inset 0 0 0 1px rgba(255, 255, 255, .05), 0 0 0 1px rgba(0, 0, 0, .4), 0 3px 8px rgba(0, 0, 0, .45);
+}
+
+/* KEYRING corner pieces: a thick edge underneath (path.e), presses down onto it, appliqué text, room for long prices */
+.kr-cp path.e { pointer-events: none; }
+#keyring.mk-bs-a .kr-cp path.e { fill: #0a2f6e; }
+#keyring.mk-bs-a .kr-cp.kr-bonus path.e { fill: #3a0f73; }
+#keyring.mk-bs-b .kr-cp path.e { fill: #5b6672; }
+#keyring.mk-bs-c .kr-cp path.e { fill: #04070d; }
+#keyring.mk-bs-c .kr-cp.kr-bonus path.e { fill: #12061c; }
+.kr-cp .kr-cps path.b, .kr-cp .kr-cps path.g, .kr-cp .kr-cps path.r { transition: transform .08s; }
+.kr-cp:active .kr-cps { transform: none; }
+.kr-cp:active .kr-cps path.b, .kr-cp:active .kr-cps path.g, .kr-cp:active .kr-cps path.r { transform: translateY(3px); }
+.kr-cp:active .kr-cpc { transform: translateY(3px); }
+.btn.kr-cp { filter: drop-shadow(0 5px 6px rgba(0, 0, 0, .42)); }
+#keyring.mk-bs-a .kr-cpc { text-shadow: 0 -1px 0 rgba(0, 0, 0, .4), 0 1px 0 rgba(255, 255, 255, .25); }
+#keyring.mk-bs-b .kr-cpc { text-shadow: 0 1px 0 rgba(255, 255, 255, .85), 0 -1px 0 rgba(0, 0, 0, .25); }
+#keyring.mk-bs-c .kr-cpc { text-shadow: 0 -1px 0 rgba(0, 0, 0, .65), 0 1px 0 rgba(255, 255, 255, .14); }
+.kr-bonus .kr-cpc .lab { font-size: calc(var(--cps, 90px) * .128); letter-spacing: 0; gap: .1em; }
+.kr-cpc .cost { font-size: calc(var(--cps, 90px) * .14); }
+.kr-hint.long .kr-cpc .cost { font-size: calc(var(--cps, 90px) * .118); }
+.kr-cpc .cost .mk-coin { width: 1.2em; height: 1.2em; }
+/* the Ring keeps its band through the tiles; the pegs go (CD-105: 3.1.1) */
+.kr-t::after { display: none; }
+/* the Word / Letter switch: half again as big on tablets and computers, with twice the travel (CD-102: 2.4.1) */
+@media (min-width: 700px) and (min-height: 560px) {
+  .kr-colsw#krColP { font-size: 18px; padding: 5px 13px; margin: 9px 11px 0 0; }
+  .kr-colsw#krColP .sw-t { width: 2.75em; }
+  .kr-colsw#krColP[aria-checked="true"] .sw-t i { transform: translateX(1.7em); }
+  #keyring .kr-slots { padding-top: 48px; }
+}
+/* the Pause panel: glass on glass, with a drawn pause icon (the same on every device: CD-102: 2.5.1–2.5.2) */
+.kr-pz { background: linear-gradient(160deg, rgba(255, 255, 255, .2), rgba(255, 255, 255, .04) 50%, rgba(0, 0, 0, .22)), rgba(14, 21, 31, .74);
+  -webkit-backdrop-filter: blur(14px) saturate(1.3); backdrop-filter: blur(14px) saturate(1.3);
+  border: 1px solid rgba(255, 255, 255, .3); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .38), inset 0 0 0 7px rgba(255, 255, 255, .05), 0 16px 44px rgba(0, 0, 0, .5); }
+.kr-pz::before { content: ''; position: absolute; inset: 9px; border-radius: 18px; border: 1px solid rgba(255, 255, 255, .14); pointer-events: none;
+  background: linear-gradient(170deg, rgba(255, 255, 255, .1), rgba(255, 255, 255, 0) 40%); }
+.kr-pz b { display: flex; align-items: center; gap: .25em; }
+.kr-pzi { width: .9em; height: .9em; }

@@ -33,7 +33,7 @@
   const { $, esc, store, toast, openModal, closeModal } = UI;
 
   // ---------- Settings, stats and words ----------
-  const DEF = { level: 3, len: 5, tries: 6, timer: '0', scoring: 'classic', name: '', icon: 'lw' }; // v09a: 'lw' = the LockWord icon (icons/lockword.svg)
+  const DEF = { level: 3, len: 5, tries: 6, timer: '0', scoring: 'classic', name: '', icon: 'lw', btn: 'b' }; // v11e: btn = Button Colors (Steel first) // v09a: 'lw' = the LockWord icon (icons/lockword.svg)
   const vs = Object.assign({}, DEF, store.get('cd.vault.settings', {}));
   // v09a (JM CD-71: 1.3b): the old default 🔐 becomes the new LockWord icon, once (🔐 can still be picked)
   if (vs.icon === '🔐' && !vs.lwIco) { vs.icon = 'lw'; vs.lwIco = 1; store.set('cd.vault.settings', vs); }
@@ -171,6 +171,7 @@
     fillSelect($('#vtTimer'), OPTS.timer, vs.timer);
     fillSelect($('#vtScoring'), OPTS.scoring, vs.scoring);
     $('#vtDesc').textContent = DESC[vs.scoring];
+    if (UI.btnOpts) { $('#vtBtn').innerHTML = UI.btnOpts(); $('#vtBtn').value = vs.btn || 'b'; }
     renderStats();
   }
   function renderStats() {
@@ -181,6 +182,9 @@
         + `<div class="vt-st"><b>${stats.top}</b><span>Top score</span></div>`
       : '<p class="vt-none">No rounds played yet. Pick your settings and pick the lock.</p>';
   }
+  // v11e (JM CD-102: 1.1.1; CD-105: 1.1a, 1.2): Button Colors, the coin buttons' look (Sapphire / Steel / Navy & gold), as in every game
+  if (UI.setLook) UI.setLook($('#vault'), vs.btn);
+  $('#vtBtn').addEventListener('change', e => { vs.btn = e.target.value; saveVs(); if (UI.setLook) UI.setLook($('#vault'), vs.btn); });
   for (const [id, k] of [['#vtLevel', 'level'], ['#vtLen', 'len'], ['#vtTries', 'tries'], ['#vtTimer', 'timer'], ['#vtScoring', 'scoring']]) {
     $(id).addEventListener('change', e => { setFrom(k, e.target.value); $('#vtDesc').textContent = DESC[vs.scoring]; });
   }
@@ -773,6 +777,7 @@
         <li><b>Letters</b> (4–8) and <b>Guesses</b> (5–10) set the word's length and how many tries you get.</li>
         <li><b>Timer:</b> the main game's choices. "Per GUESS" gives each guess its own clock (when it runs out, that guess is used up); "per WORD" times the whole round. The clock stops while a window is open or the app is hidden.</li>
         <li><b>Scoring</b> (only when you solve it): <b>Classic</b> scores the word's letter values (as in the main game) plus 2 per letter; <b>Flat</b> scores 2 per letter. Both add <b>+5</b> for every guess you didn't need and, in timed rounds, a time bonus (1 point per 5 seconds left, up to 30). (Hint and Reveal cost coins, not points.)</li>
+        <li><b>Button Colors</b>: three looks for the coin buttons: Steel (the default), Sapphire or Navy &amp; gold. Every game has the same choice.</li>
         <li><b>⚙ Settings</b> (in the header, or tap the line above the grid) change the game at any time; changes apply from the next word.</li>`)}
       ${sec('Your Stats', `
         <li>Your stats (played, solved %, streaks, best time, guesses needed) are kept on this device. Every finished word also goes into <b>📜 Game History</b> in the Lobby, where you can reopen its full result.</li>

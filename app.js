@@ -15,7 +15,7 @@
    v08j: grid colors, final-play view, clock-out final turn, menu defaults, phone two-finger drag) */
 'use strict';
 (() => {
-  const APP_VER = 'v11d'; // Project CP: shown as a pill beside the title and in the browser tab
+  const APP_VER = 'v11e'; // Project CP: shown as a pill beside the title and in the browser tab
   const NM = window.MK_NAMES || { suite: 'Master Keys', cross: 'CrossKeys', lock: 'LockWord' }; // v09: the game names (names.js)
   // v09a (JM CD-71: 1.2c, 1.3b): the two games' own icons, shown wherever the 🧩 / 🔐 emoji stood
   const GI = { cross: 'icons/crosskeys.svg', lock: 'icons/lockword.svg', ring: 'icons/keyring.svg' }; // v11: KeyRing
@@ -219,11 +219,41 @@
       return true;
     }
   };
-  const coinPill = () => `<button type="button" class="coin-pill" data-coinbtn title="Your coins: tap for details"><span aria-hidden="true">🪙</span><b data-coins>${coinData.bal}</b></button>`;
-  function renderCoins() { document.querySelectorAll('[data-coins]').forEach(el => { el.textContent = coinData.bal; }); }
+  // v11e (JM CD-102 add. 1.1): thousands get commas everywhere (1,234)
+  const fmtN = n => (Number(n) || 0).toLocaleString('en-US');
+  // v11e (JM CD-102: 1.5, add. 1.2; CD-105): ONE drawn 3D gold coin for the whole app (a thick gold disc with an embossed star).
+  // Every 🪙 that reaches the page (pills, tables, buttons, messages, help) is swapped for it, so Apple devices no longer
+  // show their silver emoji coin. Its gradients (#mkCoinFace, #mkCoinIn) live in the page's hidden SVG defs.
+  const MK_COIN = '<svg class="mk-coin" viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="13.5" rx="10.5" ry="10.3" fill="#7a5100"/><circle cx="12" cy="12" r="10.5" fill="url(#mkCoinFace)" stroke="#a56f00" stroke-width=".9"/><circle cx="12" cy="12" r="7.4" fill="url(#mkCoinIn)" stroke="#c48a00" stroke-width="1"/><path d="M12 7.7l1.24 2.52 2.78.4-2.01 1.96.47 2.77L12 14.05l-2.48 1.3.47-2.77-2.01-1.96 2.78-.4z" fill="#ffe58a" stroke="#a87400" stroke-width=".6"/><path d="M6.4 7.9a6.9 6.9 0 0 1 8.8-2.4" fill="none" stroke="#fffbe0" stroke-width="1.4" stroke-linecap="round" opacity=".9"/></svg>';
+  const COIN_CH = '🪙', COIN_SKIP = /^(SCRIPT|STYLE|TEXTAREA|OPTION|SELECT|TITLE|INPUT)$/;
+  function coinize(root) {
+    if (!root || root.nodeType !== 1) return;
+    const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, { acceptNode: n => n.nodeValue.includes(COIN_CH) && n.parentNode && !COIN_SKIP.test(n.parentNode.nodeName) && !n.parentNode.closest('svg') ? 1 : 3 });
+    const list = []; while (w.nextNode()) list.push(w.currentNode);
+    for (const tn of list) {
+      const f = document.createDocumentFragment();
+      tn.nodeValue.split(COIN_CH).forEach((part, i) => {
+        if (i) { const s = document.createElement('span'); s.className = 'mk-ci'; s.innerHTML = MK_COIN; f.appendChild(s); }
+        if (part) f.appendChild(document.createTextNode(part));
+      });
+      tn.replaceWith(f);
+    }
+  }
+  new MutationObserver(ms => {
+    for (const m of ms) {
+      if (m.type === 'characterData') { if (m.target.nodeValue && m.target.nodeValue.includes(COIN_CH)) coinize(m.target.parentNode); continue; }
+      for (const n of m.addedNodes) {
+        if (n.nodeType === 3) { if (n.nodeValue.includes(COIN_CH)) coinize(n.parentNode); }
+        else if (n.nodeType === 1) coinize(n);
+      }
+    }
+  }).observe(document.body, { childList: true, subtree: true, characterData: true });
+  coinize(document.body);
+  const coinPill = () => `<button type="button" class="coin-pill" data-coinbtn title="Your coins: tap for details"><span aria-hidden="true">🪙</span><b data-coins>${fmtN(coinData.bal)}</b></button>`;
+  function renderCoins() { document.querySelectorAll('[data-coins]').forEach(el => { el.textContent = fmtN(coinData.bal); }); }
   function coinWindow() {
     const when = t => { const m = Math.round((Date.now() - t) / 60000); return m < 1 ? 'just now' : m < 60 ? m + ' min ago' : m < 1440 ? Math.round(m / 60) + ' h ago' : Math.round(m / 1440) + ' d ago'; };
-    openModal(`<h2>🪙 Coins: ${coinData.bal}</h2>
+    openModal(`<h2>🪙 Coins: ${fmtN(coinData.bal)}</h2>
       <p class="help-note">One currency for ${NM.cross}, ${NM.lock} and ${NM.ring}. Earned ${coinData.earned} · spent ${coinData.spent} on this device.</p>
       <ul class="coin-how">
         <li><b>Spend:</b> 💡 Hint ${E.RULES.hintCost}, 🔦 Scan ${SCAN_PER_TILE} per tile, 🎯 Place = the tile's value, ☑️ Check ${E.RULES.checkBase} + ${E.RULES.checkPerWrong} per wrong tile, ⏱️ +30s ${E.RULES.timeCost} (${NM.cross}); 🔎 Hint 5, 💡 Reveal 40 ÷ letters (${NM.lock}); 💡 Hint = the slot's letters × one letter's worth, 🔑 Key Drop = one letter's worth (${NM.ring}: a Ring is worth 100, so one letter is worth 100 ÷ the Ring's letters).</li>
@@ -282,7 +312,7 @@
   //     on every visit, kept on the device (cd.ownerDefaults) and checked value by value (a typo is simply ignored).
   //  3. MINE: ⭐ Save as my defaults (cd.myDefaults). ↺ Defaults brings back yours, or the app's if you never saved any.
   // The menu still remembers your last choices (cd.settings), as before.
-  const FACTORY = { skill: 3, size: 'M', hand: 6, timer: '0', scoring: 'classic', bonus: 'floating', pics: 'some', grid: 'a', screen: 'auto' };
+  const FACTORY = { skill: 3, size: 'M', hand: 6, timer: '0', scoring: 'classic', bonus: 'floating', pics: 'some', grid: 'a', screen: 'auto', btn: 'b' }; // v11e: btn = Button Colors
   const DEF_KEYS = Object.keys(FACTORY);
   function cleanDefaults(o) {
     const out = {};
@@ -443,6 +473,14 @@
   // v08j: grid colors and the defaults buttons, at the foot of the open Options panel
   $('#gridSel').innerHTML = gridOpts();
   $('#gridSel').addEventListener('change', e => { settings.grid = e.target.value; saveSettings(); });
+  // v11e (JM CD-102: 1.1.1; CD-105: 1.1a, 1.2): BUTTON COLORS, the three looks for the coin buttons, in every game (Steel first)
+  const BTN_LOOKS = [['a', 'Sapphire'], ['b', 'Steel'], ['c', 'Navy & gold']];
+  const btnOpts = () => BTN_LOOKS.map(([v, n]) => `<option value="${v}">${n}</option>`).join('');
+  function setLook(el, v) { if (!el) return; if (!BTN_LOOKS.some(x => x[0] === v)) v = 'b'; for (const [k] of BTN_LOOKS) el.classList.toggle('mk-bs-' + k, k === v); }
+  $('#btnSel').innerHTML = btnOpts();
+  $('#btnSel').value = settings.btn || 'b';
+  $('#btnSel').addEventListener('change', e => { settings.btn = e.target.value; saveSettings(); setLook($('#game'), settings.btn); });
+  setLook($('#game'), settings.btn);
   // v10 (JM CD-79: 1.3): Screen lives in ⚙ Master Keys settings in the Lobby (it changes every game); ⚙ in CrossKeys keeps a copy
   const SCREEN_OPTS = '<option value="auto">Auto (follows your device)</option><option value="light">Light</option><option value="dark">Dark</option><option value="night">Night (dimmest)</option>';
   function suiteSettings() {
@@ -1849,12 +1887,16 @@
   function disarm(b) { if (!b) return; b.classList.remove('armed'); clearTimeout(b._armT); b._armT = 0; }
   // v11b (JM CD-90: 4.2.4.1–4.2.4.3; CD-95: 7.3–7.4): every game's result window: the Coins heading carries the balance,
   // and the table ends with "This <game / word / ring>'s total earned coins:" (earned minus spent) instead of the balance
-  const coinHead = () => `<h3 class="res-h res-coinh"><span>🪙 Coins</span><span class="res-bal">Balance <b data-coins>${coins.bal}</b></span></h3>`;
-  const coinTotal = (label, net) => `<tr class="total"><td>${label}</td><td class="${net < 0 ? 'neg' : 'pos'}">${net < 0 ? '−' + -net : '+' + net}</td></tr>`;
+  const coinHead = () => `<h3 class="res-h res-coinh"><span>🪙 Coins</span><span class="res-bal">Balance <b data-coins>${fmtN(coins.bal)}</b></span></h3>`;
+  const coinTotal = (label, net) => `<tr class="total"><td>${label}</td><td class="${net < 0 ? 'neg' : 'pos'}">${net < 0 ? '−' + fmtN(-net) : '+' + fmtN(net)}</td></tr>`;
   function armTap(btn, price) {
     if (btn.classList.contains('armed')) { disarm(btn); return true; }
     document.querySelectorAll('.btn.armed').forEach(disarm);
     btn.dataset.arm = `Tap again\n🪙${price}`; // two lines, so it fits narrow buttons
+    // v11e: the label is a real element, so the 🪙 becomes the drawn gold coin (a CSS ::after label could only show the emoji)
+    let lab = btn.querySelector(':scope > .arm-lab');
+    if (!lab) { lab = document.createElement('span'); lab.className = 'arm-lab'; lab.setAttribute('aria-hidden', 'true'); btn.appendChild(lab); }
+    lab.innerHTML = '<span class="al"></span>'; lab.firstChild.textContent = btn.dataset.arm; // one inner line box: the coin stays inline
     btn.classList.add('armed');
     btn._armT = setTimeout(() => disarm(btn), ARM_MS);
     return false;
@@ -2011,7 +2053,8 @@
       ${sec('Options', `
         <li>The five options you change least (${go('Letters in Hand')}, ${go('Bonus Squares')}, ${go('Clue Pics')}, ${go('Scoring')} and ${go('Timer')}) fold into one <b>▸ Options</b> row, so the Setup screen fits on one screen. The row shows your choices in one line, like "6 letters · Floating bonus · Some pics · Classic · Untimed".</li>
         <li>Tap it to open (▾) or close (▸) it. It stays the way you left it. ⚙ Settings in the game changes the same options.</li>
-        <li><b>Grid Colors</b> (at the foot of Options, and in ⚙): five looks for the grid. <b>Board</b> (the default): empty cells are dark slots and played tiles are cream, with a colored bar for whose they are. <b>Inked</b>: no bars; your letters are blue, the Bot's red, starter letters black. <b>Inked Blue</b>: Inked, with this turn's tiles blue. <b>Painted</b>: solid blue and red tiles with white letters, light-gray starters. <b>Bold</b>: white empty cells and solid tiles. The change shows at once.</li>
+        <li><b>Button Colors</b> (in More Options, and in ⚙): three looks for the coin buttons: Steel (the default), Sapphire or Navy &amp; gold. Every game has the same choice.</li>
+        <li><b>Grid Colors</b> (at the foot of More Options, and in ⚙): five looks for the grid. <b>Board</b> (the default): empty cells are dark slots and played tiles are cream, with a colored bar for whose they are. <b>Inked</b>: no bars; your letters are blue, the Bot's red, starter letters black. <b>Inked Blue</b>: Inked, with this turn's tiles blue. <b>Painted</b>: solid blue and red tiles with white letters, light-gray starters. <b>Bold</b>: white empty cells and solid tiles. The change shows at once.</li>
         <li><b>Screen</b> (in ⚙ ${NM.suite} settings in the Lobby, and in ⚙ in the game; it changes every game): <b>Auto</b> follows your device's light or dark setting; <b>Light</b> and <b>Dark</b> stay put; <b>Night</b> is the dimmest look (charcoal grays, color only in the owner bars and clocks) for playing in the dark, with one fixed grid look.</li>
         <li>The Setup screen remembers your last choices. <b>⭐ Save as my defaults</b> keeps the Challenge Level, Grid Size and all the Options as your own defaults; <b>↺ Defaults</b> brings them back after you try something different (or the app's defaults, if you haven't saved any).</li>`)}
       ${sec('Letters in Hand', `
@@ -2211,6 +2254,7 @@
     openModal(`<h2>⚙ ${NM.cross} settings</h2>
       <h3 class="cd-sec">Changes now</h3>
       <label class="field cd-gridpick"><span class="lbl">Grid Colors</span><span class="gs-pick"><select data-k="grid">${gridOpts()}</select><span id="cdGridSample">${gridSample(settings.grid)}</span></span></label>
+      <label class="field"><span class="lbl">Button Colors</span><select data-k="btn">${btnOpts()}</select></label>
       <div class="vt-grid cd-set">
         <label class="field"><span class="lbl">Screen</span><select data-k="screen">${SCREEN_OPTS}</select></label>
         <label class="field"><span class="lbl">Letters in Hand${live ? ' <i>(next round)</i>' : ''}</span><select data-k="hand">${$('#handSel').innerHTML}</select></label>
@@ -2237,6 +2281,7 @@
       if (live) { E.setHandNext(G, settings.hand); save(); }
       if (G && !$('#game').hidden) { renderBoard(); render(); }
       const smp = $('#cdGridSample'); if (smp) smp.innerHTML = gridSample(settings.grid);
+      setLook($('#game'), settings.btn); const bs = $('#btnSel'); if (bs) bs.value = settings.btn;
       handNote();
     };
     desc(); handNote();
@@ -3420,7 +3465,7 @@
     // v08e: ☑️ Check was missing from this table (and from "This game"); its count comes from the turn log
     if (cs.check) coinRows.push([`Check ×${(G.log || []).reduce((a, e) => a + (e.p === 0 ? (e.items || []).filter(x => x.k === 'check' && x.c).length : 0), 0)}`, cs.check]);
     const net = coinRows.reduce((a, x) => a + x[1], 0);
-    const sg = v => (v < 0 ? '−' + -v : '+' + v);
+    const sg = v => (v < 0 ? '−' + fmtN(-v) : '+' + fmtN(v)); // v11e: thousands commas
     const coinTbl = coinHead() + `<table class="score-table coin-tbl">`
       + (coinRows.length ? coinRows.map(x => `<tr><td>${esc(x[0])}</td><td class="${x[1] < 0 ? 'neg' : 'pos'}">${sg(x[1])}</td></tr>`).join('') : '<tr><td>No coins earned or spent</td><td>0</td></tr>')
       + coinTotal("This game's total earned coins:", net) + '</table>';
@@ -3496,6 +3541,7 @@
     settings: () => settings,
     GI, gimg, // v09a: the game icons
     winLine, meWin, fitOver, // v11a (CD-93): the one-row win report shared by every game
+    fmtN, BTN_LOOKS, btnOpts, setLook, // v11e: thousands commas; the Button Colors looks shared by every game
     coinHead, coinTotal, // v11b (CD-90: 4.2.4): the result windows' Coins heading and bottom line
     sound, // v08h: sound effects (and the 🔇 / 🔊 buttons) shared with LockWord
     _render: () => render(), _G: () => G // v08k: for timing checks only
