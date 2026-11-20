@@ -15,7 +15,7 @@
    v08j: grid colors, final-play view, clock-out final turn, menu defaults, phone two-finger drag) */
 'use strict';
 (() => {
-  const APP_VER = 'v11b'; // Project CP: shown as a pill beside the title and in the browser tab
+  const APP_VER = 'v11c'; // Project CP: shown as a pill beside the title and in the browser tab
   const NM = window.MK_NAMES || { suite: 'Master Keys', cross: 'CrossKeys', lock: 'LockWord' }; // v09: the game names (names.js)
   // v09a (JM CD-71: 1.2c, 1.3b): the two games' own icons, shown wherever the 🧩 / 🔐 emoji stood
   const GI = { cross: 'icons/crosskeys.svg', lock: 'icons/lockword.svg', ring: 'icons/keyring.svg' }; // v11: KeyRing
@@ -166,8 +166,8 @@
       try { FX[name](a.currentTime + 0.01 + (delay || 0)); } catch (e) { /* ignore */ }
     }
     const SPK = '<path d="M4 9.5h3.6L12.5 5v14l-4.9-4.5H4z" fill="currentColor"/>';
-    const SPK_ON = `<svg viewBox="0 0 24 24" aria-hidden="true">${SPK}<path d="M15.5 9a4.2 4.2 0 0 1 0 6M18 6.5a7.8 7.8 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`;
-    const SPK_OFF = `<svg viewBox="0 0 24 24" aria-hidden="true">${SPK}<path d="M15.5 9.5l5 5M20.5 9.5l-5 5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>`;
+    const SPK_ON = `<svg viewBox="3 3 18.5 18" aria-hidden="true">${SPK}<path d="M15.5 9a4.2 4.2 0 0 1 0 6M18 6.5a7.8 7.8 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`;
+    const SPK_OFF = `<svg viewBox="3 3 18.5 18" aria-hidden="true">${SPK}<path d="M15.5 9.5l5 5M20.5 9.5l-5 5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>`;
     function paint() {
       document.querySelectorAll('[data-snd]').forEach(b => {
         // v11b (JM CD-90: 4.1.3): a drawn speaker (it takes the button's color), red with a cross while muted, in every game

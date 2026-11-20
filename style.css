@@ -2152,3 +2152,52 @@ html[data-screen="night"] [data-snd].muted { color: #b0413e; }/* phones: the inf
   #keyring .kr-info .kr-pz-btn { min-width: 2em; padding: 3px 6px; }
 }/* narrow phones: the heading and the time share one row, so the heading's emoji steps aside */
 @media (max-width: 399px) { .kr-rtop .res-face { display: none; } .kr-rtop .res-title { font-size: 18px; } }
+/* =====================================================================
+   v11c (JM CD-97): KeyRing follow-ups, plus two all-game changes (bigger header icons; KeyRing's timer warning matches
+   the other games).
+   ===================================================================== */
+/* ALL GAMES (CD-97: 2.10.1–2.10.1.1): the speaker and the buttons beside it fill their buttons; the buttons keep their size */
+.icon-btn { font-size: 25px; line-height: 1; }
+@media (max-width: 420px) { .icon-btn { font-size: 21px; } }
+.home-icons .icon-btn { font-size: 23px; }
+@media (max-width: 520px) { .home-icons .icon-btn { font-size: 21px; } }
+@media (max-width: 480px) { .vt-top .icon-btn { font-size: 20px; } }
+.hub-btns .icon-btn, .zslot .zbtn { font-size: calc(var(--hb, 36px) * .64) !important; }
+@media (min-width: 700px) and (min-height: 560px) { #keyring .kr-top .icon-btn { font-size: 38px; } }
+[data-snd] svg { width: 86%; height: 86%; }
+/* CD-97: 2.9.1: the pause / play icon fills its button (the button stays the height of the pills beside it) */
+#keyring .kr-info .kr-pz-btn { align-self: stretch; padding: 1px 4px; min-width: 2.2em; }
+.kr-pz-btn svg { display: block; width: 1.6em; height: 1.6em; margin: auto; } /* about as tall as the pills beside it allow */
+/* CD-97: 2.4.1: Pause hides more: a stronger blur, and the letters themselves vanish */
+#krMain.paused .kr-slots, #krMain.paused .kr-ring, #krMain.paused .kr-cb, #krMain.paused .kr-tag { filter: blur(13px) saturate(.6); }
+#krMain.paused .kr-t, #krMain.paused .kr-c { color: transparent !important; }
+/* CD-97 add. 2: the last 10 seconds: the Ring's platform flashes yellow (10–6) then red (5–1), as the other games' grids do */
+.kr-plat.tf-y { box-shadow: 0 0 0 6px #ffe600, 0 0 26px 8px rgba(255, 230, 0, .75); }
+.kr-plat.tf-r { box-shadow: 0 0 0 6px #ff1a1a, 0 0 26px 8px rgba(255, 26, 26, .75); }
+.kr-plat.tf-y.tf-a { animation: tfYa 1s ease-out; }
+.kr-plat.tf-y.tf-b { animation: tfYb 1s ease-out; }
+.kr-plat.tf-r.tf-a { animation: tfRa 1s ease-out; }
+.kr-plat.tf-r.tf-b { animation: tfRb 1s ease-out; }
+/* CD-97: 2.8.1: the colors switch (Word / Letter), beside the layout pill on tablets and computers */
+.kr-colsw { cursor: pointer; gap: .35em; }
+.kr-colsw[hidden] { display: none; }
+.kr-colsw .sw-l { font-size: .72em; opacity: .55; }
+.kr-colsw[aria-checked="false"] .sw-l:first-child, .kr-colsw[aria-checked="true"] .sw-l:last-child { opacity: 1; }
+.kr-colsw .sw-t { position: relative; width: 1.9em; height: 1.05em; border-radius: 999px; background: linear-gradient(90deg, #ffc078, #8ce99a, #a5c8ff, #d0b8ff); box-shadow: inset 0 1px 3px rgba(0, 0, 0, .35); }
+.kr-colsw .sw-t i { position: absolute; top: .1em; left: .1em; width: .85em; height: .85em; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, .45); transition: transform .18s; }
+.kr-colsw[aria-checked="true"] .sw-t i { transform: translateX(.85em); }
+/* CD-97: 3.2.1–3.2.2: the result's word boxes match their message pills, and every word chip has a fine black outline */
+.kr-grp.kr-kw { background: #2fe35f; color: #000; border-color: #1a9c3c; }
+.kr-grp.kr-mw { background: #c4c9ce; color: #000; border-color: #868e96; }
+.kr-grp .kr-chips span:not(.none) { border: 1px solid #000; }
+html[data-screen="night"] .kr-grp.kr-kw { background: #2f7a45; color: #111; border-color: #1f5130; }
+html[data-screen="night"] .kr-grp.kr-mw { background: #555; color: #111; border-color: #444; }
+/* CD-97 add. 1: Setup fits without scrolling: Start sits under the quantities; the rarer options fold away */
+.kr-setup .kr-prev span { width: 30px; height: 30px; }
+.kr-setup #krStart { margin-top: 2px; }
+.kr-setup .opts .opts-body .kr-desc { margin: -6px 0 0; }/* tablets in portrait (700-899 px wide): the info row (coins, Key words, clock, pause, layout, colors switch) fits on one line */
+@media (min-width: 700px) and (max-width: 899px) and (min-height: 560px) {
+  #keyring .kr-info { gap: 7px; }
+  #keyring .kr-info .kr-pill, #keyring .kr-info .coin-pill { font-size: 19px; padding: 5px 11px; gap: 5px; }
+}
+#keyring .kr-info .kr-colsw .sw-l { font-size: .62em; }
