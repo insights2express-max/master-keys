@@ -3,27 +3,27 @@
    These replace the plain "hard" clue at higher Challenge Levels (5+). Most are double meanings or puns;
    a question mark means "don't take this literally". Only words in lexicon.js are used. */
 self.WORDPLAY_DATA = `
-ACE|Card that also serves
-ABLE|Cain's brother, by sound
-ARC|Noah's boat, by sound
-AWL|Everything, by sound
-AJAR|When is a door not a door?
+ACE|Serving card?
+ABLE|Abel, aloud?
+ARC|Ark, aloud?
+AWL|All, aloud?
+AJAR|Door, not a door?
 ANAGRAM|Listen, for silent
-BAND|Group that might be rubber
-BANK|Place to save money, or to sit and fish
-BAT|Club member that flies at night?
-BOARD|Plank you can get on a plane
-BOW|Ribbon knot, or a curtain call move
-CAPE|Superhero wear, or a headland
-CHECK|Restaurant bill, or chess threat
-CHEST|Treasure box in your body
-CLUB|Golf stick, or a group
-COAT|Paint layer you can wear
-COUNT|Number, or a nobleman
+BAND|Rubber group?
+BANK|River savings?
+BAT|Flying club?
+BOARD|Plank to get on?
+BOW|Ribbon's thanks?
+CAPE|Hero's headland?
+CHECK|Bill threat?
+CHEST|Body box?
+CLUB|Golf group?
+COAT|Wearable paint?
+COUNT|Numbering noble?
 CRAB|Grouch with claws?
-DATE|Fruit for a night out?
-DECK|Card pack, or a punch
-DRAFT|Breeze, or a first try
+DATE|Fruity outing?
+DECK|Ship's cards?
+DRAFT|Breezy first try?
 DUCK|Dodge a quacker?
 FAIR|Just a carnival?
 FALL|Season to trip in?
@@ -115,10 +115,10 @@ TRIP|Journey, or stumble
 WAKE|Boat trail when you get up?
 BLUE|Sad color
 BUG|Insect that annoys
-CHIP|Snack, or a computer brain
-CUE|Pool stick, or a hint
-DOVE|Peace bird that plunged
-DRAW|Tie made with a pencil?
+CHIP|Computer snack?
+CUE|Pool hint?
+DOVE|Peace plunge?
+DRAW|Tie by pencil?
 FINE|OK penalty
 FIT|Healthy tantrum?
 HOST|Party giver, or a crowd
@@ -131,230 +131,230 @@ TAN|Beach color, or hide treatment
 TOWER|Tall building, or a tugboat
 TRACK|Path you follow
 # ---------- v03 batch (JM, CD-7: 7): double meanings and puns ----------
-ACT|Do something on stage, or pass a law
-ADDRESS|Lincoln shows where to send mail.
-AGENT|Spy who might sell you a house?
-AIR|Tune you can breathe
-ALIEN|Visitor who's out of this world?
-ANCHOR|News host who keeps ships in place?
-ANGLE|Fish for a point of view?
-ANSWER|What you're doing right now?
-ANT|Little picker-upper at picnics?
-APPLE|Teacher's gift, or the Big one in New York
-APRON|Chef's front, or where planes park
-ARCH|Sly, or a curved doorway
-ARM|Limb you might take up?
-ARMY|Lots of ants, or soldiers
+ACT|Stage law?
+ADDRESS|Gettysburg mail?
+AGENT|Secret seller?
+AIR|Breathable tune?
+ALIEN|Far-out visitor?
+ANCHOR|Newsroom weight?
+ANGLE|Fishy viewpoint?
+ANSWER|Your job now?
+ANT|Picnic lifter?
+APPLE|Big one in NY?
+APRON|Airport bib?
+ARCH|Sly doorway?
+ARM|Limb to take up?
+ARMY|Ant crowd?
 ARROW|Quiver resident?
 ART|Drawing power?
-ATLAS|Book of maps that holds up the world?
-AXE|Chopper that can also cut jobs?
-BABY|Little one you might sit?
+ATLAS|Map-book Titan?
+AXE|Job chopper?
+BABY|Tot you sit?
 BACK|Support, or the rear
-BACON|What a breadwinner brings home?
-BADGE|Scout's patch, or a cop's ID
+BACON|Breadwinner's haul?
+BADGE|Pinned ID?
 BAG|Catch, or carry-all
-BAKER|Someone who makes a lot of dough?
-BALL|Formal dance you can also kick?
-BAR|Candy shape, or a test for lawyers
+BAKER|Dough maker?
+BALL|Dance to kick?
+BAR|Lawyers' candy?
 BASE|Home plate, or rude
-BASIN|Sink, or the land a river drains
-BATH|Tub time, or an English city
-BATON|Stick passed in a relay, or waved by a conductor
-BATTERY|Power pack, or a group of tests
-BAY|Howl at the moon, or a cove
+BASIN|Sink of a river?
+BATH|Soak in England?
+BATON|Relay's wand?
+BATTERY|Charged group?
+BAY|Howling cove?
 BEACH|Shore thing?
-BEAM|Smile like a ray of light
-BEAN|Coffee seed, or a noggin
-BEAT|Worn out, or a drummer's job
-BED|Garden plot you sleep in?
-BEE|Spelling contest that buzzes?
-BEET|Red root that sounds like a victory?
+BEAM|Smiling ray?
+BEAN|Coffee noggin?
+BEAT|Tired rhythm?
+BED|Plot to sleep on?
+BEE|Buzzing contest?
+BEET|Red victory?
 BELL|Ring leader?
-BELT|Sing loudly, or hold up pants
-BENCH|Where subs sit, or a judge's seat
-BEND|Bow, or a curve in the road
+BELT|Waist song?
+BENCH|Judge's dugout?
+BEND|Bow in the road?
 BEST|Top, or to beat
-BID|Auction offer, or a command
-BILL|Duck's mouth, or a restaurant check
+BID|Auction command?
+BILL|Duck's check?
 BIRD|Little tweeter?
-BIT|Small piece, or a horse's mouthpiece
-BITE|Snack, or what mosquitoes do
-BLADE|Grass piece, or a skate edge
+BIT|Little mouthful?
+BITE|Snack attack?
+BLADE|Grass sword?
 BLANK|Empty mind?
-BLANKET|Bed cover, or covering everything
-BLAST|Fun time, or an explosion
-BLIND|Window cover that can't see?
-BLOCK|City square, or a writer's problem
+BLANKET|Cover-all?
+BLAST|Explosive fun?
+BLIND|Sightless shade?
+BLOCK|Writer's street?
 BLOOM|Flower, or flourish
-BLUSH|Cheek color, from makeup or embarrassment
-BOAT|It might carry gravy?
+BLUSH|Shy makeup?
+BOAT|Gravy carrier?
 BOB|Haircut that floats?
-BODY|Car frame, or a person
-BOIL|Get very angry, or cook in water
+BODY|Car's torso?
+BOIL|Angry kettle?
 BOLD|Brave typeface?
 BONE|Dog treat to pick?
 BOOK|Reserve a novel?
-BOOT|Kick out, or start a computer
-BORE|Drill, or a dull guest
+BOOT|Kick-start?
+BORE|Dull drill?
 BOSS|Big cheese?
-BOWL|Cereal dish, or roll at pins
-BRAKE|Stopper that sounds like a rest?
-BRAND|Mark on cattle, or a label
-BREAD|Dough after the oven, or money
+BOWL|Super dish?
+BRAKE|Car's rest?
+BRAND|Cattle label?
+BREAD|Oven money?
 BREAK|Recess, or snap
-BREW|Make tea, or plot trouble
-BRICK|Building block, or a solid friend
-BRIDGE|Card game that crosses a river?
+BREW|Plotted tea?
+BRICK|Solid friend?
+BRIDGE|Card-game span?
 BRIEF|Short legal paper?
 BRIGHT|Sunny, or smart
-BROOK|Stream, or put up with
-BRUSH|Close call with a paintbrush?
-BUCKET|Pail, or a list for a lifetime
-BUD|Flower-to-be, or a pal
-BULB|Idea symbol, or a tulip start
-BULL|Market optimist with horns?
-BUN|Bread roll, or a hairdo
-BUNCH|Group of bananas, or friends
-BURN|Insult, or a fire injury
-BUS|Clear tables, or a big ride
-BUTTON|Cute, or a shirt fastener
+BROOK|Stand a stream?
+BRUSH|Close-call tool?
+BUCKET|Lifetime list?
+BUD|Pal in bloom?
+BULB|Idea in a tulip?
+BULL|Horned optimist?
+BUN|Bread hairdo?
+BUNCH|Banana crowd?
+BURN|Hot insult?
+BUS|Clear a ride?
+BUTTON|Cute fastener?
 BUY|Believe, or purchase
-CAB|Taxi, or red wine
-CABIN|Log home, or a plane section
-CABLE|TV service, or a strong wire
-CALF|Young cow, or the back of a leg
-CALL|Phone, or a referee's decision
+CAB|Red-wine ride?
+CABIN|Flying hut?
+CABLE|TV wire?
+CALF|Leg's young cow?
+CALL|Ref's phone?
 CALM|Eye of the storm?
-CAMP|Tent site, or over-the-top style
+CAMP|Kitschy site?
 CANDY|Sweet nothing?
-CAP|Limit, or a hat
-CAPTAIN|Team leader, or a ship's boss
-CAR|Train section, or a ride
+CAP|Hat limit?
+CAPTAIN|Team skipper?
+CAR|Train ride?
 CARD|Joker in the deck?
-CARE|Worry, or tend
-CARGO|Pants style, or freight
-CARPET|Rug rolled out red for stars?
-CARROT|Reward dangled before a donkey
-CARRY|Tote, or what you do with a one in math
-CART|Shopping wheels, before the horse?
-CASE|Briefcase, or a detective's job
-CASTLE|Chess move fit for a king?
-CAT|Cool jazz fan, or a pet
-CATCH|Hidden problem, or a fly ball
-CAUSE|Reason, or a charity
-CAVE|Give in, or a bat's home
-CELL|Phone, or a jail room
-CHAIN|Store group, or links
-CHAIR|Head of a meeting, or a seat
-CHARM|Bracelet trinket, or appeal
-CHART|Top 40 list, or a sea map
-CHEEK|Sass, or part of the face
+CARE|Tend to worry?
+CARGO|Pants freight?
+CARPET|Star's red rug?
+CARROT|Donkey's reward?
+CARRY|Math tote?
+CART|Horse's leader?
+CASE|Detective's box?
+CASTLE|King's chess move?
+CAT|Cool pet?
+CATCH|Snag a fly?
+CAUSE|Charity reason?
+CAVE|Give-in grotto?
+CELL|Jail phone?
+CHAIN|Linked stores?
+CHAIR|Meeting seat?
+CHARM|Lucky spell?
+CHART|Sea list?
+CHEEK|Sassy face part?
 CHEER|Rah, or good spirits
-CHEESE|Smile for the camera?
-CHICKEN|Coward, or a hen
-CHILL|Relax, or a cold feeling
+CHEESE|Camera smile?
+CHICKEN|Cowardly hen?
+CHILL|Cold, relaxed?
 CHIN|Keep it up?
-CIRCLE|Social group, or a round shape
-CIRCUIT|Electric path, or a tour
-CLAIM|Assert, or gold-rush land
-CLAP|Applause, or thunder
-CLASS|Style, or a lesson
-CLAW|Hammer part with a cat's grip?
-CLEAR|See-through, or empty
-CLICK|Mouse sound, or hit it off
-CLIFF|Hanger at a story's end?
-CLIMB|Rise in the rankings
-CLOCK|Punch in, or a timepiece
+CIRCLE|Round group?
+CIRCUIT|Electric tour?
+CLAIM|Gold assert?
+CLAP|Thunder praise?
+CLASS|Stylish lesson?
+CLAW|Hammer's grip?
+CLEAR|See-through, empty?
+CLICK|Mouse hit?
+CLIFF|Story's hanger?
+CLIMB|Chart scaling?
+CLOCK|Punch-in watch?
 CLOSE|Near, or shut
-CLOUD|Sky puff that stores files?
-CLOUT|Influence, or a whack
-CLUE|What you're reading right now?
-COACH|Bus, or a trainer
-COAL|Lump for a naughty kid?
-COAST|Shore, or glide
-CODE|Secret writing a programmer types?
-COLD|Sniffle, or icy
-CONE|Ice cream holder, or a traffic marker
+CLOUD|Sky storage?
+CLOUT|Influential whack?
+CLUE|This line?
+COACH|Trainer bus?
+COAL|Naughty lump?
+COAST|Gliding shore?
+CODE|Secret program?
+COLD|Icy sniffle?
+CONE|Traffic treat?
 COOK|Fudge the books?
-COOL|Calm, or awesome
-COPY|Duplicate, or ad text
-CORD|Rope, or a stack of firewood
-CORE|Apple center, or main
-CORN|It has ears but can't hear?
+COOL|Calm and hip?
+COPY|Ad clone?
+CORD|Wood rope?
+CORE|Apple's main?
+CORN|Ears but can't hear?
 COST|Price, or lose
-COUCH|Sofa, or phrase carefully
-COURT|Woo, or a tennis area
-COVER|Book jacket, or a band's take on a hit
-COW|Intimidate, or a dairy animal
-CRAFT|Boat, or a skill
-CRANE|Bird, or a construction lifter
-CRASH|Computer failure, or sleep over
-CRAWL|Swim stroke, or move slowly
-CREAM|Best of the best, or coffee whitener
-CREW|Rowing team, or ship staff
-CROP|Trim a photo, or a harvest
-CROW|Brag, or a black bird
+COUCH|Sofa phrasing?
+COURT|Wooing judge?
+COVER|Band's jacket?
+COW|Daunting dairy?
+CRAFT|Skilled boat?
+CRANE|Bird lifter?
+CRASH|Sleepover wreck?
+CRAWL|Slow stroke?
+CREAM|Best whitener?
+CREW|Rowing staff?
+CROP|Trimmed harvest?
+CROW|Bragging bird?
 CROWD|Three's one?
-CROWN|Tooth cap, or a king's hat
-CRUSH|Squash, or a secret love
-CRY|Weep, or shout
-CUB|Bear kid, or a rookie reporter
-CUBE|Ice shape, or raise to the third power
-CUP|Trophy, or a mug
-CURE|Fix, or preserve meat
-CURVE|Bend, or a grading scale
-CUT|Slice, or a share
-CYCLE|Bike ride, or a washer setting
-DAM|Beaver's work, or a mother horse
+CROWN|Tooth king?
+CRUSH|Squashing love?
+CRY|Weepy shout?
+CUB|Rookie bear?
+CUBE|Ice to the third?
+CUP|Trophy mug?
+CURE|Ham remedy?
+CURVE|Bent grades?
+CUT|Sliced share?
+CYCLE|Bike setting?
+DAM|Beaver's mom?
 DANCE|Ball, or sway
 DARE|Truth's partner in a game?
-DART|Dash, or a pub throw
-DEAL|Bargain, or pass out cards
-DEAR|Expensive letter opener?
-DEED|Act, or a property paper
-DEEP|Profound, or far down
-DEER|Animal that sounds like a darling?
-DEN|Lion's home, or a cozy room
-DESERT|Abandon, or the Sahara
-DIAMOND|Ball field, or a gem
-DICE|Cut in cubes, or a gamer's cubes
-DIET|Lawmaking body, or a meal plan
-DIG|Like, or excavate
+DART|Pub dash?
+DEAL|Card bargain?
+DEAR|Costly letter start?
+DEED|Land act?
+DEEP|Profound pool end?
+DEER|Dear animal?
+DEN|Lion's TV room?
+DESERT|Sahara walkout?
+DIAMOND|Gem field?
+DICE|Chopped cubes?
+DIET|Japan's meal plan?
+DIG|Like to excavate?
 DIM|Not very bright?
-DIP|Quick swim, or a chip's partner
-DISH|Gossip, or a plate
-DIVE|Plunge, or a seedy bar
+DIP|Swim in salsa?
+DISH|Gossip plate?
+DIVE|Plunging bar?
 DOCK|Pier, or cut pay
-DOCTOR|Fake a photo, or a physician
-DOG|Follow closely, or a pet
-DOUGH|Money for a baker?
-DOWN|Sad, or fluffy feathers
-DRAIN|Exhaust, or a sink hole
+DOCTOR|Photo fixer?
+DOG|Pet tail?
+DOUGH|Baker's money?
+DOWN|Sad feathers?
+DRAIN|Sink exhaust?
 DRAMA|Play, or a fuss
 DREAM|Night movie?
-DRESS|Gown, or bandage a wound
-DRIFT|Snow pile, or the gist
-DRINK|Beverage, or the sea, informally
-DRIVE|Ambition, or a road trip
-DRUM|Beat, or an oil barrel
-DRY|Witty, like some humor
+DRESS|Wound gown?
+DRIFT|Snow gist?
+DRINK|Ocean beverage?
+DRIVE|Ambitious trip?
+DRUM|Oil-barrel beat?
+DRY|Arid wit?
 DUE|Owed, or expected
-DUST|Clean off, or sprinkle on
+DUST|Clean or sprinkle?
 DUTY|Tax, or obligation
-EAR|Corn piece, or a listener
-EARTH|Dirt, or our planet
-ECHO|Repeat, or E in the radio alphabet
-EDGE|Advantage, or the border
-EGG|Urge on, or a breakfast item
-ELBOW|Nudge, or an arm joint
-ELDER|Tree, or an older person
-ELEMENT|Part, or iron or gold
-ENTER|Key you press to go in?
-ENTRY|Diary page, or a way in
+EAR|Corn listener?
+EARTH|Dirt planet?
+ECHO|Sound copy?
+EDGE|Border advantage?
+EGG|Breakfast urge?
+ELBOW|Nudging joint?
+ELDER|Older tree?
+ELEMENT|Golden part?
+ENTER|Key to go in?
+ENTRY|Diary way in?
 ESCAPE|Key to leave?
-EVEN|Level, or divisible by two
-EYE|Needle hole, or watch
+EVEN|Level number?
+EYE|Needle's watch?
 FACE|Clock front, or confront
 FARE|Bus price, or get along
 FEED|News stream, or give food
@@ -632,4 +632,7 @@ YELLOW|Cowardly, or sun-colored
 ZERO|Nothing, or a nobody
 ZIP|Nothing, or speed along
 ZEST|Lemon peel, or gusto
+# L14.05 (CD-104): new Wordplay clues from accepted drafts
+END|Tight finish?
+ESSAY|Try writing?
 `;
