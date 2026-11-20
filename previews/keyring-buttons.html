@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en" data-screen="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KeyRing buttons · mockup</title>
+<link rel="stylesheet" href="../style.css">
+<style>
+  /* KeyRing coin-button mockup (JM CD-98 add. 2; CD-100: 2.1.1): three looks for the corner pieces. Not part of the app. */
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  .bar { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; align-items: center; padding: 12px; }
+  .bar h1 { width: 100%; text-align: center; margin: 0 0 4px; font: 400 24px 'Alfa Slab One', serif; }
+  .bar p { width: 100%; text-align: center; margin: 0 0 6px; color: var(--muted); font-size: 14px; }
+  .bar button { border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 10px; padding: 8px 12px; font-weight: 800; cursor: pointer; }
+  .bar button.on { background: var(--primary); color: var(--primary-ink); }
+  .cols { display: flex; flex-wrap: wrap; gap: 18px; justify-content: center; padding: 6px 12px 30px; }
+  .col { text-align: center; }
+  .col h2 { margin: 6px 0 10px; font-size: 18px; }
+  #keyring { display: block; position: relative; border-radius: 22px; padding: 14px; overflow: visible; }
+  #krMain { display: block; }
+  .kr-play { display: flex; justify-content: center; }
+</style>
+</head>
+<body>
+<svg class="kr-defs" width="0" height="0" aria-hidden="true" focusable="false"><defs>
+      <linearGradient id="krCoinG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff2b8"/><stop offset=".38" stop-color="#ffe082"/><stop offset="1" stop-color="#f5b300"/></linearGradient>
+      <linearGradient id="krGloss" x1="0" y1="0" x2=".35" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".62"/><stop offset=".42" stop-color="#fff" stop-opacity=".12"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/></linearGradient>
+      <linearGradient id="krSapA" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6cb6ff"/><stop offset=".45" stop-color="#2a7de8"/><stop offset="1" stop-color="#0d3f9e"/></linearGradient>
+      <linearGradient id="krPurA" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d8acff"/><stop offset=".45" stop-color="#9445f2"/><stop offset="1" stop-color="#4b1591"/></linearGradient>
+      <linearGradient id="krSteelR" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset=".45" stop-color="#b9c4cf"/><stop offset="1" stop-color="#5d6a77"/></linearGradient>
+      <linearGradient id="krSteelB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fbfcfd"/><stop offset=".5" stop-color="#d3dae1"/><stop offset="1" stop-color="#97a3af"/></linearGradient>
+      <linearGradient id="krSteelDk" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9aa6b2"/><stop offset="1" stop-color="#36414d"/></linearGradient>
+      <linearGradient id="krNavyC" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#34507f"/><stop offset=".5" stop-color="#1a2b4f"/><stop offset="1" stop-color="#0b1427"/></linearGradient>
+      <linearGradient id="krPlumC" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6a3a8e"/><stop offset=".5" stop-color="#3a1a55"/><stop offset="1" stop-color="#1f0c30"/></linearGradient>
+      <linearGradient id="krGoldR" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff3b0"/><stop offset=".5" stop-color="#e7b416"/><stop offset="1" stop-color="#9a6b00"/></linearGradient>
+    </defs></svg>
+<div id="one" hidden>
+  <section id="keyring">
+    <div id="krMain">
+      <div class="kr-play"><div class="kr-stage">
+        <div class="kr-ring" id="krRing"><div class="kr-plat"></div><svg class="kr-steel" viewBox="0 0 100 100" aria-hidden="true">
+                <defs><linearGradient id="krStl" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="var(--kr-st1)"/><stop offset=".5" stop-color="var(--kr-st2)"/><stop offset="1" stop-color="var(--kr-st3)"/></linearGradient></defs>
+                <circle cx="50" cy="51.2" r="38" fill="none" stroke="rgba(0,0,0,.45)" stroke-width="3.6"/>
+                <circle cx="50" cy="50" r="38" fill="none" stroke="url(#krStl)" stroke-width="3.2"/>
+                <circle cx="50" cy="49.2" r="38" fill="none" stroke="rgba(255,255,255,.55)" stroke-width=".5" stroke-dasharray="40 200" stroke-dashoffset="150"/>
+              </svg><button class="kr-hub" id="krHub" type="button" title="Shuffle: spin the letters (Space)" aria-label="Shuffle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h3.5c2 0 3.2 1 4.3 2.7l2.4 4.6C14.3 16 15.5 17 17.5 17H21M18 14l3 3-3 3M3 17h3.5c1.4 0 2.4-.5 3.2-1.4M14.3 8.4C15.1 7.5 16.1 7 17.5 7H21M18 4l3 3-3 3"/></svg></button></div>
+        <button class="btn kr-cp kr-bonus" id="krTag" type="button" title="Bonus words: tap for the list" aria-label="Bonus words: tap for the list"><svg class="kr-cps" aria-hidden="true"></svg><span class="kr-cpc tl"><span class="lab"><svg class="ki" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2l2.9 6.4 7 .7-5.3 4.7 1.6 6.9L12 17.3l-6.2 3.6 1.6-6.9L2.1 9.3l7-.7z"/></svg>BONUS</span><b class="num" id="krTagN">0</b></span></button>
+        <button class="btn coinbtn kr-cp kr-time" id="krTime" type="button" aria-label="+30 seconds"><svg class="kr-cps" aria-hidden="true"></svg><span class="kr-cpc tr"><span class="lab"><svg class="ki" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 1.4h6v2.3H9zM18.9 6.3l1.7-1.7 1.5 1.5-1.7 1.7z"/><path fill-rule="evenodd" d="M12 4.6a8.7 8.7 0 1 1 0 17.4 8.7 8.7 0 0 1 0-17.4zm0 2.5a6.2 6.2 0 1 0 0 12.4 6.2 6.2 0 0 0 0-12.4z"/><path d="M10.9 8.6h2.2v4.7l3.1 1.9-1.1 1.8-4.2-2.5z"/></svg>+30s</span><span class="cost"><svg class="kr-coin" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10.6" fill="url(#krCoinG)" stroke="#a87400" stroke-width="1.3"/><circle cx="12" cy="12" r="7.4" fill="none" stroke="#c99000" stroke-width="1.2" opacity=".8"/><path d="M8.3 7.9a5.4 5.4 0 0 1 6.9-.6" fill="none" stroke="#fff7cf" stroke-width="1.5" stroke-linecap="round" opacity=".85"/></svg><b id="krTimeCp">10</b></span></span></button>
+        <button class="btn coinbtn kr-cp kr-hint" id="krHint" type="button" aria-label="Hint: show a slot's clue"><svg class="kr-cps" aria-hidden="true"></svg><span class="kr-cpc bl"><span class="cost"><svg class="kr-coin" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10.6" fill="url(#krCoinG)" stroke="#a87400" stroke-width="1.3"/><circle cx="12" cy="12" r="7.4" fill="none" stroke="#c99000" stroke-width="1.2" opacity=".8"/><path d="M8.3 7.9a5.4 5.4 0 0 1 6.9-.6" fill="none" stroke="#fff7cf" stroke-width="1.5" stroke-linecap="round" opacity=".85"/></svg><b id="krHintCp"></b></span><span class="lab"><svg class="ki" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.6a7.3 7.3 0 0 0-4.4 13.1c.7.5 1.1 1.3 1.1 2.2v.7h6.6v-.7c0-.9.4-1.7 1.1-2.2A7.3 7.3 0 0 0 12 1.6z"/><path d="M8.7 19.1h6.6v1.1a2.2 2.2 0 0 1-2.2 2.2h-2.2a2.2 2.2 0 0 1-2.2-2.2z"/></svg>Hint</span></span></button>
+        <button class="btn coinbtn kr-cp kr-drop" id="krDrop" type="button" aria-label="Key Drop: drop one letter into a slot"><svg class="kr-cps" aria-hidden="true"></svg><span class="kr-cpc br"><span class="cost"><svg class="kr-coin" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10.6" fill="url(#krCoinG)" stroke="#a87400" stroke-width="1.3"/><circle cx="12" cy="12" r="7.4" fill="none" stroke="#c99000" stroke-width="1.2" opacity=".8"/><path d="M8.3 7.9a5.4 5.4 0 0 1 6.9-.6" fill="none" stroke="#fff7cf" stroke-width="1.5" stroke-linecap="round" opacity=".85"/></svg><b id="krDropCp"></b></span><span class="lab"><svg class="ki" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M7.4 6.3a5.7 5.7 0 1 1-5.3 7.8 5.7 5.7 0 0 1 5.3-7.8zm0 3.3a2.4 2.4 0 1 0 0 4.8 2.4 2.4 0 0 0 0-4.8z"/><path d="M12.4 10.6h10.2v3.4h-1.4v3h-2.6v-3h-1.2v2.2h-2.6V14h-2.4z"/></svg>Drop</span></span></button>
+      </div></div>
+    </div>
+  </section>
+</div>
+<div id="all" hidden>
+  <div class="bar">
+    <h1>KeyRing corner buttons</h1>
+    <p>Three looks for the coin buttons and BONUS (RFI CD-100: 2.1.1). Tap the sizes and screens to compare. In the app: ⚙ Setup › More options › Button style.</p>
+    <span>Size:</span><button data-size="phone" class="on">Phone</button><button data-size="ipad">iPad</button>
+    <span>Screen:</span><button data-scr="light">Light</button><button data-scr="dark" class="on">Dark</button><button data-scr="night">Night</button>
+  </div>
+  <div class="cols"></div>
+</div>
+<script>
+'use strict';
+const qs = new URLSearchParams(location.search);
+if (qs.get('bs')) {
+  // one stage, drawn the way keyring.js draws it
+  document.documentElement.dataset.screen = qs.get('scr') || 'dark';
+  document.getElementById('one').hidden = false;
+  const k = document.getElementById('keyring'); k.classList.add('kr-bs-' + qs.get('bs'));
+  const rs = +qs.get('rs') || 347, sw = Math.min(+qs.get('sw') || rs, rs + 2 * Math.round(Math.min(110, rs * 0.11)));
+  const m = document.getElementById('krMain');
+  m.style.setProperty('--rs', rs + 'px'); m.style.setProperty('--sw', sw + 'px');
+  const n = 7, ts = Math.round(rs * 0.21); m.style.setProperty('--ts', ts + 'px');
+  const ring = document.getElementById('krRing');
+  [...'KEYRING'].forEach((ch, i) => { const t = document.createElement('div'); t.className = 'kr-t'; t.textContent = ch;
+    const a = (-90 + i * 360 / n) * Math.PI / 180; t.style.left = (rs / 2 + rs * .38 * Math.cos(a)) + 'px'; t.style.top = (rs / 2 + rs * .38 * Math.sin(a)) + 'px'; ring.appendChild(t); });
+  function cornerPath(s, cx, cy, rho, rad, fx, fy) {
+    const X = x => (fx ? s - x : x).toFixed(1), Y = y => (fy ? s - y : y).toFixed(1), P = (x, y) => X(x) + ' ' + Y(y);
+    let d = 'M ' + P(0, rad) + ' Q ' + P(0, 0) + ' ' + P(rad, 0);
+    const yA = cx - s < rho ? cy - Math.sqrt(rho * rho - (cx - s) ** 2) : s + 1;
+    if (yA >= s) return d + ' L ' + P(s, 0) + ' L ' + P(s, s) + ' L ' + P(0, s) + ' Z';
+    if (yA > 0) d += ' L ' + P(s, 0) + ' L ' + P(s, yA); else d += ' L ' + P(cx - Math.sqrt(rho * rho - cy * cy), 0);
+    const A = 'A ' + rho.toFixed(1) + ' ' + rho.toFixed(1) + ' 0 0 ' + (fx !== fy ? 1 : 0);
+    const xB = cy - s < rho ? cx - Math.sqrt(rho * rho - (cy - s) ** 2) : -1;
+    if (xB > 0) d += ' ' + A + ' ' + P(xB, s) + ' L ' + P(0, s); else d += ' ' + A + ' ' + P(0, cy - Math.sqrt(rho * rho - cx * cx));
+    return d + ' Z';
+  }
+  const cx = sw / 2, cy = rs / 2, rho = rs / 2 + Math.max(5, rs * 0.018), q = Math.min(cx, cy) - rho / Math.SQRT2;
+  const s = Math.round(q + rs * 0.14), rad = Math.max(10, s * 0.14);
+  m.style.setProperty('--cps', s + 'px');
+  [['#krTag', 0, 0], ['#krTime', 1, 0], ['#krHint', 0, 1], ['#krDrop', 1, 1]].forEach(([sel, fx, fy]) => {
+    const d = cornerPath(s, cx, cy, rho, rad, fx, fy), svg = document.querySelector(sel + ' .kr-cps');
+    svg.setAttribute('viewBox', '0 0 ' + s + ' ' + s);
+    svg.innerHTML = '<path class="b" d="' + d + '"/><path class="g" d="' + d + '"/><path class="r" d="' + d + '"/>';
+  });
+  document.getElementById('krHintCp').textContent = '9–15'; document.getElementById('krDropCp').textContent = '3'; document.getElementById('krTagN').textContent = '4';
+  document.querySelectorAll('.kr-cp').forEach(b => b.addEventListener('click', () => { b.classList.toggle('armed'); const c = b.querySelector('.kr-cpc'); c.dataset.arm = 'Tap again\n🪙12'; }));
+} else {
+  // the overview: the three looks side by side, each in its own frame
+  document.getElementById('all').hidden = false;
+  let size = 'phone', scr = 'dark';
+  const LOOKS = [['a', 'A · Sapphire glass'], ['b', 'B · Steel'], ['c', 'C · Navy & gold']];
+  function draw() {
+    document.documentElement.dataset.screen = scr;
+    const rs = size === 'phone' ? 347 : 560, sw = size === 'phone' ? 351 : 744, w = Math.min(sw, 680) + 40, hgt = rs + 40;
+    document.querySelector('.cols').innerHTML = LOOKS.map(([v, name]) => '<div class="col"><h2>' + name + '</h2><iframe title="' + name + '" src="?bs=' + v + '&rs=' + rs + '&sw=' + Math.min(sw, 680) + '&scr=' + scr + '" style="width:' + w + 'px;height:' + hgt + 'px;max-width:94vw;border:0;border-radius:22px"></iframe></div>').join('');
+  }
+  document.querySelector('.bar').addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    if (b.dataset.size) size = b.dataset.size; if (b.dataset.scr) scr = b.dataset.scr;
+    document.querySelectorAll('.bar button').forEach(x => x.classList.toggle('on', x.dataset.size === size || x.dataset.scr === scr));
+    draw();
+  });
+  draw();
+}
+</script>
+</body>
+</html>

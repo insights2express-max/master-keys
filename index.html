@@ -9,7 +9,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Master Keys">
   <meta name="description" content="Master Keys: CrossKeys, a head-to-head crossword tile game, LockWord, a word-guessing game, and KeyRing, a word builder. Plays offline.">
-  <title>Master Keys · v11c</title>
+  <title>Master Keys · v11d</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="icon" href="icons/icon-192.png" type="image/png" sizes="192x192">
@@ -30,7 +30,7 @@
       <header class="brand">
         <img class="logo" src="icons/icon.svg" alt="" width="64" height="64">
         <div class="brand-txt">
-          <h1><span data-mk="suite">Master Keys</span> <span class="vpill" id="verPill">v11c</span></h1>
+          <h1><span data-mk="suite">Master Keys</span> <span class="vpill" id="verPill">v11d</span></h1>
           <p class="tag">Word games. Play anywhere, even offline.</p>
         </div>
       </header>
@@ -276,6 +276,18 @@
   </section>
   <!-- ===== KeyRing (v11, JM CD-87, CD-88): Setup panel and the game screen (keyring.js) ===== -->
   <section id="keyring" class="screen" hidden>
+    <svg class="kr-defs" width="0" height="0" aria-hidden="true" focusable="false"><defs>
+      <linearGradient id="krCoinG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff2b8"/><stop offset=".38" stop-color="#ffe082"/><stop offset="1" stop-color="#f5b300"/></linearGradient>
+      <linearGradient id="krGloss" x1="0" y1="0" x2=".35" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".62"/><stop offset=".42" stop-color="#fff" stop-opacity=".12"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/></linearGradient>
+      <linearGradient id="krSapA" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6cb6ff"/><stop offset=".45" stop-color="#2a7de8"/><stop offset="1" stop-color="#0d3f9e"/></linearGradient>
+      <linearGradient id="krPurA" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d8acff"/><stop offset=".45" stop-color="#9445f2"/><stop offset="1" stop-color="#4b1591"/></linearGradient>
+      <linearGradient id="krSteelR" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset=".45" stop-color="#b9c4cf"/><stop offset="1" stop-color="#5d6a77"/></linearGradient>
+      <linearGradient id="krSteelB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fbfcfd"/><stop offset=".5" stop-color="#d3dae1"/><stop offset="1" stop-color="#97a3af"/></linearGradient>
+      <linearGradient id="krSteelDk" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9aa6b2"/><stop offset="1" stop-color="#36414d"/></linearGradient>
+      <linearGradient id="krNavyC" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#34507f"/><stop offset=".5" stop-color="#1a2b4f"/><stop offset="1" stop-color="#0b1427"/></linearGradient>
+      <linearGradient id="krPlumC" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6a3a8e"/><stop offset=".5" stop-color="#3a1a55"/><stop offset="1" stop-color="#1f0c30"/></linearGradient>
+      <linearGradient id="krGoldR" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff3b0"/><stop offset=".5" stop-color="#e7b416"/><stop offset="1" stop-color="#9a6b00"/></linearGradient>
+    </defs></svg>
     <header class="vt-top kr-top">
       <button class="icon-btn" id="krMenu" type="button" aria-label="Back to the Lobby" title="Back to the Lobby">☰</button>
       <img class="ck-ico" src="icons/keyring.svg" alt="">
@@ -299,7 +311,7 @@
       <!-- v11c (JM CD-97: 1.1.1, 1.2.1.1.3): the two quantities side by side, each half as wide as before -->
       <div class="pair">
         <label class="field"><span class="lbl">Key Words Quantity</span><select id="krKw"></select></label>
-        <label class="field"><span class="lbl">Bonus Words Quantity</span><select id="krBw"><option value="fewest">Fewest</option><option value="some">Some</option><option value="plenty">Plenty</option><option value="any">Any</option></select></label>
+        <label class="field"><span class="lbl">Bonus Words Quantity</span><select id="krBw"><option value="fewest">Fewest</option><option value="some">Some</option><option value="many">Many</option><option value="any">- Any -</option></select></label>
       </div>
       <button class="btn primary big" id="krStart" type="button">▶ Start KeyRing</button>
       <!-- v11c (CD-97 add. 1): the options you rarely change fold into one row with a one-line summary (▸ / ▾), as in CrossKeys -->
@@ -317,7 +329,11 @@
           <div class="field"><span class="lbl">Layout</span>
             <div class="seg" id="krLay"><button type="button" data-v="auto">Auto</button><button type="button" data-v="stack">Stacked</button><button type="button" data-v="side">Side by side</button></div>
           </div>
-          <p class="opt-desc kr-desc">Auto picks the bigger Ring. Side by side needs a tablet or computer screen. Both colors and layout can also be switched during play on tablets and computers.</p>
+          <p class="opt-desc kr-desc">Auto picks the bigger Ring. Side by side needs a tablet or computer screen. During play, the layout pill (tablets and computers) and the Word / Letter switch (top corner of the Key grid) change them too.</p>
+          <div class="field"><span class="lbl">Button style</span>
+            <div class="seg" id="krBs"><button type="button" data-v="a">Sapphire</button><button type="button" data-v="b">Steel</button><button type="button" data-v="c">Navy &amp; gold</button></div>
+          </div>
+          <p class="opt-desc kr-desc">Three looks for the corner buttons, to try in play. Tell me your pick in the next RFI.</p>
         </div>
       </details>      <div class="vt-stats" id="krStats"></div>
     </div>
@@ -329,9 +345,9 @@
           <button class="kr-pill kr-clock" id="krClock" type="button" title="The clock: tap to pause"><span class="e">⏱</span> <span id="krClk">0:00</span></button>
           <button class="kr-pill kr-pz-btn" id="krPause" type="button" title="Pause" aria-label="Pause">⏸</button>
           <button class="kr-pill kr-lay" id="krLayP" type="button" title="Layout: Auto, Stacked or Side by side" hidden></button>
-          <button class="kr-pill kr-colsw" id="krColP" type="button" role="switch" aria-checked="false" aria-label="Key word colors: by letter" hidden><span class="sw-l">Word</span><span class="sw-t" aria-hidden="true"><i></i></span><span class="sw-l">Letter</span></button>
         </div>
         <div class="kr-slots" id="krSlots"></div>
+        <button class="kr-colsw" id="krColP" type="button" role="switch" aria-checked="false" aria-label="Key word colors: by letter"><span class="sw-l">Word</span><span class="sw-t" aria-hidden="true"><i></i></span><span class="sw-l">Letter</span></button>
         <div class="kr-msg" id="krMsg" aria-live="polite"></div>
         <div class="kr-play">
           <div class="kr-stage">
@@ -341,19 +357,19 @@
                 <defs><linearGradient id="krStl" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="var(--kr-st1)"/><stop offset=".5" stop-color="var(--kr-st2)"/><stop offset="1" stop-color="var(--kr-st3)"/></linearGradient></defs>
                 <circle cx="50" cy="51.2" r="38" fill="none" stroke="rgba(0,0,0,.45)" stroke-width="3.6"/>
                 <circle cx="50" cy="50" r="38" fill="none" stroke="url(#krStl)" stroke-width="3.2"/>
-                <path d="M 74.2 20.7 A 38 38 0 0 1 88.6 45" fill="none" stroke="url(#krStl)" stroke-width="3.2" transform="translate(-1.6 1.4)"/>
                 <circle cx="50" cy="49.2" r="38" fill="none" stroke="rgba(255,255,255,.55)" stroke-width=".5" stroke-dasharray="40 200" stroke-dashoffset="150"/>
               </svg>
               <svg class="kr-line" id="krLine" aria-hidden="true"><polyline points=""/></svg>
               <button class="kr-hub" id="krHub" type="button" title="Shuffle: spin the letters (Space)" aria-label="Shuffle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h3.5c2 0 3.2 1 4.3 2.7l2.4 4.6C14.3 16 15.5 17 17.5 17H21M18 14l3 3-3 3M3 17h3.5c1.4 0 2.4-.5 3.2-1.4M14.3 8.4C15.1 7.5 16.1 7 17.5 7H21M18 4l3 3-3 3"/></svg></button>
             </div>
-            <button class="kr-tag" id="krTag" type="button" title="Bonus words: tap for the list" aria-label="Bonus words: tap for the list">BONUS<b id="krTagN">0</b></button>
-            <button class="btn coinbtn kr-cb kr-time" id="krTime" type="button" aria-label="+30 seconds"><span class="kr-cl"><b>⏱</b>+30s</span><span class="cp" id="krTimeCp">🪙10</span></button>
-            <button class="btn coinbtn kr-cb kr-hint" id="krHint" type="button" aria-label="Hint: show a slot's clue"><span class="kr-cl"><b>💡</b>Hint</span><span class="cp" id="krHintCp">🪙</span></button>
-            <button class="btn coinbtn kr-cb kr-drop" id="krDrop" type="button" aria-label="Key Drop: drop one letter into a slot"><span class="kr-cl"><b>🔑</b>Drop</span><span class="cp" id="krDropCp">🪙</span></button>
+            <!-- v11d (CD-98 add. 2.1-2.4; CD-100: 2.1.2): corner pieces, shaped by keyring.js to follow the Ring -->
+            <button class="btn kr-cp kr-bonus" id="krTag" type="button" title="Bonus words: tap for the list" aria-label="Bonus words: tap for the list"><svg class="kr-cps" aria-hidden="true"></svg><span class="kr-cpc tl"><span class="lab"><svg class="ki" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2l2.9 6.4 7 .7-5.3 4.7 1.6 6.9L12 17.3l-6.2 3.6 1.6-6.9L2.1 9.3l7-.7z"/></svg>BONUS</span><b class="num" id="krTagN">0</b></span></button>
+            <button class="btn coinbtn kr-cp kr-time" id="krTime" type="button" aria-label="+30 seconds"><svg class="kr-cps" aria-hidden="true"></svg><span class="kr-cpc tr"><span class="lab"><svg class="ki" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 1.4h6v2.3H9zM18.9 6.3l1.7-1.7 1.5 1.5-1.7 1.7z"/><path fill-rule="evenodd" d="M12 4.6a8.7 8.7 0 1 1 0 17.4 8.7 8.7 0 0 1 0-17.4zm0 2.5a6.2 6.2 0 1 0 0 12.4 6.2 6.2 0 0 0 0-12.4z"/><path d="M10.9 8.6h2.2v4.7l3.1 1.9-1.1 1.8-4.2-2.5z"/></svg>+30s</span><span class="cost"><svg class="kr-coin" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10.6" fill="url(#krCoinG)" stroke="#a87400" stroke-width="1.3"/><circle cx="12" cy="12" r="7.4" fill="none" stroke="#c99000" stroke-width="1.2" opacity=".8"/><path d="M8.3 7.9a5.4 5.4 0 0 1 6.9-.6" fill="none" stroke="#fff7cf" stroke-width="1.5" stroke-linecap="round" opacity=".85"/></svg><b id="krTimeCp">10</b></span></span></button>
+            <button class="btn coinbtn kr-cp kr-hint" id="krHint" type="button" aria-label="Hint: show a slot's clue"><svg class="kr-cps" aria-hidden="true"></svg><span class="kr-cpc bl"><span class="cost"><svg class="kr-coin" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10.6" fill="url(#krCoinG)" stroke="#a87400" stroke-width="1.3"/><circle cx="12" cy="12" r="7.4" fill="none" stroke="#c99000" stroke-width="1.2" opacity=".8"/><path d="M8.3 7.9a5.4 5.4 0 0 1 6.9-.6" fill="none" stroke="#fff7cf" stroke-width="1.5" stroke-linecap="round" opacity=".85"/></svg><b id="krHintCp"></b></span><span class="lab"><svg class="ki" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.6a7.3 7.3 0 0 0-4.4 13.1c.7.5 1.1 1.3 1.1 2.2v.7h6.6v-.7c0-.9.4-1.7 1.1-2.2A7.3 7.3 0 0 0 12 1.6z"/><path d="M8.7 19.1h6.6v1.1a2.2 2.2 0 0 1-2.2 2.2h-2.2a2.2 2.2 0 0 1-2.2-2.2z"/></svg>Hint</span></span></button>
+            <button class="btn coinbtn kr-cp kr-drop" id="krDrop" type="button" aria-label="Key Drop: drop one letter into a slot"><svg class="kr-cps" aria-hidden="true"></svg><span class="kr-cpc br"><span class="cost"><svg class="kr-coin" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10.6" fill="url(#krCoinG)" stroke="#a87400" stroke-width="1.3"/><circle cx="12" cy="12" r="7.4" fill="none" stroke="#c99000" stroke-width="1.2" opacity=".8"/><path d="M8.3 7.9a5.4 5.4 0 0 1 6.9-.6" fill="none" stroke="#fff7cf" stroke-width="1.5" stroke-linecap="round" opacity=".85"/></svg><b id="krDropCp"></b></span><span class="lab"><svg class="ki" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M7.4 6.3a5.7 5.7 0 1 1-5.3 7.8 5.7 5.7 0 0 1 5.3-7.8zm0 3.3a2.4 2.4 0 1 0 0 4.8 2.4 2.4 0 0 0 0-4.8z"/><path d="M12.4 10.6h10.2v3.4h-1.4v3h-2.6v-3h-1.2v2.2h-2.6V14h-2.4z"/></svg>Drop</span></span></button>
           </div>
         </div>
-        <button class="kr-pz" id="krPz" type="button" hidden><b>⏸ Paused</b><span>Tap to go on</span></button>
+        <button class="kr-pz" id="krPz" type="button" hidden><b>⏸ Paused</b><span>Tap to resume play</span></button>
         <div class="overbar kr-over" id="krOver" hidden></div><!-- v11a (CD-93): the win report, under the Ring once it is over -->
         <p class="kr-tip"><kbd>A–Z</kbd> type · <kbd>Enter</kbd> submit · <kbd>⌫</kbd> back · <kbd>Esc</kbd> clear · <kbd>Space</kbd> shuffle · <kbd>Tab</kbd> next button (<kbd>Enter</kbd> presses it)</p>
       </div>

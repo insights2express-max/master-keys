@@ -2201,3 +2201,85 @@ html[data-screen="night"] .kr-grp.kr-mw { background: #555; color: #111; border-
   #keyring .kr-info .kr-pill, #keyring .kr-info .coin-pill { font-size: 19px; padding: 5px 11px; gap: 5px; }
 }
 #keyring .kr-info .kr-colsw .sw-l { font-size: .62em; }
+/* =====================================================================
+   v11d (JM CD-98, CD-100): KeyRing corner pieces (coin buttons and BONUS), the colors switch in the Key grid's corner,
+   a bigger Pause panel.
+   ===================================================================== */
+.kr-defs { position: absolute; width: 0; height: 0; overflow: hidden; }
+/* each corner piece: an SVG shape (body, gloss, rim) that follows the Ring; only the painted shape takes taps */
+.btn.kr-cp { position: absolute; z-index: 3; width: var(--cps, 90px); height: var(--cps, 90px); padding: 0; margin: 0; border: 0; border-radius: 0;
+  background: none !important; box-shadow: none !important; pointer-events: none; color: #fff; overflow: visible;
+  filter: drop-shadow(0 4px 5px rgba(0, 0, 0, .38)); -webkit-tap-highlight-color: transparent; }
+.btn.kr-cp::after { display: none !important; }
+.kr-cp.kr-bonus { left: 0; top: 0; }
+.kr-cp.kr-time { right: 0; top: 0; }
+.kr-cp.kr-hint { left: 0; bottom: 0; }
+.kr-cp.kr-drop { right: 0; bottom: 0; }
+.kr-cp .kr-cps { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; transition: transform .1s; }
+.kr-cp path.b { pointer-events: visiblePainted; cursor: pointer; }
+.kr-cp path.g { pointer-events: none; fill: url(#krGloss); }
+.kr-cp path.r { pointer-events: none; fill: none; stroke-width: 3; stroke-linejoin: round; }
+.kr-cp:active .kr-cps, .kr-cp:active .kr-cpc { transform: translateY(2px); }
+/* the content sits in the piece's outer corner: Hint / Drop show the price above the name; +30s the name above the price */
+.kr-cpc { position: absolute; inset: 0; display: flex; flex-direction: column; gap: calc(var(--cps, 90px) * .03); padding: calc(var(--cps, 90px) * .1);
+  pointer-events: none; line-height: 1; font-weight: 900; text-shadow: 0 1px 2px rgba(0, 0, 0, .45); }
+.kr-cpc.tl { align-items: flex-start; justify-content: flex-start; }
+.kr-cpc.tr { align-items: flex-end; justify-content: flex-start; }
+.kr-cpc.bl { align-items: flex-start; justify-content: flex-end; }
+.kr-cpc.br { align-items: flex-end; justify-content: flex-end; }
+.kr-cpc .lab { display: flex; align-items: center; gap: .16em; font: 400 calc(var(--cps, 90px) * .175) 'Alfa Slab One', system-ui, sans-serif; letter-spacing: .01em; white-space: nowrap; }
+.kr-cpc .ki { width: 1.05em; height: 1.05em; fill: currentColor; flex: none; }
+.kr-cpc .cost { display: flex; align-items: center; gap: .12em; font-size: calc(var(--cps, 90px) * .155); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.kr-cpc .cost b { font-weight: 900; }
+.kr-coin { width: 1.08em; height: 1.08em; flex: none; vertical-align: -.18em; filter: drop-shadow(0 1px 1px rgba(0, 0, 0, .35)); }
+.kr-bonus .kr-cpc .lab { font-size: calc(var(--cps, 90px) * .15); }
+.kr-bonus .kr-cpc .num { font: 400 calc(var(--cps, 90px) * .29) 'Alfa Slab One', system-ui, sans-serif; line-height: 1; }
+.kr-bonus.bump .kr-cpc { animation: krBump .55s; transform-origin: 0 0; }
+@keyframes krBump { 30% { transform: scale(1.14); } 65% { transform: scale(.96); } }
+.kr-plus { position: absolute; left: calc(var(--cps, 90px) * .55); top: 0; z-index: 5; padding: 1px 7px; border-radius: 999px; background: #8e3ff0; color: #fff;
+  font-weight: 900; font-size: 13px; pointer-events: none; animation: krUp 1s forwards; }
+/* armed (first tap): the piece darkens and says "Tap again / 🪙N" in its corner */
+.kr-cp.armed path.b { filter: brightness(.62); }
+.kr-cp.armed path.r { stroke: #9fd1ff !important; stroke-width: 5; }
+.kr-cp.armed .kr-cpc > * { visibility: hidden; }
+.kr-cp.armed .kr-cpc::after { content: attr(data-arm); position: absolute; inset: 0; padding: inherit; display: flex; white-space: pre-line; color: #fff;
+  font-weight: 900; font-size: calc(var(--cps, 90px) * .15); line-height: 1.15; text-shadow: 0 1px 2px rgba(0, 0, 0, .6); }
+.kr-cpc.tl::after { align-items: flex-start; justify-content: flex-start; text-align: left; }
+.kr-cpc.tr::after { align-items: flex-start; justify-content: flex-end; text-align: right; }
+.kr-cpc.bl::after { align-items: flex-end; justify-content: flex-start; text-align: left; }
+.kr-cpc.br::after { align-items: flex-end; justify-content: flex-end; text-align: right; }
+/* the Tab outline becomes a gold rim */
+#keyring .kr-cp.kr-kf { outline: none; }
+.kr-cp.kr-kf path.r { stroke: #ffd43b !important; stroke-width: 6; }
+/* A · Sapphire glass: deep-blue glass, polished steel rim, white letters and icons */
+#keyring.kr-bs-a .kr-cp path.b { fill: url(#krSapA); }
+#keyring.kr-bs-a .kr-cp.kr-bonus path.b { fill: url(#krPurA); }
+#keyring.kr-bs-a .kr-cp path.r { stroke: url(#krSteelR); }
+#keyring.kr-bs-a .kr-cp path.g { opacity: .95; }
+/* B · Steel: a brushed-steel plate, dark steel rim, deep-blue enamel letters (BONUS in purple) */
+#keyring.kr-bs-b .kr-cp path.b { fill: url(#krSteelB); }
+#keyring.kr-bs-b .kr-cp path.r { stroke: url(#krSteelDk); stroke-width: 2.5; }
+#keyring.kr-bs-b .kr-cp path.g { opacity: .7; }
+#keyring.kr-bs-b .kr-cp { color: #0d3a8a; }
+#keyring.kr-bs-b .kr-cp.kr-bonus { color: #6a2bc4; }
+#keyring.kr-bs-b .kr-cpc { text-shadow: 0 1px 0 rgba(255, 255, 255, .75); }
+/* C · Navy & gold: navy lacquer (BONUS plum), a thin gold rim, gold letters and icons */
+#keyring.kr-bs-c .kr-cp path.b { fill: url(#krNavyC); }
+#keyring.kr-bs-c .kr-cp.kr-bonus path.b { fill: url(#krPlumC); }
+#keyring.kr-bs-c .kr-cp path.r { stroke: url(#krGoldR); stroke-width: 2.5; }
+#keyring.kr-bs-c .kr-cp path.g { opacity: .3; }
+#keyring.kr-bs-c .kr-cp { color: #ffd75e; }
+html[data-screen="night"] #keyring .kr-cp { filter: drop-shadow(0 3px 4px rgba(0, 0, 0, .5)) brightness(.72) saturate(.7); }
+/* Pause hides the corner pieces' contents too */
+#krMain.paused .kr-cp { filter: blur(13px) saturate(.6); }
+#krMain.paused .kr-cpc { visibility: hidden; }
+/* CD-100: 3.4.1b: the Word / Letter switch sits in the Key grid's top-right corner on every screen */
+#keyring .kr-slots { padding-top: 36px; }
+.kr-colsw#krColP { grid-area: slots; justify-self: end; align-self: start; z-index: 2; margin: 7px 9px 0 0; display: inline-flex; align-items: center; gap: .35em;
+  padding: 3px 9px; border: 0; border-radius: 999px; background: rgba(255, 255, 255, .1); color: #e8eef5; font: 800 12px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; cursor: pointer;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .14); }
+.kr-colsw#krColP .sw-l { font-size: 1em; }
+/* CD-98: 3.1.1: the Pause panel twice the size, easier to tap */
+.kr-pz { padding: 34px 56px; gap: 10px; border-radius: 26px; font-size: 52px; }
+.kr-pz span { font-size: 24px; }
+@media (max-width: 420px) { .kr-pz { padding: 26px 34px; font-size: 44px; } .kr-pz span { font-size: 20px; } }
