@@ -34,7 +34,7 @@ FIRM|Solid company?
 FLY|Pest's zipper?
 FOOT|Inches you stand on?
 GAME|Ready for a match?
-HAIL|Ice storm greeting?
+HAIL|Icy greeting?
 IRON|Press metal?
 JAM|Traffic you can spread?
 KEY|It opens doors and plays notes
@@ -121,7 +121,7 @@ DOVE|Peace plunge?
 DRAW|Tie by pencil?
 FINE|OK penalty?
 FIT|Healthy tantrum?
-HOST|Party giver, or a crowd
+HOST|Party crowd?
 JAR|Container that jolts
 LONG|Yearn to be lengthy
 PUPPY|Young dog, love?
@@ -409,31 +409,31 @@ GRILL|Barbecue quiz?
 GRIP|Handle hold?
 GUARD|Court sentry?
 GUT|Belly feeling?
-HAM|Overactor, or a deli meat
-HAMMER|Tool that hits the nail on the head?
-HAND|Help, or a palm and fingers
-HANG|Spend time, or put up a picture
-HARP|Nag on, or an angel's instrument
-HAWK|Sell, or a bird of prey
-HEAD|Lead, or a bathroom on a ship
-HEART|Center of things, or a card suit
-HEAT|Spiciness, or a race round
-HEDGE|Shrub, or a cautious bet
-HERD|Group that sounds like it was listened to?
-HERO|Sandwich that saves the day?
-HIDE|Skin, or keep out of sight
-HIKE|Price raise on a trail?
-HINT|Clue, like this one?
+HAM|Deli overactor?
+HAMMER|Nail-head hitter?
+HAND|Helping palm?
+HANG|Picture outing?
+HARP|Nagging strings?
+HAWK|Selling bird?
+HEAD|Ship's leader?
+HEART|Card-suit core?
+HEAT|Spicy round?
+HEDGE|Cautious shrub?
+HERD|Listened-to group?
+HERO|Saving sandwich?
+HIDE|Skin, out of sight?
+HIKE|Trail raise?
+HINT|Clue like this?
 HIP|Trendy joint?
-HIT|Smash success
-HOLD|Ship's cargo area, or grip
-HOLE|Golf target, or a gap
-HOME|Plate, or a house
-HOOK|Catchy part of a song
-HOOT|Owl sound, or a riot
-HORSE|Gym vault that neighs?
-HOT|Spicy, or stolen
-HUMOR|Go along with, or comedy
+HIT|Smash success?
+HOLD|Ship's grip?
+HOLE|Golf gap?
+HOME|Plate house?
+HOOK|Catchy part?
+HOOT|Owl riot?
+HORSE|Neighing vault?
+HOT|Spicy loot?
+HUMOR|Comic indulgence?
 ICE|Diamonds, or frozen water
 ICON|Desktop picture, or a star
 INK|Sign a deal, or a tattoo
@@ -640,4 +640,6 @@ FINGERNAILS|Hard hand tips?
 FIR|Hairy tree?
 FIRECRACKER|Hot saltine?; Burned saltine?
 FOIL|Thwarting wrap?
+# L14.10 (CD-129): new Wordplay clues (JM edits + accepted drafts)
+HOCKEY|Pucker up?
 `;
