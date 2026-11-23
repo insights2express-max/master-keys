@@ -15,7 +15,7 @@
    v08j: grid colors, final-play view, clock-out final turn, menu defaults, phone two-finger drag) */
 'use strict';
 (() => {
-  const APP_VER = 'v12a'; // Project CP: shown as a pill beside the title and in the browser tab
+  const APP_VER = 'v12c'; // Project CP: shown as a pill beside the title and in the browser tab
   const NM = window.MK_NAMES || { suite: 'Master Keys', cross: 'CrossKeys', lock: 'LockWord' }; // v09: the game names (names.js)
   // v09a (JM CD-71: 1.2c, 1.3b): the two games' own icons, shown wherever the 🧩 / 🔐 emoji stood
   const GI = { cross: 'icons/crosskeys.svg', lock: 'icons/lockword.svg', ring: 'icons/keyring.svg', cubes: 'icons/keycubes.svg' }; // v11: KeyRing; v12: KeyCubes
@@ -584,10 +584,10 @@
 
   // ---------- v11a (JM CD-93): one win report for every game ----------
   // One row in the gold frame: "<icon> Name WINS! 🏆 score" (no "Game over", no 🏁), as large as the row allows.
-  // With no name set it reads "<icon> YOU WIN!". A draw reads "DRAW! ⚖️ 40–40" (⚖️ replaces 🤝, which looked like a heart).
+  // With no name set it read "<icon> YOU WIN!"; from v12c a Player win always reads "<icon> You WIN!". A draw reads "DRAW! ⚖️ 40–40" (⚖️ replaces 🤝, which looked like a heart).
   const OB_MAX = 40, OB_MIN = 18; // below 18px a long name ends in … instead
   const DRAW_ICO = '⚖️';
-  function meWin() { const n = (settings.name || '').trim(); return n ? { av: myAv(), who: esc(n) } : { av: myAv(), who: 'YOU', you: true }; }
+  function meWin() { return { av: myAv(), who: 'You', you: true }; } // v12c (JM CD-112 add. 1.1): a Player win reads "You WIN!" in every game, name set or not
   function winLine(o) {
     const verb = o.draw ? 'DRAW!' : o.you ? 'WIN!' : 'WINS!';
     const who = o.draw ? '' : `<span class="ob-av">${o.av || ''}</span><span class="ob-who">${o.who}</span>`;

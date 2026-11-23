@@ -20,6 +20,13 @@
      All words; the path on a mini grid, letter points + length bonus = total (0 when shared), and the Lexicon clue.
    - Cube Colors (CD-109 add. 1): Cream (default), Inked, Inked Blue (from CrossKeys' Grid Colors), Steel, Navy & gold (from the
      Ring Button Colors). Button Colors (Steel first) for the coin buttons, as in every game.
+   v12c (JM CD-112, CD-116): smoother swipes (a swipe may start anywhere on the grid, the points between finger readings are
+   filled in, the cubes are measured once per swipe, a new swipe never joins a leftover cube); a typed word that fails
+   clears; 💡 Hint again on the same word stripes its next cube (🪙1); a free "Left" line of unfound words by length;
+   🔄 Rotate (was Turn); Bonus cubes 3W 2W 2L 3L (one each on 4×4; 1, 2, 2, 1 on 5×5; word bonuses only with Length-only
+   scoring; On by default), new places every round; the game total is the big number, with this round's points under it;
+   results: big game totals + a round table, a plain "You lead" banner until the last round, then the gold "You WIN!"
+   with confetti; words only you found in green, shared words in red; Solo pays 🪙5 for a new best when Hints are Paid.
    Saved on this device: settings 'cd.kc.settings', stats 'cd.kc.stats', an unfinished match 'cd.kc.save'. */
 'use strict';
 (function () {
@@ -34,7 +41,7 @@
   const reduceMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   // ---------- settings and stats ----------
-  const DEF = { mode: 'duel', n: 4, timer: 120, lv: 3, min: 'auto', rounds: 3, sc: 'lp', bs: 'b', cs: 'cream', sHint: 'free', sCap: '3', sTimer: 0 };
+  const DEF = { mode: 'duel', n: 4, timer: 120, lv: 3, min: 'auto', rounds: 3, sc: 'lp', bs: 'b', cs: 'cream', sHint: 'free', sCap: '3', sTimer: 0, bonus: 'on' };
   const ks = Object.assign({}, DEF, store.get('cd.kc.settings', {}));
   const saveKs = () => store.set('cd.kc.settings', ks);
   const blankSt = () => ({ matches: 0, won: 0, drawn: 0, rounds: 0, words: 0, best: null, solo: {}, soloN: 0 });
@@ -45,7 +52,7 @@
   const timerName = t => (TIMERS.find(x => x[0] === +t) || TIMERS[2])[1];
   const CUBE_LOOKS = [['cream', 'Cream'], ['ink', 'Inked'], ['blue', 'Inked Blue'], ['steel', 'Steel'], ['navy', 'Navy & gold']];
   const LV_NAMES = { 1: '1 · Apprentice', 10: '10 · Master' }; // v12a (CD-113: 2.1a)
-  const HINT_CAP_DUEL = 3, WIN = 10, DRAW = 5, MATCH = 20;
+  const HINT_CAP_DUEL = 3, WIN = 10, DRAW = 5, MATCH = 20, SOLO_BEST = 5; // SOLO_BEST: CD-112: 3.3 (Paid Hints only)
   const fmt = s => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
   const plural = (n, w) => `${UI.fmtN(n)} ${w}${n === 1 ? '' : 's'}`;
   const timerOf = () => ks.mode === 'solo' ? ks.sTimer : ks.timer;
@@ -139,11 +146,24 @@
   const ptOf = c => D.pts[c[0]] || 1; // the Qu cube scores as Q
   const lenBonus = L => L <= 3 ? 0 : L === 4 ? 2 : L === 5 ? 4 : L === 6 ? 7 : L === 7 ? 11 : 16 + (L - 8) * 5;
   const lenOnly = L => L <= 3 ? 1 : L === 4 ? 2 : L === 5 ? 3 : L === 6 ? 5 : L === 7 ? 8 : 12 + (L - 8) * 4;
-  function score(w, path, cells, sc) {
-    if (sc === 'len') { const t = lenOnly(w.length); return { lp: 0, lb: t, t }; }
-    const lp = path.reduce((a, i) => a + ptOf(cells[i]), 0), lb2 = lenBonus(w.length);
-    return { lp, lb: lb2, t: lp + lb2 };
+  // v12c (CD-112 add. 2.3; CD-116: 3.1a–3.3): Bonus cubes. 2L / 3L multiply that cube's letter points; 2W / 3W multiply the
+  // whole word (two word bonuses in one word multiply each other). Length-only scoring has no letter points: word bonuses only.
+  const BONUS_SET = { 4: ['3W', '2W', '2L', '3L'], 5: ['3W', '2W', '2W', '2L', '2L', '3L'] };
+  const BMUL = { '2L': 2, '3L': 3, '2W': 2, '3W': 3 };
+  function placeBonus(n, sc) {
+    const set = BONUS_SET[n].filter(b => sc !== 'len' || b.endsWith('W')), cells = shuffled([...Array(n * n).keys()]), out = {};
+    set.forEach((b, k) => { out[cells[k]] = b; });
+    return out;
   }
+  function score(w, path, cells, sc, bon) {
+    bon = bon || {};
+    let wm = 1, lm = false;
+    for (const i of path) { const b = bon[i]; if (b && b.endsWith('W')) wm *= BMUL[b]; }
+    if (sc === 'len') { const base = lenOnly(w.length); return { lp: 0, lb: base, wm, lm, t: base * wm }; }
+    const lp = path.reduce((a, i) => { const b = bon[i]; if (b && b.endsWith('L')) lm = true; return a + ptOf(cells[i]) * (b && b.endsWith('L') ? BMUL[b] : 1); }, 0), lb2 = lenBonus(w.length);
+    return { lp, lb: lb2, wm, lm, t: (lp + lb2) * wm };
+  }
+  const scoreOf = (w, p) => score(w, p || R.words[w], R.cells, M.sc, R.bon);
 
   // ---------- the match and the round ----------
   let M = null, R = null;
@@ -161,7 +181,7 @@
   function newMatch() {
     M = {
       mode: ks.mode, n: ks.n, timer: timerOf(), lv: ks.lv, min: ks.min === 'auto' ? ks.n - 1 : +ks.min,
-      rounds: ks.mode === 'solo' ? 1 : ks.rounds, sc: ks.sc, sHint: ks.sHint, sCap: ks.sCap,
+      rounds: ks.mode === 'solo' ? 1 : ks.rounds, sc: ks.sc, sHint: ks.sHint, sCap: ks.sCap, bonus: ks.bonus,
       no: 0, me: 0, bot: 0, list: [], done: false, histT: 0, coins: 0
     };
   }
@@ -169,7 +189,8 @@
     const d = deal(M.n, M.min);
     M.no++;
     R = { cells: d.cells, words: d.words, all: d.c, mine: [], found: {}, bot: [], botSet: {}, botN: 0, el: 0, rot: 0,
-      hints: 0, hintCoins: 0, hint: null, over: false, paused: false, started: false };
+      hints: 0, hintCoins: 0, hint: null, hintK: 0, over: false, paused: false, started: false,
+      bon: M.bonus === 'off' ? {} : placeBonus(M.n, M.sc) };
     if (M.mode === 'duel') planBot();
   }
   // CD-109: 6.1: level L knows words up to a familiarity cap and finds a share of them, spread over the round
@@ -180,6 +201,14 @@
     R.botSet = {}; R.bot.forEach(b => { R.botSet[b.w] = 1; });
   }
   const myPts = () => R.mine.reduce((a, m) => a + m.s.t, 0);
+  // v12c: free "Left" line (CD-116: 1.2): your unfound words by length; the longest lengths share one group
+  function leftLine() {
+    const c = {}, top = M.min + 3;
+    for (const w in R.words) if (!R.found[w]) { const L = Math.min(top, w.length); c[L] = (c[L] || 0) + 1; }
+    const parts = [];
+    for (let L = M.min; L <= top; L++) if (c[L]) parts.push(`<span><b>${L}${L === top ? '+' : ''}</b> letters ${UI.fmtN(c[L])}</span>`);
+    return parts.length ? `Left: ${parts.join(' · ')}` : 'Left: none. You found every word!';
+  }
 
   // ---------- screens ----------
   const screenOn = () => !SEC.hidden;
@@ -228,15 +257,15 @@
     $('#kcTm').value = String(timerOf());
     $('#kcLvF').hidden = !duel; $('#kcSoloF').hidden = duel; $('#kcRdF').hidden = !duel;
     $('#kcLv').value = String(ks.lv); $('#kcMin').value = ks.min; $('#kcRd').value = String(ks.rounds); $('#kcSc').value = ks.sc;
-    $('#kcCs').value = ks.cs; $('#kcBs').value = ks.bs; $('#kcSh').value = ks.sHint; $('#kcScap').value = ks.sCap;
+    $('#kcCs').value = ks.cs; $('#kcBs').value = ks.bs; $('#kcSh').value = ks.sHint; $('#kcScap').value = ks.sCap; $('#kcBon').value = ks.bonus;
     const pv = $('#kcPrev'), g = roll(ks.n);
     pv.style.gridTemplateColumns = `repeat(${ks.n}, 28px)`;
     pv.innerHTML = g.map(c => `<span>${c === 'QU' ? 'Qu' : c}</span>`).join('');
     const caps = ['everyday words only', 'everyday words only', 'common words', 'common words', 'a wider vocabulary', 'a wider vocabulary', 'harder words', 'harder words', 'almost any word', 'any word'];
     $('#kcDesc').textContent = duel
       ? `Bot level ${ks.lv}: it knows ${caps[ks.lv - 1]} and finds about ${Math.round((0.22 + 0.06 * ks.lv) * 100)}% of them in a round. A word you both find scores for nobody.`
-      : `Solo: no Bot. Hints ${ks.sHint === 'free' ? 'are free' : 'cost 🪙1 per letter'}, ${ks.sCap === '3' ? '3 per round' : 'no limit'}. Beat your best score for each grid size.`;
-    $('#kcOptsSum').textContent = `Shortest word: ${ks.min === 'auto' ? 'Auto' : ks.min} · ${duel ? plural(ks.rounds, 'round') + ' · ' : ''}${ks.sc === 'lp' ? 'Letters + length' : 'Length only'} · Cubes: ${(CUBE_LOOKS.find(x => x[0] === ks.cs) || CUBE_LOOKS[0])[1]} · Buttons: ${{ a: 'Sapphire', b: 'Steel', c: 'Navy & gold' }[ks.bs] || 'Steel'}`;
+      : `Solo: no Bot. Hints ${ks.sHint === 'free' ? 'are free' : 'cost 🪙1 per letter'}, ${ks.sCap === '3' ? '3 per round' : 'no limit'}. Beat your best score for each grid size${ks.sHint === 'free' ? '' : `: a new best pays 🪙${SOLO_BEST}`}.`;
+    $('#kcOptsSum').textContent = `Shortest word: ${ks.min === 'auto' ? 'Auto' : ks.min} · ${duel ? plural(ks.rounds, 'round') + ' · ' : ''}${ks.sc === 'lp' ? 'Letters + length' : 'Length only'} · Bonus cubes ${ks.bonus === 'off' ? 'off' : 'on'} · Cubes: ${(CUBE_LOOKS.find(x => x[0] === ks.cs) || CUBE_LOOKS[0])[1]} · Buttons: ${{ a: 'Sapphire', b: 'Steel', c: 'Navy & gold' }[ks.bs] || 'Steel'}`;
     const unf = unfinished();
     $('#kcSetUnf').hidden = !unf; if (unf) $('#kcSetUnfTxt').textContent = unfText();
     $('#kcStart').textContent = unf ? '🆕 New Game' : `▶ Start ${NM.cubes}`;
@@ -260,6 +289,7 @@
   onCh('#kcBs', v => { ks.bs = v; });
   onCh('#kcSh', v => { ks.sHint = v; });
   onCh('#kcScap', v => { ks.sCap = v; });
+  onCh('#kcBon', v => { ks.bonus = v; });
   $('#kcStart').addEventListener('click', newGame);
   $('#kcSetResume').addEventListener('click', () => { if (unfinished()) showPlay(); });
   paintLooks();
@@ -275,10 +305,16 @@
   function buildTray() {
     tray.style.setProperty('--n', M.n); tray.style.setProperty('--rot', '0deg');
     tray.classList.remove('turning', 'tf-y', 'tf-r', 'tf-a', 'tf-b');
-    const h0 = R.hint && !R.found[R.hint] && R.words[R.hint] ? R.words[R.hint][0] : -1;
-    tray.innerHTML = dispOrder().map(i => { const c = R.cells[i]; return `<div class="kc-cell"><div class="kc-cube${i === h0 ? ' hint' : ''}" data-i="${i}"><div class="kc-face"><b class="${c === 'QU' ? 'qu' : ''}">${c === 'QU' ? 'Qu' : c}</b>${M.sc === 'lp' ? `<i>${ptOf(c)}</i>` : ''}</div></div></div>`; }).join('')
-      + '<svg class="kc-line" aria-hidden="true"><polyline points=""/></svg>';
-    paintTrace();
+    const bon = R.bon || {};
+    tray.innerHTML = dispOrder().map(i => { const c = R.cells[i], b = bon[i]; return `<div class="kc-cell"><div class="kc-cube${b ? ' bon b' + b : ''}" data-i="${i}"><div class="kc-face"><b class="${c === 'QU' ? 'qu' : ''}">${c === 'QU' ? 'Qu' : c}</b>${M.sc === 'lp' ? `<i>${ptOf(c)}</i>` : ''}${b ? `<em class="kc-bn b${b}">${b}</em>` : ''}</div></div></div>`; }).join('')
+      + '<svg class="kc-line" aria-hidden="true"><polyline class="g" points=""/><polyline points=""/></svg>';
+    paintHint(); paintTrace();
+  }
+  // the hinted word's first R.hintK cubes are striped and numbered (CD-109: 7.1; CD-116: 1.1 Next cube)
+  function paintHint() {
+    tray.querySelectorAll('.kc-cube.hint').forEach(c => { c.classList.remove('hint'); c.removeAttribute('data-hn'); });
+    if (!R.hint || R.found[R.hint] || !R.words[R.hint]) return;
+    R.words[R.hint].slice(0, Math.max(1, R.hintK || 1)).forEach((i, k) => { const c = cubeEl(i); if (c) { c.classList.add('hint'); c.dataset.hn = k + 1; } });
   }
   function paintGame() {
     const solo = M.mode === 'solo';
@@ -290,59 +326,96 @@
     $('#kcDone').hidden = !solo;
     paintScores(); paintChips(); paintHintBtn(); paintPause();
   }
+  // v12c (CD-112 add. 2.1): in a match of 3 or 5 rounds the big number is the GAME total, with this round under it.
+  // The Bot's points stay hidden until the round ends (CD-109: 6.2), so its round line counts words.
   function paintScores() {
-    $('#kcMeSc').innerHTML = `${UI.fmtN(myPts())}<small>pts</small>`; // the word count sits in "Your words: N of M"
-    $('#kcBotSc').innerHTML = M.mode === 'solo' ? `${st.solo[M.n] ? UI.fmtN(st.solo[M.n]) : '–'}<small>pts</small>` : `${R.botN}<small>${R.botN === 1 ? 'word' : 'words'}</small>`;
+    const multi = M.mode === 'duel' && M.rounds > 1, my = myPts();
+    $('#kcMeSc').innerHTML = `${UI.fmtN(multi ? M.me + my : my)}<small>pts</small>`;
+    $('#kcMeRd').textContent = multi ? `Rd ${M.no}: ${UI.fmtN(my)} pts` : '';
+    $('#kcBotSc').innerHTML = M.mode === 'solo' ? `${st.solo[M.n] ? UI.fmtN(st.solo[M.n]) : '–'}<small>pts</small>`
+      : multi ? `${UI.fmtN(M.bot)}<small>pts</small>` : `${R.botN}<small>${R.botN === 1 ? 'word' : 'words'}</small>`;
+    $('#kcBotRd').textContent = multi ? `Rd ${M.no}: ${R.botN} wds` : '';
+    $('#kcMeRd').title = $('#kcBotRd').title = multi ? `Round ${M.no} of ${M.rounds}; the big number is the game total` : '';
+    $('#kcBar').classList.toggle('multi', multi);
   }
   function paintChips(newW) {
     $('#kcFHead').textContent = `Your words: ${R.mine.length} of ${UI.fmtN(R.all)}`;
     $('#kcFPts').textContent = UI.fmtN(myPts()) + ' pts';
     $('#kcChips').innerHTML = R.mine.length ? R.mine.slice().reverse().map(m => `<span class="kc-chip${m.w === newW ? ' new' : ''}">${m.w}<small>${m.s.t}</small></span>`).join('')
       : '<span class="kc-empty">Words you find go here. Join touching cubes: across, down or diagonally, each cube once.</span>';
+    $('#kcLeft').innerHTML = leftLine();
   }
 
   // ---------- tracing: swipe / drag / tap / type ----------
+  // v12c (CD-112: 1.2.1, laggy swipes on phones): the cubes are measured once per swipe (geo); a swipe may start in a gap;
+  // the points between two finger readings are filled in, so a fast finger never skips a cube; and a swipe that starts
+  // beside a leftover tapped cube starts a new word instead of joining it.
   let trace = [], tapMode = false, dragging = false, moved = false, typed = '';
+  let geo = null, G = null, lastXY = null;
   const adj = (a, b) => adjN(a, b, M.n);
+  function measure() {
+    geo = [...tray.querySelectorAll('.kc-cube')].map(el => { const r = el.getBoundingClientRect(); return { i: +el.dataset.i, x: r.left + r.width / 2, y: r.top + r.height / 2, rad: r.width * 0.44, w: r.width }; });
+  }
   function hit(x, y) {
+    if (!geo) measure();
     let best = -1, bd = 1e9;
-    tray.querySelectorAll('.kc-cube').forEach(el => { const r = el.getBoundingClientRect(), d = Math.hypot(x - r.left - r.width / 2, y - r.top - r.height / 2); if (d < r.width * 0.42 && d < bd) { bd = d; best = +el.dataset.i; } });
+    for (const g of geo) { const d = Math.hypot(x - g.x, y - g.y); if (d < g.rad && d < bd) { bd = d; best = g.i; } }
     return best;
   }
   function paintTrace() {
     tray.querySelectorAll('.kc-cube.on').forEach(el => el.classList.remove('on'));
     trace.forEach(i => { const c = cubeEl(i); if (c) c.classList.add('on'); });
-    const pts = trace.map(i => { const c = cubeEl(i); if (!c) return ''; const cell = c.parentElement; return (cell.offsetLeft + cell.offsetWidth / 2) + ',' + (cell.offsetTop + cell.offsetHeight * 0.47); });
-    const pl = tray.querySelector('.kc-line polyline'); if (pl) pl.setAttribute('points', pts.join(' '));
+    const pts = trace.map(i => { const c = cubeEl(i); if (!c) return ''; const cell = c.parentElement; return (cell.offsetLeft + cell.offsetWidth / 2) + ',' + (cell.offsetTop + cell.offsetHeight * 0.47); }).join(' ');
+    tray.querySelectorAll('.kc-line polyline').forEach(pl => pl.setAttribute('points', pts));
     if (trace.length) { const w = trace.map(i => R.cells[i]).join(''); $('#kcMsg').innerHTML = trace.map(i => `<span class="kc-wl">${R.cells[i] === 'QU' ? 'Qu' : R.cells[i]}</span>`).join('') + (w.length >= 2 ? `<span class="kc-wp">${w.length}</span>` : ''); }
   }
   function clearTrace() { trace = []; tapMode = false; typed = ''; if (R && M && !$('#kcPlay').hidden) paintTrace(); }
   function add(i) { trace.push(i); snd('key'); paintTrace(); }
   function back() { trace.pop(); paintTrace(); if (!trace.length) msg(''); }
   const canPlay = () => R && !R.over && !R.paused && !tray.classList.contains('turning');
-  tray.addEventListener('pointerdown', e => {
-    if (!canPlay()) return;
-    const i = hit(e.clientX, e.clientY); if (i < 0) return;
-    e.preventDefault(); try { tray.setPointerCapture(e.pointerId); } catch (x) { /* ignore */ }
-    dragging = true; moved = false; typed = '';
-    if (!trace.length) { add(i); return; }
-    const last = trace[trace.length - 1];
-    if (tapMode) {
-      if (i === last) { dragging = false; submit(); return; }
-      if (i === trace[trace.length - 2]) { back(); return; }
-      if (adj(last, i) && !trace.includes(i)) { add(i); return; }
-    }
-    trace = []; tapMode = false; add(i);
-  });
-  tray.addEventListener('pointermove', e => {
-    if (!dragging || !trace.length) return;
-    const i = hit(e.clientX, e.clientY); if (i < 0) return;
+  // one cube reached while the finger moves
+  function reach(i) {
+    if (i < 0) return;
+    if (G.tap >= 0 && i !== G.tap) { trace = [G.tap]; G.tap = -1; G.join = -1; } // a swipe from the last tapped cube: a new word from it
+    if (G.join >= 0 && i !== trace[trace.length - 1]) { trace = trace.slice(G.join); G.join = -1; paintTrace(); } // a swipe next to a leftover cube: a new word
+    if (!trace.length) { add(i); moved = true; return; }
     const last = trace[trace.length - 1];
     if (i === last) return;
     if (i === trace[trace.length - 2]) { back(); moved = true; return; }
     if (adj(last, i) && !trace.includes(i)) { add(i); moved = true; }
+  }
+  tray.addEventListener('pointerdown', e => {
+    if (!canPlay() || (e.pointerType === 'mouse' && e.button !== 0)) return;
+    e.preventDefault(); try { tray.setPointerCapture(e.pointerId); } catch (x) { /* ignore */ }
+    measure();
+    dragging = true; moved = false; typed = ''; lastXY = [e.clientX, e.clientY];
+    G = { tap: -1, prev: false, join: -1 };
+    const i = hit(e.clientX, e.clientY);
+    if (i < 0) { if (!tapMode) { trace = []; paintTrace(); } return; } // started in a gap: the first cube reached starts the word
+    if (tapMode && trace.length) {
+      const last = trace[trace.length - 1];
+      if (i === last) { G.tap = i; return; }                                   // a tap on it sends the word (on release)
+      if (i === trace[trace.length - 2]) { G.tap = i; G.prev = true; return; } // a tap on the one before takes a cube back
+      if (adj(last, i) && !trace.includes(i)) { G.join = trace.length; add(i); return; }
+    }
+    trace = []; tapMode = false; add(i);
   });
-  const up = () => { if (!dragging) return; dragging = false; if (moved && trace.length >= 2) submit(); else tapMode = true; };
+  tray.addEventListener('pointermove', e => {
+    if (!dragging || !geo) return;
+    const evs = e.getCoalescedEvents ? e.getCoalescedEvents() : [];
+    for (const ev of (evs.length ? evs : [e])) {
+      const x = ev.clientX, y = ev.clientY, [x0, y0] = lastXY, d = Math.hypot(x - x0, y - y0), step = Math.max(4, geo[0].w / 5), k = Math.ceil(d / step);
+      for (let s = 1; s <= k; s++) reach(hit(x0 + (x - x0) * s / k, y0 + (y - y0) * s / k));
+      lastXY = [x, y];
+    }
+  });
+  const up = () => {
+    if (!dragging) return; dragging = false;
+    const g = G; G = null; geo = null;
+    if (moved) { if (trace.length >= 2) submit(); else tapMode = true; return; }
+    if (g && g.tap >= 0) { if (g.prev) back(); else submit(); return; }
+    tapMode = trace.length > 0;
+  };
   tray.addEventListener('pointerup', up); tray.addEventListener('pointercancel', up);
   // typing: the app finds a path that spells what you type (Q types the Qu cube with or without the U)
   function findPath(word) {
@@ -372,7 +445,7 @@
     if (/^[a-z]$/i.test(e.key)) { typed += e.key.toUpperCase(); snd('key'); paintTyped(); e.preventDefault(); }
     else if (e.key === 'Backspace') { typed = typed.slice(0, -1); paintTyped(); e.preventDefault(); }
     else if (e.key === 'Escape') { clearTrace(); msg(''); }
-    else if (e.key === 'Enter') { e.preventDefault(); if (trace.length) submit(); else if (typed) nudge('Not on the grid'); }
+    else if (e.key === 'Enter') { e.preventDefault(); if (trace.length) submit(); else if (typed) { const t = typed; typed = ''; nudge(`${t}: not on the grid`); } } // CD-112: 1.3.1: a failed word clears
   });
 
   // ---------- words found ----------
@@ -391,22 +464,27 @@
     if (w.length < M.min) { nudge(`Too short: ${M.min}+ letters`); return; }
     if (R.found[w]) { msg(`${w}: already found`, 'dup', 1500); snd('draw'); flash(path, 'dupc'); return; }
     if (!R.words[w]) { nudge(`${w}: not a word`); return; }
-    const s = score(w, path, R.cells, M.sc);
+    const s = scoreOf(w, path);
     R.mine.push({ w, p: path, s }); R.found[w] = 1;
-    if (R.hint === w) { R.hint = null; tray.querySelectorAll('.kc-cube.hint').forEach(c => c.classList.remove('hint')); }
-    msg(`${w} +${s.t}`, 'good', 1400); snd('word'); flash(path, 'ok');
+    if (R.hint === w) { R.hint = null; R.hintK = 0; paintHint(); }
+    msg(`${w} +${s.t}${s.wm > 1 ? ` (×${s.wm} word bonus)` : ''}`, 'good', 1400); snd('word'); flash(path, 'ok');
     const p = $('#kcMePlus'); p.textContent = '+' + s.t; p.classList.remove('go'); void p.offsetWidth; p.classList.add('go');
-    paintScores(); paintChips(w); save();
+    paintScores(); paintChips(w); paintHintBtn(); save();
   }
 
   // ---------- 💡 Hint (CD-109: 7.1–7.2; 9.2.1) and 🔄 Turn ----------
   const hintCap = () => M.mode === 'duel' ? HINT_CAP_DUEL : M.sCap === '3' ? 3 : Infinity;
   const hintFree = () => M.mode === 'solo' && M.sHint === 'free';
-  function hintHtml() { return R && R.hint && !R.found[R.hint] && !R.over ? `<span class="kc-mt clue">💡 ${R.hint.length} letters: ${esc(clueOf(R.hint))}</span>` : ''; }
+  function hintHtml() { return R && R.hint && !R.found[R.hint] && !R.over ? `<span class="kc-mt clue">💡 ${R.hint.length} letters: ${esc(clueOf(R.hint))}${(R.hintK || 1) > 1 ? ` <small>(${R.hintK} cubes shown)</small>` : ''}</span>` : ''; }
+  // CD-116: 1.1: while a hinted word is unfound, 💡 stripes its next cube (🪙1; never the last cube; not counted in the limit)
+  const nextOn = () => !!(R && R.hint && !R.found[R.hint] && R.words[R.hint] && (R.hintK || 1) < R.words[R.hint].length - 1);
   function paintHintBtn() {
-    const left = hintCap() - R.hints, b = $('#kcHint');
-    $('#kcHintCp').textContent = hintFree() ? (left === Infinity ? 'free' : `free · ${left} left`) : `🪙1/letter${left === Infinity ? '' : ` · ${left} left`}`;
-    b.disabled = left <= 0 || R.over;
+    const left = hintCap() - R.hints, b = $('#kcHint'), nx = nextOn();
+    $('#kcHintNm').textContent = nx ? 'Next' : 'Hint';
+    $('#kcHintCp').textContent = nx ? (hintFree() ? 'next cube · free' : '🪙1 · next cube')
+      : hintFree() ? (left === Infinity ? 'free' : `free · ${left} left`) : `🪙1/letter${left === Infinity ? '' : ` · ${left} left`}`;
+    b.title = nx ? 'Next cube: stripe the next cube of your hinted word' : 'Hint: the clue for a word you have not found';
+    b.disabled = (left <= 0 && !nx) || R.over;
   }
   function pickHint() {
     const cand = Object.keys(R.words).filter(w => !R.found[w] && w !== R.hint && clueOf(w)).sort((a, b) => famOf(a) - famOf(b) || a.length - b.length);
@@ -416,6 +494,16 @@
   $('#kcHint').addEventListener('click', () => {
     if (!canPlay()) return;
     const b = $('#kcHint');
+    if (nextOn()) { // Next cube
+      if (hintFree()) { giveNext(0); return; }
+      if (!b.classList.contains('armed')) {
+        if (UI.coins && UI.coins.bal < 1) { UI.coins.spend(1, `${NM.cubes} Next cube`); return; }
+        UI.armTap(b, 1); msg('💡 Stripe the next cube of your hinted word: tap again to buy (🪙1)', '', 2600); return;
+      }
+      UI.armTap(b, 0);
+      if (UI.coins && !UI.coins.spend(1, `${NM.cubes} Next cube`)) return;
+      giveNext(1); return;
+    }
     if (R.hints >= hintCap()) { msg(`No Hints left this round (${hintCap()} per round)`, 'dup', 2000); return; }
     if (!b.classList.contains('armed')) {
       hintArm = pickHint();
@@ -434,12 +522,14 @@
   });
   function giveHint(w, price) {
     R.hints++; R.hintCoins += price; M.coins -= price;
-    R.hint = w;
-    tray.querySelectorAll('.kc-cube.hint').forEach(c => c.classList.remove('hint'));
-    const c = cubeEl(R.words[w][0]); if (c) c.classList.add('hint');
-    msg(''); paintHintBtn(); save();
+    R.hint = w; R.hintK = 1;
+    paintHint(); msg(''); paintHintBtn(); save();
   }
-  $('#kcTurn').addEventListener('click', () => {
+  function giveNext(price) {
+    R.hintK = (R.hintK || 1) + 1; R.hintCoins += price; M.coins -= price;
+    paintHint(); snd('key'); msg(''); paintHintBtn(); save();
+  }
+  $('#kcTurn').addEventListener('click', () => { // 🔄 Rotate (CD-116: 2.1a; the button keeps its old id)
     if (!canPlay()) return;
     clearTrace(); snd('row');
     tray.classList.add('turning'); tray.style.setProperty('--rot', '90deg');
@@ -503,7 +593,7 @@
     const duel = M.mode === 'duel';
     R.botN = R.bot.length;
     R.meTot = R.mine.reduce((a, m) => a + (R.botSet[m.w] ? 0 : m.s.t), 0);
-    R.botTot = duel ? R.bot.reduce((a, b) => a + (R.found[b.w] ? 0 : score(b.w, R.words[b.w], R.cells, M.sc).t), 0) : 0;
+    R.botTot = duel ? R.bot.reduce((a, b) => a + (R.found[b.w] ? 0 : scoreOf(b.w).t), 0) : 0;
     R.shared = R.mine.filter(m => R.botSet[m.w]).length;
     M.me += R.meTot; M.bot += R.botTot;
     M.list.push({ me: R.meTot, bot: R.botTot, words: R.mine.length, botWords: R.bot.length, all: R.all });
@@ -524,12 +614,16 @@
     let newBest = false;
     if (!duel) { st.soloN++; if (R.meTot > (st.solo[M.n] || 0)) { st.solo[M.n] = R.meTot; newBest = true; } }
     R.newBest = newBest;
+    // CD-112: 3.3: with Paid Hints, a new Solo best pays 🪙5
+    if (!duel && newBest && M.sHint === 'paid') { R.earn = SOLO_BEST; M.coins += SOLO_BEST; if (UI.coins) UI.coins.add(SOLO_BEST, `${NM.cubes}: Solo new best`); }
     saveSt();
     history();
     save(); UI.lobby();
+    // CD-112 add. 2.1: the fanfare (win sound + confetti) only when the game is over; a round before the last gets a soft chime
     const won = duel ? (M.done ? M.me > M.bot : R.meTot > R.botTot) : newBest || R.mine.length > 0;
-    snd(won ? 'win' : 'lose');
-    if (won && (M.done || !duel) && !night() && !reduceMotion()) confetti();
+    if (duel && !M.done) snd('word');
+    else snd(won ? 'win' : duel && M.me === M.bot ? 'draw' : 'lose');
+    if (won && M.done && !night() && !reduceMotion()) confetti();
     resTab = R.mine.length || !duel ? 'me' : 'bot'; resSel = null;
     setTimeout(showRes, 450);
   }
@@ -540,7 +634,16 @@
   }
   // the win report: the round's result, or the match's after its last round
   // Solo has no winner: the row reads "NEW BEST! 🏆 42 pts" or "ROUND OVER 🎯 42 pts", in the same gold frame
+  // v12c (CD-112 add. 2.1; CD-116: 4.1): before the last round of a match, a plain banner ("ROUND 1 of 3 · You lead 48–31");
+  // the gold "You WIN!" row only once the game is over
+  const midMatch = () => M.mode === 'duel' && !M.done && M.rounds > 1;
+  function leadHtml() {
+    const a = M.me, b = M.bot, s = a >= b ? `${UI.fmtN(a)}–${UI.fmtN(b)}` : `${UI.fmtN(b)}–${UI.fmtN(a)}`;
+    const t = a > b ? 'You lead' : a < b ? 'The Bot leads' : 'Tied';
+    return `<span class="kc-lead" role="status"><span class="r">Round ${M.no} of ${M.rounds}</span><b>${t} ${s}</b></span>`;
+  }
   function winHtml() {
+    if (midMatch()) return leadHtml();
     if (M.mode !== 'solo') return UI.winLine(winObj());
     const lab = `${R.newBest ? 'New best' : 'Round over'}, ${R.meTot} points`;
     return `<span class="ob-h" role="status" aria-label="${lab}"><span class="ob-line" aria-hidden="true"><span class="ob-av">${UI.meWin().av || ''}</span><b class="ob-v">${R.newBest ? 'NEW BEST!' : 'ROUND OVER'}</b><span class="ob-sym">${R.newBest ? '🏆' : '🎯'}</span><span class="ob-sc">${UI.fmtN(R.meTot)} pts</span></span></span>`;
@@ -554,7 +657,7 @@
     if (!UI.history) return;
     const duel = M.mode === 'duel';
     const rows = M.list.map((r, i) => `<tr><td>Round ${i + 1}</td><td>${UI.fmtN(r.me)}</td>${duel ? `<td>${UI.fmtN(r.bot)}</td>` : ''}<td>${r.words} of ${r.all}</td></tr>`).join('');
-    const body = `<div class="overbar kc-hist-over">${winHtml()}</div>
+    const body = `<div class="${midMatch() ? 'kc-hist-over' : 'overbar kc-hist-over'}">${winHtml()}</div>
       <table class="score-table kc-hist-t"><tr><th></th><th>You</th>${duel ? '<th>Bot</th>' : ''}<th>Your words</th></tr>${rows}
       ${duel && M.rounds > 1 ? `<tr class="total"><td>Match</td><td>${UI.fmtN(M.me)}</td><td>${UI.fmtN(M.bot)}</td><td></td></tr>` : ''}</table>
       <p class="help-note">Last round, your words: ${R.mine.map(m => `<b>${m.w}</b> ${m.s.t}`).join(' · ') || 'none'}</p>`;
@@ -573,30 +676,46 @@
   function showRes() {
     if (!R || !R.over) return;
     UI.showScreen('keycubes'); part('kcRes');
+    SEC.classList.toggle('kc-wide', innerWidth >= 700 && innerWidth > innerHeight); // v12c: the wide layout also when the results open first (Resume)
     const duel = M.mode === 'duel';
     setHead(duel ? `Round ${M.no} of ${M.rounds} · results` : `Solo · ${M.n}×${M.n} · results`);
+    $('#kcWin').classList.toggle('overbar', !midMatch());
     $('#kcWin').innerHTML = winHtml();
+    $('#kcScore').hidden = !duel; if (duel) $('#kcScore').innerHTML = scoreCard();
     const all = R.all, pct = Math.round(100 * R.mine.length / Math.max(1, all));
     const coinsTxt = duel ? [R.earn ? `Round ${R.earn === WIN ? 'win' : 'draw'} +${R.earn}` : 'No round coins', R.matchEarn ? `Match win +${R.matchEarn}` : '', R.hintCoins ? `Hints −${R.hintCoins}` : ''].filter(Boolean).join(' · ')
-      : R.hintCoins ? `Hints −${R.hintCoins}` : 'Solo: no coins';
+      : [R.earn ? `New best +${R.earn}` : '', R.hintCoins ? `Hints −${R.hintCoins}` : ''].filter(Boolean).join(' · ') || (M.sHint === 'paid' ? 'No coins this round' : 'Solo: no coins');
     $('#kcSum').innerHTML = `<span class="kc-pill"><span class="e">🙂</span> ${UI.fmtN(R.mine.length)} of ${UI.fmtN(all)} words (${pct}%)</span>`
       + (duel ? `<span class="kc-pill"><span class="e">🤖</span> ${plural(R.bot.length, 'word')}</span><span class="kc-pill shared">✕ ${R.shared} shared: 0 pts</span>` : `<span class="kc-pill"><span class="e">🎯</span> Best ${M.n}×${M.n}: ${st.solo[M.n] ? UI.fmtN(st.solo[M.n]) : '–'} pts</span>`)
-      + (duel && M.rounds > 1 ? `<span class="kc-pill">${M.done ? 'Match' : `After round ${M.no} of ${M.rounds}`}: You ${UI.fmtN(M.me)} – Bot ${UI.fmtN(M.bot)}</span>` : '')
-      + (duel && M.done && M.rounds > 1 ? `<span class="kc-pill">Round ${M.no}: You ${UI.fmtN(R.meTot)} – Bot ${UI.fmtN(R.botTot)}</span>` : '')
       + `<span class="kc-pill">🪙 ${coinsTxt}</span>`;
     const tabs = duel ? [['me', `Your words (${R.mine.length})`], ['bot', `Bot's words (${R.bot.length})`], ['all', `All words (${UI.fmtN(all)})`]]
       : [['me', `Words found (${R.mine.length})`], ['all', `All words (${UI.fmtN(all)})`]];
     $('#kcTabs').innerHTML = tabs.map(([k, t]) => `<button type="button" data-t="${k}" class="${k === resTab ? 'on' : ''}">${t}</button>`).join('');
-    $('#kcNext').textContent = M.done ? (duel ? '▶ New match' : '▶ New grid') : '▶ Next round';
+    $('#kcNext').textContent = M.done ? '🆕 New Game' : '▶ Next round'; // the suite standard (CD-113)
     requestAnimationFrame(() => UI.fitOver($('#kcWin')));
     paintList();
+  }
+  // the score card (CD-112 add. 2.1; CD-116: 4.1): the game totals, big, as in CrossKeys; then one row per round with the
+  // running total; rounds still to play show "–"
+  function scoreCard() {
+    const multi = M.rounds > 1, me = multi ? M.me : R.meTot, bot = multi ? M.bot : R.botTot;
+    const big = `<div class="kc-big"><div class="me"><span>You</span><b>${UI.fmtN(me)}</b></div><span class="lab">${multi ? (M.done ? 'Final game total' : 'Game total') : 'Final score'}</span><div class="them"><b>${UI.fmtN(bot)}</b><span>Bot</span></div></div>`;
+    if (!multi) return big;
+    let a = 0, b = 0, rowsH = '';
+    for (let k = 0; k < M.rounds; k++) {
+      const r = M.list[k];
+      if (r) { a += r.me; b += r.bot; rowsH += `<tr class="${k === M.list.length - 1 ? 'now' : ''}"><td>Round ${k + 1}</td><td>${UI.fmtN(r.me)}</td><td>${UI.fmtN(r.bot)}</td><td>${UI.fmtN(a)}–${UI.fmtN(b)}</td></tr>`; }
+      else rowsH += `<tr class="todo"><td>Round ${k + 1}</td><td>–</td><td>–</td><td></td></tr>`;
+    }
+    return big + `<table class="score-table kc-rtab"><tr><th>Round</th><th>You</th><th>Bot</th><th>Running</th></tr>${rowsH}
+      <tr class="total"><td>Game total</td><td>${UI.fmtN(M.me)}</td><td>${UI.fmtN(M.bot)}</td><td></td></tr></table>`;
   }
   function rows() {
     const tag = w => { const m = !!R.found[w], b = !!R.botSet[w]; return m && b ? 'both' : m ? 'me' : b ? 'bot' : 'miss'; };
     let L;
     if (resTab === 'me') L = R.mine.map(m => ({ w: m.w, p: m.p, s: m.s }));
-    else if (resTab === 'bot') L = R.bot.map(b => ({ w: b.w, p: R.words[b.w], s: score(b.w, R.words[b.w], R.cells, M.sc) }));
-    else L = Object.keys(R.words).map(w => ({ w, p: R.words[w], s: score(w, R.words[w], R.cells, M.sc) }));
+    else if (resTab === 'bot') L = R.bot.map(b => ({ w: b.w, p: R.words[b.w], s: scoreOf(b.w) }));
+    else L = Object.keys(R.words).map(w => { const m = R.mine.find(x => x.w === w); return m ? { w, p: m.p, s: m.s } : { w, p: R.words[w], s: scoreOf(w) }; });
     L.forEach(r => { r.tag = tag(r.w); });
     return L.sort((a, b) => b.s.t - a.s.t || a.w.localeCompare(b.w));
   }
@@ -614,11 +733,14 @@
     const n = M.n, ms = SEC.classList.contains('kc-wide') ? 46 : (n === 4 ? 30 : 24);
     const pos = {}; r.p.forEach((i, k) => { pos[i] = k + 1; });
     const order = dispOrder(), dp = {}; order.forEach((li, k) => { dp[li] = k; });
-    const cells = order.map(i => { const c = R.cells[i]; return `<span class="${pos[i] ? 'lit' + (pos[i] === 1 ? ' st' : '') : ''}">${pos[i] ? `<sup>${pos[i]}</sup>` : ''}${c === 'QU' ? 'Qu' : c}</span>`; }).join('');
+    const bon = R.bon || {};
+    const cells = order.map(i => { const c = R.cells[i], b = bon[i]; return `<span class="${pos[i] ? 'lit' + (pos[i] === 1 ? ' st' : '') : ''}">${pos[i] ? `<sup>${pos[i]}</sup>` : ''}${c === 'QU' ? 'Qu' : c}${b ? `<em class="kc-bn b${b}">${b}</em>` : ''}</span>`; }).join('');
     const step = ms + 3, xy = i => [5 + (dp[i] % n) * step + ms / 2, 5 + Math.floor(dp[i] / n) * step + ms / 2];
     const both = r.tag === 'both', c = clueOf(r.w);
     const by = { me: M.mode === 'solo' ? 'You found it.' : 'Only you found it.', bot: 'Only the Bot found it.', both: 'You both found it, so it scores for nobody.', miss: 'Nobody found it.' }[r.tag];
-    const tb = M.sc === 'len' ? `<tr><td>Word length (${r.w.length} letters)</td><td>${r.s.lb}</td></tr>` : `<tr><td>Letter points</td><td>${r.s.lp}</td></tr><tr><td>Length bonus (${r.w.length} letters)</td><td>+${r.s.lb}</td></tr>`;
+    const used = r.p.map(i => bon[i]).filter(Boolean), lb = used.filter(b => b.endsWith('L')), wb = used.filter(b => b.endsWith('W'));
+    const tb = (M.sc === 'len' ? `<tr><td>Word length (${r.w.length} letters)</td><td>${r.s.lb}</td></tr>` : `<tr><td>Letter points${lb.length ? ` (with ${lb.join(', ')})` : ''}</td><td>${r.s.lp}</td></tr><tr><td>Length bonus (${r.w.length} letters)</td><td>+${r.s.lb}</td></tr>`)
+      + (r.s.wm > 1 ? `<tr><td>Word bonus (${wb.join(' × ')})</td><td>×${r.s.wm}</td></tr>` : '');
     d.innerHTML = `<div class="kc-mini" style="--ms:${ms}px;grid-template-columns:repeat(${n}, ${ms}px)">${cells}<svg aria-hidden="true"><polyline points="${r.p.map(i => xy(i).join(',')).join(' ')}"/></svg></div>
       <div class="kc-bd"><h3>${r.w}</h3><table>${tb}<tr class="tot${both ? ' zero' : ''}"><td>${both ? 'Shared word' : 'Total'}</td><td>${both ? 0 : r.s.t}</td></tr></table>
       <p class="kc-who">${by}</p>${c ? `<div class="kc-clue">📖 Clue: ${esc(c)}</div>` : '<div class="kc-clue none">Not in the Lexicon yet: no clue to show.</div>'}</div>`;
@@ -668,9 +790,9 @@
         <li>A word joins <b>touching cubes</b>: across, down or diagonally. Each cube is used <b>once per word</b>, but in as many words as you like.</li>
         <li>Any real English word counts (the ENABLE word list): at least <b>3 letters on 4×4</b> and <b>4 letters on 5×5</b> (Setup can change it). <b>Qu</b> is one cube that spells two letters.</li>`)}
       ${sec('Spell a Word', `
-        <li><b>Swipe</b> (touch) or <b>drag</b> (mouse) across the cubes, then let go. Slide back one cube to undo it.</li>
+        <li><b>Swipe</b> (touch) or <b>drag</b> (mouse) across the cubes, then let go. You can start in the gap beside a cube. Slide back one cube to undo it. Every new swipe starts a new word.</li>
         <li>Or <b>tap</b> the cubes one by one, then tap the last one again.</li>
-        <li>Or <b>type</b> the word and press <b>Enter</b> (the app finds the cubes): <b>⌫</b> takes a letter back, <b>Esc</b> clears, <b>Space</b> pauses.</li>
+        <li>Or <b>type</b> the word and press <b>Enter</b> (the app finds the cubes): <b>⌫</b> takes a letter back, <b>Esc</b> clears, <b>Space</b> pauses. A word that fails clears, so your next letter starts a new word.</li>
         <li>The strip above the grid shows your word, then what happened: <b>green</b> = a new word and its points, <b>orange</b> = already found, <b>red</b> = not a word, too short, or not on the grid, <b>blue</b> = your Hint.</li>`)}
       ${sec('Duel and Solo', `
         <li><b>⚔ Duel</b>: the Bot hunts the same grid at the same time. Its word count shows beside the clock; its words stay hidden until the end. A word you <b>both</b> find scores for <b>nobody</b>.</li>
@@ -679,21 +801,27 @@
         <li><b>🎯 Solo</b>: no Bot. Untimed (the clock counts up) or timed; <b>🏁 Done</b> ends the round. Beat your best score for each grid size.</li>`)}
       ${sec('Scoring', `
         <li><b>Letter points + length bonus</b> (the standard): each cube shows its letter's points (common letters 1, rare ones up to 10; Qu 10), and longer words add a bonus: 4 letters +2, 5 +4, 6 +7, 7 +11, 8 +16, then +5 for each letter more.</li>
-        <li><b>Word length only</b> (a Setup choice): 3 letters 1, 4 = 2, 5 = 3, 6 = 5, 7 = 8, 8 = 12, then +4 for each letter more.</li>`)}
+        <li><b>Word length only</b> (a Setup choice): 3 letters 1, 4 = 2, 5 = 3, 6 = 5, 7 = 8, 8 = 12, then +4 for each letter more.</li>
+        <li><b>Bonus cubes</b> (On unless you turn them off in Setup) carry a badge and move to new cubes every round: <b>2L</b> / <b>3L</b> double / triple that cube's letter points; <b>2W</b> / <b>3W</b> double / triple the whole word (two word bonuses in one word multiply). 4×4 has one of each; 5×5 has one 3W, two 2W, two 2L and one 3L. With Word length only, there are only 2W and 3W. They count for the Bot too.</li>`)}
       ${sec('The Buttons', `
         <li><b>💡 Hint</b> shows the clue and the length of a word you haven't found, and stripes its first cube: a signal, not a solve. It costs <b>🪙1 per letter</b> of that word (two taps: the first shows the price), at most <b>3 per round</b> in a Duel. In Solo, Hints are free or paid, 3 per round or no limit (Setup).</li>
-        <li><b>🔄 Turn</b> gives the grid a quarter turn, which helps you see new words. Free.</li>
+        <li>While your hinted word is still unfound, the button reads <b>💡 Next</b>: each tap stripes its <b>next cube</b> (numbered 1, 2, 3…) for <b>🪙1</b> (free with free Solo Hints). It never shows the last cube, and it doesn't count toward the Hint limit.</li>
+        <li><b>Left</b>, under your words, counts the words you haven't found yet, by length. Free.</li>
+        <li><b>🔄 Rotate</b> gives the grid a quarter turn, which helps you see new words. Free.</li>
         <li><b>⏸ Pause</b> (or tap the clock) stops the clock (and the Bot) and hides the cubes.</li>
         <li>In the last 10 seconds the grid flashes every second: <b>yellow</b> from 10 to 6, <b>red</b> from 5 to 1, with a tick each second.</li>`)}
       ${sec('Coins', `
-        <li>In a Duel: a round won pays <b>🪙${WIN}</b>, a draw <b>🪙${DRAW}</b>, and a match won <b>🪙${MATCH}</b> more. Hints cost 🪙1 per letter. Solo pays no coins.</li>
+        <li>In a Duel: a round won pays <b>🪙${WIN}</b>, a draw <b>🪙${DRAW}</b>, and a match won <b>🪙${MATCH}</b> more. Hints cost 🪙1 per letter; Next cube 🪙1.</li>
+        <li>Solo: with free Hints, no coins. With <b>Paid</b> Hints, a new best score pays <b>🪙${SOLO_BEST}</b>.</li>
         <li>A word hunt always runs the full clock, so ${NM.cubes} has no speed coins.</li>`)}
       ${sec('Results', `
-        <li>After each round: who won, your words out of every word in the grid, the shared words, and the match score so far.</li>
-        <li>Tabs: <b>Your words</b>, <b>Bot's words</b> and <b>All words</b> (every word in the grid, found or missed). Tap a word to see its path on a small grid (blue = the first cube), how its points add up, and its <b>📖 clue</b> when it's a Lexicon word.</li>`)}
+        <li>During a match, the big number in your box (and the Bot's) is the <b>game total</b>; the line under yours is this round. The Bot's words, and so its round points, stay hidden until the round ends.</li>
+        <li>After rounds before the last: "<b>Round 1 of 3 · You lead 48–31</b>". After the last round: the gold "<b>You WIN!</b>" row with the final game total.</li>
+        <li>The score card shows the <b>game totals</b> big, then each round with the running total. Below it: your words out of every word in the grid, the shared words and your coins.</li>
+        <li>Tabs: <b>Your words</b>, <b>Bot's words</b> and <b>All words</b> (every word in the grid, found or missed). Words <b>only you</b> found are <b style="color:#12a03c">green</b>; <b>shared</b> words are <b style="color:#e01e1e">red</b> and score 0. Tap a word to see its path on a small grid (blue = the first cube), how its points add up (with any bonus), and its <b>📖 clue</b> when it's a Lexicon word.</li>`)}
       ${sec('Setup', `
         <li><b>Play</b>: Duel or Solo. <b>Grid</b>: 4×4 or 5×5. <b>Timer</b>: 30 s Blitz, 1, 2 (standard), 3, 4 or 5 min; Untimed in Solo. <b>Bot level</b> 1–10.</li>
-        <li>Under <b>▸ More options</b>: Shortest word, Rounds per match, Scoring, <b>Cube Colors</b> (Cream, Inked, Inked Blue, Steel, Navy &amp; gold), <b>Button Colors</b> (Steel, Sapphire, Navy &amp; gold) and, for Solo, Hints (free or paid, 3 per round or no limit).</li>
+        <li>Under <b>▸ More options</b>: Shortest word, Rounds per match, Scoring, <b>Bonus cubes</b> (On / Off), <b>Cube Colors</b> (Cream, Inked, Inked Blue, Steel, Navy &amp; gold), <b>Button Colors</b> (Steel, Sapphire, Navy &amp; gold) and, for Solo, Hints (free or paid, 3 per round or no limit).</li>
         <li>Every grid is rolled fresh from ${NM.cubes}' own cubes; a grid with too few words is rolled again.</li>`)}
       ${sec('Your Stats', `
         <li>Matches, the share won, words found, your best-scoring word and your best Solo score for each grid size are kept on this device. Every match (and Solo round) also goes into <b>📜 Game History</b>.</li>`)}

@@ -2680,3 +2680,90 @@ html[data-screen="night"] .vt-k.ent.ent-ok { background: #2f7a45; color: #111; }
 .kr-grp .kr-chips span.hd .dn { color: #ff922b; }
 .kr-gnote { margin-left: 2.6em; font-style: italic; font-weight: 400; font-size: .82em; }
 .sheet .kr-resbar .btn { min-height: 54px; }
+/* =====================================================================
+   v12c (JM CD-112, CD-116): KeyCubes. Candy-drop cubes in every Cube Color (as LockWord's tiles: a glass shine on top, a soft
+   shade underneath, a thin edge); Navy & gold's heavy black edge is gone. Bonus-cube badges (3W 2W 2L 3L), numbered Hint
+   cubes, the "Left" line, the game total + round line in the score boxes, the results score card and "You lead" banner,
+   green (only you) / red (shared) words. Faster swipes on phones: no backdrop blur on the tray, no blur filter on the line.
+   ===================================================================== */
+.kc-tray { -webkit-backdrop-filter: none; backdrop-filter: none; }
+.kc-line polyline { filter: none; opacity: .62; }
+.kc-line polyline.g { stroke-width: calc(var(--cs) * .28); opacity: .2; }
+.kc-cube { isolation: isolate;
+  background-image: linear-gradient(rgba(0, 0, 0, 0) 55%, rgba(0, 0, 0, .14)), linear-gradient(var(--c1), var(--c2));
+  box-shadow: inset 0 calc(var(--cs) * -.075) calc(var(--cs) * .11) rgba(0, 0, 0, .34), inset 0 calc(var(--cs) * -.028) 0 var(--ce), inset 0 2px 1px rgba(255, 255, 255, .6),
+    inset 0 0 0 1.5px var(--crim), 0 calc(var(--cs) * .028) 0 rgba(0, 0, 0, .38), 0 calc(var(--cs) * .05) calc(var(--cs) * .07) rgba(0, 0, 0, .34); }
+.kc-cube::before { content: ""; position: absolute; z-index: 0; left: 9%; right: 9%; top: 5%; height: 44%; pointer-events: none;
+  border-radius: 40% 40% 50% 50% / 32% 32% 46% 46%; background: linear-gradient(rgba(255, 255, 255, .66), rgba(255, 255, 255, .05)); }
+.kc-face { z-index: 1; }
+.kc-cube.on { background-image: linear-gradient(var(--o1), var(--o2));
+  box-shadow: inset 0 calc(var(--cs) * -.07) calc(var(--cs) * .1) rgba(0, 0, 0, .3), inset 0 calc(var(--cs) * -.028) 0 var(--oe), inset 0 2px 1px rgba(255, 255, 255, .55), 0 0 0 2px var(--kc-glow), 0 0 12px rgba(79, 195, 247, .6); }
+#keycubes.kc-cs-navy { --ce: #2b4475; --crim: #c99a10; }
+#keycubes.kc-cs-navy .kc-cube { background-image: linear-gradient(rgba(0, 0, 0, 0) 55%, rgba(0, 0, 0, .22)), linear-gradient(var(--c1), var(--c2)); }
+#keycubes.kc-cs-navy .kc-cube::before { background: linear-gradient(rgba(255, 255, 255, .4), rgba(255, 255, 255, .03)); }
+#keycubes.kc-cs-navy .kc-cube.on { background-image: linear-gradient(var(--o1), var(--o2)); }
+#keycubes.kc-cs-navy .kc-prev span { box-shadow: inset 0 -2px 0 var(--ce), inset 0 0 0 1px var(--crim), 0 2px 3px rgba(0, 0, 0, .3); }
+/* Hint: the striped cubes carry their order (1, 2, 3…) */
+.kc-cube.hint::after { z-index: 2; content: attr(data-hn); display: flex; justify-content: flex-end; align-items: flex-start; box-sizing: border-box; padding: 5% 9%;
+  font: 900 calc(var(--cs) * .17)/1 system-ui, sans-serif; color: #fff; text-shadow: 0 0 3px #1f4fbf, 0 0 2px #1f4fbf, 0 0 1px #1f4fbf; }
+/* Bonus cubes: a badge in the top-left corner */
+.kc-bn { position: absolute; left: 7%; top: 5%; font: 900 calc(var(--cs) * .155)/1 system-ui, sans-serif; font-style: normal; letter-spacing: .02em; padding: .2em .32em .17em; border-radius: .38em;
+  color: #fff; text-shadow: 0 1px 0 rgba(0, 0, 0, .35); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .45), inset 0 -1px 0 rgba(0, 0, 0, .2), 0 1px 2px rgba(0, 0, 0, .4); pointer-events: none; }
+.kc-bn.b3W { background: linear-gradient(#ff7b6b, #d62828); }
+.kc-bn.b2W { background: linear-gradient(#ffa3c4, #dd3f7a); }
+.kc-bn.b3L { background: linear-gradient(#6ea6ff, #1f4fbf); }
+.kc-bn.b2L { background: linear-gradient(#7fd0ff, #1f8bd0); }
+.kc-mini .kc-bn { left: auto; right: 1px; top: 1px; font-size: calc(var(--ms) * .2); padding: .12em .2em .1em; border-radius: .3em; }
+html[data-screen="night"] .kc-bn { filter: brightness(.75) saturate(.7); }
+/* the free "Left" line under your words */
+.kc-left { margin: 6px 0 0; font-size: 12.5px; font-weight: 700; color: var(--muted); line-height: 1.35; }
+.kc-left b { color: var(--ink); }
+.kc-left:empty { display: none; }
+/* score boxes in a match of 3 or 5 rounds: the game total big, this round under it */
+.kc-side .rd { font-size: 11px; font-weight: 800; opacity: .82; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.1; }
+.kc-side .rd:empty { display: none; }
+.kc-side .rd { grid-column: 1 / -1; } /* under the avatar too: room for "Rd 3: 1,234 pts" on phones */
+.kc-bar.multi .kc-side .sc { font-size: 25px; }
+@media (min-width: 700px) { .kc-bar.multi .kc-side .sc { font-size: 32px; } .kc-side .rd { font-size: 13px; } }
+/* results: "Round 1 of 3 · You lead 48–31" until the last round */
+.kc-win:not(.overbar) { display: flex; }
+.kc-lead { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: center; gap: 2px 12px; width: 100%; padding: 8px 14px; border-radius: 14px;
+  background: var(--kc-glass); box-shadow: var(--kc-edge); color: #fff; text-align: center; }
+.kc-lead .r { font-size: 13px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; opacity: .85; }
+.kc-lead b { font: 900 22px/1.15 system-ui, sans-serif; font-variant-numeric: tabular-nums; }
+/* the score card: game totals big (as in CrossKeys), then each round with the running total */
+.kc-score { grid-area: score; background: var(--surface); border-radius: 16px; box-shadow: var(--shadow); padding: 8px 12px; }
+.kc-score[hidden] { display: none; }
+.kc-big { display: flex; align-items: center; justify-content: center; gap: 12px; }
+.kc-big > div { display: flex; align-items: center; gap: 8px; border: 2px solid var(--ink); border-radius: 12px; padding: 2px 12px; }
+.kc-big b { font: 900 34px/1.1 system-ui, sans-serif; font-variant-numeric: tabular-nums; }
+.kc-big .me b { color: var(--you); } .kc-big .them b { color: var(--opp); }
+.kc-big div span { font-size: 16px; font-weight: 800; }
+.kc-big .lab { font-size: 11px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); text-align: center; max-width: 6em; line-height: 1.15; }
+.kc-rtab { margin-top: 6px; font-size: 13.5px; }
+.kc-rtab th, .kc-rtab td { padding: 3px 6px; }
+.kc-rtab th { font-size: 12px; color: var(--muted); }
+.kc-rtab tr.now td { background: rgba(44, 107, 216, .14); font-weight: 800; }
+.kc-rtab tr.todo td { color: var(--muted); }
+.kc-rtab tr.total td { font-size: 19px; }
+/* phones: the whole results screen scrolls, the buttons stay at the bottom */
+.kc-rmain { grid-template-rows: none; grid-auto-rows: auto; grid-template-areas: "win" "score" "sum" "tabs" "det" "list" "nav"; overflow-y: auto; align-content: start; }
+.kc-rmain .kc-list { overflow: visible; }
+.kc-rmain { padding-bottom: 0; }
+.kc-rmain .kc-nav { position: sticky; bottom: 0; z-index: 3; background: var(--bg); padding: 6px 0 10px; }
+.kc-wide .kc-rmain { grid-template-rows: auto auto auto auto minmax(0, 1fr) auto; grid-auto-rows: auto; overflow: hidden; align-content: stretch;
+  grid-template-areas: "win win" "score tabs" "score list" "sum list" "det list" "nav nav"; }
+.kc-wide .kc-rmain .kc-tabs { align-self: start; }
+.kc-wide .kc-rmain .kc-list, .kc-wide .kc-rmain .kc-det { overflow-y: auto; min-height: 0; }
+.kc-wide .kc-rmain { padding-bottom: 14px; }
+.kc-wide .kc-rmain .kc-nav { position: static; background: none; padding: 0; }
+/* word colors (CD-112 add. 2.2; CD-116: 4.2): only you = bright green, shared = bright red (points not struck out) */
+.kc-row.me .p, .kc-row.me .w { color: #12a03c; }
+.kc-row.both .p, .kc-row.both .w { color: #e01e1e; text-decoration: none; }
+.kc-bd tr.tot.zero td { background: #e01e1e; color: #fff; }
+.kc-pill.shared { background: #ffd9d9; color: #a00000; }
+@media (prefers-color-scheme: dark) {
+  .kc-row.me .p, .kc-row.me .w { color: #4ade80; }
+  .kc-row.both .p, .kc-row.both .w { color: #ff6b6b; }
+  .kc-pill.shared { background: #5a1f1f; color: #ffb3b3; }
+}
