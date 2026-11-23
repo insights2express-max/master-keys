@@ -642,4 +642,6 @@ FIRECRACKER|Hot saltine?; Burned saltine?
 FOIL|Thwarting wrap?
 # L14.10 (CD-129): new Wordplay clues (JM edits + accepted drafts)
 HOCKEY|Pucker up?
+# L14.11 (CD-131): new Wordplay clues (JM edits)
+AARDVARK|Ants or uncles?
 `;

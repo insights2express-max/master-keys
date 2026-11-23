@@ -5,7 +5,7 @@
    Words are 2–7 letters, plus 11-letter words for Large grids (A–Z only). A repeated word adds an extra clue set (see above). */
 // Lexicon edition (JM, CD-24 other edits 1.1): its own number, separate from the game version. Add 1 whenever the word data or the Lexicon page changes.
 // L01 v07a · L02 v07b · L03 v07c · L04 v07d (wrapping cells) · L05 v07e (8-letter hint clues, edition number) · L06 v08 (8-letter easy and hard hints) · L07 (editor page: Status, Comments, Edit Mode + Copy Edits, advanced search; "/" in 23 Word Vault clues) · L08 v08b (58 country-code clues "Madrid URL" style, JM CD-27; Word Vault tricky hints) · L09 (JM's first Copy Edits, CD-29: ZAR clues, EXCITE added ON-DECK; ";" separates alternative clues, one picked at random) · L10 v08q (JM's Copy Edits, CD-59 + CD-60: 28 clue changes, "on an exchange board" / "on a bag tag" / "on a T-shirt tag" dropped, EXCITE active, new 1-letter clues, T pictures, drawn ICEBERG picture "@iceberg"; the Lexicon page gives each 1-letter row its own key) · L11 v08r (CD-62: 2.1a: 1-letter answers have one clue per row, so F, K and X's new ";" clues became separate rows; page: missing-letter marks drawn as in the game + "Missing-letter clues" filter) · L12 v08s (JM's Copy Edits CD-64 + CD-65: 34 changes, sorted Literal = plain / Indirect = figurative; page: permanent edit record, Reviewed ticks, Wordplay column, Claude drafts) · L13 v08t (JM's Copy Edits CD-66 + CD-67: 375 Claude drafts for A accepted, three-kind test — sound-alike clues to Wordplay, blanks to Indirect; ACRID; 125 new 1-letter clues with the blank inside the word; page: Draft toggle, clue lengths, Wrap / Clip, two-row filters)
-self.LEXICON_VER = 'L14.10'; // L14.10 (v12h): JM's CD-129: 618 drafts + 28 edits applied, tier 1 done; round 7: 84 letter-I drafts + KeyRing tier 2 round 1, 313 ON-DECK rows A-B; L14.09 (v12h): JM's CD-127 Copy Edits: 886 drafts applied, 363 KeyRing words ACTIVE; round 6: 156 letter-H drafts + KeyRing round 4, 462 ON-DECK rows Q-Z; L14.08 (v12g): JM's CD-124 fixes: 6 clues; L14.07 (v12e): JM's CD-108 Copy Edits applied, 335 KeyRing words ACTIVE; round 5: 130 letter-G drafts + KeyRing round 3, 363 ON-DECK rows I-P; L14.06 (v11e): KeyRing everyday words round 2: 335 ON-DECK rows D-H with drafts (CD-104: 2.3); L14.05 (v11e): JM's CD-104 Copy Edits: 2,033 drafts applied, 315 KeyRing words ACTIVE; drafts round 4: 175 letter-F rows; L14.04 (v11c): KeyRing everyday words round 1: 315 ON-DECK rows A-C with drafts (CD-100: 1.2.1; CD-101: 2.1-2.4); L14.03 (v11c): data-only, drafts round 3 (138 letter-E rows); L14.02 (v09a): data-only, drafts round 2 (162 letter-D rows, 32 shorter B rows, short CALF Wordplay); L14.01: drafts round 1 (C, short B Wordplay, shorter A); L14 = the renamed page (Master Keys Lexicon; CrossKeys / LockWord), a structure change
+self.LEXICON_VER = 'L14.11'; // L14.11 (v13): JM's CD-131: 22 edits; round 8: 100 letter-J-K drafts + KeyRing tier 2 round 2, 269 ON-DECK rows C; L14.10 (v12h): JM's CD-129: 618 drafts + 28 edits applied, tier 1 done; round 7: 84 letter-I drafts + KeyRing tier 2 round 1, 313 ON-DECK rows A-B; L14.09 (v12h): JM's CD-127 Copy Edits: 886 drafts applied, 363 KeyRing words ACTIVE; round 6: 156 letter-H drafts + KeyRing round 4, 462 ON-DECK rows Q-Z; L14.08 (v12g): JM's CD-124 fixes: 6 clues; L14.07 (v12e): JM's CD-108 Copy Edits applied, 335 KeyRing words ACTIVE; round 5: 130 letter-G drafts + KeyRing round 3, 363 ON-DECK rows I-P; L14.06 (v11e): KeyRing everyday words round 2: 335 ON-DECK rows D-H with drafts (CD-104: 2.3); L14.05 (v11e): JM's CD-104 Copy Edits: 2,033 drafts applied, 315 KeyRing words ACTIVE; drafts round 4: 175 letter-F rows; L14.04 (v11c): KeyRing everyday words round 1: 315 ON-DECK rows A-C with drafts (CD-100: 1.2.1; CD-101: 2.1-2.4); L14.03 (v11c): data-only, drafts round 3 (138 letter-E rows); L14.02 (v09a): data-only, drafts round 2 (162 letter-D rows, 32 shorter B rows, short CALF Wordplay); L14.01: drafts round 1 (C, short B Wordplay, shorter A); L14 = the renamed page (Master Keys Lexicon; CrossKeys / LockWord), a structure change
 self.LEXICON_DATA = `
 # ---------- 2 letters ----------
 AD|Commercial; Selling; Promo|Spot on TV; Billboard filler|1
@@ -30,8 +30,8 @@ HI|Hello|Aloha State; Wave word|1|👋
 ID|Photo card|Ego's partner|2
 IF|Conditional word|Big little word|1
 IN|Not out|Trendy|1
-IS|Exists|Third-person "be"|1
-IT|Tag player|Tech department|1
+IS|Exists|3rd-person "be"; That ___ to say|1
+IT|Tag player|Tech dept.; Stephen King novel|1
 LA|Note after so|City of Angels|1
 LO|"___ and behold"|Look, old-style|3
 MA|Mom|Pa's partner|1
@@ -87,7 +87,7 @@ TA|Thanks!|Teaching assistant|2
 QT|On the ___ (secretly)|Quiet, slangily|4
 XL|Extra large|Big tag size|2
 HQ|Base|Main office; Command center|2
-IQ|Smarts score|Brainpower measure|1
+IQ|Smarts score|Brainpower; Genius gauge|1
 FM|Radio band|AM partner; Radio|2|📻
 AA|Small battery; Battery size|Remote-control fuel; Twelve-step group|2|🔋
 NB|Note well|Take note abbr.|4
@@ -271,7 +271,7 @@ HUE|Color|Shade; Tint|2
 HUG|Embrace|Squeeze; Bear ___|1|🤗
 HUM|Closed-mouth sing|Buzz; Drone|1
 HUT|Cabin|Shack; Pizza ___|1|🛖
-ICE|Frozen water|Cancel, slangily|1
+ICE|Frozen water|Cancel; Rink; Assasinate|1
 ICY|Freezing|Unfriendly|1
 ILL|Sick|Badly|1
 INK|Pen fluid|Squid's spray|1|🖋️
@@ -2812,7 +2812,7 @@ TRAMPOLINES|Bouncy backyard mats|Places to jump high|1
 FIRECRACKER|Popping firework|Party popper; Big bangs|1|🧨
 CELEBRATION|Party|Festive event; Confetti time|1|🎉
 DECORATIONS|Party trimmings|Holiday hangings; Streamers|1
-INVITATIONS|Party cards|"Please come!" notes|1|💌
+INVITATIONS|Party cards|RSVP cards|1|💌
 GREENHOUSES|Glass plant houses|Winter tomato homes; Hothouses|1
 RESTAURANTS|Places to eat out|Diners and cafes|1|🍽️
 SUPERMARKET|Big grocery store|Place with carts and aisles|1|🛒
@@ -2967,10 +2967,10 @@ GP|Family doctor|General practitioner; Grand Prix|2
 HD|High definition|Sharp picture; ___ TV|1
 HP|Horsepower|Engine power; Printer brand|2
 HR|Hour|Hiring dept.; Home run|1
-IA|Iowa|Des Moines' state|2
-IL|Illinois|Chicago's state|2
+IA|Iowa|Des Moines; Hawkeye State|2
+IL|Illinois|Chicago; Prairie State|2
 IM|Instant message|Quick online note|2
-IP|Internet address letters|Online ID number|2
+IP|Internet address letters|Online ID #; Brand rights|2
 IV|Hospital drip|Four, in Roman numerals|2
 JR|Junior|Son of a "Sr."|2
 JK|"Just kidding!" in a text|"Only joking"|1
@@ -3201,7 +3201,7 @@ GLOBAL|Worldwide|Planet-wide; ___ warming|2
 GOBLIN|Ugly little creature|Halloween ghoul; Gremlin kin|2
 HANGER|Closet hook|Coat holder; Wire ___|1
 HARBOR|Ship's shelter|Hold, as a grudge; Pearl ___|2
-IGUANA|Large tropical lizard|Pet with a dewlap|2
+IGUANA|Large tropical lizard|Pet with a dewlap; Green reptile|2
 JERSEY|Team shirt|New ___ (state)|1
 JUNIOR|Younger person|Third-year student|1
 KIDNEY|Bean-shaped organ|Filter organ|2
@@ -5061,7 +5061,7 @@ WRONG|Incorrect|Mistaken; Injustice|1
 WROTE|Penned|Composed; Authored|1
 YOURS|Belonging to you|Thine; Sincerely ___|1
 # ---------- KeyRing everyday words, tier 2, round 1 A-B (CD-129: 2.1). ON-DECK until JM accepts the drafts ----------
-AARDVARK|||2|||ON-DECK
+AARDVARK||Master digger|2|||ON-DECK
 ABIDE|||2|||ON-DECK
 ABNORMAL|||2|||ON-DECK
 ABOLISH|||2|||ON-DECK
@@ -5074,7 +5074,7 @@ ABSENT|||2|||ON-DECK
 ABSORB|||2|||ON-DECK
 ABSORBED|||2|||ON-DECK
 ABSORBS|||2|||ON-DECK
-ABSTRACT|||2|||ON-DECK
+ABSTRACT||Summary; Inexact; Imprecise|2|||ON-DECK
 ABSURD|||2|||ON-DECK
 ABUSED|||2|||ON-DECK
 ABUSES|||2|||ON-DECK
@@ -5107,7 +5107,7 @@ ADJUSTED|||2|||ON-DECK
 ADJUSTS|||2|||ON-DECK
 ADMIRE|||2|||ON-DECK
 ADOPTION|||2|||ON-DECK
-ADVENT|||2|||ON-DECK
+ADVENT||Coming|2|||ON-DECK
 ADVERSE|||2|||ON-DECK
 ADVERT|||2|||ON-DECK
 ADVERTS|||2|||ON-DECK
@@ -5124,7 +5124,7 @@ AIRCRAFT|||2|||ON-DECK
 AKIN|||2|||ON-DECK
 ALBEIT|||2|||ON-DECK
 ALCOHOL|||2|||ON-DECK
-ALGEBRA|||2|||ON-DECK
+ALGEBRA||Equations; Solve for x|2|||ON-DECK
 ALIASES|||2|||ON-DECK
 ALIGN|||2|||ON-DECK
 ALIGNED|||2|||ON-DECK
@@ -5177,7 +5177,7 @@ APPEALED|||2|||ON-DECK
 APPEALS|||2|||ON-DECK
 APPEND|||2|||ON-DECK
 APPENDED|||2|||ON-DECK
-APPENDIX|||2|||ON-DECK
+APPENDIX||Organ; Book's ending|2|||ON-DECK
 APPENDS|||2|||ON-DECK
 APPLAUSE|||2|||ON-DECK
 APPOINT|||2|||ON-DECK
@@ -5224,7 +5224,7 @@ ASSORT|||2|||ON-DECK
 ASSORTED|||2|||ON-DECK
 ASSORTS|||2|||ON-DECK
 ASTERISK|||2|||ON-DECK
-ATHEISM|||2|||ON-DECK
+ATHEISM||Unbelief|2|||ON-DECK
 ATHEIST|||2|||ON-DECK
 ATHEISTS|||2|||ON-DECK
 ATOMIC|||2|||ON-DECK
@@ -5232,7 +5232,7 @@ ATROCITY|||2|||ON-DECK
 ATTAIN|||2|||ON-DECK
 ATTORNEY|||2|||ON-DECK
 ATTRACTS|||2|||ON-DECK
-AUDIBLE|||2|||ON-DECK
+AUDIBLE||Clear|2|||ON-DECK
 AUTOMATE|||2|||ON-DECK
 AWAIT|||2|||ON-DECK
 AWAITED|||2|||ON-DECK
@@ -5274,10 +5274,10 @@ BASSES|||2|||ON-DECK
 BATTLE|||2|||ON-DECK
 BAUD|||2|||ON-DECK
 BEATEN|||2|||ON-DECK
-BEAUTY|||2|||ON-DECK
+BEAUTY||Looker; ___ & the Beast|2|||ON-DECK
 BEERS|||2|||ON-DECK
 BEGINNER|||2|||ON-DECK
-BEHAVED|||2|||ON-DECK
+BEHAVED||Self-conducted; Well-___|2|||ON-DECK
 BEHAVES|||2|||ON-DECK
 BEHAVING|||2|||ON-DECK
 BELIEF|||2|||ON-DECK
@@ -5295,12 +5295,12 @@ BIASED|||2|||ON-DECK
 BIASES|||2|||ON-DECK
 BIASING|||2|||ON-DECK
 BIBLE|||2|||ON-DECK
-BIBLICAL|||2|||ON-DECK
+BIBLICAL||Epic; The Good Book|2|||ON-DECK
 BIGOT|||2|||ON-DECK
 BIGOTED|||2|||ON-DECK
 BIGOTRY|||2|||ON-DECK
 BILLFOLD|||2|||ON-DECK
-BILLION|||2|||ON-DECK
+BILLION||Huge number; Big sum; 2-comma Club; Sagan's phrase|2|||ON-DECK
 BILLIONS|||2|||ON-DECK
 BISHOP|||2|||ON-DECK
 BITTER|||2|||ON-DECK
@@ -5368,12 +5368,282 @@ BUNDLE|||2|||ON-DECK
 BURDEN|||2|||ON-DECK
 BURNT|||2|||ON-DECK
 BURST|||2|||ON-DECK
-BURSTING|||2|||ON-DECK
+BURSTING||Exploding; To the brim|2|||ON-DECK
 BURSTS|||2|||ON-DECK
 BUSH|||2|||ON-DECK
 BUST|||2|||ON-DECK
 BUYERS|||2|||ON-DECK
 BYPASS|||2|||ON-DECK
+# ---------- KeyRing everyday words, tier 2, round 2 C (+ BUGGERS, JM CD-131: 2.2 N) (CD-131: 2.3). ON-DECK until JM accepts the drafts ----------
+BUGGERS|||2|||ON-DECK
+CABINET|||2|||ON-DECK
+CABLING|||2|||ON-DECK
+CAFFEINE|||2|||ON-DECK
+CALCULUS|||2|||ON-DECK
+CAM|||2|||ON-DECK
+CAMPUS|||2|||ON-DECK
+CANCEL|||2|||ON-DECK
+CANCELED|||2|||ON-DECK
+CANCELS|||2|||ON-DECK
+CANCER|||2|||ON-DECK
+CANT|||2|||ON-DECK
+CAPITALS|||2|||ON-DECK
+CAPTURE|||2|||ON-DECK
+CAPTURED|||2|||ON-DECK
+CAPTURES|||2|||ON-DECK
+CAREERS|||2|||ON-DECK
+CARELESS|||2|||ON-DECK
+CARRIAGE|||2|||ON-DECK
+CARRIER|||2|||ON-DECK
+CASING|||2|||ON-DECK
+CASUAL|||2|||ON-DECK
+CATALOGS|||2|||ON-DECK
+CATERED|||2|||ON-DECK
+CATERING|||2|||ON-DECK
+CATERS|||2|||ON-DECK
+CATHOLIC|||2|||ON-DECK
+CATTLE|||2|||ON-DECK
+CAUSAL|||2|||ON-DECK
+CAUTION|||2|||ON-DECK
+CAVEAT|||2|||ON-DECK
+CEASED|||2|||ON-DECK
+CEASES|||2|||ON-DECK
+CEASING|||2|||ON-DECK
+CELLULAR|||2|||ON-DECK
+CENSOR|||2|||ON-DECK
+CENSORED|||2|||ON-DECK
+CENSORS|||2|||ON-DECK
+CENTERED|||2|||ON-DECK
+CENTERS|||2|||ON-DECK
+CEREMONY|||2|||ON-DECK
+CHAMBER|||2|||ON-DECK
+CHAOTIC|||2|||ON-DECK
+CHAPEL|||2|||ON-DECK
+CHARITY|||2|||ON-DECK
+CHASING|||2|||ON-DECK
+CHAT|||2|||ON-DECK
+CHATS|||2|||ON-DECK
+CHATTED|||2|||ON-DECK
+CHATTING|||2|||ON-DECK
+CHEAT|||2|||ON-DECK
+CHEATED|||2|||ON-DECK
+CHEATING|||2|||ON-DECK
+CHEATS|||2|||ON-DECK
+CHEERFUL|||2|||ON-DECK
+CHEMIST|||2|||ON-DECK
+CHEMISTS|||2|||ON-DECK
+CHESTNUT|||2|||ON-DECK
+CHEW|||2|||ON-DECK
+CHEWED|||2|||ON-DECK
+CHEWING|||2|||ON-DECK
+CHEWS|||2|||ON-DECK
+CHILDISH|||2|||ON-DECK
+CHOICES|||2|||ON-DECK
+CHOP|||2|||ON-DECK
+CHOPPED|||2|||ON-DECK
+CHOPPING|||2|||ON-DECK
+CHOPS|||2|||ON-DECK
+CHORAL|||2|||ON-DECK
+CHORD|||2|||ON-DECK
+CHORUS|||2|||ON-DECK
+CHUCK|||2|||ON-DECK
+CHUCKED|||2|||ON-DECK
+CHUCKING|||2|||ON-DECK
+CHUCKS|||2|||ON-DECK
+CHURCHES|||2|||ON-DECK
+CINEMA|||2|||ON-DECK
+CIRCA|||2|||ON-DECK
+CIRCULAR|||2|||ON-DECK
+CITE|||2|||ON-DECK
+CITED|||2|||ON-DECK
+CITES|||2|||ON-DECK
+CITIES|||2|||ON-DECK
+CITING|||2|||ON-DECK
+CITIZENS|||2|||ON-DECK
+CIVIL|||2|||ON-DECK
+CIVILIAN|||2|||ON-DECK
+CIVILIZE|||2|||ON-DECK
+CLARITY|||2|||ON-DECK
+CLASH|||2|||ON-DECK
+CLASHES|||2|||ON-DECK
+CLASSIC|||2|||ON-DECK
+CLASSICS|||2|||ON-DECK
+CLASSIFY|||2|||ON-DECK
+CLAUSE|||2|||ON-DECK
+CLAUSES|||2|||ON-DECK
+CLEANERS|||2|||ON-DECK
+CLEANEST|||2|||ON-DECK
+CLIENT|||2|||ON-DECK
+CLIENTS|||2|||ON-DECK
+CLINIC|||2|||ON-DECK
+CLINICAL|||2|||ON-DECK
+CLIP|||2|||ON-DECK
+CLIPPED|||2|||ON-DECK
+CLIPPING|||2|||ON-DECK
+CLIPS|||2|||ON-DECK
+CLIQUE|||2|||ON-DECK
+CLOG|||2|||ON-DECK
+CLONE|||2|||ON-DECK
+CLONES|||2|||ON-DECK
+CLOSURE|||2|||ON-DECK
+CLOTHE|||2|||ON-DECK
+CLUMSY|||2|||ON-DECK
+CLUSTER|||2|||ON-DECK
+CLUSTERS|||2|||ON-DECK
+COARSE|||2|||ON-DECK
+COBBLER|||2|||ON-DECK
+COBBLERS|||2|||ON-DECK
+COHERENT|||2|||ON-DECK
+COINCIDE|||2|||ON-DECK
+COKE|||2|||ON-DECK
+COLLAR|||2|||ON-DECK
+COLLATE|||2|||ON-DECK
+COLLATED|||2|||ON-DECK
+COLLATES|||2|||ON-DECK
+COLON|||2|||ON-DECK
+COLONY|||2|||ON-DECK
+COLUMNS|||2|||ON-DECK
+COMBAT|||2|||ON-DECK
+COMFORT|||2|||ON-DECK
+COMIC|||2|||ON-DECK
+COMICS|||2|||ON-DECK
+COMMA|||2|||ON-DECK
+COMMAS|||2|||ON-DECK
+COMMENCE|||2|||ON-DECK
+COMMIT|||2|||ON-DECK
+COMMITS|||2|||ON-DECK
+COMMONS|||2|||ON-DECK
+COMMUNAL|||2|||ON-DECK
+COMPACT|||2|||ON-DECK
+COMPEL|||2|||ON-DECK
+COMPELS|||2|||ON-DECK
+COMPETE|||2|||ON-DECK
+COMPETED|||2|||ON-DECK
+COMPETES|||2|||ON-DECK
+COMPILE|||2|||ON-DECK
+COMPILED|||2|||ON-DECK
+COMPILES|||2|||ON-DECK
+COMPLY|||2|||ON-DECK
+COMPOSER|||2|||ON-DECK
+COMPOUND|||2|||ON-DECK
+COMPRESS|||2|||ON-DECK
+COMPRISE|||2|||ON-DECK
+CON|||2|||ON-DECK
+CONCEAL|||2|||ON-DECK
+CONCEALS|||2|||ON-DECK
+CONCEDE|||2|||ON-DECK
+CONCEIVE|||2|||ON-DECK
+CONCEPTS|||2|||ON-DECK
+CONCERTO|||2|||ON-DECK
+CONCISE|||2|||ON-DECK
+CONCLUDE|||2|||ON-DECK
+CONCUR|||2|||ON-DECK
+CONDEMN|||2|||ON-DECK
+CONDEMNS|||2|||ON-DECK
+CONDENSE|||2|||ON-DECK
+CONDONE|||2|||ON-DECK
+CONDUCT|||2|||ON-DECK
+CONDUCTS|||2|||ON-DECK
+CONFESS|||2|||ON-DECK
+CONFINE|||2|||ON-DECK
+CONFINED|||2|||ON-DECK
+CONFINES|||2|||ON-DECK
+CONFLICT|||2|||ON-DECK
+CONFORM|||2|||ON-DECK
+CONFRONT|||2|||ON-DECK
+CONGEST|||2|||ON-DECK
+CONGESTS|||2|||ON-DECK
+CONSENT|||2|||ON-DECK
+CONSENTS|||2|||ON-DECK
+CONSOLE|||2|||ON-DECK
+CONSULT|||2|||ON-DECK
+CONSULTS|||2|||ON-DECK
+CONSUME|||2|||ON-DECK
+CONSUMED|||2|||ON-DECK
+CONSUMER|||2|||ON-DECK
+CONSUMES|||2|||ON-DECK
+CONTACTS|||2|||ON-DECK
+CONTEMPT|||2|||ON-DECK
+CONTEND|||2|||ON-DECK
+CONTEST|||2|||ON-DECK
+CONTEXTS|||2|||ON-DECK
+CONTOUR|||2|||ON-DECK
+CONTRIVE|||2|||ON-DECK
+CONVERSE|||2|||ON-DECK
+CONVERTS|||2|||ON-DECK
+CONVEY|||2|||ON-DECK
+CONVICT|||2|||ON-DECK
+CONVICTS|||2|||ON-DECK
+CORPSE|||2|||ON-DECK
+CORPSES|||2|||ON-DECK
+CORRIDOR|||2|||ON-DECK
+COSMIC|||2|||ON-DECK
+COUNCILS|||2|||ON-DECK
+COUNSEL|||2|||ON-DECK
+COUNSELS|||2|||ON-DECK
+COUPLED|||2|||ON-DECK
+COUPLES|||2|||ON-DECK
+COUPLING|||2|||ON-DECK
+COURAGE|||2|||ON-DECK
+COURIER|||2|||ON-DECK
+COVERAGE|||2|||ON-DECK
+CRACK|||2|||ON-DECK
+CRACKED|||2|||ON-DECK
+CRACKING|||2|||ON-DECK
+CRACKS|||2|||ON-DECK
+CRAMP|||2|||ON-DECK
+CRAMPED|||2|||ON-DECK
+CRAMPING|||2|||ON-DECK
+CRAMPS|||2|||ON-DECK
+CRASS|||2|||ON-DECK
+CREATOR|||2|||ON-DECK
+CREDIBLE|||2|||ON-DECK
+CREDITS|||2|||ON-DECK
+CREED|||2|||ON-DECK
+CREEP|||2|||ON-DECK
+CRIED|||2|||ON-DECK
+CRIES|||2|||ON-DECK
+CRIMINAL|||2|||ON-DECK
+CRITERIA|||2|||ON-DECK
+CRITIC|||2|||ON-DECK
+CRITICS|||2|||ON-DECK
+CROSSED|||2|||ON-DECK
+CROSSES|||2|||ON-DECK
+CROSSING|||2|||ON-DECK
+CRUCIAL|||2|||ON-DECK
+CRUDE|||2|||ON-DECK
+CRUEL|||2|||ON-DECK
+CRUELTY|||2|||ON-DECK
+CRUISE|||2|||ON-DECK
+CRUISED|||2|||ON-DECK
+CRUISES|||2|||ON-DECK
+CRUISING|||2|||ON-DECK
+CRUNCH|||2|||ON-DECK
+CRUNCHED|||2|||ON-DECK
+CRUNCHES|||2|||ON-DECK
+CRYPTIC|||2|||ON-DECK
+CUBIC|||2|||ON-DECK
+CUCKOO|||2|||ON-DECK
+CUDDLY|||2|||ON-DECK
+CULPRIT|||2|||ON-DECK
+CULT|||2|||ON-DECK
+CULTURAL|||2|||ON-DECK
+CULTURES|||2|||ON-DECK
+CUNNING|||2|||ON-DECK
+CUPBOARD|||2|||ON-DECK
+CURING|||2|||ON-DECK
+CURLY|||2|||ON-DECK
+CURRENCY|||2|||ON-DECK
+CURRY|||2|||ON-DECK
+CURSE|||2|||ON-DECK
+CUSTOM|||2|||ON-DECK
+CUSTOMS|||2|||ON-DECK
+CYCLING|||2|||ON-DECK
+CYCLIST|||2|||ON-DECK
+CYCLISTS|||2|||ON-DECK
+CYLINDER|||2|||ON-DECK
+CYNIC|||2|||ON-DECK
+CYNICAL|||2|||ON-DECK
 `;
 
 /* v04 (JM, CD-9: 1.1): clues for 1-letter answers, which let every clue cell hold a clue.
