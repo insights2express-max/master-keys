@@ -5,7 +5,7 @@
    Words are 2–7 letters, plus 11-letter words for Large grids (A–Z only). A repeated word adds an extra clue set (see above). */
 // Lexicon edition (JM, CD-24 other edits 1.1): its own number, separate from the game version. Add 1 whenever the word data or the Lexicon page changes.
 // L01 v07a · L02 v07b · L03 v07c · L04 v07d (wrapping cells) · L05 v07e (8-letter hint clues, edition number) · L06 v08 (8-letter easy and hard hints) · L07 (editor page: Status, Comments, Edit Mode + Copy Edits, advanced search; "/" in 23 Word Vault clues) · L08 v08b (58 country-code clues "Madrid URL" style, JM CD-27; Word Vault tricky hints) · L09 (JM's first Copy Edits, CD-29: ZAR clues, EXCITE added ON-DECK; ";" separates alternative clues, one picked at random) · L10 v08q (JM's Copy Edits, CD-59 + CD-60: 28 clue changes, "on an exchange board" / "on a bag tag" / "on a T-shirt tag" dropped, EXCITE active, new 1-letter clues, T pictures, drawn ICEBERG picture "@iceberg"; the Lexicon page gives each 1-letter row its own key) · L11 v08r (CD-62: 2.1a: 1-letter answers have one clue per row, so F, K and X's new ";" clues became separate rows; page: missing-letter marks drawn as in the game + "Missing-letter clues" filter) · L12 v08s (JM's Copy Edits CD-64 + CD-65: 34 changes, sorted Literal = plain / Indirect = figurative; page: permanent edit record, Reviewed ticks, Wordplay column, Claude drafts) · L13 v08t (JM's Copy Edits CD-66 + CD-67: 375 Claude drafts for A accepted, three-kind test — sound-alike clues to Wordplay, blanks to Indirect; ACRID; 125 new 1-letter clues with the blank inside the word; page: Draft toggle, clue lengths, Wrap / Clip, two-row filters)
-self.LEXICON_VER = 'L14.06'; // L14.06 (v11e): KeyRing everyday words round 2: 335 ON-DECK rows D-H with drafts (CD-104: 2.3); L14.05 (v11e): JM's CD-104 Copy Edits: 2,033 drafts applied, 315 KeyRing words ACTIVE; drafts round 4: 175 letter-F rows; L14.04 (v11c): KeyRing everyday words round 1: 315 ON-DECK rows A-C with drafts (CD-100: 1.2.1; CD-101: 2.1-2.4); L14.03 (v11c): data-only, drafts round 3 (138 letter-E rows); L14.02 (v09a): data-only, drafts round 2 (162 letter-D rows, 32 shorter B rows, short CALF Wordplay); L14.01: drafts round 1 (C, short B Wordplay, shorter A); L14 = the renamed page (Master Keys Lexicon; CrossKeys / LockWord), a structure change
+self.LEXICON_VER = 'L14.07'; // L14.07 (v12e): JM's CD-108 Copy Edits applied, 335 KeyRing words ACTIVE; round 5: 130 letter-G drafts + KeyRing round 3, 363 ON-DECK rows I-P; L14.06 (v11e): KeyRing everyday words round 2: 335 ON-DECK rows D-H with drafts (CD-104: 2.3); L14.05 (v11e): JM's CD-104 Copy Edits: 2,033 drafts applied, 315 KeyRing words ACTIVE; drafts round 4: 175 letter-F rows; L14.04 (v11c): KeyRing everyday words round 1: 315 ON-DECK rows A-C with drafts (CD-100: 1.2.1; CD-101: 2.1-2.4); L14.03 (v11c): data-only, drafts round 3 (138 letter-E rows); L14.02 (v09a): data-only, drafts round 2 (162 letter-D rows, 32 shorter B rows, short CALF Wordplay); L14.01: drafts round 1 (C, short B Wordplay, shorter A); L14 = the renamed page (Master Keys Lexicon; CrossKeys / LockWord), a structure change
 self.LEXICON_DATA = `
 # ---------- 2 letters ----------
 AD|Commercial; Selling; Promo|Spot on TV; Billboard filler|1
@@ -88,7 +88,7 @@ QT|On the ___ (secretly)|Quiet, slangily|4
 XL|Extra large|Big tag size|2
 HQ|Base|Main office|2
 IQ|Smarts score|Brainpower measure|1
-FM|Radio band|AM partner|2|📻
+FM|Radio band|AM partner; Radio|2|📻
 AA|Small battery; Battery size|Remote-control fuel; Twelve-step group|2|🔋
 NB|Note well|Take note abbr.|4
 PR|Public relations|Spin|3
@@ -104,7 +104,7 @@ GB|Gigabyte|Great Britain|3
 MB|Megabyte|Data size|3
 KO|Knockout|Boxer's win|2|🥊
 TI|Note before do|Seventh note|2
-FA|Note after mi|Fourth note|2
+FA|Note after mi|Fourth note; Do-re-mi-___|2
 MI|Note after re|Third note|2
 DA|Prosecutor|Russian yes; Courtroom accuser|3
 JA|German yes|Yes, in Berlin|3
@@ -216,26 +216,26 @@ ERR|Make a mistake|Goof; To ___ is human|2
 EVE|Night before|Holiday's prelude; Adam's partner|1
 EWE|Female sheep|Ram's mate; Lamb's mom|1
 EYE|Seeing organ|Needle's hole; Storm center|1|👁️
-FAN|Cooler|Admirer|1
-FAR|Distant|Way off|1
-FAT|Plump|Lard|1
-FAX|Office machine|Old copier call|2|📠
-FED|Gave food to|Nourished|1
-FEE|Charge|Toll|1
-FEW|Not many|Handful|1
-FIG|Sweet fruit|Leaf for Adam|1
-FIN|Fish part|Shark's sign|1
-FIT|Healthy|Tantrum|1
-FIX|Repair|Dilemma|1|🔧
-FLU|Illness|Bug|1|🤒
-FLY|Buzzing insect|Soar|1|🪰
-FOE|Enemy|Rival|1
-FOG|Mist|Mental haze|1|🌫️
-FOR|In favor of|Pro|1
-FOX|Sly animal|Clever one|1|🦊
-FRY|Cook in oil|Small fish|1
-FUN|Enjoyment|Kicks|1|🎉
-FUR|Animal coat|Pelt|1
+FAN|Cooler|Admirer; Ceiling ___|1
+FAR|Distant|Way off; ___ and away|1
+FAT|Plump|Lard; Chew the ___|1
+FAX|Office machine|Phone-line page; Text by phone|2|📠
+FED|Gave food to|Nourished; G-man|1
+FEE|Charge|Toll; Late ___|1
+FEW|Not many|Handful; ___ and far between|1
+FIG|Sweet fruit|Leaf for Adam; ___ Newton|1
+FIN|Fish part|Shark's sign; Five-dollar bill|1
+FIT|Healthy|Tantrum; Throw a ___|1
+FIX|Repair|Dilemma; In a ___|1|🔧
+FLU|Illness|Bug; ___ shot|1|🤒
+FLY|Buzzing insect|Soar; Zipper area|1|🪰
+FOE|Enemy|Rival; Friend or ___|1
+FOG|Mist|Mental haze; Brain ___|1|🌫️
+FOR|In favor of|Pro; ___ sure|1
+FOX|Sly animal|Clever one; Crazy like a ___|1|🦊
+FRY|Cook in oil|Small fish; Small ___|1
+FUN|Enjoyment|Kicks; ___ and games|1|🎉
+FUR|Animal coat|Pelt; ___ ball|1
 GAP|Opening|Gulf|1
 GAS|Fuel|Vapor|1|⛽
 GEL|Hair goo|Come together|1
@@ -744,53 +744,53 @@ EVER|Always|At any time; Happily ___ after|1
 EVIL|Wicked|Bad; Dr. ___|1
 EXAM|Test|Checkup; Finals, e.g.|1|📝
 EXIT|Way out|Leave; Highway ramp|1
-FACE|Visage|Confront|1
-FACT|Truth|Reality|1
-FADE|Dim|Wane|1
-FAIL|Flunk|Fall short|1
-FAIR|Just|Carnival|1
-FAKE|Phony|Counterfeit|1
-FALL|Drop|Autumn|1|🍂
-FAME|Celebrity|Renown|1
-FARM|Ranch|Grow crops|1|🚜
-FAST|Quick|Abstain from food|1
-FATE|Destiny|Lot|1
-FEAR|Dread|Phobia|1|😱
-FEAT|Achievement|Exploit|1
-FEED|Nourish|Fodder|1
-FEEL|Touch|Sense|1
-FEET|Toe holders|Twelve inches each|1
-FERN|Leafy plant|Fronds|1
-FILE|Folder|Nail tool|1|📁
-FILL|Stuff|Load|1
-FILM|Movie|Coating|1|🎬
-FIND|Discover|Locate|1
-FINE|Okay|Penalty|1
-FIRE|Flames|Dismiss|1|🔥
-FIRM|Solid|Company|1
-FISH|Swimmer|Angle|1|🐟
-FIST|Clenched hand|Punch|1|✊
-FLAG|Banner|Tire|1|🚩
-FLAT|Level|Apartment|1
-FLEA|Jumping insect|Market type|1
-FLEW|Soared|Took wing|1
-FLIP|Toss|Somersault|1
-FLOW|Stream|Current|1
-FOAM|Froth|Bubbles|1
-FOLD|Crease|Give up in poker|1
-FOLK|People|Music genre|1
-FOOD|Grub|Nourishment|1
-FOOL|Jester|Trick|1|🤡
-FOOT|Twelve inches|Paw|1|🦶
-FORK|Utensil|Split|1|🍴
-FORM|Shape|Document|1
-FORT|Stronghold|Castle|1
-FOUR|Quartet|Number|1|4️⃣
-FREE|No cost|Liberate|1|🆓
-FROG|Croaker|Toad|1|🐸
-FUEL|Gas|Energy|1
-FULL|Stuffed|Complete|1
-FUND|Money pool|Finance|1
+FACE|Visage|Confront; Clock front; Not back; Facet|1
+FACT|Truth|Reality; Fun ___|1
+FADE|Dim|Wane; Haircut style|1
+FAIL|Flunk|Fall short; Epic ___|1
+FAIR|Just|Carnival; County ___|1
+FAKE|Phony|Counterfeit; ___ news|1
+FALL|Drop|Autumn; ___ for it|1|🍂
+FAME|Celebrity|Renown; Hall of ___|1
+FARM|Ranch|Grow crops; Agriculture|1|🚜
+FAST|Quick|Don't eat; Hold ___|1
+FATE|Destiny|Lot; Twist of ___|1
+FEAR|Dread|Phobia; Nothing to ___|1|😱
+FEAT|Achievement|Exploit; No small ___|1
+FEED|Nourish|Fodder; News ___|1
+FEEL|Touch|Sense; Get a ___ for|1
+FEET|Toe holders|Twelve inches; Cold ___|1
+FERN|Leafy plant|Fronds; Boston ___|1
+FILE|Folder|Nail tool; Rank and ___|1|📁
+FILL|Stuff|Load; ___ in the blank|1
+FILM|Movie|Coating; Plastic wrap|1|🎬
+FIND|Discover|Locate; Great ___|1
+FINE|Okay|Penalty; Parking ticket|1
+FIRE|Flames|Dismiss; Open ___!|1|🔥
+FIRM|Solid|Company; Law ___|1
+FISH|Swimmer|Angle; Go ___|1|🐟
+FIST|Clenched hand|Punch; ___ bump|1|✊
+FLAG|Banner|Tire; Red ___|1|🚩
+FLAT|Level|Apartment; Tire trouble; Lost bubbles; Bye-bye bubbles; Not round; Not peaked|1
+FLEA|Jumping insect|Market type; ___ circus|1
+FLEW|Soared|Took wing; ___ the coop|1
+FLIP|Toss|Somersault; Glib|1
+FLOW|Stream|Current; Go with the ___|1
+FOAM|Froth|Bubbles; Latte top|1
+FOLD|Crease|Give up in poker; Sheep pen|1
+FOLK|People|Music genre; ___ tale|1
+FOOD|Grub|Good eats; ___ for thought|1
+FOOL|Jester|Trick; April ___|1|🤡
+FOOT|Twelve inches|Paw; Not hand|1|🦶
+FORK|Utensil|Split; ___ in the road|1|🍴
+FORM|Shape|Document; Fill out a ___|1
+FORT|Stronghold|Castle; Pillow ___|1
+FOUR|Two plus two|Quartet; ___-leaf clover|1|4️⃣
+FREE|No cost|Liberate; Scot-___|1|🆓
+FROG|Croaker|Toad; Kermit, e.g.|1|🐸
+FUEL|Gas|Energy; Add ___ to the fire|1
+FULL|Stuffed|Complete; ___ moon|1
+FUND|Money pool|Finance; Trust ___|1
 GAIN|Profit|Earn|1
 GAME|Sport|Willing|1|🎮
 GATE|Entrance|Portal|1
@@ -1282,9 +1282,9 @@ EPEE|Fencing sword|Blade; Duel weapon|5
 ERGO|Therefore|Hence; Thus|4
 ETCH|Engrave|Inscribe; Mark with acid|3
 EXPO|Fair|Show; Trade show|3
-FAUX|Fake|Imitation|3
-FLAW|Defect|Blemish|2
-FRAY|Brawl|Unravel|3
+FAUX|Fake|Imitation; ___ fur|3
+FLAW|Defect|Blemish; Fatal ___|2
+FRAY|Brawl|Unravel; Join the ___|3
 GALA|Party|Fete|2
 GIST|Main point|Essence|3
 GLIB|Smooth-talking|Facile|3
@@ -1593,38 +1593,38 @@ ERROR|Mistake|Blunder; Fielding slip|1|❌
 EVENT|Occasion|Incident; Track meet race|1
 EXACT|Precise|Accurate; ___ change|1
 EXTRA|More|Bonus; Film crowd member|1
-FABLE|Moral tale|Myth|1
-FAINT|Weak|Pass out|1
-FAITH|Belief|Trust|1
-FALSE|Untrue|Wrong|1
-FANCY|Ornate|Fond|1
-FEAST|Banquet|Spread|1
-FENCE|Barrier|Fight with swords|1|🤺
-FERRY|Boat|Ship|1|⛴️
-FEVER|Temperature|Frenzy|1
-FIELD|Meadow|Domain|1
-FIFTY|Half a hundred|Number|1
-FIGHT|Battle|Brawl|1
-FINAL|Last|Ultimate|1
-FLAME|Fire|Old flame|1
-FLASH|Blink|Burst|1
-FLEET|Navy|Swift|1
-FLOAT|Drift|Raft|1
-FLOOD|Deluge|Overflow|1
-FLOOR|Ground|Level|1
-FLOUR|Baking powder|Meal|1
-FOCUS|Concentrate|Center|1
-FORCE|Power|Compel|1
-FORGE|Smithy|Fake|1
-FORTY|Number|Two score|1
-FOUND|Discovered|Establish|1
-FRAME|Border|Setup|1|🖼️
-FRESH|New|Cheeky|1
-FRONT|Facade|Fore|1
-FROST|Ice|Freeze|1
-FRUIT|Produce|Result|1
-FUDGE|Chocolate candy|Fake|1
-FUNNY|Comic|Odd|1
+FABLE|Moral tale|Myth; Aesop work|1
+FAINT|Weak|Pass out; ___ of heart|1
+FAITH|Belief|Trust; Leap of ___|1
+FALSE|Untrue|Wrong; ___ alarm|1
+FANCY|Ornate|Fond; Tickle one's ___|1
+FEAST|Banquet|Spread; ___ your eyes|1
+FENCE|Barrier|Sword fight; Stolen-goods|1|🤺
+FERRY|Boat|Ship; Island transport|1|⛴️
+FEVER|Temperature|Frenzy; Cabin ___|1
+FIELD|Meadow|Domain; Left ___|1
+FIFTY|Half a hundred|Number; ___-___ chance|1
+FIGHT|Battle|Brawl; Food ___|1
+FINAL|Last|Ultimate; Cup ___|1
+FLAME|Fire|Old love; Fan the ___s|1
+FLASH|Blink|Burst; In a ___|1
+FLEET|Navy|Swift; ___ of foot|1
+FLOAT|Drift|Raft; Root beer ___|1
+FLOOD|Deluge|Overflow; ___ the market|1
+FLOOR|Ground|Level; Amaze|1
+FLOUR|Baking powder|Meal; Bread base|1
+FOCUS|Concentrate|Center; In ___|1
+FORCE|Power|Compel; Jedi power|1
+FORGE|Smithy|Fake; ___ ahead|1
+FORTY|Two score|Number; ___ winks|1
+FOUND|Discovered|Establish; Lost and ___|1
+FRAME|Border|Set up; Picture holder|1|🖼️
+FRESH|New|Cheeky; ___ start|1
+FRONT|Facade|Fore; Cold ___|1
+FROST|Ice|Freeze; Jack ___|1
+FRUIT|Produce|Result; ___ of one's labor|1
+FUDGE|Chocolate candy|Fake; ___ the numbers|1
+FUNNY|Comic|Odd; ___ bone|1
 GHOST|Spirit|Phantom|1|👻
 GIANT|Huge|Titan|1
 GLASS|Pane|Tumbler|1
@@ -2031,19 +2031,19 @@ EVADE|Dodge|Avoid; Sidestep|3
 EXALT|Praise|Glorify; Raise high|4
 EXILE|Banish|Outcast; Napoleon on Elba|3
 EXPEL|Eject|Oust; Kick out|3
-FACET|Aspect|Gem face|3
-FEIGN|Pretend|Fake|4
-FERAL|Wild|Untamed|4
-FETID|Smelly|Stinking|5
-FICUS|Rubber plant|Fig tree|4
-FJORD|Inlet|Norway feature|4
-FLAIR|Talent|Panache|3
-FLORA|Plants|Plant life|3
-FOLIO|Page|Book size|5
-FORAY|Raid|Venture|4
-FOYER|Lobby|Entrance hall|3
-FRAIL|Weak|Fragile|3
-FUROR|Uproar|Outcry|5
+FACET|Aspect|Gem side; Angle|3
+FEIGN|Pretend|Fake; Put on|4
+FERAL|Wild|Untamed; Gone wild|4
+FETID|Smelly|Stinking; Rank|5
+FICUS|Rubber plant|Fig tree; Office plant|4
+FJORD|Steep sea inlet|Norway feature; Glacial bay|4
+FLAIR|Talent|Panache; Style|3
+FLORA|Plants|Plant life; ___ and fauna|3
+FOLIO|Page|Book size; Page number|5
+FORAY|Raid|Venture; First ___|4
+FOYER|Lobby|Entrance hall; Front hall|3
+FRAIL|Weak|Fragile; Delicate|3
+FUROR|Uproar|Outcry; Commotion|5
 GAMUT|Range|Scale|4
 GAUDY|Flashy|Showy|4
 GAUZE|Bandage|Mesh|3
@@ -2232,13 +2232,13 @@ EDITOR|Reviser|Newspaper boss; Film cutter|1
 ENERGY|Power|Vigor; Pep|1
 ENGINE|Motor|Machine; Search ___|1
 ESCAPE|Flee|Getaway; Keyboard exit|1
-FAMILY|Kin|Relatives|1
-FAMOUS|Well-known|Noted|1
-FATHER|Dad|Priest|1
-FINGER|Digit|Point at|1
-FLOWER|Blossom|River|1
-FOREST|Woods|Woodland|1
-FRIEND|Pal|Companion|1
+FAMILY|Kin|Relatives; ___ tree|1
+FAMOUS|Well-known|Noted; ___ last words|1
+FATHER|Dad|Priest; ___ Time|1
+FINGER|Digit|Point at; ___ food; Index; Pinkie; Ring ___|1
+FLOWER|Blossom|River; ___ power|1
+FOREST|Woods|Woodland; Rain ___|1
+FRIEND|Pal|Companion; Fair-weather ___|1
 GALAXY|Star system|Milky Way|1|🌌
 GARDEN|Plot|Yard|1
 GARLIC|Pungent bulb|Vampire deterrent|1|🧄
@@ -2348,8 +2348,8 @@ ELIXIR|Potion|Remedy; Cure-all|4
 ENIGMA|Puzzle|Mystery; Riddle|3
 ERSATZ|Fake|Imitation; Knockoff|5
 EXODUS|Mass departure|Flight; Bible book|3
-FERVOR|Passion|Zeal|4
-FIASCO|Disaster|Flop|3
+FERVOR|Passion|Zeal; Ardor|4
+FIASCO|Disaster|Flop; Debacle|3
 GALORE|Plenty|Aplenty|4
 GAMBIT|Opening move|Ploy|4
 GARISH|Gaudy|Flashy|4
@@ -2427,11 +2427,11 @@ ECLIPSE|Blot out|Overshadow; Solar event|2|🌘
 ELEMENT|Part|Component; Iron or gold|1
 EMPEROR|Monarch|Ruler; ___ penguin|1
 EVENING|Night|Dusk; After sunset|1
-FASHION|Style|Trend|1
+FASHION|Style|Trend; ___ show|1
 FEATHER|Plume|Quill; Light as a ___|1|🪶
-FICTION|Story|Invention|1
-FIREMAN|Firefighter|Stoker|1|🚒
-FREEDOM|Liberty|Release|1|🗽
+FICTION|Story|Invention; Science ___|1
+FIREMAN|Firefighter|Stoker; Ladder climber|1|🚒
+FREEDOM|Liberty|Release; Independence|1|🗽
 GALLERY|Art space|Balcony|1
 GIRAFFE|Long neck|Tall animal|1|🦒
 GLACIER|Ice mass|Ice river|1
@@ -2504,8 +2504,8 @@ CHIMERA|Mythic hybrid|Illusion; Pipe dream|5
 CLARION|Trumpet call|Clear call; ___ call to action|5
 DECORUM|Propriety|Dignity; Good manners|4
 EPITOME|Model|Embodiment; Perfect example|4
-FERVENT|Passionate|Ardent|4
-FIDGETY|Restless|Jittery|3
+FERVENT|Passionate|Ardent; Heartfelt|4
+FIDGETY|Restless|Jittery; Antsy|3
 GALLANT|Brave|Chivalrous|4
 GLIMMER|Flicker|Hint|3
 HAUGHTY|Proud|Arrogant|4
@@ -2532,7 +2532,7 @@ TOW|Pull a car|Haul behind|2
 BEET|Red root veggie|Borscht base; Red as a ___|2
 BLEW|Exhaled hard|Wasted, as a chance; ___ it (fumbled)|2
 BURY|Put underground|Hide in the yard; ___ the hatchet|2
-FARE|Bus ticket price|Get along|2
+FARE|Ticket price|Get along; Food served|2
 HIVE|Bee home|Buzzing colony|1
 HOOT|Owl's call|Great fun, informally|2
 ITCH|Need to scratch|Strong urge|1
@@ -2540,7 +2540,7 @@ MALE|Not female|Masculine|1
 ODDS|Betting chances|Likelihood|2
 SEAM|Stitched line|Coal layer|2
 WEEP|Cry|Shed tears|1
-FANG|Snake tooth|Vampire's tooth|2
+FANG|Snake tooth|Vampire's tooth; Wolf's tooth|2
 SPADE|Digging tool|Card suit|2
 THORN|Rose prickle|Constant annoyance|2
 PETAL|Flower part|Daisy piece|1
@@ -2590,7 +2590,7 @@ SANDBOX|Kids' play pit|Test area|1
 EGGCUP|Breakfast holder|Soft-boiled stand; Yolk perch|2
 ICEBOX|Old fridge|Cold storage|2|🧊
 EARWAX|Cerumen|Q-tip target; Canal gunk|2
-FISHNET|Mesh catch|Stocking style|2
+FISHNET|Mesh catch|Stocking style; Trawler's mesh|2
 MOONLIT|Lit by the moon|Like a night stroll|2
 SUNLIT|Bright with sunshine|Daylit|2
 BELLHOP|Hotel porter; Bag carrier|Tip-earner; Luggage-cart pusher|2
@@ -2609,7 +2609,7 @@ COOKIES|Sweet baked treats|Milk's dunkers; Jar fillers|1|🍪
 WAFFLES|Grid-pattern breakfast cakes|Syrup holders|1|🧇
 DONKEY|Small horse kin|Animal that brays; Shrek's pal|1|🫏
 HAMSTER|Small pet on a wheel|Cheek-stuffing pet|1|🐹
-FARMER|Person who grows crops|Barn owner|1|🧑‍🌾
+FARMER|Crop grower|Barn owner; ___'s market|1|🧑‍🌾
 SINGER|Person who sings|Vocalist|1|🎤
 DANCER|Person who dances|Ballet performer; Rudolph's pal|1|💃
 MUSEUM|Place with exhibits|Art or history hall|1|🏛️
@@ -2651,7 +2651,7 @@ BLOSSOM|Flower|Tree bloom; Spring burst|1
 SHADOWS|Dark shapes from light|Things that follow you|1
 MARBLES|Small glass balls|Rolling toys|1
 YOGURT|Creamy dairy snack|Cup with fruit|1
-FRIENDS|Pals|Buddies|1
+FRIENDS|Pals|Buddies; '90s sitcom|1
 COUSINS|Aunt's kids|Uncle's children; Family reunion crowd|1
 HELPER|Assistant|Aide|1
 HAPPILY|With joy|Gladly|1
@@ -2659,8 +2659,8 @@ QUICKLY|Fast|In a hurry|1
 SLOWLY|Not fast|At a snail's pace|1
 QUIETLY|Without noise|Softly|1
 SOMEONE|A person|Anybody|1
-FOREVER|For all time|Always|1
-FAIRIES|Tiny winged sprites|Tinker Bell and friends|1|🧚
+FOREVER|For all time|Always; ___ young|1
+FAIRIES|Tiny winged sprites|Tinker Bell; Tooth takers|1|🧚
 GIANTS|Huge people in tales|Beanstalk dwellers|1
 ROBOTS|Metal helpers|Machines that act human|1|🤖
 ALIENS|Space visitors; Little green men|E.T. and friends; Roswell visitors|1|👽
@@ -2700,14 +2700,14 @@ PITCHER|Lemonade jug|Baseball thrower|1
 NAPKIN|Lap cloth|Mouth wiper|1
 SAUCER|Cup's plate|Flying ___|1
 SPOONS|Soup tools|Teaspoons, e.g.|1|🥄
-FREEZER|Ice cream keeper|Cold kitchen box|1
+FREEZER|Ice cream keeper|Coldest box; Colder fridge|1
 CLOSET|Clothes room|Place for hangers; Skeleton's spot|1
 DRAWER|Desk compartment|Sock holder; Junk ___|1
 TOILET|Bathroom fixture|Loo|1|🚽
 BALCONY|Upper-floor porch|Juliet's perch; Upper theater seats|1
 GARAGE|Car house|Place for a car|1
 CELLAR|Basement|Wine room below; Root ___|1
-FENCES|Yard borders|Picket barriers|1
+FENCES|Yard borders|Picket barriers; Mends ___|1
 DOORMAT|Welcome mat|Shoe wiper; Pushover|1
 RATTLE|Baby's shaker|Snake's tail noise|1
 CRADLE|Baby's bed|Rocking crib; Rock-a-bye spot|1
@@ -2727,7 +2727,7 @@ CRAYONS|Wax colors|Coloring sticks; Art-box set|1
 STICKER|Peel-off label|Gold star, e.g.|1
 GLITTER|Sparkly flakes|Craft sparkle|1
 STAPLER|Paper fastener|Desk clicker|1
-FOLDER|Paper holder|Computer file holder|1|📁
+FOLDER|Paper holder|File holder; Manila ___|1|📁
 BINDER|Ring notebook|Three-ring holder; School-bag staple|1
 RULERS|Measuring sticks|Kings|1
 RIDDLE|Puzzle question|Brain teaser|1
@@ -2735,7 +2735,7 @@ MYSTERY|Puzzle to solve|Whodunit|1
 EXPLORE|Search new places|Expedition time!; Adventure; Wild ride; Safari; Dr. Livingstone|1
 CAMPING|Tent stay|Outdoor trip; S'mores time|1|🏕️
 HIKING|Trail walking|Mountain walking|1|🥾
-FISHING|Angling|Casting a line|1|🎣
+FISHING|Angling|Casting a line; ___ trip|1|🎣
 SKIING|Gliding on snow|Slope sport|1|⛷️
 SURFING|Riding waves|Beach board sport|1|🏄
 BOWLING|Pins game|Strike sport; Ten-pin night|1|🎳
@@ -2762,7 +2762,7 @@ PRETTY|Lovely|Cute|1
 PURPLE|Grape color|Violet|1|🟣
 GOLDEN|Made of gold|Like a retriever's coat|1
 MONDAY|Start of the work week|Day after Sunday|1
-FRIDAY|Last school day of the week|Day before Saturday|1
+FRIDAY|Workweek end|<SAT; TGIF day|1
 TUESDAY|Day after Monday|Taco day|1
 JANUARY|First month|New Year's month|1
 OCTOBER|Halloween month|Tenth month|1
@@ -2779,8 +2779,8 @@ VOLLEYBALLS|Balls hit over a high net|Beach-game balls|1|🏐
 PLAYGROUNDS|Parks with swings and slides|Recess spots|1
 SCHOOLHOUSE|Building for classes|Old one-room learning place|1|🏫
 THUNDERBOLT|Lightning strike|Flash from a storm|1|⚡
-FIREFIGHTER|Person who puts out blazes|Hose handler; Red truck rider; Blaze-master; Pole-slider; 4-alarmist|1|🧑‍🚒
-FINGERNAILS|They grow at your fingertips|Things clipped or painted|1|💅
+FIREFIGHTER|Blaze extinguisher|Hose handler; Red truck rider; Blaze-master; Pole-slider; 4-alarmist|1|🧑‍🚒
+FINGERNAILS|Digit tips|Manicure; Clipped tips; Mani|1|💅
 GRANDMOTHER|Mom's or dad's mother|Granny|1|👵
 GRANDFATHER|Mom's or dad's father|Grandpa|1|👴
 GRANDPARENT|Granny or grandpa|Family elder|1
@@ -2809,7 +2809,7 @@ BOOKSHELVES|Places to keep books|Library racks; Reading nooks|1|📚
 WHEELBARROW|One-wheeled garden cart|Gardener's load carrier|1
 PHOTOGRAPHS|Pictures taken with a camera|Snapshots|1|📷
 TRAMPOLINES|Bouncy backyard mats|Places to jump high|1
-FIRECRACKER|Popping firework|Loud party popper|1|🧨
+FIRECRACKER|Popping firework|Party popper; Big bangs|1|🧨
 CELEBRATION|Party|Festive event; Confetti time|1|🎉
 DECORATIONS|Party trimmings|Holiday hangings; Streamers|1
 INVITATIONS|Party cards|"Please come!" notes|1|💌
@@ -2831,7 +2831,7 @@ EDUCATIONAL|Teaching something|Good for learning; Instructive|2
 INTERESTING|Not boring|Holding your attention|1
 BEAUTIFULLY|In a lovely way; Gorgeously|With style; Picture-perfect|2
 WONDERFULLY|In a great way|Marvelously|2
-FRIENDSHIPS|Bonds between pals|Buddy ties|1
+FRIENDSHIPS|Bonds between pals|Buddy ties; Pen-pal links|1
 DISAPPEARED|Vanished|Went out of sight; Poof!|1
 UNDERGROUND|Beneath the earth|Subway, in London|1
 TEMPERATURE|How hot or cold it is|Thermometer reading|1
@@ -2854,7 +2854,7 @@ NUTCRACKERS|Tools that open shells|Ballet soldiers|2
 CHEESECAKES|Creamy desserts|New York desserts; Graham-crust cakes|1|🍰
 WATERCOLORS|Paints mixed with water|Artist's paint box|1|🎨
 SCREWDRIVER|Tool for turning screws|Phillips or flathead|1|🪛
-FLASHLIGHTS|Handheld lights|Torches, to Brits|1|🔦
+FLASHLIGHTS|Handheld lights|U.K. torches; Dark tools|1|🔦
 CANDLESTICK|Taper holder|Dinner-table holder; Clue weapon|2
 TABLECLOTHS|Dinner-table covers|Linens on a table|1
 SWEATSHIRTS|Warm tops with sleeves|Hoodies, maybe|1
@@ -2957,10 +2957,10 @@ DM|Direct message|Private note online; Slide into the ___s|2
 EA|Each|Per item; Price-tag abbr.|2
 ED|Education|Driver's ___; Phys ___|2
 EV|Electric car|Plug-in ride; Tesla, e.g.|2
-FE|Iron|Chemist's symbol for a magnet metal|2
-FL|Florida|Sunshine State|1
-FT|Foot or feet|Ruler unit, abbr.|1
-FX|Special effects|Movie magic|2
+FE|Iron|Magnet metal; Element 26|2
+FL|Florida|Sunshine State; Miami's state|1
+FT|Foot or feet|Ruler unit, abbr.; Fort, on maps|1
+FX|Special effects|Movie magic; CGI|2
 GA|Georgia|Peach State|2
 GG|"Good game!" in online chat|Gamer's polite sign-off|2
 GP|Family doctor|General practitioner|2
@@ -3056,9 +3056,9 @@ COY|Shy|Playing hard to get; Flirty and shy|3
 DON|Put on, as a coat|Mafia boss; Oxford teacher|3
 DUB|Nickname|Revoice a film; Knight|3
 DUD|Failure|Fizzled firework; Flop|2
-FAD|Short-lived craze|Fidget spinner, once|2
-FIB|Small lie|White one, often|1
-FIR|Evergreen tree|Christmas tree type|2
+FAD|Short-lived craze|Once; Passing trend; Viral|2
+FIB|Small lie|White one, often; Stretch the truth|1
+FIR|Evergreen tree|Christmas tree|2
 GIG|Music job|One-night booking|2
 PEG|Wooden pin|Hat hook|2
 RIG|Big truck|Fix, as a contest|2
@@ -3080,10 +3080,10 @@ DAMP|Slightly wet|Moist; Muggy|1
 DOZE|Light sleep|Nod off; Catnap|1
 DUET|Song for two|Pair performance; Piano for four hands|1
 DULL|Boring|Not sharp; Ho-hum|1
-FAWN|Baby deer|Light brown|2
-FLAP|Wave, as wings|Envelope part|1
-FOIL|Kitchen wrap|Thwart|2
-FUSS|Needless bother|Make a big deal|1
+FAWN|Baby deer|Light brown; Suck up|2
+FLAP|Wave, as wings|Envelope part; Fuss|1
+FOIL|Kitchen wrap|Thwart; Sword|2
+FUSS|Needless bother|A big deal; Hubbub; Ado|1
 GERM|Microbe|Seed of an idea|1|🦠
 GOWN|Long formal dress|Prom outfit|1
 GULP|Swallow quickly|Big swig|1
@@ -3142,9 +3142,9 @@ DONUT|Ring pastry|Cop's snack; Glazed treat|1|🍩
 DWARF|Very small star|Snow White's helper; Tiny tree|2
 EQUAL|Same|Peer; ___ sign|1
 ERASE|Rub out|Delete; Wipe clean|1
-FAIRY|Tiny winged spirit|Tooth collector|1|🧚
-FLOCK|Group of sheep|Church congregation|1
-FLUTE|Woodwind with no reed|Tall champagne glass|2
+FAIRY|Tiny winged spirit|Tooth taker; ___ tale|1|🧚
+FLOCK|Group of sheep|Church group; Birds group; Sheep group|1
+FLUTE|Reedless woodwind|Champagne glass; Magic ___: Mozart's last|2
 GAVEL|Judge's hammer|Auctioneer's tool|3
 GRAVY|Meat sauce|Something extra, easy|1
 HATCH|Emerge from an egg|Small door|2
@@ -3192,11 +3192,11 @@ COMEDY|Funny show|Laughs; Stand-up|1
 COTTON|Fluffy-plant fabric|T-shirt fabric; ___ candy|1
 DAGGER|Short knife|Deadly look; Cloak-and-___|2|🗡️
 DOLLAR|Hundred cents|Greenback; Bet your bottom ___|1|💵
-FABRIC|Cloth|Material|1
-FALCON|Swift bird of prey|Hunting hawk|2
-FOSSIL|Ancient remains in rock|Old-timer, jokingly|2
-FREEZE|Turn to ice|Stand still|1
-FRIDGE|Kitchen cooler|Leftovers' home|1
+FABRIC|Cloth|Material; ___ softener|1
+FALCON|Fastest prey bird|Hunting hawk; Millennium ___|2
+FOSSIL|Rock-bound remains|Old-timer; Dino bone; Antique; Outdated|2
+FREEZE|Turn to ice|Stand still; Brain ___|1
+FRIDGE|Kitchen cooler|Leftovers' home; Magnet board|1
 GLOBAL|Worldwide|Planet-wide|2
 GOBLIN|Ugly little creature|Halloween ghoul|2
 HANGER|Closet hook|Coat holder|1
@@ -3252,7 +3252,7 @@ COWGIRL|Ranch woman|Rodeo rider; Lasso twirler|1
 CRICKET|Chirping insect|Bat-and-ball game; Jiminy ___|2|🦗
 CUSTARD|Egg pudding|Flan, basically; ___ pie|2|🍮
 DRESSER|Chest of drawers|Fashion plate; Sharp ___|1
-FIREFLY|Glowing bug|Lightning bug|1
+FIREFLY|Glowing bug|Lightning bug; Summer glow|1
 GARBAGE|Trash|Nonsense|1
 GORILLA|Large ape|Silverback|1|🦍
 HAIRCUT|Trim|Barber's work|1
@@ -3339,7 +3339,7 @@ BR|Bromine|Red-brown element; Element 35|3
 PU|Plutonium|Reactor fuel|2
 # Common global abbreviations
 CE|Common Era|Modern era, like AD; Year label|1
-FC|Football Club|Soccer-team letters|1
+FC|Football Club|Soccer club|1
 QR|___ code (scan it with a phone)|Square-barcode letters|1
 UX|User experience|App designer's focus|2
 QA|Quality assurance|Product testers' department|2
@@ -3353,7 +3353,7 @@ GF|Girlfriend, in texts|Steady gal, in texts|1
 SR|Senior|A Jr.'s father, often|1
 EQ|Emotional IQ|IQ's feelings cousin; People smarts|2
 VO|Voice-over|Unseen narrator's work|2
-FR|Father, as a priest's title|Priest's title|1
+FR|Father, briefly|Priest's title; Padre, abbr.|1
 CF|"Compare," in notes|Scholar's "see also"; Footnote word|3
 HB|Middle pencil grade|Standard pencil letters|2
 GT|Gran Turismo|Sports-car letters|2
@@ -3378,8 +3378,8 @@ DE|Germany URL|Berlin URL; Autobahn web|2||2-4
 DK|Denmark URL|Copenhagen URL; Lego-land web|2||2-4
 EG|Egypt URL|Cairo URL; Nile web tag|2||2-4
 ES|Spain URL|Madrid URL; Flamenco web tag|2||2-4
-FI|Finland URL|Helsinki URL|2||2-4
-FR|France URL|Paris URL|2||2-4
+FI|Finland URL|Helsinki URL; Sauna-land web|2||2-4
+FR|France URL|Paris URL; Eiffel web|2||2-4
 GR|Greece URL|Athens URL|2||2-4
 HK|Hong Kong URL|Kowloon URL|2||2-4
 HU|Hungary URL|Budapest URL|2||2-4
@@ -3463,10 +3463,10 @@ YYZ|Toronto airport code|Bag tag for CN Tower trips|4||7
 YVR|Vancouver airport code|Bag tag for Stanley Park trips|4||7
 MEX|Mexico City airport code|Bag tag for Aztec-capital trips|4||7
 GRU|Sao Paulo airport code|Bag tag for Brazil's biggest city|4||7
-FRA|Frankfurt airport code|Bag tag for German banking-city trips|4||7
+FRA|Frankfurt airport|DE bank city; German gate|4||7
 AMS|Amsterdam airport|Canal-city gateway|4||7
 MAD|Madrid airport code|Bag tag for Spanish-capital trips|4||7
-FCO|Rome airport code|Bag tag for Colosseum trips|4||7
+FCO|Rome airport|Colosseum; Eternal City|4||7
 MUC|Munich airport code|Bag tag for Oktoberfest trips|4||7
 ZRH|Zurich airport code|Bag tag for Swiss banking trips|4||7
 DUB|Dublin airport|Irish trip tag; Emerald Isle gateway|4||7
@@ -3897,342 +3897,706 @@ CURRENT|Present|Flow; Up-to-date|1
 CURSOR|Blinking marker|Screen pointer; Mouse arrow|1
 CUSTOMER|Buyer|Client; Shopper|1
 CUTTING|Slicing|Sharp, as a remark; Plant start|1
-# ---------- KeyRing everyday words, tier 1, round 2 D-H (CD-104: 2.3). ON-DECK until JM accepts the drafts ----------
-DAMAGE|||1|||ON-DECK
-DAMAGED|||1|||ON-DECK
-DAMAGES|||1|||ON-DECK
-DAMAGING|||1|||ON-DECK
-DATABASE|||1|||ON-DECK
-DATING|||1|||ON-DECK
-DATUM|||1|||ON-DECK
-DEAD|||1|||ON-DECK
-DEATH|||1|||ON-DECK
-DEBATE|||1|||ON-DECK
-DECADE|||1|||ON-DECK
-DECENT|||1|||ON-DECK
-DECIDE|||1|||ON-DECK
-DECIDED|||1|||ON-DECK
-DECIDES|||1|||ON-DECK
-DECIDING|||1|||ON-DECK
-DECLARE|||1|||ON-DECK
-DECLARED|||1|||ON-DECK
-DECLARES|||1|||ON-DECK
-DECREASE|||1|||ON-DECK
-DEDICATE|||1|||ON-DECK
-DEDUCE|||1|||ON-DECK
-DEEM|||1|||ON-DECK
-DEEMED|||1|||ON-DECK
-DEEMING|||1|||ON-DECK
-DEEMS|||1|||ON-DECK
-DEFAULT|||1|||ON-DECK
-DEFENSE|||1|||ON-DECK
-DEFINE|||1|||ON-DECK
-DEFINED|||1|||ON-DECK
-DEFINES|||1|||ON-DECK
-DEFINING|||1|||ON-DECK
-DEFINITE|||1|||ON-DECK
-DEGREE|||1|||ON-DECK
-DEGREES|||1|||ON-DECK
-DELETE|||1|||ON-DECK
-DELETED|||1|||ON-DECK
-DELETES|||1|||ON-DECK
-DELETING|||1|||ON-DECK
-DELIVER|||1|||ON-DECK
-DELIVERS|||1|||ON-DECK
-DELIVERY|||1|||ON-DECK
-DEMAND|||1|||ON-DECK
-DEMANDS|||1|||ON-DECK
-DEPEND|||1|||ON-DECK
-DEPENDED|||1|||ON-DECK
-DEPENDS|||1|||ON-DECK
-DERIVE|||1|||ON-DECK
-DERIVED|||1|||ON-DECK
-DERIVES|||1|||ON-DECK
-DERIVING|||1|||ON-DECK
-DESCRIBE|||1|||ON-DECK
-DESIGN|||1|||ON-DECK
-DESIGNED|||1|||ON-DECK
-DESIGNS|||1|||ON-DECK
-DESIRE|||1|||ON-DECK
-DESIRED|||1|||ON-DECK
-DESIRES|||1|||ON-DECK
-DESIRING|||1|||ON-DECK
-DESPITE|||1|||ON-DECK
-DESTROY|||1|||ON-DECK
-DESTROYS|||1|||ON-DECK
-DETAIL|||1|||ON-DECK
-DETAILED|||1|||ON-DECK
-DETAILS|||1|||ON-DECK
-DETECT|||1|||ON-DECK
-DETECTED|||1|||ON-DECK
-DETECTS|||1|||ON-DECK
-DEVELOP|||1|||ON-DECK
-DEVELOPS|||1|||ON-DECK
-DEVICE|||1|||ON-DECK
-DEVICES|||1|||ON-DECK
-DEVOTE|||1|||ON-DECK
-DEVOTED|||1|||ON-DECK
-DEVOTES|||1|||ON-DECK
-DEVOTING|||1|||ON-DECK
-DID|||1|||ON-DECK
-DIE|||1|||ON-DECK
-DIED|||1|||ON-DECK
-DIES|||1|||ON-DECK
-DIFFER|||1|||ON-DECK
-DIGIT|||1|||ON-DECK
-DIGITAL|||1|||ON-DECK
-DIGITS|||1|||ON-DECK
-DIRECT|||1|||ON-DECK
-DIRECTED|||1|||ON-DECK
-DIRECTLY|||1|||ON-DECK
-DIRECTOR|||1|||ON-DECK
-DIRECTS|||1|||ON-DECK
-DISAGREE|||1|||ON-DECK
-DISASTER|||1|||ON-DECK
-DISC|||1|||ON-DECK
-DISCOUNT|||1|||ON-DECK
-DISCS|||1|||ON-DECK
-DISCUSS|||1|||ON-DECK
-DISK|||1|||ON-DECK
-DISLIKE|||1|||ON-DECK
-DISPLAY|||1|||ON-DECK
-DISPLAYS|||1|||ON-DECK
-DISTANT|||1|||ON-DECK
-DISTINCT|||1|||ON-DECK
-DISTRICT|||1|||ON-DECK
-DISTURB|||1|||ON-DECK
-DISTURBS|||1|||ON-DECK
-DIVIDE|||1|||ON-DECK
-DIVIDED|||1|||ON-DECK
-DIVIDES|||1|||ON-DECK
-DIVIDING|||1|||ON-DECK
-DIVISION|||1|||ON-DECK
-DOCUMENT|||1|||ON-DECK
-DOING|||1|||ON-DECK
-DOMAIN|||1|||ON-DECK
-DONE|||1|||ON-DECK
-DOUBLE|||1|||ON-DECK
-DOUBT|||1|||ON-DECK
-DOUBTFUL|||1|||ON-DECK
-DRASTIC|||1|||ON-DECK
-DRAWN|||1|||ON-DECK
-DREW|||1|||ON-DECK
-DRIVEN|||1|||ON-DECK
-DRIVERS|||1|||ON-DECK
-DRIVING|||1|||ON-DECK
-DROP|||1|||ON-DECK
-DROPPED|||1|||ON-DECK
-DROPPING|||1|||ON-DECK
-DROPS|||1|||ON-DECK
-DROVE|||1|||ON-DECK
-DUBIOUS|||1|||ON-DECK
-DUMB|||1|||ON-DECK
-DUMP|||1|||ON-DECK
-DURING|||1|||ON-DECK
-DYING|||1|||ON-DECK
-EARLIER|||1|||ON-DECK
-EARLIEST|||1|||ON-DECK
-EASIER|||1|||ON-DECK
-EASIEST|||1|||ON-DECK
-EATEN|||1|||ON-DECK
-ECONOMIC|||1|||ON-DECK
-ECONOMY|||1|||ON-DECK
-EDITION|||1|||ON-DECK
-EFFECT|||1|||ON-DECK
-EFFECTS|||1|||ON-DECK
-EFFORT|||1|||ON-DECK
-EFFORTS|||1|||ON-DECK
-EITHER|||1|||ON-DECK
-ELECT|||1|||ON-DECK
-ELECTED|||1|||ON-DECK
-ELECTING|||1|||ON-DECK
-ELECTION|||1|||ON-DECK
-ELECTRIC|||1|||ON-DECK
-ELECTS|||1|||ON-DECK
-ELEVATOR|||1|||ON-DECK
-EMPHASIS|||1|||ON-DECK
-EMPLOYEE|||1|||ON-DECK
-ENABLE|||1|||ON-DECK
-ENABLES|||1|||ON-DECK
-ENORMOUS|||1|||ON-DECK
-ENOUGH|||1|||ON-DECK
-ENSURE|||1|||ON-DECK
-ENSURED|||1|||ON-DECK
-ENSURES|||1|||ON-DECK
-ENSURING|||1|||ON-DECK
-ENTIRE|||1|||ON-DECK
-ENTIRELY|||1|||ON-DECK
-ENTITLE|||1|||ON-DECK
-ENTITLED|||1|||ON-DECK
-ENTITLES|||1|||ON-DECK
-ENTITY|||1|||ON-DECK
-ENTRANCE|||1|||ON-DECK
-ENTRIES|||1|||ON-DECK
-ESTIMATE|||1|||ON-DECK
-EVERY|||1|||ON-DECK
-EVIDENCE|||1|||ON-DECK
-EXAMINE|||1|||ON-DECK
-EXAMINED|||1|||ON-DECK
-EXAMINES|||1|||ON-DECK
-EXAMPLE|||1|||ON-DECK
-EXAMPLES|||1|||ON-DECK
-EXCEPT|||1|||ON-DECK
-EXCESS|||1|||ON-DECK
-EXCHANGE|||1|||ON-DECK
-EXCLUDE|||1|||ON-DECK
-EXCLUDED|||1|||ON-DECK
-EXCLUDES|||1|||ON-DECK
-EXCUSE|||1|||ON-DECK
-EXECUTE|||1|||ON-DECK
-EXECUTED|||1|||ON-DECK
-EXECUTES|||1|||ON-DECK
-EXIST|||1|||ON-DECK
-EXISTED|||1|||ON-DECK
-EXISTING|||1|||ON-DECK
-EXISTS|||1|||ON-DECK
-EXPAND|||1|||ON-DECK
-EXPANDED|||1|||ON-DECK
-EXPANDS|||1|||ON-DECK
-EXPECT|||1|||ON-DECK
-EXPECTED|||1|||ON-DECK
-EXPECTS|||1|||ON-DECK
-EXPENSE|||1|||ON-DECK
-EXPERT|||1|||ON-DECK
-EXPERTS|||1|||ON-DECK
-EXPLAIN|||1|||ON-DECK
-EXPLAINS|||1|||ON-DECK
-EXPLICIT|||1|||ON-DECK
-EXPRESS|||1|||ON-DECK
-EXTEND|||1|||ON-DECK
-EXTENDED|||1|||ON-DECK
-EXTENDS|||1|||ON-DECK
-EXTENT|||1|||ON-DECK
-EXTERNAL|||1|||ON-DECK
-EXTRACT|||1|||ON-DECK
-EXTREME|||1|||ON-DECK
-FACILITY|||1|||ON-DECK
-FACTOR|||1|||ON-DECK
-FACTORS|||1|||ON-DECK
-FAILURE|||1|||ON-DECK
-FALLEN|||1|||ON-DECK
-FARTHER|||1|||ON-DECK
-FARTHEST|||1|||ON-DECK
-FASTEST|||1|||ON-DECK
-FATAL|||1|||ON-DECK
-FAULT|||1|||ON-DECK
-FAULTS|||1|||ON-DECK
-FAVOR|||1|||ON-DECK
-FAVORITE|||1|||ON-DECK
-FEASIBLE|||1|||ON-DECK
-FEATURE|||1|||ON-DECK
-FEATURES|||1|||ON-DECK
-FEDERAL|||1|||ON-DECK
-FEEDBACK|||1|||ON-DECK
-FELL|||1|||ON-DECK
-FELT|||1|||ON-DECK
-FEWEST|||1|||ON-DECK
-FIGURE|||1|||ON-DECK
-FIGURES|||1|||ON-DECK
-FILING|||1|||ON-DECK
-FINISH|||1|||ON-DECK
-FINISHED|||1|||ON-DECK
-FINISHES|||1|||ON-DECK
-FINITE|||1|||ON-DECK
-FIRST|||1|||ON-DECK
-FIRSTLY|||1|||ON-DECK
-FISCAL|||1|||ON-DECK
-FITTED|||1|||ON-DECK
-FITTING|||1|||ON-DECK
-FIVE|||1|||ON-DECK
-FLAVOR|||1|||ON-DECK
-FLEXIBLE|||1|||ON-DECK
-FLIED|||1|||ON-DECK
-FLIES|||1|||ON-DECK
-FLIGHT|||1|||ON-DECK
-FLOWN|||1|||ON-DECK
-FOLLOW|||1|||ON-DECK
-FOLLOWED|||1|||ON-DECK
-FOLLOWS|||1|||ON-DECK
-FORCING|||1|||ON-DECK
-FOREIGN|||1|||ON-DECK
-FORGET|||1|||ON-DECK
-FORGETS|||1|||ON-DECK
-FORGOT|||1|||ON-DECK
-FORMAL|||1|||ON-DECK
-FORMAT|||1|||ON-DECK
-FORTH|||1|||ON-DECK
-FORTUNE|||1|||ON-DECK
-FORWARD|||1|||ON-DECK
-FOURTH|||1|||ON-DECK
-FRENCH|||1|||ON-DECK
-FREQUENT|||1|||ON-DECK
-FRIES|||1|||ON-DECK
-FROM|||1|||ON-DECK
-FULLY|||1|||ON-DECK
-FUNCTION|||1|||ON-DECK
-FURTHER|||1|||ON-DECK
-FURTHEST|||1|||ON-DECK
-FUTURE|||1|||ON-DECK
-GASOLINE|||1|||ON-DECK
-GATHER|||1|||ON-DECK
-GAVE|||1|||ON-DECK
-GENERAL|||1|||ON-DECK
-GENERATE|||1|||ON-DECK
-GENUINE|||1|||ON-DECK
-GETTING|||1|||ON-DECK
-GIVEN|||1|||ON-DECK
-GIVING|||1|||ON-DECK
-GOES|||1|||ON-DECK
-GOING|||1|||ON-DECK
-GOTTEN|||1|||ON-DECK
-GOVERNOR|||1|||ON-DECK
-GRADUATE|||1|||ON-DECK
-GRANT|||1|||ON-DECK
-GRANTED|||1|||ON-DECK
-GRANTING|||1|||ON-DECK
-GRANTS|||1|||ON-DECK
-GRAPH|||1|||ON-DECK
-GRAPHIC|||1|||ON-DECK
-GRAPHICS|||1|||ON-DECK
-GREATEST|||1|||ON-DECK
-GREW|||1|||ON-DECK
-GRINDING|||1|||ON-DECK
-GRINDS|||1|||ON-DECK
-GROSS|||1|||ON-DECK
-GROSSES|||1|||ON-DECK
-GROUND|||1|||ON-DECK
-GROUNDS|||1|||ON-DECK
-GROWN|||1|||ON-DECK
-GROWTH|||1|||ON-DECK
-HACK|||1|||ON-DECK
-HANDLE|||1|||ON-DECK
-HANDLED|||1|||ON-DECK
-HANDLES|||1|||ON-DECK
-HANDLING|||1|||ON-DECK
-HANDY|||1|||ON-DECK
-HAPPEN|||1|||ON-DECK
-HAPPENS|||1|||ON-DECK
-HARDEST|||1|||ON-DECK
-HARMFUL|||1|||ON-DECK
-HARMLESS|||1|||ON-DECK
-HAVE|||1|||ON-DECK
-HAVING|||1|||ON-DECK
-HEALTH|||1|||ON-DECK
-HEAVILY|||1|||ON-DECK
-HELD|||1|||ON-DECK
-HELPFUL|||1|||ON-DECK
-HENCE|||1|||ON-DECK
-HERE|||1|||ON-DECK
-HEREBY|||1|||ON-DECK
-HERSELF|||1|||ON-DECK
-HES|||1|||ON-DECK
-HIGHEST|||1|||ON-DECK
-HIMSELF|||1|||ON-DECK
-HITTING|||1|||ON-DECK
-HORRIBLE|||1|||ON-DECK
-HOWEVER|||1|||ON-DECK
-HUNG|||1|||ON-DECK
-HUSBAND|||1|||ON-DECK
+# ---------- KeyRing everyday words, tier 1, round 2 D-H (CD-104: 2.3). Drafts accepted, ACTIVE since L14.07 (CD-108) ----------
+DAMAGE|Harm|Injury; Cost, slangily|1
+DAMAGED|Harmed|Hurt; Dinged; Marred; ___ Goods|1
+DAMAGES|Harms|Court award; Injures; Injuries|1
+DAMAGING|Harmful|Hurtful; Ruinous|1
+DATABASE|Records store|Info bank; SQL home; DBMS|1
+DATING|Going out|Courting; Carbon ___|1
+DATUM|Single fact|Data point; Given|1
+DEAD|Lifeless|Exhausted; ___ end; No energy|1
+DEATH|End of life|Demise; Grim Reaper; Decease|1
+DEBATE|Argue|Discussion; Face-off; O&R|1
+DECADE|Ten years|The '80s, e.g.; 10% Century|1
+DECENT|Proper|Respectable; Fairly good; Acceptable; OK|1
+DECIDE|Settle|Choose; Conclude|1
+DECIDED|Settled|Chose; Clear-cut|1
+DECIDES|Settles|Chooses; Rules|1
+DECIDING|Settling|Choosing; ___ vote|1
+DECLARE|Announce|State; Customs form: I do ___!|1
+DECLARED|Announced|Stated; Official|1
+DECLARES|Announces|States; Proclaims|1
+DECREASE|Reduce|Drop; Dwindle|1
+DEDICATE|Devote|Commit; Book Credit|1
+DEDUCE|Infer|Figure out; Sherlock's skill|1
+DEEM|Judge|Consider; Regard as|1
+DEEMED|Judged|Considered; Regarded as|1
+DEEMING|Judging|Considering; Regarding|1
+DEEMS|Judges|Considers; Regards as|1
+DEFAULT|Preset|Standard; Fail to pay|1
+DEFENSE|Protection|Guard; Not offense|1
+DEFINE|Explain|Spell out; Outline|1
+DEFINED|Explained|Spelled out; Clear-cut|1
+DEFINES|Explains|Spells out; Outlines|1
+DEFINING|Explaining|Spelling out; Meaningful; Important|1
+DEFINITE|Certain|Sure; Clear-cut; Specific|1
+DEGREE|Level|Diploma; Celsius; Fahrenheit|1
+DEGREES|Levels|Diplomas; *C units; *F units|1
+DELETE|Erase|Remove; Backspace's job|1
+DELETED|Erased|Removed; Cut|1
+DELETES|Erases|Removes; Cuts|1
+DELETING|Erasing|Removing; Cutting|1
+DELIVER|Bring|Hand over; Give; Present|1
+DELIVERS|Brings|Hands over; Comes through|1
+DELIVERY|Drop-off|Shipment; Birth; Package|1
+DEMAND|Insist on|Call for; Supply's partner; Need; Order; Require|1
+DEMANDS|Insists on|Calls for; Needs; Orders; Requires|1
+DEPEND|Rely|Count on; Hinge|1
+DEPENDED|Relied|Counted on; Hinged|1
+DEPENDS|Relies|Counts on; "It ___"|1
+DERIVE|Draw|Get from; Trace back|1
+DERIVED|Drew|Got from; Secondhand|1
+DERIVES|Draws|Gets from; Stems|1
+DERIVING|Drawing|Getting from; Stemming|1
+DESCRIBE|Portray|Depict; Spell out|1
+DESIGN|Plan|Layout; Draft|1
+DESIGNED|Planned|Laid out; Intended|1
+DESIGNS|Plans|Layouts; Schemes|1
+DESIRE|Want|Longing; Crave|1
+DESIRED|Wanted|Longed for; Sought|1
+DESIRES|Wants|Longings; Craves|1
+DESIRING|Wanting|Longing for; Craving|1
+DESPITE|In spite of|Even with; In lieu of|1
+DESTROY|Wreck|Ruin; Demolish|1
+DESTROYS|Wrecks|Ruins; Demolishes|1
+DETAIL|Particular|Fine point; Car wash job|1
+DETAILED|Thorough|In-depth; Itemized|1
+DETAILS|Particulars|Fine points; Specifics|1
+DETECT|Notice|Spot; Sense|1
+DETECTED|Noticed|Spotted; Sensed|1
+DETECTS|Notices|Spots; Senses|1
+DEVELOP|Grow|Evolve; Process; Create|1
+DEVELOPS|Grows|Evolves; Builds|1
+DEVICE|Gadget|Tool; Scheme|1
+DEVICES|Gadgets|Tools; To one's own ___|1
+DEVOTE|Dedicate|Commit; Give, as time|1
+DEVOTED|Dedicated|Loyal; Committed|1
+DEVOTES|Dedicates|Commits; Gives|1
+DEVOTING|Dedicating|Committing; Giving|1
+DID|Performed|Carried out; Pulled off|1
+DIE|Pass away|Cube with dots; Expire|1
+DIED|Passed away|Expired; Faded out|1
+DIES|Passes away|Expires; Fades out|1
+DIFFER|Disagree|Vary; Beg to ___|1
+DIGIT|Number|Finger; Toe|1
+DIGITAL|Electronic|Not analog; Online|1
+DIGITS|Numbers|Fingers; Phone #, slang|1
+DIRECT|Straight|Steer; Run, as a film|1
+DIRECTED|Steered|Led; Ran, as a film|1
+DIRECTLY|Straight|Right away; Head-on|1
+DIRECTOR|Film boss|Manager; Board member|1
+DIRECTS|Steers|Leads; Runs, as a film|1
+DISAGREE|Differ|Argue; Beg to differ|1
+DISASTER|Catastrophe|Calamity; Fiasco|1
+DISC|Round plate|Frisbee; Back cushion|1
+DISCOUNT|Markdown|Sale price; Dismiss|1
+DISCS|Round plates|CDs; Spine cushions|1
+DISCUSS|Talk over|Debate; Go over|1
+DISK|Platter|HDD part; Round plate|1
+DISLIKE|Distaste|Aversion; Thumbs-down|1
+DISPLAY|Show|Exhibit; Screen|1
+DISPLAYS|Shows|Exhibits; Screens|1
+DISTANT|Far|Remote; Aloof|1
+DISTINCT|Clear|Separate; Unmistakable|1
+DISTRICT|Area|Zone; School ___|1
+DISTURB|Bother|Interrupt; Do not ___|1
+DISTURBS|Bothers|Interrupts; Unsettles|1
+DIVIDE|Split|Separate; Long ___|1
+DIVIDED|Split|Separated; Torn|1
+DIVIDES|Splits|Separates; Rifts|1
+DIVIDING|Splitting|Separating; ___ line|1
+DIVISION|Split|Department; Math operation|1
+DOCUMENT|Paper|File; Record|1
+DOING|Performing|Up to; What're you ___?|1
+DOMAIN|Realm|Territory; Web address|1
+DONE|Finished|Over; Well-___|1
+DOUBLE|Twice|Twin; Look-alike|1
+DOUBT|Uncertainty|Question|1
+DOUBTFUL|Unlikely|Iffy; Skeptical|1
+DRASTIC|Extreme|Severe; Radical|1
+DRAWN|Sketched|Pulled; Haggard|1
+DREW|Sketched|Pulled; Attracted|1
+DRIVEN|Motivated|Ambitious; Steered|1
+DRIVERS|Motorists|Golf clubs; Software aids; Chauffers; Taxi owners|1
+DRIVING|Steering|Motoring; Pounding, as rain|1
+DROP|Fall|Drip; Let go|1
+DROPPED|Fell|Let go; Quit|1
+DROPPING|Falling|Letting go; Name-___|1
+DROPS|Falls|Drips; Eye ___|1
+DROVE|Steered|Herd; Motored|1
+DUBIOUS|Doubtful|Fishy; Iffy|1
+DUMB|Silly|Mute, old-style; ___ luck|1
+DUMP|Unload|Junkyard; Ditch|1
+DURING|Throughout|In the course of; While|1
+DYING|Expiring|Fading; ___ to know|1
+EARLIER|Before|Sooner; Previously|1
+EARLIEST|First|Soonest; Oldest|1
+EASIER|Simpler|Less hard; Smoother|1
+EASIEST|Simplest|Least hard; Smoothest|1
+EATEN|Consumed|Devoured; Dined on|1
+ECONOMIC|Financial|Fiscal; Money-related|1
+ECONOMY|Thrift|Coach class; Market system|1
+EDITION|Version|Issue; Printing|1
+EFFECT|Result|Impact; Special ___|1
+EFFECTS|Results|Belongings; Special ___|1
+EFFORT|Try|Attempt; Elbow grease|1
+EFFORTS|Tries|Attempts; Labors|1
+EITHER|One or the other|Each; Me ___|1
+ELECT|Choose|Vote in; President-___|1
+ELECTED|Chosen|Voted in; In office|1
+ELECTING|Choosing|Voting in; Picking|1
+ELECTION|Vote|Poll; Ballot day|1
+ELECTRIC|Powered|Thrilling; ___ guitar|1
+ELECTS|Chooses|Votes in; Picks|1
+ELEVATOR|Lift|Floor-to-floor ride; ___ music; Raiser; U.K lift; Not escalator; Skips stairs|1
+EMPHASIS|Stress|Importance; Italics|1
+EMPLOYEE|Worker|Staffer; Hire|1
+ENABLE|Allow|Empower; Switch on|1
+ENABLES|Allows|Empowers; Switches on|1
+ENORMOUS|Huge|Gigantic; Massive|1
+ENOUGH|Sufficient|Plenty; ___ already!|1
+ENSURE|Make sure|Guarantee; Secure|1
+ENSURED|Made sure|Guaranteed; Secured|1
+ENSURES|Makes sure|Guarantees; Secures|1
+ENSURING|Making sure|Guaranteeing; Securing|1
+ENTIRE|Whole|Complete; Full|1
+ENTIRELY|Wholly|Completely; Fully|1
+ENTITLE|Name|Authorize; Give a right|1
+ENTITLED|Named|Deserving; Spoiled|1
+ENTITLES|Names|Authorizes; Gives a right|1
+ENTITY|Being|Thing; Organization|1
+ENTRANCE|Way in|Door; Captivate|1
+ENTRIES|Submissions|Records; Contestants|1
+ESTIMATE|Guess|Ballpark figure; Quote; RFQ|1
+EVERY|Each|All; ___ which way|1
+EVIDENCE|Proof|Clues; Exhibit A|1
+EXAMINE|Inspect|Study; Check over|1
+EXAMINED|Inspected|Studied; Checked over|1
+EXAMINES|Inspects|Studies; Checks over|1
+EXAMPLE|Instance|Model; For ___|1
+EXAMPLES|Instances|Models; Samples|1
+EXCEPT|But|Excluding; Leave out|1
+EXCESS|Surplus|Too much; Overkill|1
+EXCHANGE|Swap|Trade; Stock ___|1
+EXCLUDE|Leave out|Omit; Bar|1
+EXCLUDED|Left out|Omitted; Barred|1
+EXCLUDES|Leaves out|Omits; Bars|1
+EXCUSE|Pardon|Alibi; Reason|1
+EXECUTE|Carry out|Perform; Run, as code|1
+EXECUTED|Carried out|Performed; Ran, as code|1
+EXECUTES|Carries out|Performs; Runs, as code|1
+EXIST|Be|Live; Survive|1
+EXISTED|Was|Lived; Survived|1
+EXISTING|Current|Present; Living|1
+EXISTS|Is|Lives; Survives|1
+EXPAND|Grow|Enlarge; Swell|1
+EXPANDED|Grew|Enlarged; Swelled|1
+EXPANDS|Grows|Enlarges; Swells|1
+EXPECT|Anticipate|Await; Count on|1
+EXPECTED|Anticipated|Due; Predicted|1
+EXPECTS|Anticipates|Awaits; Counts on|1
+EXPENSE|Cost|Outlay; At the ___ of|1
+EXPERT|Specialist|Pro; Skilled|1
+EXPERTS|Specialists|Pros; Authorities|1
+EXPLAIN|Clarify|Spell out; Account for|1
+EXPLAINS|Clarifies|Spells out; Accounts for|1
+EXPLICIT|Clear|Spelled out; Graphic|1
+EXPRESS|State|Nonstop; Pony ___|1
+EXTEND|Stretch|Lengthen; Offer|1
+EXTENDED|Stretched|Lengthened; Long|1
+EXTENDS|Stretches|Lengthens; Offers|1
+EXTENT|Scope|Range; Degree|1
+EXTERNAL|Outside|Outer; Outward|1
+EXTRACT|Remove|Pull out; Vanilla ___|1
+EXTREME|Utmost|Radical; ___ sports|1
+FACILITY|Building|Ease; Plant|1
+FACTOR|Element|Ingredient; X ___|1
+FACTORS|Elements|Considerations; Ingredients|1
+FAILURE|Flop|Dud; Breakdown|1
+FALLEN|Dropped|Toppled; Slain|1
+FARTHER|More distant|Beyond; Further|1
+FARTHEST|Most distant|Remotest; Furthest|1
+FASTEST|Quickest|Speediest; Swiftest|1
+FATAL|Deadly|Lethal; ___ flaw|1
+FAULT|Blame|Flaw; San Andreas ___|1
+FAULTS|Blames|Flaws; Quake lines|1
+FAVOR|Kindness|Prefer; Party ___|1
+FAVORITE|Preferred|Pet; Front-runner|1
+FEASIBLE|Doable|Workable; Viable|1
+FEATURE|Trait|Characteristic; Main film|1
+FEATURES|Traits|Face parts; Stars|1
+FEDERAL|National|U.S. gov't; Make a ___ case; FedEx; National|1
+FEEDBACK|Response|Comments; Mic squeal|1
+FELL|Dropped|Tumbled; Cut down a tree|1
+FELT|Sensed|Touched; Hat fabric|1
+FEWEST|Least|Smallest number; Scarcest|1
+FIGURE|Shape|Number; Think|1
+FIGURES|Shapes|Numbers; Thinks|1
+FILING|Paperwork|Nail smoothing; Tax ___|1
+FINISH|End|Complete; Surface coat|1
+FINISHED|Ended|Done; Polished|1
+FINISHES|Ends|Completes; Coatings|1
+FINITE|Limited|Bounded; Not endless|1
+FIRST|Earliest|Initial; ___ place|1
+FIRSTLY|To begin with|For one; At the outset|1
+FISCAL|Financial|Budgetary; ___ year|1
+FITTED|Tailored|Snug; Equipped|1
+FITTING|Suitable|Apt; Tailor's session; Appropriate|1
+FIVE|Number after four|Quintet; High ___; >4; <6|1
+FLAVOR|Taste|Savor; Ice cream choice; Essence|1
+FLEXIBLE|Bendable|Adaptable; Supple|1
+FLIED|Hit a pop-up|___ out; Batted high|1
+FLIES|Soars|Insects; Zippers|1
+FLIGHT|Air trip|Escape; Stairway|1
+FLOWN|Soared|Gone by air; Fled|1
+FOLLOW|Go after|Trail; Understand|1
+FOLLOWED|Went after|Trailed; Understood|1
+FOLLOWS|Goes after|Trails; Ensues|1
+FORCING|Compelling|Pushing; Prying|1
+FOREIGN|Alien|Overseas; ___ language|1
+FORGET|Not recall|Overlook; ___ about it|1
+FORGETS|Doesn't recall|Overlooks; Leaves behind|1
+FORGOT|Didn't recall|Overlooked; Left behind|1
+FORMAL|Official|Dressy; Black-tie|1
+FORMAT|Layout|Arrangement; Wipe a disk|1
+FORTH|Forward|Onward; Back and ___|1
+FORTUNE|Luck|Wealth; Cookie message|1
+FORWARD|Ahead|Onward; Pass along|1
+FOURTH|Quarter|After third; ___ of July|1
+FRENCH|Of France|Paris speaks; ___ fries; Paris country|1
+FREQUENT|Common|Often; Haunt|1
+FRIES|Cooks in oil|Spuds; Burger side|1
+FROM|Out of|Starting at; Sent by|1
+FULLY|Completely|Wholly; Entirely|1
+FUNCTION|Purpose|Role; Gala|1
+FURTHER|More|Additional; Farther|1
+FURTHEST|Most distant|Remotest; Farthest|1
+FUTURE|What's ahead|Tomorrow; Back to the ___|1
+GASOLINE|Fuel|Gas; Petrol|1
+GATHER|Collect|Assemble; Infer|1
+GAVE|Donated|Handed; Presented|1
+GENERAL|Overall|Army officer; Broad|1
+GENERATE|Produce|Create; Make|1
+GENUINE|Real|Authentic; Sincere|1
+GETTING|Obtaining|Receiving; Becoming|1
+GIVEN|Granted|Fact; Presented|1
+GIVING|Generous|Donating; Handing|1
+GOES|Leaves|Departs; Works|1
+GOING|Leaving|Departing; Rate|1
+GOTTEN|Obtained|Received; Become|1
+GOVERNOR|State head|Ruler; Speed limiter|1
+GRADUATE|Alum|Finish school; Pass on|1
+GRANT|Give|Allow; Scholarship|1
+GRANTED|Given|Allowed; Admittedly|1
+GRANTING|Giving|Allowing; Conceding|1
+GRANTS|Gives|Allows; Funds|1
+GRAPH|Chart|Plot; Bar ___|1
+GRAPHIC|Vivid|Explicit; Image|1
+GRAPHICS|Images|Visuals; Artwork|1
+GREATEST|Best|Finest; G.O.A.T.|1
+GREW|Got bigger|Raised; Sprouted|1
+GRINDING|Crushing|Tedious; Teeth ___|1
+GRINDS|Crushes|Mills; Daily ___|1
+GROSS|Disgusting|Yucky; Twelve dozen|1
+GROSSES|Earns|$ takes in; Box-office $|1
+GROUND|Earth|Soil; Milled|1
+GROUNDS|Reasons|Coffee dregs; Campus|1
+GROWN|Adult|Raised; Mature|1
+GROWTH|Increase|Expansion; Spurt|1
+HACK|Chop|Cabbie; Break in|1
+HANDLE|Grip|Knob; Manage|1
+HANDLED|Managed|Dealt with; Touched|1
+HANDLES|Manages|Grips; Knobs|1
+HANDLING|Managing|Treatment; Shipping and ___|1
+HANDY|Useful|Nearby; Skilled|1
+HAPPEN|Occur|Take place; Come about|1
+HAPPENS|Occurs|Takes place; Stuff ___|1
+HARDEST|Toughest|Most difficult; Firmest|1
+HARMFUL|Damaging|Hurtful; Toxic|1
+HARMLESS|Safe|Innocent; Gentle|1
+HAVE|Own|Possess; Hold|1
+HAVING|Owning|Possessing; Eating|1
+HEALTH|Wellness|Fitness; Wealth's partner|1
+HEAVILY|Weightily|Densely; A lot|1
+HELD|Gripped|Owned; Detained|1
+HELPFUL|Useful|Handy; Kind|1
+HENCE|Therefore|Thus; From now|1
+HERE|In this spot|Present!; Roll-call answer|1
+HEREBY|By this|Thus; Formally now|1
+HERSELF|She alone|By ___; In person|1
+HES|He is|He has; ___ the one|1
+HIGHEST|Tallest|Top; Loftiest|1
+HIMSELF|He alone|By ___; In person|1
+HITTING|Striking|Batting; Smacking|1
+HORRIBLE|Awful|Dreadful; Terrible|1
+HOWEVER|But|Yet; In any way|1
+HUNG|Suspended|Draped; ___ up|1
+HUSBAND|Spouse|Groom; Not wife; non-wife|1
+# ---------- KeyRing everyday words, tier 1, round 3 I-P (CD-108: 2.1.1). ON-DECK until JM accepts the drafts ----------
+IDENTIFY|||1|||ON-DECK
+IDENTITY|||1|||ON-DECK
+IGNORE|||1|||ON-DECK
+IGNORED|||1|||ON-DECK
+IGNORES|||1|||ON-DECK
+IGNORING|||1|||ON-DECK
+ILLEGAL|||1|||ON-DECK
+IMAGINE|||1|||ON-DECK
+IMPACT|||1|||ON-DECK
+IMPLIED|||1|||ON-DECK
+IMPLIES|||1|||ON-DECK
+IMPLYING|||1|||ON-DECK
+IMPOSE|||1|||ON-DECK
+IMPOSED|||1|||ON-DECK
+IMPOSES|||1|||ON-DECK
+IMPOSING|||1|||ON-DECK
+IMPROVE|||1|||ON-DECK
+IMPROVED|||1|||ON-DECK
+IMPROVES|||1|||ON-DECK
+INCIDENT|||1|||ON-DECK
+INCLINE|||1|||ON-DECK
+INCLINED|||1|||ON-DECK
+INCLINES|||1|||ON-DECK
+INCLUDE|||1|||ON-DECK
+INCLUDED|||1|||ON-DECK
+INCLUDES|||1|||ON-DECK
+INCOME|||1|||ON-DECK
+INDEED|||1|||ON-DECK
+INDICATE|||1|||ON-DECK
+INDUSTRY|||1|||ON-DECK
+INFERIOR|||1|||ON-DECK
+INFINITE|||1|||ON-DECK
+INFO|||1|||ON-DECK
+INFORM|||1|||ON-DECK
+INFORMED|||1|||ON-DECK
+INFORMS|||1|||ON-DECK
+INITIAL|||1|||ON-DECK
+INITIALS|||1|||ON-DECK
+INNOCENT|||1|||ON-DECK
+INPUTTED|||1|||ON-DECK
+INSERT|||1|||ON-DECK
+INSERTED|||1|||ON-DECK
+INSERTS|||1|||ON-DECK
+INSIDE|||1|||ON-DECK
+INSIST|||1|||ON-DECK
+INSISTED|||1|||ON-DECK
+INSISTS|||1|||ON-DECK
+INSTALL|||1|||ON-DECK
+INSTALLS|||1|||ON-DECK
+INSTANT|||1|||ON-DECK
+INSTEAD|||1|||ON-DECK
+INTEGER|||1|||ON-DECK
+INTEGERS|||1|||ON-DECK
+INTEGRAL|||1|||ON-DECK
+INTEND|||1|||ON-DECK
+INTENDED|||1|||ON-DECK
+INTENDS|||1|||ON-DECK
+INTERACT|||1|||ON-DECK
+INTERNAL|||1|||ON-DECK
+INTERVAL|||1|||ON-DECK
+INVALID|||1|||ON-DECK
+INVENT|||1|||ON-DECK
+INVENTED|||1|||ON-DECK
+INVENTS|||1|||ON-DECK
+INVITE|||1|||ON-DECK
+INVITED|||1|||ON-DECK
+INVITES|||1|||ON-DECK
+INVITING|||1|||ON-DECK
+INVOLVE|||1|||ON-DECK
+INVOLVED|||1|||ON-DECK
+INVOLVES|||1|||ON-DECK
+IRRITATE|||1|||ON-DECK
+ISOLATE|||1|||ON-DECK
+ISOLATED|||1|||ON-DECK
+ISOLATES|||1|||ON-DECK
+ISSUING|||1|||ON-DECK
+ITSELF|||1|||ON-DECK
+JUDGMENT|||1|||ON-DECK
+JUNK|||1|||ON-DECK
+JUSTIFY|||1|||ON-DECK
+KEPT|||1|||ON-DECK
+KILL|||1|||ON-DECK
+KILLED|||1|||ON-DECK
+KILLING|||1|||ON-DECK
+KILLS|||1|||ON-DECK
+KNEW|||1|||ON-DECK
+KNOWN|||1|||ON-DECK
+LABOR|||1|||ON-DECK
+LACK|||1|||ON-DECK
+LACKED|||1|||ON-DECK
+LACKING|||1|||ON-DECK
+LACKS|||1|||ON-DECK
+LADIES|||1|||ON-DECK
+LAIN|||1|||ON-DECK
+LARGEST|||1|||ON-DECK
+LATEST|||1|||ON-DECK
+LAYOUT|||1|||ON-DECK
+LEACH|||1|||ON-DECK
+LEAVING|||1|||ON-DECK
+LECTURE|||1|||ON-DECK
+LECTURES|||1|||ON-DECK
+LEGAL|||1|||ON-DECK
+LEGALLY|||1|||ON-DECK
+LENGTH|||1|||ON-DECK
+LETTING|||1|||ON-DECK
+LIABLE|||1|||ON-DECK
+LIFETIME|||1|||ON-DECK
+LIKEWISE|||1|||ON-DECK
+LIKING|||1|||ON-DECK
+LINEAR|||1|||ON-DECK
+LISTEN|||1|||ON-DECK
+LITTLE|||1|||ON-DECK
+LIVING|||1|||ON-DECK
+LOCATION|||1|||ON-DECK
+LOGGED|||1|||ON-DECK
+LOGGING|||1|||ON-DECK
+LOGICAL|||1|||ON-DECK
+LONGEST|||1|||ON-DECK
+LORRIES|||1|||ON-DECK
+LORRY|||1|||ON-DECK
+LOSING|||1|||ON-DECK
+LOWEST|||1|||ON-DECK
+LYING|||1|||ON-DECK
+MAINTAIN|||1|||ON-DECK
+MAJORITY|||1|||ON-DECK
+MAKING|||1|||ON-DECK
+MANAGE|||1|||ON-DECK
+MANAGED|||1|||ON-DECK
+MANAGER|||1|||ON-DECK
+MANAGES|||1|||ON-DECK
+MANAGING|||1|||ON-DECK
+MANNER|||1|||ON-DECK
+MANUAL|||1|||ON-DECK
+MANUALS|||1|||ON-DECK
+MARRIAGE|||1|||ON-DECK
+MARRY|||1|||ON-DECK
+MASSIVE|||1|||ON-DECK
+MATTER|||1|||ON-DECK
+MATTERS|||1|||ON-DECK
+MAXIMUM|||1|||ON-DECK
+MAYBE|||1|||ON-DECK
+MEANINGS|||1|||ON-DECK
+MEANT|||1|||ON-DECK
+MEASURE|||1|||ON-DECK
+MEASURED|||1|||ON-DECK
+MEASURES|||1|||ON-DECK
+MECHANIC|||1|||ON-DECK
+MEDIA|||1|||ON-DECK
+MEDICAL|||1|||ON-DECK
+MEDIUM|||1|||ON-DECK
+MEDIUMS|||1|||ON-DECK
+MEETINGS|||1|||ON-DECK
+MEMBER|||1|||ON-DECK
+MEMBERS|||1|||ON-DECK
+MEMORY|||1|||ON-DECK
+MENTION|||1|||ON-DECK
+MENTIONS|||1|||ON-DECK
+MERE|||1|||ON-DECK
+MERELY|||1|||ON-DECK
+MESSY|||1|||ON-DECK
+METHOD|||1|||ON-DECK
+METHODS|||1|||ON-DECK
+MIDDLE|||1|||ON-DECK
+MILITARY|||1|||ON-DECK
+MILLION|||1|||ON-DECK
+MILLIONS|||1|||ON-DECK
+MINIMAL|||1|||ON-DECK
+MINIMUM|||1|||ON-DECK
+MINORITY|||1|||ON-DECK
+MINUTE|||1|||ON-DECK
+MISLEAD|||1|||ON-DECK
+MISLEADS|||1|||ON-DECK
+MISLED|||1|||ON-DECK
+MISTAKE|||1|||ON-DECK
+MISTAKEN|||1|||ON-DECK
+MISTAKES|||1|||ON-DECK
+MISTOOK|||1|||ON-DECK
+MISUSE|||1|||ON-DECK
+MOD|||1|||ON-DECK
+MODERN|||1|||ON-DECK
+MODIFIED|||1|||ON-DECK
+MODIFIES|||1|||ON-DECK
+MODIFY|||1|||ON-DECK
+MONITOR|||1|||ON-DECK
+MOTION|||1|||ON-DECK
+MOVEMENT|||1|||ON-DECK
+MOVING|||1|||ON-DECK
+MULTIPLE|||1|||ON-DECK
+MUST|||1|||ON-DECK
+MYSELF|||1|||ON-DECK
+NAMING|||1|||ON-DECK
+NASTY|||1|||ON-DECK
+NATION|||1|||ON-DECK
+NATIONAL|||1|||ON-DECK
+NATURAL|||1|||ON-DECK
+NAUGHTY|||1|||ON-DECK
+NEARBY|||1|||ON-DECK
+NEAREST|||1|||ON-DECK
+NEGATIVE|||1|||ON-DECK
+NEITHER|||1|||ON-DECK
+NERVOUS|||1|||ON-DECK
+NICEST|||1|||ON-DECK
+NOBODY|||1|||ON-DECK
+NOISY|||1|||ON-DECK
+NONSENSE|||1|||ON-DECK
+NORMAL|||1|||ON-DECK
+NORMALLY|||1|||ON-DECK
+NOTICE|||1|||ON-DECK
+NOTICED|||1|||ON-DECK
+NOTICES|||1|||ON-DECK
+NOTICING|||1|||ON-DECK
+NOTIFY|||1|||ON-DECK
+NOWADAYS|||1|||ON-DECK
+NOWHERE|||1|||ON-DECK
+NUMB|||1|||ON-DECK
+NUMBEST|||1|||ON-DECK
+OBJECT|||1|||ON-DECK
+OBJECTED|||1|||ON-DECK
+OBJECTS|||1|||ON-DECK
+OBSCURE|||1|||ON-DECK
+OBSERVE|||1|||ON-DECK
+OBSERVED|||1|||ON-DECK
+OBSERVES|||1|||ON-DECK
+OBTAIN|||1|||ON-DECK
+OBTAINED|||1|||ON-DECK
+OBTAINS|||1|||ON-DECK
+OBVIOUS|||1|||ON-DECK
+OCCUPIED|||1|||ON-DECK
+OCCUPIES|||1|||ON-DECK
+OCCUPY|||1|||ON-DECK
+OCCUR|||1|||ON-DECK
+OCCURRED|||1|||ON-DECK
+OCCURS|||1|||ON-DECK
+OFFICE|||1|||ON-DECK
+OFFICER|||1|||ON-DECK
+OFFICES|||1|||ON-DECK
+OFFICIAL|||1|||ON-DECK
+OLDEST|||1|||ON-DECK
+OMITTED|||1|||ON-DECK
+OMITTING|||1|||ON-DECK
+OPERATE|||1|||ON-DECK
+OPERATED|||1|||ON-DECK
+OPERATES|||1|||ON-DECK
+OPERATOR|||1|||ON-DECK
+OPPOSE|||1|||ON-DECK
+OPPOSED|||1|||ON-DECK
+OPPOSES|||1|||ON-DECK
+OPPOSING|||1|||ON-DECK
+OPPOSITE|||1|||ON-DECK
+OPTION|||1|||ON-DECK
+OPTIONAL|||1|||ON-DECK
+OPTIONS|||1|||ON-DECK
+ORGANIZE|||1|||ON-DECK
+ORIGIN|||1|||ON-DECK
+OUGHT|||1|||ON-DECK
+OUTPUT|||1|||ON-DECK
+OUTSIDE|||1|||ON-DECK
+OVERALL|||1|||ON-DECK
+OWING|||1|||ON-DECK
+PACKAGE|||1|||ON-DECK
+PACKAGES|||1|||ON-DECK
+PACKET|||1|||ON-DECK
+PAINFUL|||1|||ON-DECK
+PARTIAL|||1|||ON-DECK
+PARTIES|||1|||ON-DECK
+PATIENT|||1|||ON-DECK
+PAUSE|||1|||ON-DECK
+PECULIAR|||1|||ON-DECK
+PEOPLE|||1|||ON-DECK
+PER|||1|||ON-DECK
+PERFORM|||1|||ON-DECK
+PERFORMS|||1|||ON-DECK
+PERHAPS|||1|||ON-DECK
+PERIOD|||1|||ON-DECK
+PERMIT|||1|||ON-DECK
+PERMITS|||1|||ON-DECK
+PERSON|||1|||ON-DECK
+PERSONAL|||1|||ON-DECK
+PERSONS|||1|||ON-DECK
+PERSUADE|||1|||ON-DECK
+PETROL|||1|||ON-DECK
+PHASE|||1|||ON-DECK
+PHRASE|||1|||ON-DECK
+PHRASES|||1|||ON-DECK
+PHYSICAL|||1|||ON-DECK
+PINT|||1|||ON-DECK
+PLACING|||1|||ON-DECK
+PLANNED|||1|||ON-DECK
+PLANNING|||1|||ON-DECK
+PLEASE|||1|||ON-DECK
+PLEASED|||1|||ON-DECK
+PLEASES|||1|||ON-DECK
+PLEASING|||1|||ON-DECK
+POLICE|||1|||ON-DECK
+POLICIES|||1|||ON-DECK
+POLICY|||1|||ON-DECK
+POPULAR|||1|||ON-DECK
+POSITION|||1|||ON-DECK
+POSSIBLY|||1|||ON-DECK
+POUND|||1|||ON-DECK
+POUNDS|||1|||ON-DECK
+POWERFUL|||1|||ON-DECK
+PRECISE|||1|||ON-DECK
+PREFER|||1|||ON-DECK
+PREFERS|||1|||ON-DECK
+PREPARE|||1|||ON-DECK
+PREPARED|||1|||ON-DECK
+PREPARES|||1|||ON-DECK
+PRESERVE|||1|||ON-DECK
+PRESSURE|||1|||ON-DECK
+PRESUME|||1|||ON-DECK
+PREVENT|||1|||ON-DECK
+PREVENTS|||1|||ON-DECK
+PREVIOUS|||1|||ON-DECK
+PRIMARY|||1|||ON-DECK
+PRIME|||1|||ON-DECK
+PRINT|||1|||ON-DECK
+PRINTED|||1|||ON-DECK
+PRINTER|||1|||ON-DECK
+PRINTERS|||1|||ON-DECK
+PRINTING|||1|||ON-DECK
+PRINTOUT|||1|||ON-DECK
+PRINTS|||1|||ON-DECK
+PRIOR|||1|||ON-DECK
+PRIVATE|||1|||ON-DECK
+PROCESS|||1|||ON-DECK
+PRODUCE|||1|||ON-DECK
+PRODUCED|||1|||ON-DECK
+PRODUCES|||1|||ON-DECK
+PRODUCT|||1|||ON-DECK
+PRODUCTS|||1|||ON-DECK
+PROGRAM|||1|||ON-DECK
+PROGRAMS|||1|||ON-DECK
+PROGRESS|||1|||ON-DECK
+PROMPT|||1|||ON-DECK
+PROMPTLY|||1|||ON-DECK
+PRONE|||1|||ON-DECK
+PROPERLY|||1|||ON-DECK
+PROPOSAL|||1|||ON-DECK
+PROPOSE|||1|||ON-DECK
+PROPOSED|||1|||ON-DECK
+PROPOSES|||1|||ON-DECK
+PROTECT|||1|||ON-DECK
+PROTECTS|||1|||ON-DECK
+PROTEST|||1|||ON-DECK
+PROVE|||1|||ON-DECK
+PROVED|||1|||ON-DECK
+PROVES|||1|||ON-DECK
+PROVIDE|||1|||ON-DECK
+PROVIDED|||1|||ON-DECK
+PROVIDES|||1|||ON-DECK
+PROVING|||1|||ON-DECK
+PUBLIC|||1|||ON-DECK
+PUBLICLY|||1|||ON-DECK
+PUBLISH|||1|||ON-DECK
+PUNCTURE|||1|||ON-DECK
+PURCHASE|||1|||ON-DECK
+PURPOSE|||1|||ON-DECK
+PURPOSES|||1|||ON-DECK
+PUTT|||1|||ON-DECK
+PUTTED|||1|||ON-DECK
+PUTTING|||1|||ON-DECK
+PUTTS|||1|||ON-DECK
 `;
 
 /* v04 (JM, CD-9: 1.1): clues for 1-letter answers, which let every clue cell hold a clue.

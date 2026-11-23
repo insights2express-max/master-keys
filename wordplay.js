@@ -28,11 +28,11 @@ DUCK|Dodge a quacker?
 FAIR|Just a carnival?
 FALL|Season to trip in?
 FAN|Cooler supporter?
-FILE|Folder, or a nail tool
-FIRE|Let go from the hearth?
-FIRM|Solid company
-FLY|Pest, or a zipper
-FOOT|Twelve inches you stand on
+FILE|Nail folder?
+FIRE|Hearth dismissal?
+FIRM|Solid company?
+FLY|Pest's zipper?
+FOOT|Inches you stand on?
 GAME|Ready for a match
 HAIL|Ice storm greeting?
 IRON|Press metal?
@@ -91,7 +91,7 @@ CAST|Throw the actors?
 DIAL|Clock face to call
 DRILL|Practice that bores?
 FAST|Quick not to eat?
-FLAT|Apartment with no air?
+FLAT|Airless apartment?
 GRAVE|Serious resting place
 LIE|Fib, or recline
 LINE|Queue, or an actor's words
@@ -119,7 +119,7 @@ CHIP|Computer snack?
 CUE|Pool hint?
 DOVE|Peace plunge?
 DRAW|Tie by pencil?
-FINE|OK penalty
+FINE|OK penalty?
 FIT|Healthy tantrum?
 HOST|Party giver, or a crowd
 JAR|Container that jolts
@@ -355,43 +355,43 @@ ENTRY|Diary way in?
 ESCAPE|Key to leave?
 EVEN|Level number?
 EYE|Needle's watch?
-FACE|Clock front, or confront
-FARE|Bus price, or get along
-FEED|News stream, or give food
-FEEL|Touch, or sense
-FEET|Measures on a ruler you stand on?
-FENCE|Sword fight, or a yard wall
-FIELD|Area of study, or a farm plot
-FILM|Thin layer, or a movie
-FIN|Five-dollar bill, or a fish part
+FACE|Clock confront?
+FARE|Get-along price?
+FEED|Newsy meal?
+FEEL|Touchy sense?
+FEET|Ruler you stand on?
+FENCE|Yard sword fight?
+FIELD|Farm study?
+FILM|Movie coating?
+FIN|Fishy five?
 FINAL|Last exam?
-FINGER|Point out, or a hand digit
-FISH|Angle for compliments?
-FIX|Jam, or repair
-FLAG|Grow tired, or a banner
-FLAME|Old love, or a fire
-FLASH|Camera burst, or an instant
-FLEET|Fast, or a group of ships
-FLIP|Coin toss, or glib
-FLOAT|Parade car, or a root beer treat
-FLOOR|Amaze, or the ground level
-FLOUR|Baking powder that sounds like a bloom?
+FINGER|Pointing digit?
+FISH|Angle for praise?
+FIX|Repair jam?
+FLAG|Tired banner?
+FLAME|Fiery old love?
+FLASH|Camera instant?
+FLEET|Swift navy?
+FLIP|Glib toss?
+FLOAT|Parade drift?
+FLOOR|Amazing ground?
+FLOUR|Baker's bloom?
 FLOWER|River in bloom?
-FOLD|Give up a poker hand, or crease
-FOOL|Dessert, or a jester
-FORK|Road split, or a dinner tool
-FORM|Shape, or paperwork
-FORT|Pillow building, or an army post
-FOUND|Started, or discovered
-FOX|Clever one, or an animal
-FRAME|Set up the innocent, or a picture holder
-FRESH|Sassy, or new
+FOLD|Poker crease?
+FOOL|Jester's dessert?
+FORK|Road utensil?
+FORM|Shapely paperwork?
+FORT|Pillow army post?
+FOUND|Started finding?
+FOX|Clever animal?
+FRAME|Setup holder?
+FRESH|Sassy new?
 FROG|Throat lump?
-FRONT|Weather line, or the facade
-FRUIT|Result of one's labor
-FRY|Small fish, or cook in oil
-FUDGE|Fake numbers, or a sweet
-FUNNY|Odd, or amusing
+FRONT|Weather facade?
+FRUIT|Labor's produce?
+FRY|Fishy cooking?
+FUDGE|Fake sweet?
+FUNNY|Odd joke?
 GAG|Joke, or a mouth cover
 GAS|Fuel, or a blast
 GATE|Airport spot, or a fence door
@@ -635,4 +635,9 @@ ZEST|Lemon peel, or gusto
 # L14.05 (CD-104): new Wordplay clues from accepted drafts
 END|Tight finish?
 ESSAY|Try writing?
+# L14.07 (CD-108): new Wordplay clues (JM edits + accepted drafts)
+FINGERNAILS|Hard as fingers?
+FIR|Hairy tree?
+FIRECRACKER|Hot saltine?; Burned saltine?
+FOIL|Thwarting wrap?
 `;
