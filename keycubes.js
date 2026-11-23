@@ -44,7 +44,7 @@
   const TIMERS = [[30, '30 s Blitz'], [60, '1 min'], [120, '2 min'], [180, '3 min'], [240, '4 min'], [300, '5 min'], [0, 'Untimed']];
   const timerName = t => (TIMERS.find(x => x[0] === +t) || TIMERS[2])[1];
   const CUBE_LOOKS = [['cream', 'Cream'], ['ink', 'Inked'], ['blue', 'Inked Blue'], ['steel', 'Steel'], ['navy', 'Navy & gold']];
-  const LV_NAMES = { 1: '1 · Gentle', 10: '10 · Master' };
+  const LV_NAMES = { 1: '1 · Apprentice', 10: '10 · Master' }; // v12a (CD-113: 2.1a)
   const HINT_CAP_DUEL = 3, WIN = 10, DRAW = 5, MATCH = 20;
   const fmt = s => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
   const plural = (n, w) => `${UI.fmtN(n)} ${w}${n === 1 ? '' : 's'}`;
@@ -239,7 +239,7 @@
     $('#kcOptsSum').textContent = `Shortest word: ${ks.min === 'auto' ? 'Auto' : ks.min} · ${duel ? plural(ks.rounds, 'round') + ' · ' : ''}${ks.sc === 'lp' ? 'Letters + length' : 'Length only'} · Cubes: ${(CUBE_LOOKS.find(x => x[0] === ks.cs) || CUBE_LOOKS[0])[1]} · Buttons: ${{ a: 'Sapphire', b: 'Steel', c: 'Navy & gold' }[ks.bs] || 'Steel'}`;
     const unf = unfinished();
     $('#kcSetUnf').hidden = !unf; if (unf) $('#kcSetUnfTxt').textContent = unfText();
-    $('#kcStart').textContent = unf ? '🆕 New game' : `▶ Start ${NM.cubes}`;
+    $('#kcStart').textContent = unf ? '🆕 New Game' : `▶ Start ${NM.cubes}`;
     $('#kcStart').classList.toggle('primary', !unf);
     const pct = st.matches ? Math.round(100 * st.won / st.matches) + '%' : '–';
     $('#kcStats').innerHTML = st.matches || st.soloN

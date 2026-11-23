@@ -130,13 +130,13 @@
   const TIMERS = [['0', 'Untimed'], ['t30', 'Blitz · 30s per GUESS'], ['t60', '1 min per GUESS'], ['t120', '2 min per GUESS'], ['t180', '3 min per GUESS'],
     ['t300', '5 min per GUESS'], ['g120', '2 min per WORD'], ['g180', '3 min per WORD'], ['g300', '5 min per WORD'], ['g600', '10 min per WORD'], ['g900', '15 min per WORD']];
   const OPTS = {
-    level: Array.from({ length: 10 }, (_, i) => [i + 1, i === 0 ? '1 · Gentle' : i === 9 ? '10 · Ruthless' : String(i + 1)]),
+    level: Array.from({ length: 10 }, (_, i) => [i + 1, i === 0 ? '1 · Apprentice' : i === 9 ? '10 · Master' : String(i + 1)]),
     len: [4, 5, 6, 7, 8].map(n => [n, n + ' letters']),
     tries: [5, 6, 7, 8, 9, 10].map(n => [n, n + ' guesses']),
     timer: TIMERS,
     scoring: [['classic', 'Classic'], ['flat', 'Flat']]
   };
-  const LABEL = { level: 'Challenge Level', len: 'Letters', tries: 'Guesses', timer: 'Timer', scoring: 'Scoring' };
+  const LABEL = { level: 'Challenge Level', len: 'Letters', tries: 'Guesses', timer: 'Timer', scoring: 'Scoring', btn: 'Button Colors' };
   const timerOf = code => { const m = /^([tg])(\d+)$/.exec(code || ''); return m ? { kind: m[1] === 't' ? 'guess' : 'word', ms: +m[2] * 1000 } : { kind: 'none', ms: 0 }; };
   const VAL = E.VAL;
   const DESC = {
@@ -193,11 +193,13 @@
   function openSettings() {
     const busy = R && !R.over && R.rows.length > 0;
     openModal(`<h2>⚙ ${esc(title())} settings</h2>
-      <div class="vt-grid">${Object.keys(OPTS).map(k => `<label class="field"><span class="lbl">${LABEL[k]}</span><select data-k="${k}"></select></label>`).join('')}</div>
+      <div class="vt-grid">${['scoring', 'btn', 'level', 'len', 'tries', 'timer'].map(k => `<label class="field"><span class="lbl">${LABEL[k]}</span><select data-k="${k}"></select></label>`).join('')}</div>
       <p class="opt-desc" id="vtSetDesc">${esc(DESC[vs.scoring])}</p>
       <p class="help-note">${R && !R.over ? 'Changes apply from the next word.' : ''}${busy ? ' Starting a new word now counts this one as not solved.' : ''}</p>
       <div class="row"><button class="btn" data-a="close">Close</button><button class="btn primary" data-a="new">New word with these</button></div>`);
     document.querySelectorAll('#sheet select[data-k]').forEach(s => {
+      // v12a: Button Colors changes at once, even mid-word
+      if (s.dataset.k === 'btn') { s.innerHTML = UI.btnOpts ? UI.btnOpts() : ''; s.value = vs.btn || 'b'; s.addEventListener('change', () => { vs.btn = s.value; saveVs(); if (UI.setLook) UI.setLook($('#vault'), vs.btn); const b = $('#vtBtn'); if (b) b.value = vs.btn; }); return; }
       fillSelect(s, OPTS[s.dataset.k], vs[s.dataset.k]);
       s.addEventListener('change', () => { setFrom(s.dataset.k, s.value); $('#vtSetDesc').textContent = DESC[vs.scoring]; });
     });
@@ -397,13 +399,17 @@
     // v08b (CD-27: 4.1.1): on touch screens row 2 gets a ␣ key (the Space jump) in its one free slot, so all 3 rows keep
     // their key size; (4.1.2) ⌫ is orange with a larger black icon
     const rows = ['QWERTYUIOP', 'ASDFGHJKL_', '+ZXCVBNM-'];
-    $('#vtKb').innerHTML = rows.map(r => `<div class="vt-kr">${r.split('').map(k => k === '+' ? '<button type="button" class="vt-k wide" data-k="Enter">ENTER</button>'
+    // v12a (JM CD-113 add. 1.1): ENTER waits (yellow outline, gray text) until the row is full, then shows whether the
+    // guess is a real word: a red outline and an X if not, solid bright green if it is
+    const rowFull = !R.over && R.cells.every(c => c.ch), guessW = R.cells.map(c => c.ch || '').join('');
+    const entCls = R.over ? '' : !rowFull ? ' ent-wait' : GUESS[R.len] && GUESS[R.len].has(guessW) ? ' ent-ok' : ' ent-bad';
+    $('#vtKb').innerHTML = rows.map(r => `<div class="vt-kr">${r.split('').map(k => k === '+' ? `<button type="button" class="vt-k wide ent${entCls}" data-k="Enter">ENTER</button>`
       : k === '-' ? '<button type="button" class="vt-k wide bksp" data-k="Backspace" aria-label="Delete">⌫</button>'
         : k === '_' ? '<button type="button" class="vt-k spc" data-k=" " aria-label="Next open square" title="Next open square">␣</button>'
           : `<button type="button" class="vt-k ${best[k] || (tent.has(k) ? 'tent' : '')}" data-k="${k}">${k}</button>`).join('')}</div>`).join('');
     $('#vtReveal').disabled = R.over || !R.cells.some(c => !c.lock);
     const rc = revealCost();
-    $('#vtReveal span').innerHTML = `Reveal <span class="frac">${FRAC(R.len)}</span> 🪙${rc}`;
+    $('#vtRevealN').textContent = rc; // v12a (CD-111 add. 4.1.1): the cost only, no fraction
     $('#vtReveal').title = `Reveal one letter: 1/${R.len} of the word, for ${rc} coins (${REVEAL_WORD} coins ÷ ${R.len} letters, rounded up)`;
     $('#vtReveal').classList.toggle('poor', UI.coins && UI.coins.bal < rc);
     $('#vtQuit').disabled = R.over;
@@ -415,7 +421,7 @@
     $('#vtOver').innerHTML = over ? `${UI.winLine(R.resWin)}
       <span class="ob-btns"><button class="btn" type="button" data-ob="res">📊 Results</button><button class="btn" type="button" data-ob="menu">☰ Lobby</button><button class="btn primary" type="button" data-ob="again">Next word</button></span>` : '';
     if (over) { $('#vtOver').style.setProperty('--gw', Math.round($('#vtBoard').getBoundingClientRect().width) + 'px'); UI.fitOver($('#vtOver')); } // v11a: as wide as the grid, text as large as one row allows
-    $('#vtHint span').textContent = R.hints ? 'Hint ✓' : `Hint 🪙${HINT_COINS}`;
+    $('#vtHintN').textContent = HINT_COINS; $('#vtHint .cb-cost').hidden = !!R.hints; $('#vtHintL').textContent = R.hints ? 'HINT ✓' : 'HINT'; // v12a (CD-111 add. 4.1.2)
     $('#vtHint').title = R.hints ? 'Show the clue again (free)' : `Show a clue for the word (${HINT_COINS} coins)`;
     $('#vtHint').classList.toggle('poor', !R.hints && UI.coins && UI.coins.bal < HINT_COINS);
     renderClock();
@@ -457,7 +463,7 @@
 
   // ---------- Hint: the word's clue over the grid; seeing it again is free (CD-24: 1.1.5).
   // v08 (CD-26: 3.1): it costs 5 coins instead of 5 points ----------
-  const HINT_COINS = 5;
+  const HINT_COINS = 10; // v12a (JM CD-113: 1.1a): was 5
   $('#vtHint').addEventListener('click', () => {
     if (!R || R.over) return;
     if (!R.hints) {
@@ -542,7 +548,7 @@
   // v08b (JM CD-27: 1.7b, 1.7.1): it costs coins, priced by how much of the word one letter gives away. The WHOLE word is
   // worth 40 coins, so each letter costs its share: 40 ÷ letters, rounded up. The button shows the share and the price:
   // ¹⁄₄ 🪙10 · ¹⁄₅ 🪙8 · ¹⁄₆ 🪙7 · ¹⁄₇ 🪙6 · ¹⁄₈ 🪙5. (A letter of a 4-letter word gives away twice as much as one of an 8-letter word.)
-  const REVEAL_WORD = 40;
+  const REVEAL_WORD = 80; // v12a (JM CD-113: 1.1a): was 40
   const revealCost = () => Math.ceil(REVEAL_WORD / (R ? R.len : 5));
   const SUB = '₀₁₂₃₄₅₆₇₈₉';
   const FRAC = n => '¹⁄' + String(n).split('').map(d => SUB[+d]).join('');
@@ -633,7 +639,7 @@
     const rows = [[`${R.len} letters`, C.vaultLetter * R.len]];
     const spare = R.tries - R.rows.length;
     if (spare) rows.push([`${spare} guess${spare > 1 ? 'es' : ''} to spare`, C.vaultSpare * spare]);
-    if (timerOf(R.timer).kind !== 'none') { const sp = Math.min(C.perTile * R.len, Math.floor(R.lastLeft / 1000)); if (sp) rows.push(['Speed', sp]); }
+    if (timerOf(R.timer).kind !== 'none') { const sp = Math.min(C.perTile * R.len, Math.floor(R.lastLeft / 1000), Math.round((C.speedPerMin || 10) * timerOf(R.timer).ms / 60000)); if (sp) rows.push(['Speed', sp]); } // v12a: at most 10 per minute of the clock
     return { total: rows.reduce((a, r) => a + r[1], 0), rows };
   }
   function recordLoss() { stats.played++; stats.streak = 0; stats.dist.X = (stats.dist.X || 0) + 1; saveStats(); }
@@ -765,13 +771,13 @@
         <li><b>Key size:</b> the keys grow on their own to fill the space below the buttons, so fewer guesses (a shorter grid) give taller keys, up to twice the normal height. To make them shorter, drag the <b>⇕</b> handle at the right end of the button row down (drag up to raise them again); double-click (or double-tap) it for the tallest keys. Your choice is remembered on this device and follows the grid's size.</li>`)}
       ${sec('The Buttons', `
         <li>The buttons come in two groups: the <b>blue coin buttons</b> (🔎 Hint, 💡 Reveal) on the left, and the <b>gray round game buttons</b> (🆕 New Game, 🏳️ Give up) on the right. A coin button takes <b>two taps</b>: the first lights it up and shows "Tap again · 🪙N" for 3 seconds; the second tap buys. (Seeing a Hint again is free and needs one tap.)</li>
-        <li><b>💡 Reveal</b> places one letter in its spot. Its price is that letter's share of the word: the whole word is worth <b>40 coins</b>, so one letter costs 40 ÷ the number of letters (rounded up). The button shows both, like <b>Reveal ¹⁄₅ 🪙8</b> for a 5-letter word: ¹⁄₄ 🪙10 · ¹⁄₅ 🪙8 · ¹⁄₆ 🪙7 · ¹⁄₇ 🪙6 · ¹⁄₈ 🪙5. A letter of a short word gives away more, so it costs more.</li>
+        <li><b>💡 Reveal</b> places one letter in its spot. Its price is that letter's share of the word: the whole word is worth <b>80 coins</b>, so one letter costs 80 ÷ the number of letters (rounded up): 4 letters 🪙20 · 5 🪙16 · 6 🪙14 · 7 🪙12 · 8 🪙10. A letter of a short word gives away more, so it costs more.</li>
         <li><b>🔎 Hint (🪙${HINT_COINS})</b> shows a clue for the word (sometimes with a picture) over the grid; tap anywhere to close it. It costs ${HINT_COINS} <b>coins</b>, not points. Once paid for, <b>Hint ✓</b> shows it again for free.</li>
         <li>The Hint follows the <b>Challenge Level</b>: at 1–3 it is direct and simple (mostly one word, like "Froth" for FOAM); at 4–7 you get a mix that grows trickier as the level rises; at 8–10 it is a <b>short, sly</b> hint of one to three words, like "Tree-hanger" for UNAU or "River horse"-style nicknames.</li>
         <li><b>🆕 New Game</b> starts a fresh word. <b>🏳️ Give up</b> shows the word. Both ask first while the word is unfinished ("Keep playing" is the main button). Either one, once you've made a guess or used a Hint or Reveal, counts that word as not solved and breaks your streak. After every New Game, the word that just ended is shown over the new grid until you click or tap anywhere; the new word's clock starts then.</li>
         <li><b>⏸️ Pause:</b> tap the clock. The grid is hidden until you tap anywhere. The clock counts down in timed games and counts up in untimed ones. In the last 10 seconds the grid's border flashes yellow, then red.</li>`)}
       ${sec('Coins', `
-        <li><b>🪙 Coins</b> (one currency with ${NM.cross}; your balance shows beside the line above the grid): every word you solve pays <b>2 per letter</b> and <b>2 per guess to spare</b>. Timed rounds add <b>speed coins</b>: 1 for every second left on the clock when you solve it, up to 20 per letter. Untimed rounds pay no speed coins.</li>`)}
+        <li><b>🪙 Coins</b> (one currency with ${NM.cross}; your balance shows beside the line above the grid): every word you solve pays <b>1 per letter</b> and <b>1 per guess to spare</b>. Timed rounds add <b>speed coins</b>: 1 for every second left on the clock when you solve it, up to 20 per letter. Never more than 10 per minute of the clock. Untimed rounds pay no speed coins.</li>`)}
       ${sec('Settings', `
         <li><b>Challenge Level</b> (1–10) sets how hard the vocabulary is: everyday words at 1–3, rarer ones as it rises.</li>
         <li><b>Letters</b> (4–8) and <b>Guesses</b> (5–10) set the word's length and how many tries you get.</li>

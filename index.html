@@ -9,7 +9,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Master Keys">
   <meta name="description" content="Master Keys: CrossKeys, a head-to-head crossword tile game, LockWord, a word-guessing game, and KeyRing, a word builder. Plays offline.">
-  <title>Master Keys · v12</title>
+  <title>Master Keys · v12a</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="icon" href="icons/icon-192.png" type="image/png" sizes="192x192">
@@ -19,7 +19,8 @@
 <body>
   <!-- v11d / v11e: SVG gradients for the gold coin and KeyRing's corner pieces (hidden, but painted) -->
   <svg class="kr-defs mk-defs" width="0" height="0" aria-hidden="true" focusable="false"><defs>
-      <!-- v11e: the app-wide 3D gold coin (app.js MK_COIN) -->
+      <!-- v11e: the app-wide 3D gold coin (app.js MK_COIN); v12a: the blue of the drawn pause / play icons -->
+      <linearGradient id="mkBlueG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5aa8ff"/><stop offset=".55" stop-color="#2a7de8"/><stop offset="1" stop-color="#1659c2"/></linearGradient>
       <linearGradient id="mkCoinFace" x1="0" y1="0" x2=".3" y2="1"><stop offset="0" stop-color="#fff6c9"/><stop offset=".42" stop-color="#ffd54a"/><stop offset="1" stop-color="#d99a00"/></linearGradient>
       <linearGradient id="mkCoinIn" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e3a400"/><stop offset="1" stop-color="#ffe07a"/></linearGradient>
       <linearGradient id="krCoinG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff2b8"/><stop offset=".38" stop-color="#ffe082"/><stop offset="1" stop-color="#f5b300"/></linearGradient>
@@ -46,7 +47,7 @@
       <header class="brand">
         <img class="logo" src="icons/icon.svg" alt="" width="64" height="64">
         <div class="brand-txt">
-          <h1><span data-mk="suite">Master Keys</span> <span class="vpill" id="verPill">v12</span></h1>
+          <h1><span data-mk="suite">Master Keys</span> <span class="vpill" id="verPill">v12a</span></h1>
           <p class="tag">Word games. Play anywhere, even offline.</p>
         </div>
       </header>
@@ -129,6 +130,7 @@
       <img class="ck-ico" src="icons/crosskeys.svg" alt="">
       <h2 class="vt-title ck-title"><span data-mk="cross">CrossKeys</span><small>Setup</small></h2>
       <button class="icon-btn snd-btn" data-snd type="button">🔇</button>
+      <button class="icon-btn" id="ckNewSet" type="button" aria-label="New Game" title="New Game: start one with these settings">🆕</button>
       <button class="icon-btn" id="ckHelp" type="button" aria-label="How To Play CrossKeys" data-mk-aria="How To Play {cross}">?</button>
     </header>
     <div class="home-wrap ck-wrap">
@@ -149,7 +151,7 @@
         <label class="field chal">
           <span class="lbl">Challenge Level</span>
           <select id="skillSel" aria-label="Challenge Level">
-            <option value="1">1 · Gentle</option>
+            <option value="1">1 · Apprentice</option>
             <option value="2">2</option>
             <option value="3">3</option>
             <option value="4">4</option>
@@ -158,7 +160,7 @@
             <option value="7">7</option>
             <option value="8">8</option>
             <option value="9">9</option>
-            <option value="10">10 · Ruthless</option>
+            <option value="10">10 · Master</option>
           </select>
         </label>
       </div>
@@ -274,12 +276,12 @@
     <div class="vt-main">
       <div class="vt-setup" id="vtSetup">
         <div class="vt-grid">
+          <label class="field"><span class="lbl">Scoring</span><select id="vtScoring"><option value="classic">Classic</option><option value="flat">Flat</option></select></label><!-- v12a (CD-111 add. 4.2.1): Scoring and Button Colors first, side by side -->
+          <label class="field"><span class="lbl">Button Colors</span><select id="vtBtn"></select></label><!-- v11e (CD-105: 1.1a) -->
           <label class="field"><span class="lbl">Challenge Level</span><select id="vtLevel"></select></label>
           <label class="field"><span class="lbl">Letters</span><select id="vtLen"></select></label>
           <label class="field"><span class="lbl">Guesses</span><select id="vtTries"></select></label>
           <label class="field"><span class="lbl">Timer</span><select id="vtTimer"></select></label>
-          <label class="field"><span class="lbl">Scoring</span><select id="vtScoring"><option value="classic">Classic</option><option value="flat">Flat</option></select></label>
-          <label class="field"><span class="lbl">Button Colors</span><select id="vtBtn"></select></label><!-- v11e (CD-105: 1.1a) -->
         </div>
         <span class="opt-desc" id="vtDesc"></span>
         <button class="btn primary big" id="vtStart" type="button">🔓 Pick the Lock</button>
@@ -291,8 +293,8 @@
         <div class="vt-acts">
           <!-- v08c (JM CD-30: 4.2a): two groups: blue coin buttons (two taps to buy) | gray round game controls (ask first) -->
           <div class="vt-grp coins">
-            <button class="btn act coinbtn" id="vtHint" type="button" title="Show a clue for the word (5 coins)"><b>🔎</b><span>Hint 🪙5</span></button>
-            <button class="btn act coinbtn" id="vtReveal" type="button"><b>💡</b><span>Reveal 🪙8</span></button>
+            <button class="btn act coinbtn cb2" id="vtHint" type="button" title="Show a clue for the word (10 coins)"><span class="cb-top"><b>🔎</b><span class="cb-cost">🪙<span class="cb-n" id="vtHintN">10</span></span></span><span class="cb-lab" id="vtHintL">HINT</span></button>
+            <button class="btn act coinbtn cb2" id="vtReveal" type="button"><span class="cb-top"><b>💡</b><span class="cb-cost">🪙<span class="cb-n" id="vtRevealN">16</span></span></span><span class="cb-lab">REVEAL</span></button>
           </div>
           <div class="vt-grp ctl">
             <button class="btn act ctlbtn" id="vtNew" type="button"><b>🆕</b><span>New Game</span></button>
@@ -332,7 +334,7 @@
       <!-- v11c (JM CD-97: 1.1.1, 1.2.1.1.3): the two quantities side by side, each half as wide as before -->
       <div class="pair">
         <label class="field"><span class="lbl">Key Words Quantity</span><select id="krKw"></select></label>
-        <label class="field"><span class="lbl">Bonus Words Quantity</span><select id="krBw"><option value="fewest">Fewest</option><option value="some">Some</option><option value="many">Many</option><option value="any">- Any -</option></select></label>
+        <label class="field"><span class="lbl">Bonus Words Quantity</span><select id="krBw"><option value="none">None</option><option value="fewest">Fewest</option><option value="some">Some</option><option value="many">Many</option><option value="any">- Any -</option></select></label>
       </div>
       <button class="btn primary big" id="krStart" type="button">▶ Start KeyRing</button>
       <!-- v11c (CD-97 add. 1): the options you rarely change fold into one row with a one-line summary (▸ / ▾), as in CrossKeys -->
@@ -345,7 +347,7 @@
           </div>
           <p class="opt-desc kr-desc">On: a timed Ring that runs out pays one letter's worth for each letter you filled. Off: bonus coins only.</p>
           <div class="field"><span class="lbl">Key word colors</span>
-            <div class="seg" id="krCol"><button type="button" data-v="word">By word</button><button type="button" data-v="letter">By letter</button></div>
+            <div class="seg" id="krCol"><button type="button" data-v="word">By word</button><button type="button" data-v="letter">By letter</button><button type="button" data-v="none">No colors</button></div>
           </div>
           <div class="field"><span class="lbl">Layout</span>
             <div class="seg" id="krLay"><button type="button" data-v="auto">Auto</button><button type="button" data-v="stack">Stacked</button><button type="button" data-v="side">Side by side</button></div>
@@ -366,7 +368,7 @@
           <button class="kr-pill kr-lay" id="krLayP" type="button" title="Layout: Auto, Stacked or Side by side" hidden></button>
         </div>
         <div class="kr-slots" id="krSlots"></div>
-        <button class="kr-colsw" id="krColP" type="button" role="switch" aria-checked="false" aria-label="Key word colors: by letter"><span class="sw-l">Word</span><span class="sw-t" aria-hidden="true"><i></i></span><span class="sw-l">Letter</span></button>
+        <button class="kr-colsw" id="krColP" type="button" aria-label="Key word colors"><i class="sw-dot" aria-hidden="true"></i><span id="krColT">Word</span></button><!-- v12a (CD-113: 3.2a): one button cycles Word, Letter, No colors -->
         <div class="kr-msg" id="krMsg" aria-live="polite"></div>
         <div class="kr-play">
           <div class="kr-stage">
@@ -388,7 +390,7 @@
             <button class="btn coinbtn kr-cp kr-drop" id="krDrop" type="button" aria-label="Key Drop: drop one letter into a slot"><svg class="kr-cps" aria-hidden="true"></svg><span class="kr-cpc br"><span class="cost">🪙<b id="krDropCp"></b></span><span class="lab"><svg class="ki" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M7.4 6.3a5.7 5.7 0 1 1-5.3 7.8 5.7 5.7 0 0 1 5.3-7.8zm0 3.3a2.4 2.4 0 1 0 0 4.8 2.4 2.4 0 0 0 0-4.8z"/><path d="M12.4 10.6h10.2v3.4h-1.4v3h-2.6v-3h-1.2v2.2h-2.6V14h-2.4z"/></svg>Drop</span></span></button>
           </div>
         </div>
-        <button class="kr-pz" id="krPz" type="button" hidden><b><svg class="kr-pzi" viewBox="0 0 24 24" aria-hidden="true"><rect x="5.5" y="4" width="4.6" height="16" rx="1.3" fill="currentColor"/><rect x="13.9" y="4" width="4.6" height="16" rx="1.3" fill="currentColor"/></svg> Paused</b><span>Tap to resume play</span></button>
+        <button class="kr-pz" id="krPz" type="button" hidden><b>⏸️ Paused</b><span>Tap to resume play</span></button>
         <div class="overbar kr-over" id="krOver" hidden></div><!-- v11a (CD-93): the win report, under the Ring once it is over -->
         <p class="kr-tip"><kbd>A–Z</kbd> type · <kbd>Enter</kbd> submit · <kbd>⌫</kbd> back · <kbd>Esc</kbd> clear · <kbd>Space</kbd> shuffle · <kbd>Tab</kbd> next button (<kbd>Enter</kbd> presses it)</p>
       </div>
@@ -483,7 +485,7 @@
       </div>
       <div class="hub" id="hub">
         <div class="hub-info"><span class="gameinfo bar" id="infoBar"></span><span class="hub-set" id="hubSet"></span></div>
-        <div class="hub-btns"><button class="icon-btn" id="menuBtn" type="button" aria-label="Back to the Lobby" title="Back to the Lobby">☰</button><span class="zslot" id="zoomSlot"></span><button class="icon-btn snd-btn" data-snd type="button">🔇</button><button class="icon-btn" id="setBtn" type="button" aria-label="CrossKeys settings" data-mk-aria="{cross} settings" title="Settings">⚙</button><button class="icon-btn" id="helpBtn" type="button" aria-label="How To Play">?</button></div>
+        <div class="hub-btns"><button class="icon-btn" id="menuBtn" type="button" aria-label="Back to the Lobby" title="Back to the Lobby">☰</button><span class="zslot" id="zoomSlot"></span><button class="icon-btn snd-btn" data-snd type="button">🔇</button><button class="icon-btn" id="ckNewHdr" type="button" aria-label="New Game" title="New Game">🆕</button><button class="icon-btn" id="setBtn" type="button" aria-label="CrossKeys settings" data-mk-aria="{cross} settings" title="Settings">⚙</button><button class="icon-btn" id="helpBtn" type="button" aria-label="How To Play">?</button></div>
       </div>
       <div class="pl opp" id="plOpp">
         <div class="nm" id="oppNm">Bot</div>

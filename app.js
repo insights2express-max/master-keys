@@ -15,7 +15,7 @@
    v08j: grid colors, final-play view, clock-out final turn, menu defaults, phone two-finger drag) */
 'use strict';
 (() => {
-  const APP_VER = 'v12'; // Project CP: shown as a pill beside the title and in the browser tab
+  const APP_VER = 'v12a'; // Project CP: shown as a pill beside the title and in the browser tab
   const NM = window.MK_NAMES || { suite: 'Master Keys', cross: 'CrossKeys', lock: 'LockWord' }; // v09: the game names (names.js)
   // v09a (JM CD-71: 1.2c, 1.3b): the two games' own icons, shown wherever the 🧩 / 🔐 emoji stood
   const GI = { cross: 'icons/crosskeys.svg', lock: 'icons/lockword.svg', ring: 'icons/keyring.svg', cubes: 'icons/keycubes.svg' }; // v11: KeyRing; v12: KeyCubes
@@ -194,9 +194,17 @@
   // Spent on: Hint, Place and +30s in CrossKeys (instead of points), and LockWord's Hint.
   // Earned by: speed (1 coin per second left on a timed clock, on turns that place tiles; never in untimed games),
   // winning a CrossKeys game, and solving a LockWord word. Kept on this device (localStorage 'cd.coins').
-  const COIN = { start: 100, win: 10, perTile: 20, vaultLetter: 2, vaultSpare: 2 };
-  const SCAN_PER_TILE = 2; // v08L (JM CD-50: 7.2.1): 🔦 Scan costs 🪙2 per tile still in your hand
+  // v12a (JM CD-113: 1.1a): earn less, spend more. Speed coins everywhere: at most 10 per minute of timed play.
+  const COIN = { start: 100, win: 10, perTile: 20, vaultLetter: 1, vaultSpare: 1, speedPerMin: 10 };
+  const SCAN_PER_TILE = 4; // v08L (JM CD-50: 7.2.1): 🔦 Scan costs per tile still in your hand (v12a: 4, was 2)
+  const PLACE_X = 2; // v12a: 🎯 Place costs twice the tile's value
   const coinData = Object.assign({ bal: COIN.start, earned: 0, spent: 0, log: [] }, store.get('cd.coins', {}));
+  // v12a (JM CD-113: 1.2 N): the new coin rules start everyone again from 100, once
+  if (!coinData.econ2) {
+    Object.assign(coinData, { bal: COIN.start, earned: 0, spent: 0, econ2: 1 });
+    coinData.log = [[Date.now(), 0, 'New coin rules (v12a): every balance starts again at 100']];
+    store.set('cd.coins', coinData);
+  }
   const coins = {
     get bal() { return coinData.bal; },
     // n > 0 earns, n < 0 spends; why = a short label for the coin history
@@ -225,25 +233,34 @@
   // Every 🪙 that reaches the page (pills, tables, buttons, messages, help) is swapped for it, so Apple devices no longer
   // show their silver emoji coin. Its gradients (#mkCoinFace, #mkCoinIn) live in the page's hidden SVG defs.
   const MK_COIN = '<svg class="mk-coin" viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="13.5" rx="10.5" ry="10.3" fill="#7a5100"/><circle cx="12" cy="12" r="10.5" fill="url(#mkCoinFace)" stroke="#a56f00" stroke-width=".9"/><circle cx="12" cy="12" r="7.4" fill="url(#mkCoinIn)" stroke="#c48a00" stroke-width="1"/><path d="M12 7.7l1.24 2.52 2.78.4-2.01 1.96.47 2.77L12 14.05l-2.48 1.3.47-2.77-2.01-1.96 2.78-.4z" fill="#ffe58a" stroke="#a87400" stroke-width=".6"/><path d="M6.4 7.9a6.9 6.9 0 0 1 8.8-2.4" fill="none" stroke="#fffbe0" stroke-width="1.4" stroke-linecap="round" opacity=".9"/></svg>';
+  // v12a (JM CD-111 add. 1.3.2–1.3.3; CD-113: 2.2.1): the 🆕 badge and the ⏸️ / ▶️ icons are drawn too, so every device shows
+  // the same blue NEW badge (centered in its button) and the same blue pause / play square with a white symbol
+  const MK_NEW = '<span class="mk-new" aria-hidden="true">NEW</span>';
+  const MK_PP = d => `<svg class="mk-pp" viewBox="0 0 24 24" aria-hidden="true"><rect x="1" y="1" width="22" height="22" rx="5.5" fill="url(#mkBlueG)"/><rect x="1.6" y="1.6" width="20.8" height="20.8" rx="5" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="1"/>${d}</svg>`;
+  const MK_PAUSE = MK_PP('<rect x="7" y="6" width="3.6" height="12" rx="1" fill="#fff"/><rect x="13.4" y="6" width="3.6" height="12" rx="1" fill="#fff"/>');
+  const MK_PLAY = MK_PP('<path d="M9 6.2v11.6l9.2-5.8z" fill="#fff"/>');
+  const SWAPS = { '🪙': () => MK_COIN, '🆕': () => MK_NEW, '⏸️': () => MK_PAUSE, '⏸': () => MK_PAUSE, '▶️': () => MK_PLAY };
+  const SWAP_RE = /(🪙|🆕|⏸️|⏸|▶️)/;
   const COIN_CH = '🪙', COIN_SKIP = /^(SCRIPT|STYLE|TEXTAREA|OPTION|SELECT|TITLE|INPUT)$/;
   function coinize(root) {
     if (!root || root.nodeType !== 1) return;
-    const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, { acceptNode: n => n.nodeValue.includes(COIN_CH) && n.parentNode && !COIN_SKIP.test(n.parentNode.nodeName) && !n.parentNode.closest('svg') ? 1 : 3 });
+    const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, { acceptNode: n => SWAP_RE.test(n.nodeValue) && n.parentNode && !COIN_SKIP.test(n.parentNode.nodeName) && !n.parentNode.closest('svg') ? 1 : 3 });
     const list = []; while (w.nextNode()) list.push(w.currentNode);
     for (const tn of list) {
       const f = document.createDocumentFragment();
-      tn.nodeValue.split(COIN_CH).forEach((part, i) => {
-        if (i) { const s = document.createElement('span'); s.className = 'mk-ci'; s.innerHTML = MK_COIN; f.appendChild(s); }
-        if (part) f.appendChild(document.createTextNode(part));
+      tn.nodeValue.split(SWAP_RE).forEach(part => {
+        if (!part) return;
+        if (SWAPS[part]) { const s = document.createElement('span'); s.className = part === '🪙' ? 'mk-ci' : 'mk-ic'; s.innerHTML = SWAPS[part](); f.appendChild(s); }
+        else f.appendChild(document.createTextNode(part));
       });
       tn.replaceWith(f);
     }
   }
   new MutationObserver(ms => {
     for (const m of ms) {
-      if (m.type === 'characterData') { if (m.target.nodeValue && m.target.nodeValue.includes(COIN_CH)) coinize(m.target.parentNode); continue; }
+      if (m.type === 'characterData') { if (m.target.nodeValue && SWAP_RE.test(m.target.nodeValue)) coinize(m.target.parentNode); continue; }
       for (const n of m.addedNodes) {
-        if (n.nodeType === 3) { if (n.nodeValue.includes(COIN_CH)) coinize(n.parentNode); }
+        if (n.nodeType === 3) { if (SWAP_RE.test(n.nodeValue)) coinize(n.parentNode); }
         else if (n.nodeType === 1) coinize(n);
       }
     }
@@ -256,13 +273,13 @@
     openModal(`<h2>🪙 Coins: ${fmtN(coinData.bal)}</h2>
       <p class="help-note">One currency for ${NM.cross}, ${NM.lock}, ${NM.ring} and ${NM.cubes || 'KeyCubes'}. Earned ${coinData.earned} · spent ${coinData.spent} on this device.</p>
       <ul class="coin-how">
-        <li><b>Spend:</b> 💡 Hint ${E.RULES.hintCost}, 🔦 Scan ${SCAN_PER_TILE} per tile, 🎯 Place = the tile's value, ☑️ Check ${E.RULES.checkBase} + ${E.RULES.checkPerWrong} per wrong tile, ⏱️ +30s ${E.RULES.timeCost} (${NM.cross}); 🔎 Hint 5, 💡 Reveal 40 ÷ letters (${NM.lock}); 💡 Hint = the slot's letters × one letter's worth, 🔑 Key Drop = one letter's worth (${NM.ring}: a Ring is worth 100, so one letter is worth 100 ÷ the Ring's letters).</li>
-        <li><b>Speed coins:</b> in timed games, 1 coin for every second left on your clock when you end a turn that placed tiles. Up to ${COIN.perTile} per tile placed, with no cap when you place every tile in your hand. Untimed games pay no speed coins; time bought with +30s doesn't count.</li>
+        <li><b>Spend:</b> 💡 Hint ${E.RULES.hintCost}, 🔦 Scan ${SCAN_PER_TILE} per tile, 🎯 Place = twice the tile's value, ☑️ Check ${E.RULES.checkBase} + ${E.RULES.checkPerWrong} per wrong tile, ⏱️ +30s ${E.RULES.timeCost} (${NM.cross}); 🔎 Hint 10, 💡 Reveal 80 ÷ letters (${NM.lock}); 💡 Hint = the slot's letters × (100 ÷ the Ring's letters), 🔑 Key Drop = 100 ÷ the Ring's letters, ⏱ +30s 10 (${NM.ring}).</li>
+        <li><b>Speed coins:</b> in timed games, 1 coin for every second left on your clock when you end a turn that placed tiles. Up to ${COIN.perTile} per tile placed (no tile cap when you place every tile in your hand), and never more than ${COIN.speedPerMin} per minute of the clock. Untimed games pay no speed coins; time bought with +30s doesn't count. The same ${COIN.speedPerMin}-per-minute limit applies in every game.</li>
         <li><b>Whole-game clocks</b> pay at the end: your clock is shared evenly among your turns, and each turn pays the seconds it saved from its share, by the rule above.</li>
         <li><b>Win a ${NM.cross} game:</b> +${COIN.win}.</li>
-        <li><b>Clear a ${NM.ring} Ring:</b> one letter's worth for every letter you filled yourself (🪙100 with no Key Drop), plus 1 for every bonus word.</li>
+        <li><b>Clear a ${NM.ring} Ring:</b> up to 10 (shared over the Key Word letters you played yourself; Key Drop letters don't pay), plus 1 for every bonus word and speed coins in timed Rings.</li>
         <li><b>${NM.cubes || 'KeyCubes'} Duel:</b> a round won 10, a draw 5, a match won 20 more. Hint: 1 per letter of the hinted word.</li>
-        <li><b>Solve a ${NM.lock} word:</b> ${COIN.vaultLetter} per letter, ${COIN.vaultSpare} per guess to spare, plus speed coins in timed rounds (up to ${COIN.perTile} per letter).</li>
+        <li><b>Solve a ${NM.lock} word:</b> ${COIN.vaultLetter} per letter, ${COIN.vaultSpare} per guess to spare, plus speed coins in timed rounds (up to ${COIN.speedPerMin} per minute of the clock).</li>
       </ul>
       ${coinData.log.length ? `<h3>Latest</h3><table class="score-table coin-log">${coinData.log.map(([t, n, w]) => `<tr><td>${esc(w)}<small> · ${when(t)}</small></td><td class="${n < 0 ? 'neg' : 'pos'}">${n < 0 ? '−' + -n : '+' + n}</td></tr>`).join('')}</table>` : ''}
       <div class="row"><button class="btn primary" data-a="ok">Close</button></div>`);
@@ -540,6 +557,9 @@
   // v10: the Lobby's CrossKeys card, and the CrossKeys Setup screen
   function openCkSetup() { showScreen('cksetup'); renderHome(); $('#ckSetup').scrollTop = 0; fitOpts(); }
   $('#ckNewBtn').addEventListener('click', startNewGame);
+  // v12a (JM CD-111 add. 1.3.4.1): a NEW button in CrossKeys' play and Setup headers, as in every game (it asks first if a game is unfinished)
+  $('#ckNewHdr').addEventListener('click', startNewGame);
+  $('#ckNewSet').addEventListener('click', startNewGame);
   $('#ckSetupBtn').addEventListener('click', openCkSetup);
   $('#ckSetResume').addEventListener('click', resumeGame);
   $('#ckMenu').addEventListener('click', () => { showScreen('home'); renderHome(); });
@@ -722,7 +742,7 @@
     setPaused(false);
     showScreen('game');
     clearReports();
-    $('#oppNm').textContent = `${opp().n} [${G.settings.skill}]`; // v08b (JM CD-27 add'l 1): the rival's Challenge Level
+    $('#oppNm').innerHTML = `${esc(opp().n)} <span class="lvl-pill" title="Challenge Level">${G.settings.skill}</span>`; // v12a (CD-111 add. 3.1): the rival's Challenge Level in a red 3D pill
     $('#oppAv').textContent = opp().a;
     $('#myNm').textContent = myName();
     $('#myAvTop').innerHTML = myAv();
@@ -1069,7 +1089,7 @@
     const cs = getComputedStyle(tb);
     const room = tb.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - you.offsetWidth - op.offsetWidth
       - 2 * (wide ? 30 : 12) - (wide ? 36 : 0);
-    hub.style.setProperty('--hb', Math.max(28, Math.min(wide ? 48 : 44, room / 5.8)).toFixed(1) + 'px');
+    hub.style.setProperty('--hb', Math.max(26, Math.min(wide ? 48 : 44, room / 7)).toFixed(1) + 'px'); // v12a: six buttons (NEW added) and their gaps
   }
   function fitDock() {
     if (!G || $('#game').hidden) return;
@@ -1575,7 +1595,7 @@
       const hi = Math.max(G.scores[0], G.scores[1]), lo = Math.min(G.scores[0], G.scores[1]);
       const wl = r.winner === 0 ? meWin() : r.winner === 1 ? { av: o.a, who: esc(o.n) } : { draw: true };
       $('#overBar').innerHTML = `${winLine(Object.assign(wl, { score: `${hi}–${lo}` }))}
-        <span class="ob-btns">${ui.resSeen ? '<button class="btn" type="button" data-ob="res">📊 Results</button>' : '<button class="btn primary see-res" type="button" data-ob="res" title="Open the Results (Enter)">📊 See results ▸</button>'}<button class="btn" type="button" data-ob="menu">☰ Lobby</button><button class="btn${ui.resSeen ? ' primary' : ''}" type="button" data-ob="again">Rematch</button></span>`;
+        <span class="ob-btns">${ui.resSeen ? '<button class="btn" type="button" data-ob="res">📊 Results</button>' : '<button class="btn primary see-res" type="button" data-ob="res" title="Open the Results (Enter)">📊 See results ▸</button>'}<button class="btn" type="button" data-ob="menu">☰ Lobby</button><button class="btn primary" type="button" data-ob="again">🆕 New Game</button></span>`; // v12a (CD-113: 2.2): New Game in every game, blue once it's over
       $('#overBar').dataset.on = obKey;
     }
     if (!over) { $('#overBar').innerHTML = ''; delete $('#overBar').dataset.on; }
@@ -2054,7 +2074,7 @@
         <li>Under the Bot's name is your <b>won–lost record</b> against them.</li>
         <li>Point at the card with the mouse (or press and hold it on a touch screen) to read the Bot's personality: how they like to play.</li>`)}
       ${sec('Challenge Level', `
-        <li>Runs from <b>1 · Gentle</b> to <b>10 · Ruthless</b>. It sets two things at once: the Bot's skill and the puzzle's difficulty.</li>
+        <li>Runs from <b>1 · Apprentice</b> to <b>10 · Master</b>. It sets two things at once: the Bot's skill and the puzzle's difficulty.</li>
         <li>The Bot's skill rises gently from 1 to 7, then jumps at 8: levels 8–10 are the <b>Master</b> levels (see ${go('Bot')}). The puzzle's difficulty rises steadily at every level.</li>
         <li>As the level rises: words get longer and harder, and word and picture clues get trickier.</li>
         <li>Starter letters (gray, already on the grid) help new players: about a quarter of the letters at level 1, fewer at level 2, just 1–3 at level 3, and none from level 4. With fewer starters there are more tiles to play, so games run longer.</li>
@@ -2160,7 +2180,7 @@
         <li>Your hand and the buttons share the bottom row. On a phone, ✓ Done stays on the row and the other buttons open from <b>⋯ More</b>; in timed games your clock then shows under your score.</li>
         <li><b>💡 Hint (🪙${hintC})</b>: stripes one empty cell where one of your tiles fits (its stripes slant the other way from Scan's). It doesn't say which tile: you work that out, as with Scan. It costs ${hintC} ${go('Coins', 'coins')}.</li>
         <li><b>🔦 Scan (🪙${SCAN_PER_TILE} per tile)</b>: stripes one empty cell for <b>each</b> tile still in your hand (tiles you have already penciled in don't count), so 5 tiles cost 🪙${5 * SCAN_PER_TILE}: cheaper than a Hint per tile. Only the cells are striped; you work out which tile goes where. Once per turn.</li>
-        <li><b>🎯 Place (🪙?)</b>: puts one random tile from your hand into a cell where it fits. It costs that tile's value in coins (shown on the tile; 1 in modes without tile values), then scores like any tile you place. It's marked ✓ (known to fit).</li>
+        <li><b>🎯 Place (🪙?)</b>: puts one random tile from your hand into a cell where it fits. It costs twice that tile's value in coins (2 in modes without tile values), then scores like any tile you place. It's marked ✓ (known to fit).</li>
         <li><b>☑️ Check (🪙${R.checkBase}+)</b>: tests the tiles you've penciled in this turn. It costs ${R.checkBase} coins, plus ${R.checkPerWrong} for each wrong tile it finds. Wrong tiles go back to your hand with <b>no point penalty</b>; right ones get a ✓ (move one and it's unchecked again). Check needs <b>🪙${R.checkBase + R.checkPerWrong}</b> to start, then checks your tiles in the order you placed them. If it finds more wrong tiles than you can pay for, it takes your last coins for that tile and stops; any later tiles stay penciled in, unchecked.</li>
         <li>The coin buttons (💡 Hint, 🎯 Place, ☑️ Check, ⏱️ +30s) are <b>blue</b> (each icon on a navy circle) and sit together; on a phone they're the top row of ⋯ More.</li>
         <li>The game buttons (🔄 Swap, 🔀 Shuffle and the ⏸️ clock) are <b>gray and rounded</b>, as in ${NM.lock}.</li>
@@ -2186,14 +2206,14 @@
         <li>The game also ends when the grid is full, by the <b>3 PASSES Rule</b> (${esc(PASS_RULE)}), or after a whole-game clock runs out and the other side has finished.</li>
         <li>A <b>⏭ 1/3</b> counter in the grid's top-left corner (where the logo sits) counts passes in a row: yellow after the 1st pass, red after the 2nd. A pass is a ⏭ Pass, a 🔄 Swap, a turn where every tile bounced, or a turn clock that ran out. The 2nd pass also shows a red <b>LAST CHANCE</b> notice that says what caused it and <b>holds the game until you tap</b> (the Bot waits and your clock stops). The counter goes away (and the logo comes back) once someone places a tile.</li>
         <li>When the game ends, the grid stays on screen and the last play's tiles and words glow, so you can see the final play. <b>📊 See results</b> (or Enter) opens the result window.</li>
-        <li>The result window shows both scores, your record against this Bot, both sides' play and your coins. Its buttons: <b>🔍 Grid</b> (look at the grid again), <b>⚙ Settings</b>, <b>☰ Lobby</b> and <b>Rematch</b>.</li>
-        <li>Close it (✕, or tap outside it) to look at the finished grid. Your hand's row then becomes a <b>game-over bar</b> with <b>📊 Results</b> (opens the window again), <b>☰ Lobby</b> and <b>Rematch</b>.</li>
+        <li>The result window shows both scores, your record against this Bot, both sides' play and your coins. Its buttons: <b>🔍 Grid</b> (look at the grid again), <b>⚙ Settings</b>, <b>☰ Lobby</b> and <b>🆕 New Game</b>.</li>
+        <li>Close it (✕, or tap outside it) to look at the finished grid. Your hand's row then becomes a <b>game-over bar</b> with <b>📊 Results</b> (opens the window again), <b>☰ Lobby</b> and <b>🆕 New Game</b>.</li>
         <li>Every window closes the same way: ✕ in its top-right corner, a tap outside it, or its <b>Close</b> button.</li>`)}
       ${sec('Coins', `
         <li><b>🪙 Coins</b> are one currency shared by ${NM.cross} and ${NM.lock}. You start with <b>${COIN.start}</b>. Your balance shows in the Lobby, in the game's info line and above the ${NM.lock} grid; tap it for details and your latest coins.</li>
-        <li><b>Spend them on</b> 💡 Hint (${hintC}), 🔦 Scan (${SCAN_PER_TILE} per tile), 🎯 Place (the tile's value), ☑️ Check (${R.checkBase} + ${R.checkPerWrong} per wrong tile) and ⏱️ +30s (${R.timeCost}) in ${NM.cross}, and 🔎 Hint (5) and 💡 Reveal (40 ÷ the word's letters, like ¹⁄₅ 🪙8) in ${NM.lock}. These cost coins, not points. Coin buttons are <b>blue</b>. Without enough coins the button is dimmed, and a tap tells you what it costs.</li>
+        <li><b>Spend them on</b> 💡 Hint (${hintC}), 🔦 Scan (${SCAN_PER_TILE} per tile), 🎯 Place (the tile's value), ☑️ Check (${R.checkBase} + ${R.checkPerWrong} per wrong tile) and ⏱️ +30s (${R.timeCost}) in ${NM.cross}, and 🔎 Hint (10) and 💡 Reveal (80 ÷ the word's letters) in ${NM.lock}. These cost coins, not points. Coin buttons are <b>blue</b>. Without enough coins the button is dimmed, and a tap tells you what it costs.</li>
         <li><b>Two taps to buy:</b> the first tap on a coin button lights it up and shows "Tap again · 🪙N" (for Place, the price of the tile it found; for Check, 🪙5+) for 3 seconds; the second tap buys. Tapping anywhere else, or waiting, cancels it. This stops accidental spending.</li>
-        <li><b>Speed coins</b> (timed games only): end a turn that placed tiles and earn <b>1 coin for every second left</b> on your clock. A 1-minute turn finished in 35 seconds pays 25. The most a turn can pay is ${COIN.perTile} per tile placed, but there's <b>no cap</b> when you place every tile in your hand. Time bought with +30s doesn't count.</li>
+        <li><b>Speed coins</b> (timed games only): end a turn that placed tiles and earn <b>1 coin for every second left</b> on your clock. A 1-minute turn finished in 35 seconds would pay 25, but speed coins never exceed <b>${COIN.speedPerMin} per minute</b> of the clock, so it pays 10. A turn also pays at most ${COIN.perTile} per tile placed (no tile cap when you place every tile in your hand). Time bought with +30s doesn't count.</li>
         <li>With a <b>whole-game</b> clock, speed coins are paid once, when the game ends. Your clock is <b>shared evenly among your turns</b>: a 5-minute game in which you took 6 turns gives each turn 50 seconds. Each turn then pays like a per-turn game: the seconds it saved from its 50, up to ${COIN.perTile} per tile it placed (no cap if it emptied your hand); passes and swaps pay nothing. The total is never more than the time left on your clock, and nothing is paid if your clock runs out. <i>Example:</i> a turn that took 20 seconds and placed 2 tiles saved 30 seconds and pays 30 (its cap is 40).</li>
         <li><b>Untimed games</b> pay no speed coins.</li>
         <li><b>Winning</b> a game pays <b>+${COIN.win}</b>.</li>
@@ -2581,6 +2601,7 @@
     if (E.timerOf(G.settings.timer).kind !== 'turn') return;
     let c = Math.floor(Math.max(0, ui.left - (ui.bought || 0)) / 1000);
     if (G.hands[0].length) c = Math.min(c, COIN.perTile * n);
+    c = Math.min(c, Math.round(COIN.speedPerMin * E.timerOf(G.settings.timer).secs / 60)); // v12a: at most 10 per minute of the turn's clock
     if (c <= 0) return;
     coinItem('speed', c);
     coins.add(c, `Speed coins (${n} tile${n > 1 ? 's' : ''})`);
@@ -2610,7 +2631,7 @@
       if (!t.e) c = Math.min(c, COIN.perTile * t.n);
       total += c;
     }
-    return { total: Math.min(total, left), share: Math.round(share / 1000), turns: turns.length };
+    return { total: Math.min(total, left, Math.round(COIN.speedPerMin * T / 60000)), share: Math.round(share / 1000), turns: turns.length }; // v12a: at most 10 per minute of the game clock
   }
 
   // =====================================================================
@@ -3174,7 +3195,7 @@
     if (!myTurn()) return;
     const a = E.autoPlace(G, 0, { tiles: new Set(ui.pending.map(p => p.tileId)), cells: new Set(ui.pending.map(p => p.cell)) });
     if (!a) { toast('None of your tiles fits an open cell'); return; }
-    const cost = Math.max(1, a.cost); // v08: coins, not points (the tile's value; 1 in modes without values)
+    const cost = PLACE_X * Math.max(1, a.cost); // v08: coins, not points (v12a: twice the tile's value; 2 in modes without values)
     // v08c: second tap buys. The tile is picked at random on each tap, so the armed price is the one that tap found;
     // the buying tap keeps that same tile (ui.armPlace) so the price you saw is the price you pay.
     if (coins.bal >= cost) {
@@ -3183,7 +3204,7 @@
     }
     if (ui.armPlace && G.hands[0].some(t => t.id === ui.armPlace.tileId) && !ui.pending.some(p => p.cell === ui.armPlace.cell)) Object.assign(a, ui.armPlace);
     ui.armPlace = null;
-    const paid = Math.max(1, a.cost);
+    const paid = PLACE_X * Math.max(1, a.cost);
     if (!coins.spend(paid, `Place ${a.ch}`)) return;
     coinItem('place', -paid, a.ch);
     ui.hintCell = -1;
@@ -3519,7 +3540,7 @@
     if (!G || !G.over || !ui.resBody) return;
     if (!ui.resSeen) { ui.resSeen = true; render(); } // the final-play glow ends once Results has been seen
     openModal(`${ui.resBody}
-      <div class="row res-bar"><button class="btn" data-a="grid" title="Close Results and look at the grid">🔍 Grid</button><button class="btn" data-a="set">⚙ Settings</button><button class="btn" data-a="menu">☰ Lobby</button><button class="btn primary" data-a="again">Rematch</button></div>`, 'res', { close: render });
+      <div class="row res-bar"><button class="btn" data-a="grid" title="Close Results and look at the grid">🔍 Grid</button><button class="btn" data-a="set">⚙ Settings</button><button class="btn" data-a="menu">☰ Lobby</button><button class="btn primary" data-a="again">🆕 New Game</button></div>`, 'res', { close: render });
     $('#sheet').onclick = e => {
       const b = e.target.closest('[data-a]');
       if (!b) return;

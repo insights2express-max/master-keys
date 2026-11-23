@@ -27,6 +27,9 @@
    pieces with appliqué text; the app-wide 3D gold coin; no pegs on the tiles; glass Pause panel; bigger switch on tablets.
    v11f (JM CD-107, CD-110): 3-letter Rings deal at every level again; corner-piece text shrinks to stay inside its piece; the
    Key grid stays below the colors switch; speed coins capped at 20 per minute on the clock.
+   v12a (JM CD-111, CD-113): a cleared Ring pays 10; speed coins at most 10 per minute; Bonus Words Quantity None; one button cycles
+   Word / Letter / No colors; the Ring has a fixed size per screen; smaller tiles on 7- and 8-letter Rings; less space around the
+   Key grid; the result's word groups alphabetized, with hint-darkened words and Key Drop counts; New Game; Apprentice.
    Saved on this device: settings 'cd.kr.settings', stats 'cd.kr.stats', an unfinished Ring 'cd.kr.save', recent seeds 'cd.kr.recent'. */
 'use strict';
 (function () {
@@ -51,11 +54,12 @@
   const saveSt = () => store.set('cd.kr.stats', st);
   const TIMERS = [[0, 'Untimed'], [60, '1 min per Ring'], [120, '2 min per Ring'], [180, '3 min per Ring'], [300, '5 min per Ring']];
   const timerName = t => (TIMERS.find(x => x[0] === +t) || TIMERS[0])[1];
-  const LV_NAMES = { 1: '1 · Gentle', 10: '10 · Master' };
+  const LV_NAMES = { 1: '1 · Apprentice', 10: '10 · Master' }; // v12a (CD-113: 2.1a)
   const N_DESC = { 3: 'A quick warm-up: short Key words.', 4: 'Key words of 3–4 letters.', 5: 'Key words up to 5 letters.', 6: 'Key words up to 6 letters.', 7: 'Key words up to 7 letters.', 8: 'Key words up to 8 letters: the longest Rings.' };
   const N_DEMO = { 3: 'TEA', 4: 'LEAP', 5: 'PLATE', 6: 'GARDEN', 7: 'PAINTER', 8: 'KEYRINGS' };
   const lastLine = () => `${ks.n} letters · Level ${ks.lv} · ${timerName(ks.timer)}`;
   const TIME_COST = 10, TIME_ADD = 30; // ⏱ +30s (CD-90: 4.1.4.1)
+  const RING_PAY = 10, SPEED_PER_MIN = 10; // v12a (CD-113: 1.1.1; CD-111: 1.4.1): a cleared Ring pays 10; speed coins at most 10 per minute
   // v11d (CD-98 add. 2.3): the coin drawn in the suite's gold (as the coin pill), for the corner pieces and the result window.
   // Its gradient (#krCoinG) lives in the page's hidden SVG defs.
   const COIN = '🪙'; // v11e: app.js swaps every 🪙 on the page for the app-wide 3D gold coin
@@ -145,7 +149,7 @@
   };  const KW_NAMES = { auto: 'Auto', few: 'Few', some: 'Some', many: 'Many', most: 'Most' }; // Auto follows the Challenge Level
   const kwOf = (kw, lv) => KW[3][kw] ? kw : lv <= 3 ? 'few' : lv <= 6 ? 'some' : lv <= 8 ? 'many' : 'most';
   // v11c (JM CD-97: 1.1.1): Bonus Words Quantity: how many words a Ring leaves outside the Key grid
-  const BW_NAMES = { fewest: 'Fewest', some: 'Some', many: 'Many', any: '- Any -' }; // v11d (CD-100: 2.3.1): Plenty is now Many
+  const BW_NAMES = { none: 'None', fewest: 'Fewest', some: 'Some', many: 'Many', any: '- Any -' }; // v12a (CD-113: 3.1): None = bonus words switched off // v11d (CD-100: 2.3.1): Plenty is now Many
   // a seed: 'PLATE3.21.2' = PLATE, tier 3, 21 other real words its letters spell, 2 other full-length everyday words (K03)
   const seedsOf = n => String((D.seeds || {})[n] || '').split(' ').filter(Boolean).map(s => {
     const m = /^([A-Z]+)(\d)(?:\.(\d+))?(?:\.(\d+))?$/.exec(s);
@@ -204,7 +208,7 @@
       const leftE = all.filter(e => e.l <= 3 && !got.has(e.w)).length;
       const leftR = Math.max(0, (s.e >= 0 ? s.e : all.length) - all.length) + all.filter(e => e.l > 3 && !got.has(e.w)).length;
       const bonus = leftE + 0.25 * leftR, share = bonus / (bonus + keys);
-      let score = bw === 'fewest' ? share : bw === 'some' ? Math.abs(share - 0.4) : bw === 'many' ? -share : 0;
+      let score = bw === 'fewest' || bw === 'none' ? share : bw === 'some' ? Math.abs(share - 0.4) : bw === 'many' ? -share : 0;
       score += Math.max(0, lo - keys) * 0.12; // fewer Key words than asked for
       if (lv >= 8) score += Math.max(0, 3 - 1 - pick.filter(e => e.w.length === n).length) * 0.15;
       tried.push({ s, pick, score });
@@ -233,7 +237,7 @@
   function newR(d) {
     const L = d.words.reduce((a, w) => a + w.length, 0);
     const r = {
-      seed: d.seed, n: d.letters.length, lv: ks.lv, timer: +ks.timer, timer0: +ks.timer, timePay: !!ks.timePay, no: st.played + 1,
+      seed: d.seed, n: d.letters.length, lv: ks.lv, timer: +ks.timer, timer0: +ks.timer, timePay: !!ks.timePay, noBonus: ks.bw === 'none', no: st.played + 1,
       words: d.words, clues: d.clues, L, v: 100 / L,
       tiles: d.letters.map((ch, i) => ({ ch, k: i, ang: -90 + i * 360 / d.letters.length })),
       found: new Set(), byDrop: new Set(), drop: d.words.map(() => new Set()), hinted: new Set(), bonus: [],
@@ -246,7 +250,7 @@
   function save() {
     if (!R || R.over) { store.set(SAVE_KEY, null); return; }
     const s = {
-      seed: R.seed, lv: R.lv, timer: R.timer, timer0: R.timer0, timePay: R.timePay, no: R.no, words: R.words, clues: R.clues,
+      seed: R.seed, lv: R.lv, timer: R.timer, timer0: R.timer0, timePay: R.timePay, noBonus: R.noBonus, no: R.no, words: R.words, clues: R.clues,
       letters: R.tiles.slice().sort((a, b) => a.k - b.k).map(t => t.ch), pal: R.pal, ended: R.ended, statClr: R.statClr,
       found: [...R.found], byDrop: [...R.byDrop], drop: R.drop.map(s => [...s]), hinted: [...R.hinted], bonus: R.bonus,
       el: Math.round(R.el)
@@ -263,7 +267,7 @@
     Object.assign(ks, keep);
     r.no = s.no || r.no;
     r.timer0 = s.timer0 != null ? s.timer0 : s.timer;
-    r.ended = !!s.ended; r.statClr = !!s.statClr;
+    r.ended = !!s.ended; r.statClr = !!s.statClr; r.noBonus = !!s.noBonus;
     r.found = new Set(s.found || []); r.byDrop = new Set(s.byDrop || []); r.hinted = new Set(s.hinted || []);
     r.drop = (s.drop || []).map(a => new Set(a)); while (r.drop.length < r.words.length) r.drop.push(new Set());
     r.bonus = s.bonus || []; r.el = s.el || 0;
@@ -409,7 +413,7 @@
     const sideOk = W0 >= 640 && H0 >= 400; // side by side is possible (the layout pill shows)
     $('#krLayP').hidden = !sideOk; // before the info row is measured
     paintColP(); // v11d (CD-100: 3.4.1b): the colors switch sits in the Key grid's top-right corner on every screen
-    const infoH = $('#krInfo').offsetHeight || 34, msgH = big ? 66 : 54, gap = 8;
+    const infoH = $('#krInfo').offsetHeight || 34, msgH = big ? 56 : 44, gap = 6; // v12a (CD-111: 2.4.3.2): a slimmer message row
     main.style.setProperty('--mh', msgH + 'px');
     // v11a (CD-93): once the Ring is over, the win report takes the tip's row (so the Ring leaves room for it)
     const ob = $('#krOver'), tipH = !ob.hidden ? ob.offsetHeight : coarse ? 0 : 22, tipRow = !ob.hidden || !coarse;
@@ -418,7 +422,9 @@
     const Ws = W0 - 24, Hs = H0 - 16 - infoH - msgH - tipH - gap * (tipRow ? 4 : 3);
     // the Key grid's squares stay at least 28 px on phones (24 px on short phones, so the Ring keeps its room), 34 px on tablets
     // v11f: with 13+ Key words on a phone, the squares may go down to 22 px so the Ring keeps a playable size
-    const rsStack = Math.min(Ws - 4, Hs - slotNeed(Ws, Ws < 500 ? (R.words.length >= 13 ? 22 : H0 < 700 ? 24 : 28) : 34), 640);
+    // v12a (CD-111: 2.4.1; CD-113: 4.1): the Ring's size depends on the screen only, never on the number of Key words; the
+    // Key grid keeps at least a third of the height and its words fit into whatever the Ring leaves
+    const rsStack = Math.min(Ws - 4, 640, Hs - Math.max(150, Math.round(Hs * 0.33)));
     const colW = (W0 - 44 - 26) / 2.1; // side by side: the Ring's column (1 of 2.1 shares)
     const rsSide = sideOk ? Math.min(colW, H0 - 24 - infoH - msgH - tipH - gap * 4, 640) : 0;
     const lay = ks.layout;
@@ -427,7 +433,9 @@
     $('#krLayP').innerHTML = `<span class="e">${wide ? '⇆' : '⇅'}</span> ${lay === 'auto' ? 'Auto' : lay === 'side' ? 'Side by side' : 'Stacked'}`;
     rs = Math.max(170, Math.floor(wide ? rsSide : rsStack));
     const n = R.tiles.length;
-    ts = Math.round(Math.min(rs * (n <= 4 ? 0.27 : n === 5 ? 0.25 : n === 6 ? 0.23 : n === 7 ? 0.21 : 0.19), 104));
+    const tsFull = Math.round(Math.min(rs * (n <= 4 ? 0.27 : n === 5 ? 0.25 : n === 6 ? 0.23 : n === 7 ? 0.21 : 0.19), 104));
+    ts = n >= 7 ? Math.round(tsFull * (n === 7 ? 0.88 : 0.84)) : tsFull; // v12a (CD-111: 2.4.2.1): smaller tiles, the same letters
+    main.style.setProperty('--tf', Math.round(tsFull * 0.56) + 'px');
     // the stage holds the Ring and its corner pieces; when there is room beside the Ring, the stage widens (CD-90: 4.1.6)
     const availW = wide ? colW : W0 - 24;
     const sw = Math.floor(Math.min(availW, rs + 2 * Math.round(Math.min(110, Math.max(0, rs * 0.11)))));
@@ -495,14 +503,14 @@
   // ---------- slots ----------
   function renderSlots(pops) {
     if (!R) return;
-    const box = $('#krSlots'), bs = getComputedStyle(box), W = box.clientWidth - 24;
+    const box = $('#krSlots'), bs = getComputedStyle(box), W = box.clientWidth - parseFloat(bs.paddingLeft) - parseFloat(bs.paddingRight) - 8;
     const H = box.clientHeight - parseFloat(bs.paddingTop) - parseFloat(bs.paddingBottom) - 4; // v11f (CD-107: 3.3.1): the box's real padding (the colors switch row)
     if (W <= 0 || H <= 0) return;
     const ml = maxLen();
     let best = null;
     // v11c: rows may hold as many letters as the width allows (as fit() plans), not just about two words' worth
     for (let C = ml; C <= Math.max(ml * 2 + 2, Math.floor((W / 20 - 0.6) / 1.1)); C += 0.5) {
-      const rows = pack(C), size = Math.min(W / (C * 1.1 + 0.6), (H - 6 * rows.length) / (rows.length * 1.22 + (rows.length - 1) * 0.22), 56); // v11f: each row is cs + 6 px of padding, rows are 0.22 cs apart
+      const rows = pack(C), size = Math.min(W / (C * 1.1 + 0.6), (H - 6 * rows.length) / (rows.length * 1.22 + (rows.length - 1) * 0.22), 62); // v11f: each row is cs + 6 px of padding, rows are 0.22 cs apart
       if (!best || size > best.size + 0.5) best = { rows, size };
     }
     cs = Math.max(16, Math.floor(best.size));
@@ -514,7 +522,7 @@
         const d = R.drop[i].has(p);
         const cls = f ? 'f' : d ? 'd' : '';
         const k = PAL[col[i][p]];
-        const sty = [f ? `--c1:${k[0]};--c2:${k[1]};--ce:${k[2]}` : '', pops && pops[i] && pops[i].has(p) ? `animation-delay:${[...pops[i]].indexOf(p) * 55}ms` : ''].filter(Boolean).join(';');
+        const sty = [f && ks.colors !== 'none' ? `--c1:${k[0]};--c2:${k[1]};--ce:${k[2]}` : '', pops && pops[i] && pops[i].has(p) ? `animation-delay:${[...pops[i]].indexOf(p) * 55}ms` : ''].filter(Boolean).join(';');
         const pop = pops && pops[i] && pops[i].has(p) ? ' pop' : '';
         return `<span class="kr-c ${cls}${pop}"${sty ? ` style="${sty}"` : ''}>${f || d ? c : ''}</span>`;
       }).join('');
@@ -684,7 +692,8 @@
     if (e.key === 'Tab') {
       e.preventDefault();
       if (R.paused) return;
-      setKf(kf < 0 ? (e.shiftKey ? CYC.length - 1 : 0) : (kf + (e.shiftKey ? -1 : 1) + CYC.length) % CYC.length);
+      let nk = kf; for (let k = 0; k < CYC.length; k++) { nk = nk < 0 ? (e.shiftKey ? CYC.length - 1 : 0) : (nk + (e.shiftKey ? -1 : 1) + CYC.length) % CYC.length; if (!$(CYC[nk]).hidden) break; }
+      setKf(nk);
       return;
     }
     if (/^[a-z]$/i.test(e.key)) {
@@ -714,7 +723,8 @@
   function fitMsg() {
     const m = $('#krMsg'), t = m.querySelector('.mt:not(.sm)'); if (!t) return;
     const maxW = Math.max(120, Math.min(rs, m.clientWidth || rs));
-    let f = Math.round(Math.min(34, Math.max(19, rs * 0.072)));
+    const mh = parseFloat(getComputedStyle($('#krMain')).getPropertyValue('--mh')) || 44;
+    let f = Math.round(Math.min(34, mh * 0.56, Math.max(17, rs * 0.072)));
     t.style.maxWidth = maxW + 'px'; t.style.whiteSpace = 'nowrap'; t.style.fontSize = f + 'px';
     if (t.scrollWidth > maxW) { f = Math.max(15, Math.floor(f * maxW / t.scrollWidth)); t.style.fontSize = f + 'px'; }
     if (t.scrollWidth > maxW) t.style.whiteSpace = 'normal'; // a long clue: two lines
@@ -732,6 +742,7 @@
       if (R.found.has(i)) { msg(`${w}: Key word already found`, 'dup', 1800); snd('draw'); flashRow(i); return; }
       fill(i); return;
     }
+    if (isWord(w) && R.noBonus) { msg(`${w}: not a Key word`, '', 1600); return; } // v12a: bonus words are off
     if (isWord(w)) {
       if (R.bonus.includes(w)) { msg(`${w}: bonus word already found`, 'dup', 1800); snd('draw'); return; }
       R.bonus.push(w); R.bonusCoins++; st.bonus++; saveSt();
@@ -752,6 +763,7 @@
   }
   function flashRow(i) { const el = document.querySelector(`#krSlots .kr-word[data-i="${i}"]`); if (el) { el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); } }
   function paintTag(bump) {
+    $('#krTag').hidden = !!(R && R.noBonus);
     $('#krTagN').textContent = R ? R.bonus.length : 0;
     if (bump && !reduceMotion()) {
       const t = $('#krTag'); t.classList.remove('bump'); void t.offsetWidth; t.classList.add('bump');
@@ -761,7 +773,7 @@
   $('#krTag').addEventListener('click', () => {
     if (!R || R.paused) return;
     openModal(`<h2 class="mk-title">★ Bonus words</h2><p class="help-note">Real words spelled from this Ring that are not Key words. Each new one pays 🪙1.</p>
-      <div class="kr-chips">${R.bonus.length ? R.bonus.map(w => `<span class="bon">${w}</span>`).join('') : '<span>None yet. Keep spelling!</span>'}</div>
+      <div class="kr-chips">${R.bonus.length ? [...R.bonus].sort().map(w => `<span class="bon">${w}</span>`).join('') : '<span>None yet. Keep spelling!</span>'}</div>
       <p class="help-note">This Ring: ${R.bonus.length} found · 🪙+${R.bonusCoins}. All Rings: ${st.bonus}.</p>
       <div class="row"><button class="btn primary" data-a="ok">Close</button></div>`);
     $('#sheet').onclick = e => { if (e.target.closest('[data-a]')) closeModal(); };
@@ -891,7 +903,7 @@
     $('#krMain').classList.toggle('paused', p);
     $('#krPz').hidden = !p;
     const b = $('#krPause');
-    b.innerHTML = p ? '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l13-7.5z" fill="currentColor"/></svg>' : '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5.5" y="4" width="4.6" height="16" rx="1.2" fill="currentColor"/><rect x="13.9" y="4" width="4.6" height="16" rx="1.2" fill="currentColor"/></svg>'; // v11c (CD-97: 2.9.1)
+    b.textContent = p ? '▶️' : '⏸️'; // v12a (CD-111 add. 1.3.2): app.js draws them as the blue pause / play square
     b.title = p ? 'Resume' : 'Pause: the clock stops and the letters are hidden';
     b.setAttribute('aria-label', b.title);
     b.disabled = !!(R && R.over);
@@ -900,14 +912,18 @@
   $('#krClock').addEventListener('click', () => { if (R && !R.over) setPause(!R.paused); });
   $('#krPz').addEventListener('click', () => setPause(false));
   // v11c (JM CD-97: 2.8.1): a slider switch beside the layout pill: Key word colors by word or by letter, during play
+  // v12a (CD-113: 3.2a): one small button cycles the Key word colors: Word -> Letter -> No colors
+  const COL_NAMES = { word: 'Word', letter: 'Letter', none: 'No colors' };
   function paintColP() {
-    const on = ks.colors === 'letter', b = $('#krColP');
-    b.setAttribute('aria-checked', on ? 'true' : 'false');
-    b.title = `Key word colors: by ${on ? 'letter' : 'word'} (tap to switch)`;
+    const b = $('#krColP'), v = COL_NAMES[ks.colors] ? ks.colors : 'word';
+    $('#krColT').textContent = COL_NAMES[v];
+    b.dataset.v = v;
+    b.title = `Key word colors: ${COL_NAMES[v]} (tap for ${COL_NAMES[{ word: 'letter', letter: 'none', none: 'word' }[v]]})`;
+    b.setAttribute('aria-label', b.title);
   }
   $('#krColP').addEventListener('click', () => {
-    ks.colors = ks.colors === 'letter' ? 'word' : 'letter'; saveKs(); paintColP(); renderSlots();
-    msg(`Key word colors: by ${ks.colors}`, '', 1400);
+    ks.colors = { word: 'letter', letter: 'none', none: 'word' }[ks.colors] || 'letter'; saveKs(); paintColP(); renderSlots();
+    msg(`Key word colors: ${COL_NAMES[ks.colors]}`, '', 1400);
   });
   // the layout pill (tablets and computers): Auto → Stacked → Side by side (CD-95: 6.2.1)
   $('#krLayP').addEventListener('click', () => {
@@ -956,14 +972,14 @@
     // the letters the Player filled (Key Drop letters don't count)
     const mine = R.words.reduce((a, w, i) => a + (R.found.has(i) ? w.length - R.drop[i].size : 0), 0);
     const timePaid = !cleared && how === 'time' && R.timePay; // CD-95: 2.1 (the Setup switch)
-    const due = cleared || timePaid ? Math.round(R.v * mine) : 0;
+    const due = cleared || timePaid ? Math.round(RING_PAY * mine / R.L) : 0; // v12a (CD-113: 1.1.1): a Ring pays 10 (its costs stay on the 100 scale)
     const pay = Math.max(0, due - R.paid);
     if (pay && UI.coins) UI.coins.add(pay, `${NM.ring}: ${cleared ? 'Ring cleared' : "time's up, your letters"}`);
     R.paid += pay;
     // v11c (JM CD-97 add. 3): a timed Ring cleared before its clock ran out pays 1 coin per second left on the ORIGINAL clock
     // (seconds bought with ⏱ +30s never pay); untimed Rings pay no speed coins
     if (newlyCleared && R.timer0) {
-      const speed = Math.min(Math.round(20 * R.timer0 / 60), Math.max(0, Math.floor(R.timer0 - R.el / 1000))); // v11f (CD-110: 2.1b): capped at 20 per minute on the clock
+      const speed = Math.min(Math.round(SPEED_PER_MIN * R.timer0 / 60), Math.max(0, Math.floor(R.timer0 - R.el / 1000))); // v12a (CD-111: 1.4.1): capped at 10 per minute on the clock
       if (speed) { R.speedCoins += speed; if (UI.coins) UI.coins.add(speed, `${NM.ring}: speed (${speed} s left)`); }
     }
     if (first) { R.streak0 = st.streak; st.played++; }
@@ -979,19 +995,21 @@
     // CD-90: 4.2.1; CD-95: 7.1a: beside the heading, the time left (timed Rings) or the time taken (untimed)
     const tShow = R.timer0 || R.ext ? `${fmt(Math.max(0, R.timer - sec))}<small> left</small>` : fmt(sec);
     // CD-90: 4.2.2–4.2.3: Key words, Bonus words and Missed words, each in its own box, its count first
-    const grp = (c, n, name, chips, note) => `<div class="kr-grp ${c}"><div class="kr-gh"><b>${n}</b> ${name}${n === 1 ? '' : 's'}</div>
+    const grp = (c, n, name, chips, note) => `<div class="kr-grp ${c}"><div class="kr-gh"><b>${n}</b> ${name}${n === 1 ? '' : 's'}<span class="kr-gnote">[ Note: darkened words = HINT used; numbers = DROPS used ]</span></div>
       <div class="kr-chips">${chips || '<span class="none">None</span>'}</div>${note ? `<p class="kr-gn">${note}</p>` : ''}</div>`;
-    const keyW = R.words.map((w, i) => i).filter(i => R.found.has(i));
-    const missW = R.words.map((w, i) => i).filter(i => !R.found.has(i));
-    const groups = grp('kr-kw', keyW.length, 'Key word', keyW.map(i => `<span class="${R.byDrop.has(i) ? 'drp' : ''}">${R.words[i]}</span>`).join(''), R.byDrop.size ? 'Light blue = filled by Key Drop' : '')
-      + grp('kr-bw', R.bonus.length, 'Bonus word', R.bonus.map(w => `<span>${w}</span>`).join(''))
-      + (missW.length ? grp('kr-mw', missW.length, 'Missed word', missW.map(i => `<span>${R.words[i]}</span>`).join('')) : '');
+    const abc = (a, b) => R.words[a].localeCompare(R.words[b]);
+    const keyW = R.words.map((w, i) => i).filter(i => R.found.has(i)).sort(abc);
+    const missW = R.words.map((w, i) => i).filter(i => !R.found.has(i)).sort(abc);
+    const chip = i => `<span class="${R.hinted.has(i) ? 'hd' : ''}">${R.words[i]}${R.drop[i].size ? ` <i class="dn">${R.drop[i].size}</i>` : ''}</span>`;
+    const groups = grp('kr-kw', keyW.length, 'Key word', keyW.map(chip).join(''))
+      + (R.noBonus ? '' : grp('kr-bw', R.bonus.length, 'Bonus word', [...R.bonus].sort().map(w => `<span>${w}</span>`).join('')))
+      + (missW.length ? grp('kr-mw', missW.length, 'Missed word', missW.map(chip).join('')) : '');
     const row = (l, v) => `<tr><td>${l}</td><td class="${v < 0 ? 'neg' : 'pos'}">${v < 0 ? '−' + UI.fmtN(-v) : '+' + UI.fmtN(v)}</td></tr>`;
     const per = Math.round(R.v * 100) / 100;
     const coinTbl = UI.coinHead() + `<table class="score-table coin-tbl kr-coins">`
-      + (R.paid ? row(cleared ? `🔑 Ring cleared: ${mine} of ${R.L} letters yours, at ${COIN}${per} each` : `⏱ Time's up: ${mine} of ${R.L} letters yours, at ${COIN}${per} each`, R.paid) : '')
-      + (R.speedCoins ? row(`⏱ Speed: 1 per second left (up to ${Math.round(20 * R.timer0 / 60)})`, R.speedCoins) : '')
-      + row(`★ Bonus words (${R.bonus.length})`, R.bonusCoins)
+      + (R.paid ? row(`🔑 ${mine} of ${R.L} Key Word letters played`, R.paid) : '')
+      + (R.speedCoins ? row(`⏱ Speed: 1 coin per unused second (limit: ${Math.round(SPEED_PER_MIN * R.timer0 / 60)})`, R.speedCoins) : '')
+      + (R.noBonus ? '' : row(`★ Bonus words: ${R.bonus.length} (1 coin / each)`, R.bonusCoins))
       + (R.hints ? row(`💡 Hint × ${R.hints}`, -R.hintCoins) : '')
       + (R.drops ? row(`🔑 Key Drop × ${R.drops}`, -R.dropCoins) : '')
       + (R.ext ? row(`⏱ +30s × ${R.ext}`, -R.timeCoins) : '')
@@ -1027,9 +1045,9 @@
   function timeUp() { clearTrace(); setFlash(0); endRing('time'); }
   function openResult() {
     if (!R || !R.resHtml) return;
-    openModal(`${R.resHtml}<div class="row res-bar"><button class="btn" data-a="setup">⚙ Setup</button><button class="btn" data-a="menu">☰ Lobby</button>`
+    openModal(`${R.resHtml}<div class="row res-bar kr-resbar"><button class="btn" data-a="setup">⚙ Setup</button><button class="btn" data-a="menu">☰ Lobby</button>`
       + `<button class="btn coinbtn kr-more" data-a="more" title="30 seconds more on this Ring (🪙${TIME_COST})"><b>⏱</b> +30s 🪙${TIME_COST}</button>`
-      + `<button class="btn primary" data-a="next">▶ Next Ring</button></div>`, 'res', { close: () => { if (playOn()) msg('Ring over: 📊 Results reopens the result', '', 5000); } });
+      + `<button class="btn primary" data-a="next">🆕 New Game</button></div>`, 'res', { close: () => { if (playOn()) msg('Ring over: 📊 Results reopens the result', '', 5000); } });
     $('#sheet').onclick = e => {
       const b = e.target.closest('[data-a]'); if (!b) return;
       if (b.dataset.a === 'more') {
@@ -1050,7 +1068,7 @@
     const bar = $('#krOver'), over = !!(R && R.over && R.resWin);
     $('#krMain').classList.toggle('is-over', over);
     bar.hidden = !over;
-    bar.innerHTML = over ? `${UI.winLine(R.resWin)}<span class="ob-btns"><button class="btn" type="button" data-ob="res">📊 Results</button><button class="btn" type="button" data-ob="menu">☰ Lobby</button><button class="btn primary" type="button" data-ob="next">▶ Next Ring</button></span>` : '';
+    bar.innerHTML = over ? `${UI.winLine(R.resWin)}<span class="ob-btns"><button class="btn" type="button" data-ob="res">📊 Results</button><button class="btn" type="button" data-ob="menu">☰ Lobby</button><button class="btn primary" type="button" data-ob="next">🆕 New Game</button></span>` : '';
     if (over) UI.fitOver(bar);
   }
   $('#krOver').addEventListener('click', e => {
@@ -1090,19 +1108,19 @@
         <li>In the last 10 seconds of a timed Ring, the Ring flashes every second: <b>yellow</b> from 10 to 6, <b>red</b> from 5 to 1, with a tick each second.</li>
         <li>The coin buttons sit in the Ring's corners, shaped to follow it. They take <b>two taps</b>: the first darkens the button and shows its price, the second buys. <b>Ring Button Colors</b> (⚙ Setup › More options) picks their look: Steel (the default), Sapphire or Navy &amp; gold.</li>`)}
       ${sec('Coins', `
-        <li>Each Ring is worth <b>100 coins</b>, shared over its letter squares: one letter is worth 100 ÷ the Ring's letters (with 50 letters, 🪙2 each).</li>
+        <li>Help is priced by the Ring's size: one letter's worth is 100 ÷ the Ring's letters (with 50 letters, 🪙2).</li>
         <li><b>💡 Hint</b> costs one letter's worth for each letter in its slot (a 5-letter slot at 🪙2 a letter = 🪙10). <b>🔑 Key Drop</b> costs one letter's worth. <b>⏱ +30s</b> costs 🪙${TIME_COST}.</li>
-        <li><b>Ring cleared:</b> one letter's worth for every letter you filled yourself, so a Ring cleared with no Key Drop pays 🪙100. Hints don't lower it (they cost coins already).</li>
-        <li><b>Speed:</b> a timed Ring cleared before the clock runs out pays <b>🪙1 for every second left</b> on its own clock, up to <b>🪙20 per minute</b> on that clock (1 min: 20; 2 min: 40; 3 min: 60; 5 min: 100). Seconds bought with ⏱ +30s don't pay; untimed Rings pay no speed coins.</li>
+        <li><b>Ring cleared:</b> up to <b>🪙10</b>, shared over the Key Word letters you played yourself (Key Drop letters don't pay). Hints don't lower it (they cost coins already).</li>
+        <li><b>Speed:</b> a timed Ring cleared before the clock runs out pays <b>🪙1 for every second left</b> on its own clock, up to <b>🪙10 per minute</b> on that clock (1 min: 10; 2 min: 20; 3 min: 30; 5 min: 50). Seconds bought with ⏱ +30s don't pay; untimed Rings pay no speed coins.</li>
         <li><b>Bonus words:</b> 🪙1 each. When time runs out, you keep your bonus coins; the Ring itself pays nothing, unless <b>Time's up pays for your letters</b> is on in Setup (then one letter's worth for each letter you filled).</li>
         <li>The result window shows your balance beside <b>Coins</b>, and the Ring's total at the bottom. Coins are shared by every ${NM.suite} game; tap your balance for the details.</li>`)}
       ${sec('Setup', `
         <li><b>Letters on the Ring</b>: 3 to 8. More letters give more and longer Key words.</li>
         <li><b>Challenge Level</b> (1–10) picks the Key words: everyday words at 1–3, rarer ones as it rises. From level 6 the clues turn figurative. Bonus words can be any real word at every level.</li>
-        <li><b>Key Words Quantity</b>: how many words the Key grid holds: <b>Few</b>, <b>Some</b>, <b>Many</b> or <b>Most</b> (the counts depend on the letters: with 7 letters, Few 6–8, Some 9–11, Many 12–14, Most 15–18), or <b>Auto</b>, which follows the Challenge Level (1–3 Few, 4–6 Some, 7–8 Many, 9–10 Most). <b>Bonus Words Quantity</b>: how many other real words the Ring spells: Fewest, Some, Many or - Any -.</li>
+        <li><b>Key Words Quantity</b>: how many words the Key grid holds: <b>Few</b>, <b>Some</b>, <b>Many</b> or <b>Most</b> (the counts depend on the letters: with 7 letters, Few 6–8, Some 9–11, Many 12–14, Most 15–18), or <b>Auto</b>, which follows the Challenge Level (1–3 Few, 4–6 Some, 7–8 Many, 9–10 Most). <b>Bonus Words Quantity</b>: how many other real words the Ring spells: None (bonus words switched off: other words don't count, and the BONUS piece hides), Fewest, Some, Many or - Any -.</li>
         <li>The Challenge Level also sets how long the Key words run: at levels 1–3 only the Ring's own word uses every letter, at 4–7 at most two words do, and at 8–10 three or more do when the letters allow. Higher levels also bring rarer words.</li>
         <li><b>Timer</b>: Untimed (the clock counts up), or 1, 2, 3 or 5 minutes per Ring (it counts down, and turns red in the last 10 seconds). <b>Time's up pays for your letters</b>: Off (as standard) or On.</li>
-        <li><b>Key word colors</b>: <b>By word</b> (each word one color) or <b>By letter</b> (every tile its own color). No two neighbors match.</li>
+        <li><b>Key word colors</b>: <b>By word</b> (each word one color), <b>By letter</b> (every tile its own color) or <b>No colors</b>. No two neighbors match. The small button in the Key grid's top-right corner cycles them during play.</li>
         <li><b>Layout</b>: <b>Auto</b> picks whichever gives the bigger Ring, <b>Stacked</b> puts the Key grid above the Ring, <b>Side by side</b> puts them next to each other (tablets and computers). On those screens the layout pill beside the clock switches it during play, and the <b>Word / Letter</b> switch in the Key grid's top-right corner (every screen) changes the Key word colors.</li>
         <li>Time's up pays, Key word colors and Layout sit under <b>▸ More options</b>.</li>
         <li>Every Ring is new: the app deals a fresh set of letters each time and avoids the Rings you played recently.</li>`)}

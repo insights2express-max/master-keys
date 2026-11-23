@@ -8,7 +8,7 @@
   // ---------- Letter values (rarer letters are worth more) ----------
   const VAL = { A: 1, B: 3, C: 3, D: 2, E: 1, F: 4, G: 2, H: 4, I: 1, J: 8, K: 5, L: 1, M: 3, N: 1, O: 1, P: 3, Q: 10, R: 1, S: 1, T: 1, U: 1, V: 4, W: 4, X: 8, Y: 4, Z: 10 };
   const SIZES = { S: [5, 6], M: [6, 7], L: [7, 11] }; // [columns, rows] of the playable area
-  const RULES = { wrongPenalty: 2, hintCost: 3, fullHandBonus: 10, fullHandPerTile: 2, perLetterWordBonus: 2, plusCell: 5, plus2Cell: 2, passLimit: 3, timeCost: 5, timeAdd: 30000, checkBase: 5, checkPerWrong: 5 };
+  const RULES = { wrongPenalty: 2, hintCost: 6, fullHandBonus: 10, fullHandPerTile: 2, perLetterWordBonus: 2, plusCell: 5, plus2Cell: 2, passLimit: 3, timeCost: 10, timeAdd: 30000, checkBase: 10, checkPerWrong: 10 }; // v12a (JM CD-113: 1.1a): coin costs doubled (Hint 6, +30s 10, Check 10 + 10 per wrong tile)
 
   // ---------- Scoring modes (JM, CD-2: 2.1–2.5) ----------
   // tiles: what a placed tile scores · word: what finishing a word scores
