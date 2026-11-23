@@ -11,7 +11,7 @@
    - Scoring (CD-109: 4.1–4.3, both as a Setup choice): letter points (from our Lexicon's letter counts, on each cube) + a length
      bonus, or word length only. Qu is one cube, two letters, Q's 10 points (5.2).
    - Cubes (CD-109: 5.1–5.3): our own sets (keycubes-words.js, tools/build-keycubes-words.ps1); thin grids are re-rolled quietly.
-   - Bot level 1–10, default 3 (CD-109: 6.1): the Bot knows words up to a familiarity level (Lexicon level, else SCOWL's
+   - Challenge Level 1–10, default 3 (CD-109: 6.1): the Bot knows words up to a familiarity level (Lexicon level, else SCOWL's
      everyday-word tiers, else rare) and finds a share of them, spread over the round.
    - 💡 Hint (CD-109: 7.1–7.2, 7.1.1): 🪙1 per letter of the hinted word, at most 3 per round in a duel: the clue and length of a
      Lexicon word you have not found, and its first cube is striped (a signal, not a solve, CD-85). 🔄 Turn is free.
@@ -56,7 +56,7 @@
   const fmt = s => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
   const plural = (n, w) => `${UI.fmtN(n)} ${w}${n === 1 ? '' : 's'}`;
   const timerOf = () => ks.mode === 'solo' ? ks.sTimer : ks.timer;
-  const lastLine = () => `${ks.mode === 'solo' ? 'Solo' : 'Duel · Bot level ' + ks.lv} · ${ks.n}×${ks.n} · ${timerName(timerOf())}${ks.mode === 'duel' ? ' · ' + plural(ks.rounds, 'round') : ''}`;
+  const lastLine = () => `${ks.mode === 'solo' ? 'Solo' : 'Duel · Challenge Level ' + ks.lv} · ${ks.n}×${ks.n} · ${timerName(timerOf())}${ks.mode === 'duel' ? ' · ' + plural(ks.rounds, 'round') : ''}`;
 
   // ---------- words: ENABLE (3 letters in keyrings.js, 4–8 in lockwords.js, 9–16 in keycubes-words.js) ----------
   const BLOCK = new Set(String(K.block || '').split(' ').filter(Boolean));
@@ -263,7 +263,7 @@
     pv.innerHTML = g.map(c => `<span>${c === 'QU' ? 'Qu' : c}</span>`).join('');
     const caps = ['everyday words only', 'everyday words only', 'common words', 'common words', 'a wider vocabulary', 'a wider vocabulary', 'harder words', 'harder words', 'almost any word', 'any word'];
     $('#kcDesc').textContent = duel
-      ? `Bot level ${ks.lv}: it knows ${caps[ks.lv - 1]} and finds about ${Math.round((0.22 + 0.06 * ks.lv) * 100)}% of them in a round. A word you both find scores for nobody.`
+      ? `Challenge Level ${ks.lv}: the Bot knows ${caps[ks.lv - 1]} and finds about ${Math.round((0.22 + 0.06 * ks.lv) * 100)}% of them in a round. A word you both find scores for nobody.`
       : `Solo: no Bot. Hints ${ks.sHint === 'free' ? 'are free' : 'cost 🪙1 per letter'}, ${ks.sCap === '3' ? '3 per round' : 'no limit'}. Beat your best score for each grid size${ks.sHint === 'free' ? '' : `: a new best pays 🪙${SOLO_BEST}`}.`;
     $('#kcOptsSum').textContent = `Shortest word: ${ks.min === 'auto' ? 'Auto' : ks.min} · ${duel ? plural(ks.rounds, 'round') + ' · ' : ''}${ks.sc === 'lp' ? 'Letters + length' : 'Length only'} · Bonus cubes ${ks.bonus === 'off' ? 'off' : 'on'} · Cubes: ${(CUBE_LOOKS.find(x => x[0] === ks.cs) || CUBE_LOOKS[0])[1]} · Buttons: ${{ a: 'Sapphire', b: 'Steel', c: 'Navy & gold' }[ks.bs] || 'Steel'}`;
     const unf = unfinished();
@@ -664,7 +664,7 @@
     const entry = {
       g: 'cubes', win: duel ? (M.done ? M.me > M.bot : M.me >= M.bot) : R.newBest,
       title: `${NM.cubes} · ${duel ? (M.done ? (M.me > M.bot ? 'Match won' : M.me === M.bot ? 'Match drawn' : 'Match lost') : `Round ${M.no} of ${M.rounds}`) : 'Solo'} (${M.n}×${M.n})`,
-      sub: [duel ? `Bot level ${M.lv}` : 'Solo', `${M.n}×${M.n}`, timerName(M.timer)].concat(duel ? [plural(M.rounds, 'round')] : []).join(' · '),
+      sub: [duel ? `Challenge Level ${M.lv}` : 'Solo', `${M.n}×${M.n}`, timerName(M.timer)].concat(duel ? [plural(M.rounds, 'round')] : []).join(' · '),
       score: duel ? `${UI.fmtN(M.me)}–${UI.fmtN(M.bot)}` : `${UI.fmtN(R.meTot)} pts`, coins: M.coins, html: body
     };
     if (!M.histT || !UI.history.put) M.histT = UI.history.add(entry) || 0;
@@ -797,7 +797,7 @@
       ${sec('Duel and Solo', `
         <li><b>⚔ Duel</b>: the Bot hunts the same grid at the same time. Its word count shows beside the clock; its words stay hidden until the end. A word you <b>both</b> find scores for <b>nobody</b>.</li>
         <li>A match is <b>1, 3 or 5 rounds</b>, each on a fresh grid. The higher <b>total</b> over the rounds wins the match. The next round starts when you tap <b>▶ Next round</b>.</li>
-        <li><b>Bot level</b> (1–10, default 3): at low levels the Bot knows only everyday words; at 9–10 it knows rare ones too, and it finds more of the words it knows as the level rises.</li>
+        <li><b>Challenge Level</b> (1–10, default 3): at low levels the Bot knows only everyday words; at 9–10 it knows rare ones too, and it finds more of the words it knows as the level rises.</li>
         <li><b>🎯 Solo</b>: no Bot. Untimed (the clock counts up) or timed; <b>🏁 Done</b> ends the round. Beat your best score for each grid size.</li>`)}
       ${sec('Scoring', `
         <li><b>Letter points + length bonus</b> (the standard): each cube shows its letter's points (common letters 1, rare ones up to 10; Qu 10), and longer words add a bonus: 4 letters +2, 5 +4, 6 +7, 7 +11, 8 +16, then +5 for each letter more.</li>
@@ -820,7 +820,7 @@
         <li>The score card shows the <b>game totals</b> big, then each round with the running total. Below it: your words out of every word in the grid, the shared words and your coins.</li>
         <li>Tabs: <b>Your words</b>, <b>Bot's words</b> and <b>All words</b> (every word in the grid, found or missed). Words <b>only you</b> found are <b style="color:#12a03c">green</b>; <b>shared</b> words are <b style="color:#e01e1e">red</b> and score 0. Tap a word to see its path on a small grid (blue = the first cube), how its points add up (with any bonus), and its <b>📖 clue</b> when it's a Lexicon word.</li>`)}
       ${sec('Setup', `
-        <li><b>Play</b>: Duel or Solo. <b>Grid</b>: 4×4 or 5×5. <b>Timer</b>: 30 s Blitz, 1, 2 (standard), 3, 4 or 5 min; Untimed in Solo. <b>Bot level</b> 1–10.</li>
+        <li><b>Play</b>: Duel or Solo. <b>Grid</b>: 4×4 or 5×5. <b>Timer</b>: 30 s Blitz, 1, 2 (standard), 3, 4 or 5 min; Untimed in Solo. <b>Challenge Level</b> 1–10.</li>
         <li>Under <b>▸ More options</b>: Shortest word, Rounds per match, Scoring, <b>Bonus cubes</b> (On / Off), <b>Cube Colors</b> (Cream, Inked, Inked Blue, Steel, Navy &amp; gold), <b>Button Colors</b> (Steel, Sapphire, Navy &amp; gold) and, for Solo, Hints (free or paid, 3 per round or no limit).</li>
         <li>Every grid is rolled fresh from ${NM.cubes}' own cubes; a grid with too few words is rolled again.</li>`)}
       ${sec('Your Stats', `

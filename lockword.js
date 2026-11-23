@@ -454,7 +454,7 @@
     if (!R || R.over || R.gate || on === R.paused) return;
     R.paused = on;
     $('#vtPlay').classList.toggle('paused', on);
-    if (on) showOv('pause', '<div class="vt-ov-big">PLAY PAUSED</div><div class="vt-ov-s">Tap anywhere to resume</div>');
+    if (on) showOv('pause', '<span class="mk-pzi">⏸️</span><div class="vt-ov-big">Paused</div><div class="vt-ov-s">Tap to resume play</div>');
     else hideOv();
     renderClock();
   }

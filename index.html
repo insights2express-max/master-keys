@@ -9,7 +9,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Master Keys">
   <meta name="description" content="Master Keys: CrossKeys, a head-to-head crossword tile game, LockWord, a word-guessing game, and KeyRing, a word builder. Plays offline.">
-  <title>Master Keys · v12c</title>
+  <title>Master Keys · v12b</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="icon" href="icons/icon-192.png" type="image/png" sizes="192x192">
@@ -47,7 +47,7 @@
       <header class="brand">
         <img class="logo" src="icons/icon.svg" alt="" width="64" height="64">
         <div class="brand-txt">
-          <h1><span data-mk="suite">Master Keys</span> <span class="vpill" id="verPill">v12c</span></h1>
+          <h1><span data-mk="suite">Master Keys</span> <span class="vpill" id="verPill">v12b</span></h1>
           <p class="tag">Word games. Play anywhere, even offline.</p>
         </div>
       </header>
@@ -390,7 +390,7 @@
             <button class="btn coinbtn kr-cp kr-drop" id="krDrop" type="button" aria-label="Key Drop: drop one letter into a slot"><svg class="kr-cps" aria-hidden="true"></svg><span class="kr-cpc br"><span class="cost">🪙<b id="krDropCp"></b></span><span class="lab"><svg class="ki" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M7.4 6.3a5.7 5.7 0 1 1-5.3 7.8 5.7 5.7 0 0 1 5.3-7.8zm0 3.3a2.4 2.4 0 1 0 0 4.8 2.4 2.4 0 0 0 0-4.8z"/><path d="M12.4 10.6h10.2v3.4h-1.4v3h-2.6v-3h-1.2v2.2h-2.6V14h-2.4z"/></svg>Drop</span></span></button>
           </div>
         </div>
-        <button class="kr-pz" id="krPz" type="button" hidden><b>⏸️ Paused</b><span>Tap to resume play</span></button>
+        <button class="kr-pz" id="krPz" type="button" hidden><span class="mk-pzi">⏸️</span><b>Paused</b><span>Tap to resume play</span></button>
         <div class="overbar kr-over" id="krOver" hidden></div><!-- v11a (CD-93): the win report, under the Ring once it is over -->
         <p class="kr-tip"><kbd>A–Z</kbd> type · <kbd>Enter</kbd> submit · <kbd>⌫</kbd> back · <kbd>Esc</kbd> clear · <kbd>Space</kbd> shuffle · <kbd>Tab</kbd> next button (<kbd>Enter</kbd> presses it)</p>
       </div>
@@ -421,7 +421,7 @@
       <div class="kc-prev" id="kcPrev" aria-hidden="true"></div>
       <div class="pair">
         <label class="field"><span class="lbl">Timer</span><select id="kcTm"></select></label>
-        <label class="field" id="kcLvF"><span class="lbl">Bot level</span><select id="kcLv"></select></label>      </div>
+        <label class="field" id="kcLvF"><span class="lbl">Challenge Level</span><select id="kcLv"></select></label>      </div>
       <p class="opt-desc" id="kcDesc"></p>
       <button class="btn primary big" id="kcStart" type="button">▶ Start KeyCubes</button>
       <details class="opts" id="kcOpts">
@@ -453,7 +453,7 @@
           <div class="kc-side bot" id="kcBot"><span class="av" id="kcBotAv">🤖</span><span class="nm" id="kcBotNm">Bot</span><span class="sc" id="kcBotSc">0</span><span class="rd" id="kcBotRd"></span><span class="plus" id="kcBotPlus">+1</span></div>
         </div>
         <div class="kc-msg" id="kcMsg" aria-live="polite"></div>
-        <div class="kc-trayw"><div class="kc-tray" id="kcTray"></div><button class="kc-pz" id="kcPz" type="button" hidden>⏸ Paused<span>Tap to resume play</span></button></div>
+        <div class="kc-trayw"><div class="kc-tray" id="kcTray"></div><button class="kc-pz" id="kcPz" type="button" hidden><span class="mk-pzi">⏸️</span>Paused<span>Tap to resume play</span></button></div>
         <div class="kc-btns" id="kcBtns">
           <button class="btn coinbtn" id="kcHint" type="button" title="Hint: the clue for a word you have not found"><span class="ic">💡</span><span class="nm" id="kcHintNm">Hint</span><span class="cp" id="kcHintCp"></span></button>
           <button class="btn coinbtn" id="kcTurn" type="button" title="Rotate the grid a quarter turn (free)"><span class="ic">🔄</span><span class="nm">Rotate</span><span class="cp">free</span></button>
@@ -524,8 +524,8 @@
         <div class="repov" id="repOv" hidden><div class="turnrep you" id="repYouN" hidden></div><div class="turnrep opp" id="repOppN" hidden></div></div>
         <div class="pause-ov" id="pauseOv" hidden>
           <div class="pause-card" role="button" tabindex="0" aria-label="Resume play">
-            <div class="pause-h">PLAY PAUSED</div>
-            <div class="pause-s">Tap here, or press ▶ (or P or Space), to resume</div>
+            <span class="mk-pzi">⏸️</span><div class="pause-h">Paused</div>
+            <div class="pause-s">Tap to resume play</div>
           </div>
         </div>
       </div>

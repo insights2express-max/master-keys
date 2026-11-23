@@ -443,7 +443,7 @@
     main.style.setProperty('--sw', sw + 'px');
     main.style.setProperty('--ts', ts + 'px');
     paintCorners(sw);
-    fitCornerText();    $('#krLine').setAttribute('viewBox', `0 0 ${rs} ${rs}`);
+    fitCornerText();    $('#krLine').setAttribute('viewBox', `0 0 ${Math.max(1, rs)} ${Math.max(1, rs)}`); // v12b: never a negative size while the screen is hidden
     placeTiles();
     renderSlots(); // reading the panel's size makes the browser lay it out first, so no frame wait is needed
   }
@@ -473,7 +473,7 @@
     for (const [sel, fx, fy] of CORNERS) {
       const d = cornerPath(s, cx, cy, rho, rad, fx, fy);
       const svg = document.querySelector(sel + ' .kr-cps');
-      svg.setAttribute('viewBox', `0 0 ${s} ${s}`);
+      svg.setAttribute('viewBox', `0 0 ${Math.max(1, s)} ${Math.max(1, s)}`);
       const depth = Math.max(3, Math.round(s * 0.045)); // v11e (CD-102: 1.1.3): a thick edge under each piece, so it reads as a real button
       svg.innerHTML = `<path class="e" d="${d}" transform="translate(0 ${depth})"/><path class="b" d="${d}"/><path class="g" d="${d}"/><path class="r" d="${d}"/>`;
     }

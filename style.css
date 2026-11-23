@@ -2767,3 +2767,33 @@ html[data-screen="night"] .kc-bn { filter: brightness(.75) saturate(.7); }
   .kc-row.both .p, .kc-row.both .w { color: #ff6b6b; }
   .kc-pill.shared { background: #5a1f1f; color: #ffb3b3; }
 }
+
+/* =====================================================================
+   v12b (JM CD-115, CD-117): one Paused panel in every game; LockWord ENTER X; KeyRing results Drop numerals + note
+   ===================================================================== */
+/* the Paused panel's pause icon: the same size in all four games, twice KeyRing's v12a icon (CD-115: 2.2.1; CD-117: 1.1.1, 1.2) */
+.mk-pzi, .kr-pz span.mk-pzi, .kc-pz span.mk-pzi { display: flex; justify-content: center; line-height: 0; margin: 0 auto 8px; opacity: 1; font-size: 16px; }
+.mk-pzi .mk-ic, .kr-pz .mk-pzi span.mk-ic, .kc-pz .mk-pzi span.mk-ic { display: inline-flex; opacity: 1; font-size: 16px; margin: 0; }
+.mk-pzi svg.mk-pp, .kr-pz .mk-pzi svg.mk-pp { width: 98px; height: 98px; filter: drop-shadow(0 3px 6px rgba(0, 0, 0, .45)); }
+@media (max-width: 420px) { .mk-pzi svg.mk-pp, .kr-pz .mk-pzi svg.mk-pp { width: 84px; height: 84px; } }
+.kr-pz b { justify-content: center; }
+.pause-card { padding: 22px 40px 24px; }
+.vt-ov .mk-pzi { margin-bottom: 6px; }
+/* LockWord: an invalid word puts two medium bright-red lines across ENTER, corner to corner; "ENTER" stays readable (CD-115: 3.2.1; CD-117: 2.2.1) */
+.vt-k.ent.ent-bad::after { content: ''; display: block; border-radius: inherit;
+  background:
+    linear-gradient(to top right, transparent calc(50% - 1.6px), #ff1f1f calc(50% - 1.6px), #ff1f1f calc(50% + 1.6px), transparent calc(50% + 1.6px)),
+    linear-gradient(to bottom right, transparent calc(50% - 1.6px), #ff1f1f calc(50% - 1.6px), #ff1f1f calc(50% + 1.6px), transparent calc(50% + 1.6px)); }
+/* KeyRing results: Key Drop numerals bold; bright orange with a glow on dark (hinted) chips (CD-115: 4.5.1); the note semibold (CD-117 add. 1.1.1) */
+.kr-grp .kr-chips span .dn { font-weight: 800; color: #f76707; }
+.kr-grp .kr-chips span.hd .dn { font-weight: 900; color: #ffa53a; text-shadow: 0 0 5px rgba(255, 150, 40, .6); }
+.kr-gnote { font-weight: 600; }/* the same title and line sizes on every game's Paused panel (KeyRing's sizes) */
+.pause-h, .vt-ov .mk-pzi ~ .vt-ov-big { font-size: 52px; letter-spacing: 0; }
+.pause-s, .vt-ov .mk-pzi ~ .vt-ov-s { font-size: 24px; font-weight: 700; opacity: .85; margin-top: 10px; }
+.kc-pz { font-size: 52px; padding: 26px 44px; }
+.kc-pz span:not(.mk-pzi):not(.mk-ic) { font-size: 24px; margin-top: 10px; }
+@media (max-width: 420px) {
+  .pause-h, .vt-ov .mk-pzi ~ .vt-ov-big, .kc-pz { font-size: 44px; }
+  .pause-s, .vt-ov .mk-pzi ~ .vt-ov-s, .kc-pz span:not(.mk-pzi):not(.mk-ic) { font-size: 20px; }
+  .kc-pz { padding: 20px 30px; }
+}.kc-pz span:not(.mk-pzi):not(.mk-ic) { white-space: nowrap; }
