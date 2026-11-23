@@ -257,6 +257,7 @@
     R.botSet = {}; R.bot.forEach(b => { R.botSet[b.w] = 1; });
   }
   const myPts = () => R.mine.reduce((a, m) => a + m.s.t, 0);
+  const hd = w => !!(R && R.hinted && R.hinted[w]); // v12h (CD-126: 2.1.1): a Hint pointed to this word
   // v12c: free "Left" line (CD-116: 1.2): your unfound words by length; the longest lengths share one group
   function leftLine() {
     const c = {}, top = M.min + 3;
@@ -414,7 +415,7 @@
   function paintChips(newW) {
     $('#kcFHead').textContent = `Your words: ${R.mine.length} of ${UI.fmtN(R.all)}`;
     $('#kcFPts').textContent = UI.fmtN(myPts()) + ' pts';
-    $('#kcChips').innerHTML = R.mine.length ? R.mine.slice().reverse().map(m => `<span class="kc-chip${m.w === newW ? ' new' : ''}">${m.w}<small>${m.s.t}</small></span>`).join('')
+    $('#kcChips').innerHTML = R.mine.length ? R.mine.slice().reverse().map(m => `<span class="kc-chip${m.w === newW ? ' new' : ''}${hd(m.w) ? ' hd' : ''}">${hd(m.w) ? '<i class="hm" title="Found with a Hint">💡</i>' : ''}${m.w}<small>${m.s.t}</small></span>`).join('')
       : '<span class="kc-empty">Words you find go here. Join touching cubes: across, down or diagonally, each cube once.</span>';
     $('#kcLeft').innerHTML = leftLine();
   }
@@ -599,7 +600,7 @@
   });
   function giveHint(w, price) {
     R.hints++; R.hintCoins += price; M.coins -= price;
-    R.hint = w; R.hintK = 1;
+    R.hint = w; R.hintK = 1; (R.hinted || (R.hinted = {}))[w] = 1; // v12h (CD-126: 2.1.1): a 💡 mark on every word a Hint helped
     paintHint(); msg(''); paintHintBtn(); save();
   }
   function giveNext(price) {
@@ -745,7 +746,7 @@
     const body = `<div class="${midMatch() ? 'kc-hist-over' : 'overbar kc-hist-over'}">${winHtml()}</div>
       <table class="score-table kc-hist-t"><tr><th></th><th>You</th>${duel ? `<th>${esc(botFirst())}</th>` : ''}<th>Your words</th></tr>${rows}
       ${duel && M.rounds > 1 ? `<tr class="total"><td>Match</td><td>${UI.fmtN(M.me)}</td><td>${UI.fmtN(M.bot)}</td><td></td></tr>` : ''}</table>
-      <p class="help-note">Last round, your words: ${R.mine.map(m => `<b>${m.w}</b> ${m.s.t}`).join(' · ') || 'none'}</p>`;
+      <p class="help-note">Last round, your words: ${R.mine.map(m => `<b>${hd(m.w) ? '💡' : ''}${m.w}</b> ${m.s.t}`).join(' · ') || 'none'}</p>`;
     const entry = {
       g: 'cubes', win: duel ? (M.done ? M.me > M.bot : M.me >= M.bot) : R.newBest,
       title: `${NM.cubes} · ${duel ? (M.done ? (M.me > M.bot ? 'Match won' : M.me === M.bot ? 'Match drawn' : 'Match lost') : `Round ${M.no} of ${M.rounds}`) : 'Solo'} (${M.n}×${M.n})`,
@@ -816,7 +817,7 @@
     const L = rows();
     if (!resSel || !L.some(r => r.w === resSel)) resSel = L.length ? L[0].w : null;
     const lab = { me: M.mode === 'solo' ? 'Found' : 'You', bot: esc(botFirst()), both: 'Both', miss: 'Missed' };
-    $('#kcList').innerHTML = L.length ? L.map(r => `<button type="button" class="kc-row ${r.tag}${r.w === resSel ? ' sel' : ''}" data-w="${r.w}"><span class="p">${r.s.t}</span><span class="w">${r.w}</span><span class="tg ${r.tag}">${lab[r.tag]}</span><span class="bk">${clueOf(r.w) ? '📖' : ''}</span></button>`).join('')
+    $('#kcList').innerHTML = L.length ? L.map(r => `<button type="button" class="kc-row ${r.tag}${r.w === resSel ? ' sel' : ''}" data-w="${r.w}"><span class="p">${r.s.t}</span><span class="w">${hd(r.w) ? '<i class="hm" title="A Hint pointed to this word">💡</i>' : ''}${r.w}</span><span class="tg ${r.tag}">${lab[r.tag]}</span><span class="bk">${clueOf(r.w) ? '📖' : ''}</span></button>`).join('')
       : '<p class="kc-empty" style="padding:12px">No words this round.</p>';
     paintDet(L.find(r => r.w === resSel));
   }
@@ -830,7 +831,7 @@
     const cells = order.map(i => { const c = R.cells[i], b = bon[i]; return `<span class="${pos[i] ? 'lit' + (pos[i] === 1 ? ' st' : '') : ''}">${pos[i] ? `<sup>${pos[i]}</sup>` : ''}${c === 'QU' ? 'Qu' : c}${b ? `<em class="kc-bn b${b}">${b}</em>` : ''}</span>`; }).join('');
     const step = ms + 3, xy = i => [5 + (dp[i] % n) * step + ms / 2, 5 + Math.floor(dp[i] / n) * step + ms / 2];
     const both = r.tag === 'both', c = clueOf(r.w);
-    const by = { me: M.mode === 'solo' ? 'You found it.' : 'Only you found it.', bot: `Only ${esc(botNm())} found it.`, both: 'You both found it, so it scores for nobody.', miss: 'Nobody found it.' }[r.tag];
+    const by = { me: M.mode === 'solo' ? 'You found it.' : 'Only you found it.', bot: `Only ${esc(botNm())} found it.`, both: 'You both found it, so it scores for nobody.', miss: 'Nobody found it.' }[r.tag] + (hd(r.w) ? ' 💡 A Hint pointed to this word.' : '');
     const used = r.p.map(i => bon[i]).filter(Boolean), lb = used.filter(b => b.endsWith('L')), wb = used.filter(b => b.endsWith('W'));
     const tb = (M.sc === 'len' ? `<tr><td>Word length (${r.w.length} letters)</td><td>${r.s.lb}</td></tr>` : `<tr><td>Letter points${lb.length ? ` (with ${lb.join(', ')})` : ''}</td><td>${r.s.lp}</td></tr><tr><td>Length bonus (${r.w.length} letters)</td><td>+${r.s.lb}</td></tr>`)
       + (r.s.wm > 1 ? `<tr><td>Word bonus (${wb.join(' × ')})</td><td>×${r.s.wm}</td></tr>` : '');
@@ -899,6 +900,7 @@
       ${sec('The Buttons', `
         <li><b>💡 Hint</b> shows the clue and the length of a word you haven't found, and stripes its first cube: a signal, not a solve. It costs <b>🪙1 per letter</b> of that word (two taps: the first shows the price), at most <b>3 per round</b> in a Duel. In Solo, Hints are free or paid, 3 per round or no limit (Setup).</li>
         <li>While your hinted word is still unfound, the button reads <b>💡 Next</b>: each tap stripes its <b>next cube</b> (numbered 1, 2, 3…) for <b>🪙1</b> (free with free Solo Hints). It never shows the last cube, and it doesn't count toward the Hint limit.</li>
+        <li>A word a Hint pointed to keeps a <b>💡 mark</b>: in your words while you play (with a gold edge) and in the results.</li>
         <li><b>Left</b>, under your words, counts the words you haven't found yet, by length. Free.</li>
         <li><b>🔄 Rotate</b> gives the grid a quarter turn, which helps you see new words. Free.</li>
         <li><b>⏸ Pause</b> (or tap the clock) stops the clock (and the Bot) and hides the cubes. Tap anywhere to resume play.</li>

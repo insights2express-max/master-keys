@@ -2913,3 +2913,6 @@ html[data-screen="night"] .kc-rtab td.rb { color: #3ee06a; }
 /* the Solo "Best 4×4 · pts/sec" label may be long: on a narrow phone it wraps onto a second line rather than being cut off */
 .kc-side.solo .nm { overflow: visible; } .kc-side.solo .nm .t { font-size: 13px; white-space: normal; overflow: visible; text-overflow: clip; line-height: 1.15; text-align: right; }
 @media (min-width: 700px) { .kc-side.solo .nm .t { font-size: 15px; } }
+/* ---------- v12h (CD-126: 2.1.1): a 💡 mark on every word a Hint helped (as KeyRing marks its hinted slots) ---------- */
+.kc-chip .hm, .kc-row .hm { font-style: normal; font-family: var(--emoji); font-size: .9em; margin-right: 3px; letter-spacing: 0; }
+.kc-chip.hd { box-shadow: inset 0 0 0 2px #f5b300; }
