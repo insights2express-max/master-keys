@@ -185,7 +185,36 @@
     const lp = path.reduce((a, i) => { const b = bon[i]; if (b && b.endsWith('L')) lm = true; return a + ptOf(cells[i]) * (b && b.endsWith('L') ? BMUL[b] : 1); }, 0), lb2 = lenBonus(w.length);
     return { lp, lb: lb2, wm, lm, t: (lp + lb2) * wm };
   }
-  const scoreOf = (w, p) => score(w, p || R.words[w], R.cells, M.sc, R.bon);
+  // every way a word (or typed letters) can be joined on this grid, up to 400 (Q types the Qu cube with or without the U)
+  function pathsOf(word) {
+    const N = R.cells.length, all = [];
+    const dfs = (i, k, used, path) => {
+      if (all.length >= 400) return;
+      const c = R.cells[i]; let len = c.length;
+      if (word.substr(k, len) !== c) { if (c === 'QU' && word[k] === 'Q') len = 1; else return; }
+      const k2 = k + len; path.push(i); used[i] = 1;
+      if (k2 === word.length) all.push(path.slice());
+      else for (let j = 0; j < N; j++) if (!used[j] && adjN(i, j, M.n)) dfs(j, k2, used, path);
+      path.pop(); used[i] = 0;
+    };
+    for (let i = 0; i < N; i++) dfs(i, 0, {}, []);
+    return all;
+  }
+  // the highest-scoring of those ways (Bonus cubes make them differ); on a tie, the first found
+  function pickBest(all) {
+    if (!all || !all.length) return null;
+    let best = all[0], bt = -1;
+    if (all.length > 1) for (const p of all) { const t = score(p.map(i => R.cells[i]).join(''), p, R.cells, M.sc, R.bon).t; if (t > bt) { bt = t; best = p; } }
+    return best;
+  }
+  // v12g (CD-125: 2.1): each word's best way, worked out once per round
+  let BP = new Map(), BPR = null;
+  function bestPath(w) {
+    if (BPR !== R) { BP = new Map(); BPR = R; }
+    if (!BP.has(w)) BP.set(w, pickBest(pathsOf(w)) || R.words[w]);
+    return BP.get(w);
+  }
+  const scoreOf = (w, p) => score(w, p || bestPath(w), R.cells, M.sc, R.bon);
 
   // ---------- the match and the round ----------
   let M = null, R = null;
@@ -221,7 +250,10 @@
   function planBot() {
     const L = M.lv, cap = BOT_CAP[L - 1], share = BOT_SHARE[L - 1], T = M.timer || 120;
     const pool = Object.keys(R.words).filter(w => famOf(w) <= cap && Math.random() < share);
-    R.bot = shuffled(pool).map(w => ({ w, t: Math.round((Math.min(4, T * 0.1) + Math.random() * (T * 0.94 - Math.min(4, T * 0.1))) * 10) / 10 })).sort((a, b) => a.t - b.t);
+    // v12g (CD-125: 2.1.1): the higher the level, the more often the Bot spells a word its highest-scoring way
+    // (level 1 never, level 10 always: (L − 1) / 9); otherwise it takes the first way it comes across
+    const pBest = (L - 1) / 9;
+    R.bot = shuffled(pool).map(w => ({ w, p: Math.random() < pBest ? bestPath(w) : R.words[w], t: Math.round((Math.min(4, T * 0.1) + Math.random() * (T * 0.94 - Math.min(4, T * 0.1))) * 10) / 10 })).sort((a, b) => a.t - b.t);
     R.botSet = {}; R.bot.forEach(b => { R.botSet[b.w] = 1; });
   }
   const myPts = () => R.mine.reduce((a, m) => a + m.s.t, 0);
@@ -342,7 +374,7 @@
   function paintHint() {
     tray.querySelectorAll('.kc-cube.hint').forEach(c => { c.classList.remove('hint'); c.removeAttribute('data-hn'); });
     if (!R.hint || R.found[R.hint] || !R.words[R.hint]) return;
-    R.words[R.hint].slice(0, Math.max(1, R.hintK || 1)).forEach((i, k) => { const c = cubeEl(i); if (c) { c.classList.add('hint'); c.dataset.hn = k + 1; } });
+    bestPath(R.hint).slice(0, Math.max(1, R.hintK || 1)).forEach((i, k) => { const c = cubeEl(i); if (c) { c.classList.add('hint'); c.dataset.hn = k + 1; } });
   }
   function paintGame() {
     const solo = M.mode === 'solo';
@@ -465,23 +497,7 @@
   // typing: the app finds a path that spells what you type (Q types the Qu cube with or without the U)
   // v12f (CD-123 add. 1.2): when the letters can be joined more than one way, the app takes the HIGHEST-scoring way
   // (Bonus cubes and Qu make the ways differ); on a tie, the first way found
-  function findPath(word) {
-    const N = R.cells.length, all = [];
-    const dfs = (i, k, used, path) => {
-      if (all.length >= 400) return;
-      const c = R.cells[i]; let len = c.length;
-      if (word.substr(k, len) !== c) { if (c === 'QU' && word[k] === 'Q') len = 1; else return; }
-      const k2 = k + len; path.push(i); used[i] = 1;
-      if (k2 === word.length) all.push(path.slice());
-      else for (let j = 0; j < N; j++) if (!used[j] && adj(i, j)) dfs(j, k2, used, path);
-      path.pop(); used[i] = 0;
-    };
-    for (let i = 0; i < N; i++) dfs(i, 0, {}, []);
-    if (all.length < 2) return all[0] || null;
-    let best = null, bt = -1;
-    for (const p of all) { const t = score(p.map(i => R.cells[i]).join(''), p, R.cells, M.sc, R.bon).t; if (t > bt) { bt = t; best = p; } }
-    return best;
-  }
+  function findPath(word) { return pickBest(pathsOf(word)); }
   function paintTyped() {
     if (!typed) { clearTrace(); msg(''); return; }
     const p = findPath(typed);
@@ -538,7 +554,7 @@
   const hintFree = () => M.mode === 'solo' && M.sHint === 'free';
   function hintHtml() { return R && R.hint && !R.found[R.hint] && !R.over ? `<span class="kc-mt clue">💡 ${R.hint.length} letters: ${esc(clueOf(R.hint))}${(R.hintK || 1) > 1 ? ` <small>(${R.hintK} cubes shown)</small>` : ''}</span>` : ''; }
   // CD-116: 1.1: while a hinted word is unfound, 💡 stripes its next cube (🪙1; never the last cube; not counted in the limit)
-  const nextOn = () => !!(R && R.hint && !R.found[R.hint] && R.words[R.hint] && (R.hintK || 1) < R.words[R.hint].length - 1);
+  const nextOn = () => !!(R && R.hint && !R.found[R.hint] && R.words[R.hint] && (R.hintK || 1) < bestPath(R.hint).length - 1);
   function paintHintBtn() {
     const left = hintCap() - R.hints, b = $('#kcHint'), nx = nextOn();
     $('#kcHintNm').textContent = nx ? 'Next' : 'Hint';
@@ -654,7 +670,7 @@
     const duel = M.mode === 'duel';
     R.botN = R.bot.length;
     R.meTot = R.mine.reduce((a, m) => a + (R.botSet[m.w] ? 0 : m.s.t), 0);
-    R.botTot = duel ? R.bot.reduce((a, b) => a + (R.found[b.w] ? 0 : scoreOf(b.w).t), 0) : 0;
+    R.botTot = duel ? R.bot.reduce((a, b) => a + (R.found[b.w] ? 0 : scoreOf(b.w, b.p || R.words[b.w]).t), 0) : 0;
     R.shared = R.mine.filter(m => R.botSet[m.w]).length;
     M.me += R.meTot; M.bot += R.botTot;
     M.list.push({ me: R.meTot, bot: R.botTot, words: R.mine.length, botWords: R.bot.length, all: R.all });
@@ -786,8 +802,13 @@
     const tag = w => { const m = !!R.found[w], b = !!R.botSet[w]; return m && b ? 'both' : m ? 'me' : b ? 'bot' : 'miss'; };
     let L;
     if (resTab === 'me') L = R.mine.map(m => ({ w: m.w, p: m.p, s: m.s }));
-    else if (resTab === 'bot') L = R.bot.map(b => ({ w: b.w, p: R.words[b.w], s: scoreOf(b.w) }));
-    else L = Object.keys(R.words).map(w => { const m = R.mine.find(x => x.w === w); return m ? { w, p: m.p, s: m.s } : { w, p: R.words[w], s: scoreOf(w) }; });
+    // v12g (CD-125: 2.1): each word shows the way it was actually played (yours, else the Bot's); a missed word shows its best way
+    else if (resTab === 'bot') L = R.bot.map(b => { const p = b.p || R.words[b.w]; return { w: b.w, p, s: scoreOf(b.w, p) }; });
+    else L = Object.keys(R.words).map(w => {
+      const m = R.mine.find(x => x.w === w); if (m) return { w, p: m.p, s: m.s };
+      const b = R.botSet[w] && R.bot.find(x => x.w === w), p = b ? b.p || R.words[w] : bestPath(w);
+      return { w, p, s: scoreOf(w, p) };
+    });
     L.forEach(r => { r.tag = tag(r.w); });
     return L.sort((a, b) => b.s.t - a.s.t || a.w.localeCompare(b.w));
   }
@@ -869,7 +890,7 @@
       ${sec('Duel and Solo', `
         <li><b>⚔ Duel</b>: a Bot rival hunts the same grid at the same time. Each Challenge Level has its own rival (Benny Bear at 1 … Professor Hoot at 10, as in CrossKeys), shown with its level in a red pill. Its word count shows under its score; its words stay hidden until the end. A word you <b>both</b> find scores for <b>nobody</b>.</li>
         <li>A match is <b>1 to 5 rounds</b> (3 is the standard), each on a fresh grid. The higher <b>total</b> over the rounds wins the match. The next round starts when you tap <b>▶ Next round</b> (or press <b>Enter twice</b>).</li>
-        <li><b>Challenge Level</b> (1–10, default 3): at low levels the Bot knows only everyday words; at 9–10 it knows rare ones too, and it finds more of the words it knows as the level rises. Level 3 is the standard; 5–7 are a step up, not a wall.</li>
+        <li><b>Challenge Level</b> (1–10, default 3): at low levels the Bot knows only everyday words; at 9–10 it knows rare ones too, and it finds more of the words it knows as the level rises. The higher the level, the more often it also spells a word its <b>highest-scoring way</b> (through Bonus cubes): never at 1, always at 10. Level 3 is the standard; 5–7 are a step up, not a wall.</li>
         <li><b>🎯 Solo</b>: no Bot. Untimed (the clock counts up) or timed; <b>🏁 Done</b> ends the round. <b>Untimed</b>: beat your best <b>rate</b> in points per second for each grid size (2 decimals; a round counts after <b>1 minute</b> of play and <b>10 words</b>). <b>Timed</b>: beat your best score for each grid size and timer ("Best 4×4 in 2m").</li>`)}
       ${sec('Scoring', `
         <li><b>Letter points + length bonus</b> (the standard): each cube shows its letter's points (common letters 1, rare ones up to 10; Qu 10), and longer words add a bonus: 4 letters +2, 5 +4, 6 +7, 7 +11, 8 +16, then +5 for each letter more.</li>
@@ -891,7 +912,7 @@
         <li>After rounds before the last: "<b>Round 1 of 3 · You lead: 48 – 31</b>". After the last round: the gold "<b>You WIN!</b>" row with the final game total.</li>
         <li>On a computer, press <b>Enter twice</b> for the next round (or a New Game after the last round).</li>
         <li>The score card shows the <b>game totals</b> big, then each round with the running total; the higher score of each round is <b style="color:#12a03c">green</b> (both on a tie). Below it: your words out of every word in the grid, the shared words and your coins.</li>
-        <li>Tabs: <b>Your words</b>, <b>Bot's words</b> and <b>All words</b> (every word in the grid, found or missed). Words <b>only you</b> found are <b style="color:#12a03c">green</b>; <b>shared</b> words are <b style="color:#e01e1e">red</b> and score 0. Tap a word to see its path on a small grid (blue = the first cube), how its points add up (with any bonus), and its <b>📖 clue</b> when it's a Lexicon word.</li>`)}
+        <li>Tabs: <b>Your words</b>, <b>Bot's words</b> and <b>All words</b> (every word in the grid, found or missed). Words <b>only you</b> found are <b style="color:#12a03c">green</b>; <b>shared</b> words are <b style="color:#e01e1e">red</b> and score 0. Tap a word to see its path on a small grid (blue = the first cube; the way it was played, or for a missed word its highest-scoring way), how its points add up (with any bonus), and its <b>📖 clue</b> when it's a Lexicon word.</li>`)}
       ${sec('Setup', `
         <li><b>Play</b>: Duel or Solo. <b>Grid</b>: 4×4 or 5×5. <b>Timer</b>: 30 s Blitz, 1, 2 (standard), 3, 4 or 5 min; Untimed in Solo. <b>Challenge Level</b> 1–10.</li>
         <li>Under <b>▸ More options</b>: Shortest word, Rounds per match, Scoring, <b>Bonus cubes</b> (On / Off), <b>Cube Colors</b> (Cream, Inked, Inked Blue, Steel, Sky, Candy, Navy &amp; gold, Onyx, Ruby), <b>Button Colors</b> (Steel, Sapphire, Navy &amp; gold, Ruby, Emerald, Onyx; the preview shows both) and, for Solo, Hints (free or paid, 3 per round or no limit).</li>
