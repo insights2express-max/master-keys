@@ -33,7 +33,7 @@ FIRE|Hearth dismissal?
 FIRM|Solid company?
 FLY|Pest's zipper?
 FOOT|Inches you stand on?
-GAME|Ready for a match
+GAME|Ready for a match?
 HAIL|Ice storm greeting?
 IRON|Press metal?
 JAM|Traffic you can spread?
@@ -92,7 +92,7 @@ DIAL|Clock face to call
 DRILL|Practice that bores?
 FAST|Quick not to eat?
 FLAT|Airless apartment?
-GRAVE|Serious resting place
+GRAVE|Serious rest spot?
 LIE|Fib, or recline
 LINE|Queue, or an actor's words
 MEAN|Unkind average
@@ -392,23 +392,23 @@ FRUIT|Labor's produce?
 FRY|Fishy cooking?
 FUDGE|Fake sweet?
 FUNNY|Odd joke?
-GAG|Joke, or a mouth cover
-GAS|Fuel, or a blast
-GATE|Airport spot, or a fence door
-GEAR|Equipment, or a cog
-GEM|Treasure of a person
-GHOST|Ditch a date without a word?
-GIFT|Talent, or a present
-GOAL|Aim, or a net score
-GOAT|Greatest of all time, as an animal?
-GRADE|Slope, or a report card mark
-GRAIN|Wood pattern, or wheat
-GRAND|Thousand dollars, or a piano
-GREEN|New, or a golf area
-GRILL|Question hard, or a barbecue
-GRIP|Handle, or hold
-GUARD|Basketball position, or a sentry
-GUT|Instinct, or the belly
+GAG|Joking muzzle?
+GAS|Fuel blast?
+GATE|Airport door?
+GEAR|Cog kit?
+GEM|Treasured person?
+GHOST|Ditch a date?
+GIFT|Talented present?
+GOAL|Net aim?
+GOAT|Best animal ever?
+GRADE|Sloped mark?
+GRAIN|Wheat pattern?
+GRAND|Piano thousand?
+GREEN|Rookie golf area?
+GRILL|Barbecue quiz?
+GRIP|Handle hold?
+GUARD|Court sentry?
+GUT|Belly feeling?
 HAM|Overactor, or a deli meat
 HAMMER|Tool that hits the nail on the head?
 HAND|Help, or a palm and fingers
