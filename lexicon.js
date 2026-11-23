@@ -5,7 +5,7 @@
    Words are 2–7 letters, plus 11-letter words for Large grids (A–Z only). A repeated word adds an extra clue set (see above). */
 // Lexicon edition (JM, CD-24 other edits 1.1): its own number, separate from the game version. Add 1 whenever the word data or the Lexicon page changes.
 // L01 v07a · L02 v07b · L03 v07c · L04 v07d (wrapping cells) · L05 v07e (8-letter hint clues, edition number) · L06 v08 (8-letter easy and hard hints) · L07 (editor page: Status, Comments, Edit Mode + Copy Edits, advanced search; "/" in 23 Word Vault clues) · L08 v08b (58 country-code clues "Madrid URL" style, JM CD-27; Word Vault tricky hints) · L09 (JM's first Copy Edits, CD-29: ZAR clues, EXCITE added ON-DECK; ";" separates alternative clues, one picked at random) · L10 v08q (JM's Copy Edits, CD-59 + CD-60: 28 clue changes, "on an exchange board" / "on a bag tag" / "on a T-shirt tag" dropped, EXCITE active, new 1-letter clues, T pictures, drawn ICEBERG picture "@iceberg"; the Lexicon page gives each 1-letter row its own key) · L11 v08r (CD-62: 2.1a: 1-letter answers have one clue per row, so F, K and X's new ";" clues became separate rows; page: missing-letter marks drawn as in the game + "Missing-letter clues" filter) · L12 v08s (JM's Copy Edits CD-64 + CD-65: 34 changes, sorted Literal = plain / Indirect = figurative; page: permanent edit record, Reviewed ticks, Wordplay column, Claude drafts) · L13 v08t (JM's Copy Edits CD-66 + CD-67: 375 Claude drafts for A accepted, three-kind test — sound-alike clues to Wordplay, blanks to Indirect; ACRID; 125 new 1-letter clues with the blank inside the word; page: Draft toggle, clue lengths, Wrap / Clip, two-row filters)
-self.LEXICON_VER = 'L14.07'; // L14.07 (v12e): JM's CD-108 Copy Edits applied, 335 KeyRing words ACTIVE; round 5: 130 letter-G drafts + KeyRing round 3, 363 ON-DECK rows I-P; L14.06 (v11e): KeyRing everyday words round 2: 335 ON-DECK rows D-H with drafts (CD-104: 2.3); L14.05 (v11e): JM's CD-104 Copy Edits: 2,033 drafts applied, 315 KeyRing words ACTIVE; drafts round 4: 175 letter-F rows; L14.04 (v11c): KeyRing everyday words round 1: 315 ON-DECK rows A-C with drafts (CD-100: 1.2.1; CD-101: 2.1-2.4); L14.03 (v11c): data-only, drafts round 3 (138 letter-E rows); L14.02 (v09a): data-only, drafts round 2 (162 letter-D rows, 32 shorter B rows, short CALF Wordplay); L14.01: drafts round 1 (C, short B Wordplay, shorter A); L14 = the renamed page (Master Keys Lexicon; CrossKeys / LockWord), a structure change
+self.LEXICON_VER = 'L14.08'; // L14.08 (v12g): JM's CD-124 fixes: 6 clues; L14.07 (v12e): JM's CD-108 Copy Edits applied, 335 KeyRing words ACTIVE; round 5: 130 letter-G drafts + KeyRing round 3, 363 ON-DECK rows I-P; L14.06 (v11e): KeyRing everyday words round 2: 335 ON-DECK rows D-H with drafts (CD-104: 2.3); L14.05 (v11e): JM's CD-104 Copy Edits: 2,033 drafts applied, 315 KeyRing words ACTIVE; drafts round 4: 175 letter-F rows; L14.04 (v11c): KeyRing everyday words round 1: 315 ON-DECK rows A-C with drafts (CD-100: 1.2.1; CD-101: 2.1-2.4); L14.03 (v11c): data-only, drafts round 3 (138 letter-E rows); L14.02 (v09a): data-only, drafts round 2 (162 letter-D rows, 32 shorter B rows, short CALF Wordplay); L14.01: drafts round 1 (C, short B Wordplay, shorter A); L14 = the renamed page (Master Keys Lexicon; CrossKeys / LockWord), a structure change
 self.LEXICON_DATA = `
 # ---------- 2 letters ----------
 AD|Commercial; Selling; Promo|Spot on TV; Billboard filler|1
@@ -3144,7 +3144,7 @@ EQUAL|Same|Peer; ___ sign|1
 ERASE|Rub out|Delete; Wipe clean|1
 FAIRY|Tiny winged spirit|Tooth taker; ___ tale|1|🧚
 FLOCK|Group of sheep|Church group; Birds group; Sheep group|1
-FLUTE|Reedless woodwind|Champagne glass; Magic ___: Mozart's last|2
+FLUTE|Reedless woodwind|Champagne glass; Mozart's Magic ___|2
 GAVEL|Judge's hammer|Auctioneer's tool|3
 GRAVY|Meat sauce|Something extra, easy|1
 HATCH|Emerge from an egg|Small door|2
@@ -3914,7 +3914,7 @@ DECIDE|Settle|Choose; Conclude|1
 DECIDED|Settled|Chose; Clear-cut|1
 DECIDES|Settles|Chooses; Rules|1
 DECIDING|Settling|Choosing; ___ vote|1
-DECLARE|Announce|State; Customs form: I do ___!|1
+DECLARE|Announce|State; Customs-form verb|1
 DECLARED|Announced|Stated; Official|1
 DECLARES|Announces|States; Proclaims|1
 DECREASE|Reduce|Drop; Dwindle|1
@@ -3932,7 +3932,7 @@ DEFINES|Explains|Spells out; Outlines|1
 DEFINING|Explaining|Spelling out; Meaningful; Important|1
 DEFINITE|Certain|Sure; Clear-cut; Specific|1
 DEGREE|Level|Diploma; Celsius; Fahrenheit|1
-DEGREES|Levels|Diplomas; *C units; *F units|1
+DEGREES|Levels|Diplomas; °C units; °F units|1
 DELETE|Erase|Remove; Backspace's job|1
 DELETED|Erased|Removed; Cut|1
 DELETES|Erases|Removes; Cuts|1
@@ -3957,7 +3957,7 @@ DESIRE|Want|Longing; Crave|1
 DESIRED|Wanted|Longed for; Sought|1
 DESIRES|Wants|Longings; Craves|1
 DESIRING|Wanting|Longing for; Craving|1
-DESPITE|In spite of|Even with; In lieu of|1
+DESPITE|In spite of|Even with; Regardless of|1
 DESTROY|Wreck|Ruin; Demolish|1
 DESTROYS|Wrecks|Ruins; Demolishes|1
 DETAIL|Particular|Fine point; Car wash job|1
@@ -4018,7 +4018,7 @@ DRASTIC|Extreme|Severe; Radical|1
 DRAWN|Sketched|Pulled; Haggard|1
 DREW|Sketched|Pulled; Attracted|1
 DRIVEN|Motivated|Ambitious; Steered|1
-DRIVERS|Motorists|Golf clubs; Software aids; Chauffers; Taxi owners|1
+DRIVERS|Motorists|Golf clubs; Software aids; Chauffeurs; Taxi owners|1
 DRIVING|Steering|Motoring; Pounding, as rain|1
 DROP|Fall|Drip; Let go|1
 DROPPED|Fell|Let go; Quit|1

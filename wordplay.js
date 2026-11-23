@@ -636,7 +636,7 @@ ZEST|Lemon peel, or gusto
 END|Tight finish?
 ESSAY|Try writing?
 # L14.07 (CD-108): new Wordplay clues (JM edits + accepted drafts)
-FINGERNAILS|Hard as fingers?
+FINGERNAILS|Hard hand tips?
 FIR|Hairy tree?
 FIRECRACKER|Hot saltine?; Burned saltine?
 FOIL|Thwarting wrap?
