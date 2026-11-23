@@ -463,18 +463,24 @@
   };
   tray.addEventListener('pointerup', up); tray.addEventListener('pointercancel', up);
   // typing: the app finds a path that spells what you type (Q types the Qu cube with or without the U)
+  // v12f (CD-123 add. 1.2): when the letters can be joined more than one way, the app takes the HIGHEST-scoring way
+  // (Bonus cubes and Qu make the ways differ); on a tie, the first way found
   function findPath(word) {
-    const N = R.cells.length;
+    const N = R.cells.length, all = [];
     const dfs = (i, k, used, path) => {
+      if (all.length >= 400) return;
       const c = R.cells[i]; let len = c.length;
-      if (word.substr(k, len) !== c) { if (c === 'QU' && word[k] === 'Q') len = 1; else return null; }
+      if (word.substr(k, len) !== c) { if (c === 'QU' && word[k] === 'Q') len = 1; else return; }
       const k2 = k + len; path.push(i); used[i] = 1;
-      if (k2 === word.length) return path.slice();
-      for (let j = 0; j < N; j++) if (!used[j] && adj(i, j)) { const r = dfs(j, k2, used, path); if (r) return r; }
-      path.pop(); used[i] = 0; return null;
+      if (k2 === word.length) all.push(path.slice());
+      else for (let j = 0; j < N; j++) if (!used[j] && adj(i, j)) dfs(j, k2, used, path);
+      path.pop(); used[i] = 0;
     };
-    for (let i = 0; i < N; i++) { const r = dfs(i, 0, {}, []); if (r) return r; }
-    return null;
+    for (let i = 0; i < N; i++) dfs(i, 0, {}, []);
+    if (all.length < 2) return all[0] || null;
+    let best = null, bt = -1;
+    for (const p of all) { const t = score(p.map(i => R.cells[i]).join(''), p, R.cells, M.sc, R.bon).t; if (t > bt) { bt = t; best = p; } }
+    return best;
   }
   function paintTyped() {
     if (!typed) { clearTrace(); msg(''); return; }
@@ -858,7 +864,7 @@
       ${sec('Spell a Word', `
         <li><b>Swipe</b> (touch) or <b>drag</b> (mouse) across the cubes, then let go. You can start in the gap beside a cube. Slide back one cube to undo it. Every new swipe starts a new word.</li>
         <li>Or <b>tap</b> the cubes one by one, then tap the last one again.</li>
-        <li>Or <b>type</b> the word and press <b>Enter</b> (the app finds the cubes): <b>⌫</b> takes a letter back, <b>Esc</b> clears, <b>Space</b> pauses. A word that fails clears, so your next letter starts a new word.</li>
+        <li>Or <b>type</b> the word and press <b>Enter</b> (the app finds the cubes; when the letters can be joined more than one way, it takes the <b>highest-scoring</b> way): <b>⌫</b> takes a letter back, <b>Esc</b> clears, <b>Space</b> pauses. A word that fails clears, so your next letter starts a new word.</li>
         <li>The strip above the grid shows your word, then what happened: <b>green</b> = a new word and its points, <b>orange</b> = already found, <b>red</b> = not a word, too short, or not on the grid, <b>blue</b> = your Hint.</li>`)}
       ${sec('Duel and Solo', `
         <li><b>⚔ Duel</b>: a Bot rival hunts the same grid at the same time. Each Challenge Level has its own rival (Benny Bear at 1 … Professor Hoot at 10, as in CrossKeys), shown with its level in a red pill. Its word count shows under its score; its words stay hidden until the end. A word you <b>both</b> find scores for <b>nobody</b>.</li>
