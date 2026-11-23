@@ -9,7 +9,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Master Keys">
   <meta name="description" content="Master Keys: CrossKeys, a head-to-head crossword tile game, LockWord, a word-guessing game, and KeyRing, a word builder. Plays offline.">
-  <title>Master Keys · v11f</title>
+  <title>Master Keys · v12</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="icon" href="icons/icon-192.png" type="image/png" sizes="192x192">
@@ -46,7 +46,7 @@
       <header class="brand">
         <img class="logo" src="icons/icon.svg" alt="" width="64" height="64">
         <div class="brand-txt">
-          <h1><span data-mk="suite">Master Keys</span> <span class="vpill" id="verPill">v11f</span></h1>
+          <h1><span data-mk="suite">Master Keys</span> <span class="vpill" id="verPill">v12</span></h1>
           <p class="tag">Word games. Play anywhere, even offline.</p>
         </div>
       </header>
@@ -101,6 +101,20 @@
               <button class="btn big" id="krSetupBtn" type="button" aria-label="Setup">⚙<span class="bt"> Setup</span></button>
             </div>
             <p class="glast" id="krLast"></p>
+          </div></div>
+        </div>
+        <!-- v12: KeyCubes (JM CD-103, CD-109), the letter-cube word hunt -->
+        <div class="gcard" id="kcCard" data-g="cubes">
+          <div class="ghead"><img class="gico" src="icons/keycubes.svg" alt=""><div><p class="gname"><span data-mk="cubes">KeyCubes</span><span class="newb" id="kcNewB">NEW</span></p><p class="gpitch" data-pitch="Trace words through a grid of letter cubes. Out-hunt the Bot.">Trace words through a grid of letter cubes. Out-hunt the Bot.</p></div><button class="gchev" type="button" aria-expanded="false" aria-label="Show KeyCubes details" data-mk-aria="Show {cubes} details" title="Show details"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button></div>
+          <div class="gbody"><div>
+            <div class="grec" id="kcRec"></div>
+            <div class="gres" id="kcUnf" hidden></div>
+            <div class="gbtns">
+              <button class="btn primary big" id="kcResumeBtn" type="button" hidden>▶ Resume</button>
+              <button class="btn big" id="kcNewBtn" type="button">🆕 New Game</button>
+              <button class="btn big" id="kcSetupBtn" type="button" aria-label="Setup">⚙<span class="bt"> Setup</span></button>
+            </div>
+            <p class="glast" id="kcLast"></p>
           </div></div>
         </div>
         <div class="gcard soon"><b>🗝️</b>More games on the way</div>
@@ -383,6 +397,81 @@
   <div id="toasts" class="toasts"></div>
 
   <!-- ===== Game ===== -->
+  <!-- ===== v12: KeyCubes (keycubes.js): Setup, the game, the round results ===== -->
+  <section id="keycubes" class="screen" hidden>
+    <header class="vt-top kc-top">
+      <button class="icon-btn" id="kcMenu" type="button" aria-label="Back to the Lobby" title="Back to the Lobby">☰</button>
+      <img class="ck-ico" src="icons/keycubes.svg" alt="">
+      <h2 class="vt-title ck-title"><span data-mk="cubes">KeyCubes</span><small id="kcSub">Setup</small></h2>
+      <button class="icon-btn snd-btn" data-snd type="button">🔇</button>
+      <button class="icon-btn" id="kcNewG" type="button" aria-label="New Game" title="New Game">🆕</button>
+      <button class="icon-btn" id="kcSet" type="button" aria-label="KeyCubes Setup" data-mk-aria="{cubes} Setup" title="Setup">⚙</button>
+      <button class="icon-btn" id="kcHelp" type="button" aria-label="How To Play KeyCubes" data-mk-aria="How To Play {cubes}">?</button>
+    </header>
+    <div class="home-wrap ck-wrap kc-setup" id="kcSetup">
+      <div class="unfin" id="kcSetUnf" hidden><span id="kcSetUnfTxt"></span><button class="btn primary" id="kcSetResume" type="button">▶ Resume</button></div>
+      <div class="field"><span class="lbl">Play</span>
+        <div class="seg kc-seg" id="kcMode"><button type="button" data-v="duel">⚔ Duel<small>vs the Bot</small></button><button type="button" data-v="solo">🎯 Solo<small>no Bot</small></button></div>
+      </div>
+      <div class="field"><span class="lbl">Grid</span>
+        <div class="seg kc-seg" id="kcN"><button type="button" data-v="4">4×4<small>16 cubes</small></button><button type="button" data-v="5">5×5<small>25 cubes</small></button></div>
+      </div>
+      <div class="kc-prev" id="kcPrev" aria-hidden="true"></div>
+      <div class="pair">
+        <label class="field"><span class="lbl">Timer</span><select id="kcTm"></select></label>
+        <label class="field" id="kcLvF"><span class="lbl">Bot level</span><select id="kcLv"></select></label>      </div>
+      <p class="opt-desc" id="kcDesc"></p>
+      <button class="btn primary big" id="kcStart" type="button">▶ Start KeyCubes</button>
+      <details class="opts" id="kcOpts">
+        <summary><span class="cec" aria-hidden="true">▸</span><span class="lbl">More options</span><span class="opts-sum" id="kcOptsSum"></span></summary>
+        <div class="opts-body">
+          <div class="pair">
+            <label class="field"><span class="lbl">Shortest word</span><select id="kcMin"><option value="auto">Auto (by grid)</option><option value="3">3 letters</option><option value="4">4 letters</option></select></label>
+            <label class="field" id="kcRdF"><span class="lbl">Rounds per match</span><select id="kcRd"><option value="1">1 round</option><option value="3">3 rounds</option><option value="5">5 rounds</option></select></label>
+          </div>
+          <label class="field"><span class="lbl">Scoring</span><select id="kcSc"><option value="lp">Letter points + length bonus</option><option value="len">Word length only</option></select></label>
+          <div class="pair">
+            <label class="field"><span class="lbl">Cube Colors</span><select id="kcCs"></select></label>
+            <label class="field"><span class="lbl">Button Colors</span><select id="kcBs"></select></label>
+          </div>
+          <div class="pair" id="kcSoloF">
+            <label class="field"><span class="lbl">Solo Hints</span><select id="kcSh"><option value="free">Free</option><option value="paid">Paid (🪙1 per letter)</option></select></label>
+            <label class="field"><span class="lbl">Solo Hint limit</span><select id="kcScap"><option value="3">3 per round</option><option value="none">No limit</option></select></label>
+          </div>
+        </div>
+      </details>
+      <div class="vt-stats" id="kcStats"></div>
+    </div>
+    <div class="kc-play" id="kcPlay" hidden>
+      <div class="kc-main" id="kcMain">
+        <div class="kc-bar" id="kcBar">
+          <div class="kc-side me"><span class="av" id="kcMeAv">🙂</span><span class="nm" id="kcMeNm">You</span><span class="sc" id="kcMeSc">0</span><span class="plus" id="kcMePlus"></span></div>
+          <div class="kc-mid"><button class="kc-clock" id="kcClock" type="button" title="Pause"><span class="e">⏱</span><span id="kcClk">0:00</span></button><button class="kc-pause" id="kcPause" type="button"></button></div>
+          <div class="kc-side bot" id="kcBot"><span class="av" id="kcBotAv">🤖</span><span class="nm" id="kcBotNm">Bot</span><span class="sc" id="kcBotSc">0</span><span class="plus" id="kcBotPlus">+1</span></div>
+        </div>
+        <div class="kc-msg" id="kcMsg" aria-live="polite"></div>
+        <div class="kc-trayw"><div class="kc-tray" id="kcTray"></div><button class="kc-pz" id="kcPz" type="button" hidden>⏸ Paused<span>Tap to resume play</span></button></div>
+        <div class="kc-btns" id="kcBtns">
+          <button class="btn coinbtn" id="kcHint" type="button" title="Hint: the clue for a word you have not found"><span class="ic">💡</span><span class="nm">Hint</span><span class="cp" id="kcHintCp"></span></button>
+          <button class="btn coinbtn" id="kcTurn" type="button" title="Turn the grid a quarter turn (free)"><span class="ic">🔄</span><span class="nm">Turn</span><span class="cp">free</span></button>
+          <button class="btn coinbtn" id="kcDone" type="button" title="End this Solo round" hidden><span class="ic">🏁</span><span class="nm">Done</span><span class="cp">Solo</span></button>
+        </div>
+        <div class="kc-found"><h4><span id="kcFHead">Your words</span><span id="kcFPts"></span></h4><div class="kc-chips" id="kcChips"></div></div>
+        <p class="kc-tip"><kbd>A–Z</kbd> type · <kbd>Enter</kbd> submit · <kbd>⌫</kbd> back · <kbd>Esc</kbd> clear · <kbd>Space</kbd> pause</p>
+      </div>
+    </div>
+    <div class="kc-res" id="kcRes" hidden>
+      <div class="kc-rmain">
+        <div class="overbar kc-win" id="kcWin"></div>
+        <div class="kc-sum" id="kcSum"></div>
+        <div class="kc-tabs" id="kcTabs"></div>
+        <div class="kc-det" id="kcDet"></div>
+        <div class="kc-list" id="kcList"></div>
+        <div class="kc-nav"><button class="btn" id="kcResLobby" type="button">☰ Lobby</button><button class="btn" id="kcResSetup" type="button">⚙ Setup</button><button class="btn primary" id="kcNext" type="button">▶ Next round</button></div>
+      </div>
+    </div>
+  </section>
+
   <section id="game" class="screen" hidden>
     <!-- v08p (JM CD-56 add'l 1.1, iPad 1.1–1.4; CD-57: 1.1, 4.2–4.3): no clue bar. Each side: name over avatar + score,
          with its clock toward the center; the hub between them holds coins · Round · bag, this game's settings (wide
@@ -489,5 +578,7 @@
   <script src="lockword.js"></script>
   <script src="keyrings.js"></script><!-- v11: KeyRing word data (tools/build-keyring-levels.ps1) -->
   <script src="keyring.js"></script>
+  <script src="keycubes-words.js"></script><!-- v12: KeyCubes cubes, letter points, 9–16-letter words (tools/build-keycubes-words.ps1) -->
+  <script src="keycubes.js"></script>
 </body>
 </html>
