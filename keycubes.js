@@ -4,7 +4,7 @@
    - Duel (the main game, CD-103: 2.1a): the Bot hunts the same grid; its words stay hidden until the end (CD-109: 6.2) and a
      word both sides find scores for nobody. A match is 1, 3 (default) or 5 rounds, each on a fresh grid, won on total
      points (CD-109: 8.1); the next round starts on a tap (8.2); an unfinished match is saved and resumes (8.3).
-   - Solo (CD-109: 9.1–9.2.1): no Bot, Untimed by default, 🏁 Done ends the round, best score per grid size; no coins.
+   - Solo (CD-109: 9.1–9.2.1): no Bot, Untimed by default, 🏁 Done ends the round, best rate (Untimed) or best score per timer (v12e) per grid size.
      Solo Hints: Free or Paid, and 3 per round or no limit (two Setup choices).
    - Timer (CD-109: 2.1–2.3): 30 s Blitz, 1, 2 (default), 3, 4 or 5 min; Untimed in Solo only. The last 10 seconds flash
      yellow then red with ticks. No speed coins (a word hunt always runs the full clock).
@@ -49,7 +49,7 @@
   const DEF = { mode: 'duel', n: 4, timer: 120, lv: 3, min: 'auto', rounds: 3, sc: 'lp', bs: 'b', cs: 'cream', sHint: 'free', sCap: '3', sTimer: 0, bonus: 'on' };
   const ks = Object.assign({}, DEF, store.get('cd.kc.settings', {}));
   const saveKs = () => store.set('cd.kc.settings', ks);
-  const blankSt = () => ({ matches: 0, won: 0, drawn: 0, rounds: 0, words: 0, best: null, solo: {}, soloN: 0 });
+  const blankSt = () => ({ matches: 0, won: 0, drawn: 0, rounds: 0, words: 0, best: null, solo: {}, sb: {}, soloN: 0 }); // solo: the old v12–v12d bests (no longer shown)
   const st = Object.assign(blankSt(), store.get('cd.kc.stats', {}));
   const saveSt = () => store.set('cd.kc.stats', st);
   const SAVE_KEY = 'cd.kc.save';
@@ -65,7 +65,16 @@
   const rival = lv => (UI.OPP && UI.OPP[(lv || 3) - 1]) || { n: 'The Bot', a: '🤖' };
   const botNm = () => rival(M.lv).n, botAv = () => rival(M.lv).a, botFirst = () => botNm().split(' ')[0];
   const LV_NAMES = { 1: '1 · Apprentice', 10: '10 · Master' }; // v12a (CD-113: 2.1a)
-  const HINT_CAP_DUEL = 3, WIN = 10, DRAW = 5, MATCH = 20, SOLO_BEST = 5; // SOLO_BEST: CD-112: 3.3 (Paid Hints only)
+  const HINT_CAP_DUEL = 3, WIN = 10, DRAW = 5, MATCH = 20, SOLO_BEST = 10; // SOLO_BEST: CD-112: 3.3 (Paid Hints only); 10 from v12e (CD-122: 1.4)
+  // v12e (CD-122: 1.1–1.3): Solo bests start fresh in st.sb. Untimed keeps the best RATE (points per second, 2 decimals) per
+  // grid size; a round counts only after 1 minute of play AND 10 words. Timed keeps the best score per grid size and timer.
+  const RATE_MIN_MS = 60000, RATE_MIN_W = 10;
+  const tShort = t => t < 60 ? `${t}s` : `${t / 60}m`;
+  const sbKey = (n, t) => t ? `${n}_${t}` : `${n}u`;
+  const sbGet = (n, t) => (st.sb || {})[sbKey(n, t)];
+  const sbLab = (n, t) => t ? `Best ${n}×${n} in ${tShort(t)}` : `Best ${n}×${n} · pts/sec`; // CD-122: 1.2.1 "Best 4x4 in 2m"
+  const sbVal = (n, t) => { const b = sbGet(n, t); return b == null ? '–' : t ? UI.fmtN(b) : b.toFixed(2); };
+  const rateOf = (pts, ms) => ms > 0 ? Math.floor(100 * pts / (ms / 1000)) / 100 : 0;
   const fmt = s => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
   const plural = (n, w) => `${UI.fmtN(n)} ${w}${n === 1 ? '' : 's'}`;
   const timerOf = () => ks.mode === 'solo' ? ks.sTimer : ks.timer;
@@ -279,7 +288,7 @@
     const caps = ['everyday words only', 'everyday words only', 'common words', 'common words', 'a wider vocabulary', 'a wider vocabulary', 'harder words', 'harder words', 'almost any word', 'any word'];
     $('#kcDesc').textContent = duel
       ? `Challenge Level ${ks.lv}: ${rival(ks.lv).a} ${rival(ks.lv).n} knows ${caps[ks.lv - 1]} and finds about ${Math.round(BOT_SHARE[ks.lv - 1] * 100)}% of them in a round. A word you both find scores for nobody.`
-      : `Solo: no Bot. Hints ${ks.sHint === 'free' ? 'are free' : 'cost 🪙1 per letter'}, ${ks.sCap === '3' ? '3 per round' : 'no limit'}. Beat your best score for each grid size${ks.sHint === 'free' ? '' : `: a new best pays 🪙${SOLO_BEST}`}.`;
+      : `Solo: no Bot. Hints ${ks.sHint === 'free' ? 'are free' : 'cost 🪙1 per letter'}, ${ks.sCap === '3' ? '3 per round' : 'no limit'}. ${ks.sTimer ? `Beat your best score for ${ks.n}×${ks.n} in ${tShort(ks.sTimer)}` : `Beat your best rate in points per second (a round counts after 1 minute and ${RATE_MIN_W} words)`}${ks.sHint === 'free' ? '' : `: a new best pays 🪙${SOLO_BEST}`}.`;
     $('#kcOptsSum').textContent = `Shortest word: ${ks.min === 'auto' ? 'Auto' : ks.min} · ${duel ? plural(ks.rounds, 'round') + ' · ' : ''}${ks.sc === 'lp' ? 'Letters + length' : 'Length only'} · Bonus cubes ${ks.bonus === 'off' ? 'off' : 'on'} · Cubes: ${(CUBE_LOOKS.find(x => x[0] === ks.cs) || CUBE_LOOKS[0])[1].replace(/ \(.*\)$/, '')} · Buttons: ${((UI.BTN_LOOKS || []).find(x => x[0] === ks.bs) || [0, 'Steel'])[1]}`;
     const unf = unfinished();
     $('#kcSetUnf').hidden = !unf; if (unf) $('#kcSetUnfTxt').textContent = unfText();
@@ -287,7 +296,7 @@
     $('#kcStart').classList.toggle('primary', !unf);
     const pct = st.matches ? Math.round(100 * st.won / st.matches) + '%' : '–';
     $('#kcStats').innerHTML = st.matches || st.soloN
-      ? [[UI.fmtN(st.matches), 'Matches'], [pct, 'Won'], [UI.fmtN(st.words), 'Words'], [st.best ? st.best.w : '–', 'Best word'], [st.solo[ks.n] ? UI.fmtN(st.solo[ks.n]) : '–', `Solo best ${ks.n}×${ks.n}`]].map(([v, l]) => `<div class="vt-st"><b>${v}</b><span>${l}</span></div>`).join('')
+      ? [[UI.fmtN(st.matches), 'Matches'], [pct, 'Won'], [UI.fmtN(st.words), 'Words'], [st.best ? st.best.w : '–', 'Best word'], [sbVal(ks.n, ks.sTimer), `Solo ${sbLab(ks.n, ks.sTimer)}`]].map(([v, l]) => `<div class="vt-st"><b>${v}</b><span>${l}</span></div>`).join('')
       : '<p class="vt-none">No games played yet. Pick your settings and start.</p>';
     paintLooks();
   }
@@ -339,7 +348,7 @@
     const solo = M.mode === 'solo';
     $('#kcBot').classList.toggle('solo', solo);
     $('#kcBotAv').textContent = solo ? '🎯' : botAv();
-    $('#kcBotNm').innerHTML = solo ? `Best ${M.n}×${M.n}` : `<span class="t">${esc(botNm())}</span><span class="lvl-pill" title="Challenge Level">${M.lv}</span>`;
+    $('#kcBotNm').innerHTML = solo ? `<span class="t">${sbLab(M.n, M.timer)}</span>` :`<span class="t">${esc(botNm())}</span><span class="lvl-pill" title="Challenge Level">${M.lv}</span>`;
     $('#kcBotNm').title = solo ? '' : `${botNm()}, Challenge Level ${M.lv}`;
     $('#kcMeAv').innerHTML = UI.meWin().av || '🙂';
     $('#kcMeNm').textContent = (UI.settings().name || '').trim() || 'You';
@@ -354,7 +363,7 @@
     const duel = M.mode === 'duel', my = myPts();
     $('#kcMeSc').textContent = UI.fmtN(duel ? M.me + my : my);
     $('#kcMeRd').textContent = duel ? `Rd ${M.no}: ${UI.fmtN(my)}` : '';
-    $('#kcBotSc').textContent = duel ? UI.fmtN(M.bot) : st.solo[M.n] ? UI.fmtN(st.solo[M.n]) : '–';
+    $('#kcBotSc').textContent = duel ? UI.fmtN(M.bot) : sbVal(M.n, M.timer);
     $('#kcBotRd').textContent = duel ? `Rd ${M.no}: ${R.botN} wd${R.botN === 1 ? '' : 's'}` : '';
     $('#kcMeRd').title = $('#kcBotRd').title = duel ? `Round ${M.no} of ${M.rounds}; the big number is the game total` : '';
     $('#kcBar').classList.toggle('multi', duel);
@@ -362,6 +371,12 @@
     for (const el of [$('#kcMeRd'), $('#kcBotRd')]) {
       el.style.fontSize = '';
       if (el.textContent && el.clientWidth && el.scrollWidth > el.clientWidth) el.style.fontSize = Math.max(13, Math.floor(parseFloat(getComputedStyle(el).fontSize) * el.clientWidth / el.scrollWidth)) + 'px';
+    }
+    // v12e (CD-121 add. 1.1.2): the big numbers shrink to stay inside their card on a narrow phone
+    for (const el of [$('#kcMeSc'), $('#kcBotSc')]) {
+      el.style.fontSize = '';
+      const av = el.parentNode.querySelector('.av'), room = el.parentNode.clientWidth - 16 - (av ? av.offsetWidth + 6 : 0);
+      if (room > 0 && el.offsetWidth > room) el.style.fontSize = Math.max(14, Math.floor(parseFloat(getComputedStyle(el).fontSize) * room / el.offsetWidth)) + 'px';
     }
   }
   function paintChips(newW) {
@@ -588,7 +603,7 @@
     const p = !!(R && R.paused);
     tray.classList.toggle('blur', p); $('#kcPz').hidden = !p;
     const b = $('#kcPause');
-    b.innerHTML = p ? '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l13-7.5z" fill="currentColor"/></svg>' : '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5.5" y="4" width="4.6" height="16" rx="1.2" fill="currentColor"/><rect x="13.9" y="4" width="4.6" height="16" rx="1.2" fill="currentColor"/></svg>';
+    b.textContent = p ? '▶️' : '⏸️'; // v12e (CD-122: 2.1): the standard blue pause / play square (app.js draws it), twice as big
     b.title = p ? 'Resume' : 'Pause: the clock stops and the cubes are hidden'; b.setAttribute('aria-label', b.title);
   }
   $('#kcPause').addEventListener('click', () => setPause(!(R && R.paused)));
@@ -652,9 +667,16 @@
     for (const m of R.mine) if (!st.best || m.s.t > st.best.p) st.best = { w: m.w, p: m.s.t };
     if (duel && M.done) { st.matches++; if (M.me > M.bot) st.won++; else if (M.me === M.bot) st.drawn++; }
     let newBest = false;
-    if (!duel) { st.soloN++; if (R.meTot > (st.solo[M.n] || 0)) { st.solo[M.n] = R.meTot; newBest = true; } }
+    // v12e (CD-122: 1.1–1.3): Untimed = best rate (counts after 1 minute and 10 words); timed = best score for this timer
+    R.rate = rateOf(R.meTot, R.el || 0);
+    R.rateOk = !M.timer && (R.el || 0) >= RATE_MIN_MS && R.mine.length >= RATE_MIN_W;
+    if (!duel) {
+      st.soloN++; if (!st.sb) st.sb = {};
+      const k = sbKey(M.n, M.timer), old = st.sb[k];
+      if (M.timer ? R.meTot > 0 && (old == null || R.meTot > old) : R.rateOk && R.rate > 0 && (old == null || R.rate > old)) { st.sb[k] = M.timer ? R.meTot : R.rate; newBest = true; }
+    }
     R.newBest = newBest;
-    // CD-112: 3.3: with Paid Hints, a new Solo best pays 🪙5
+    // CD-112: 3.3: with Paid Hints, a new Solo best pays 🪙10 (CD-122: 1.4)
     if (!duel && newBest && M.sHint === 'paid') { R.earn = SOLO_BEST; M.coins += SOLO_BEST; if (UI.coins) UI.coins.add(SOLO_BEST, `${NM.cubes}: Solo new best`); }
     saveSt();
     history();
@@ -685,8 +707,9 @@
   function winHtml() {
     if (midMatch()) return leadHtml();
     if (M.mode !== 'solo') return UI.winLine(winObj());
-    const lab = `${R.newBest ? 'New best' : 'Round over'}, ${R.meTot} points`;
-    return `<span class="ob-h" role="status" aria-label="${lab}"><span class="ob-line" aria-hidden="true"><span class="ob-av">${UI.meWin().av || ''}</span><b class="ob-v">${R.newBest ? 'NEW BEST!' : 'ROUND OVER'}</b><span class="ob-sym">${R.newBest ? '🏆' : '🎯'}</span><span class="ob-sc">${UI.fmtN(R.meTot)} pts</span></span></span>`;
+    const sc = !M.timer && R.newBest ? `${(R.rate || 0).toFixed(2)} pts/sec` : `${UI.fmtN(R.meTot)} pts`; // CD-122: 1.1
+    const lab = `${R.newBest ? 'New best' : 'Round over'}, ${sc.replace('pts', 'points').replace('/sec', ' per second')}`;
+    return `<span class="ob-h" role="status" aria-label="${lab}"><span class="ob-line" aria-hidden="true"><span class="ob-av">${UI.meWin().av || ''}</span><b class="ob-v">${R.newBest ? 'NEW BEST!' : 'ROUND OVER'}</b><span class="ob-sym">${R.newBest ? '🏆' : '🎯'}</span><span class="ob-sc">${sc}</span></span></span>`;
   }
   function winObj() {
     const a = M.done && M.rounds > 1 ? [M.me, M.bot] : [R.meTot, R.botTot];
@@ -705,7 +728,7 @@
       g: 'cubes', win: duel ? (M.done ? M.me > M.bot : M.me >= M.bot) : R.newBest,
       title: `${NM.cubes} · ${duel ? (M.done ? (M.me > M.bot ? 'Match won' : M.me === M.bot ? 'Match drawn' : 'Match lost') : `Round ${M.no} of ${M.rounds}`) : 'Solo'} (${M.n}×${M.n})`,
       sub: [duel ? `vs ${botNm()} · Challenge Level ${M.lv}` : 'Solo', `${M.n}×${M.n}`, timerName(M.timer)].concat(duel ? [plural(M.rounds, 'round')] : []).join(' · '),
-      score: duel ? `${UI.fmtN(M.me)}–${UI.fmtN(M.bot)}` : `${UI.fmtN(R.meTot)} pts`, coins: M.coins, html: body
+      score: duel ? `${UI.fmtN(M.me)}–${UI.fmtN(M.bot)}` : `${UI.fmtN(R.meTot)} pts${M.timer ? '' : ` · ${(R.rate || 0).toFixed(2)}/sec`}`, coins: M.coins, html: body
     };
     if (!M.histT || !UI.history.put) M.histT = UI.history.add(entry) || 0;
     else UI.history.put(M.histT, entry);
@@ -726,7 +749,8 @@
     const coinsTxt = duel ? [R.earn ? `Round ${R.earn === WIN ? 'win' : 'draw'} +${R.earn}` : 'No round coins', R.matchEarn ? `Match win +${R.matchEarn}` : '', R.hintCoins ? `Hints −${R.hintCoins}` : ''].filter(Boolean).join(' · ')
       : [R.earn ? `New best +${R.earn}` : '', R.hintCoins ? `Hints −${R.hintCoins}` : ''].filter(Boolean).join(' · ') || (M.sHint === 'paid' ? 'No coins this round' : 'Solo: no coins');
     $('#kcSum').innerHTML = `<span class="kc-pill"><span class="e">🙂</span> ${UI.fmtN(R.mine.length)} of ${UI.fmtN(all)} words (${pct}%)</span>`
-      + (duel ? `<span class="kc-pill"><span class="e">${botAv()}</span> ${plural(R.bot.length, 'word')}</span><span class="kc-pill shared">✕ ${R.shared} shared: 0 pts</span>` : `<span class="kc-pill"><span class="e">🎯</span> Best ${M.n}×${M.n}: ${st.solo[M.n] ? UI.fmtN(st.solo[M.n]) : '–'} pts</span>`)
+      + (duel ? `<span class="kc-pill"><span class="e">${botAv()}</span> ${plural(R.bot.length, 'word')}</span><span class="kc-pill shared">✕ ${R.shared} shared: 0 pts</span>` : (M.timer ? '' : `<span class="kc-pill" title="A round counts toward your best rate after 1 minute of play and ${RATE_MIN_W} words"><span class="e">⏱</span> Your rate: ${(R.rate || 0).toFixed(2)} pts/sec${R.rateOk ? '' : ` (a best needs 1m and ${RATE_MIN_W} words)`}</span>`)
+        + `<span class="kc-pill"><span class="e">🎯</span> ${sbLab(M.n, M.timer)}: ${sbVal(M.n, M.timer)}</span>`)
       + `<span class="kc-pill">🪙 ${coinsTxt}</span>`;
     const tabs = duel ? [['me', `Your words (${R.mine.length})`], ['bot', `${esc(botFirst())}'s words (${R.bot.length})`], ['all', `All words (${UI.fmtN(all)})`]]
       : [['me', `Words found (${R.mine.length})`], ['all', `All words (${UI.fmtN(all)})`]];
@@ -744,11 +768,13 @@
     let a = 0, b = 0, rowsH = '';
     for (let k = 0; k < M.rounds; k++) {
       const r = M.list[k];
-      if (r) { a += r.me; b += r.bot; rowsH += `<tr class="${k === M.list.length - 1 ? 'now' : ''}"><td>Round ${k + 1}</td><td>${UI.fmtN(r.me)}</td><td>${UI.fmtN(r.bot)}</td><td>${UI.fmtN(a)}–${UI.fmtN(b)}</td></tr>`; }
+      // v12e (CD-122: 3.1): the higher score of each round in bright green, as in CrossKeys (both on a tie)
+      const g = (x, y) => x > 0 && x >= y ? ' class="rb"' : '';
+      if (r) { a += r.me; b += r.bot; rowsH += `<tr class="${k === M.list.length - 1 ? 'now' : ''}"><td>Round ${k + 1}</td><td${g(r.me, r.bot)}>${UI.fmtN(r.me)}</td><td${g(r.bot, r.me)}>${UI.fmtN(r.bot)}</td><td>${UI.fmtN(a)}–${UI.fmtN(b)}</td></tr>`; }
       else rowsH += `<tr class="todo"><td>Round ${k + 1}</td><td>–</td><td>–</td><td></td></tr>`;
     }
     return big + `<table class="score-table kc-rtab"><tr><th>Round</th><th>You</th><th>${esc(botFirst())}</th><th>Running</th></tr>${rowsH}
-      <tr class="total"><td>Game total</td><td>${UI.fmtN(M.me)}</td><td>${UI.fmtN(M.bot)}</td><td></td></tr></table>`;
+      <tr class="total"><td>Game total</td><td${M.me > 0 && M.me >= M.bot ? ' class="rb"' : ''}>${UI.fmtN(M.me)}</td><td${M.bot > 0 && M.bot >= M.me ? ' class="rb"' : ''}>${UI.fmtN(M.bot)}</td><td></td></tr></table>`;
   }
   function rows() {
     const tag = w => { const m = !!R.found[w], b = !!R.botSet[w]; return m && b ? 'both' : m ? 'me' : b ? 'bot' : 'miss'; };
@@ -836,9 +862,9 @@
         <li>The strip above the grid shows your word, then what happened: <b>green</b> = a new word and its points, <b>orange</b> = already found, <b>red</b> = not a word, too short, or not on the grid, <b>blue</b> = your Hint.</li>`)}
       ${sec('Duel and Solo', `
         <li><b>⚔ Duel</b>: a Bot rival hunts the same grid at the same time. Each Challenge Level has its own rival (Benny Bear at 1 … Professor Hoot at 10, as in CrossKeys), shown with its level in a red pill. Its word count shows under its score; its words stay hidden until the end. A word you <b>both</b> find scores for <b>nobody</b>.</li>
-        <li>A match is <b>1, 3 or 5 rounds</b>, each on a fresh grid. The higher <b>total</b> over the rounds wins the match. The next round starts when you tap <b>▶ Next round</b> (or press <b>Enter twice</b>).</li>
+        <li>A match is <b>1 to 5 rounds</b> (3 is the standard), each on a fresh grid. The higher <b>total</b> over the rounds wins the match. The next round starts when you tap <b>▶ Next round</b> (or press <b>Enter twice</b>).</li>
         <li><b>Challenge Level</b> (1–10, default 3): at low levels the Bot knows only everyday words; at 9–10 it knows rare ones too, and it finds more of the words it knows as the level rises. Level 3 is the standard; 5–7 are a step up, not a wall.</li>
-        <li><b>🎯 Solo</b>: no Bot. Untimed (the clock counts up) or timed; <b>🏁 Done</b> ends the round. Beat your best score for each grid size.</li>`)}
+        <li><b>🎯 Solo</b>: no Bot. Untimed (the clock counts up) or timed; <b>🏁 Done</b> ends the round. <b>Untimed</b>: beat your best <b>rate</b> in points per second for each grid size (2 decimals; a round counts after <b>1 minute</b> of play and <b>10 words</b>). <b>Timed</b>: beat your best score for each grid size and timer ("Best 4×4 in 2m").</li>`)}
       ${sec('Scoring', `
         <li><b>Letter points + length bonus</b> (the standard): each cube shows its letter's points (common letters 1, rare ones up to 10; Qu 10), and longer words add a bonus: 4 letters +2, 5 +4, 6 +7, 7 +11, 8 +16, then +5 for each letter more.</li>
         <li><b>Word length only</b> (a Setup choice): 3 letters 1, 4 = 2, 5 = 3, 6 = 5, 7 = 8, 8 = 12, then +4 for each letter more.</li>
@@ -852,20 +878,20 @@
         <li>In the last 10 seconds the grid flashes every second: <b>yellow</b> from 10 to 6, <b>red</b> from 5 to 1, with a tick each second.</li>`)}
       ${sec('Coins', `
         <li>In a Duel: a round won pays <b>🪙${WIN}</b>, a draw <b>🪙${DRAW}</b>, and a match won <b>🪙${MATCH}</b> more. Hints cost 🪙1 per letter; Next cube 🪙1.</li>
-        <li>Solo: with free Hints, no coins. With <b>Paid</b> Hints, a new best score pays <b>🪙${SOLO_BEST}</b>.</li>
+        <li>Solo: with free Hints, no coins. With <b>Paid</b> Hints, any new best (a rate or a timed score) pays <b>🪙${SOLO_BEST}</b>.</li>
         <li>A word hunt always runs the full clock, so ${NM.cubes} has no speed coins.</li>`)}
       ${sec('Results', `
         <li>In a Duel, the big number in each score card is the <b>game total</b> so far; the line under it is this round: your points, and the Bot's word count (its words, and so its round points, stay hidden until the round ends).</li>
         <li>After rounds before the last: "<b>Round 1 of 3 · You lead: 48 – 31</b>". After the last round: the gold "<b>You WIN!</b>" row with the final game total.</li>
         <li>On a computer, press <b>Enter twice</b> for the next round (or a New Game after the last round).</li>
-        <li>The score card shows the <b>game totals</b> big, then each round with the running total. Below it: your words out of every word in the grid, the shared words and your coins.</li>
+        <li>The score card shows the <b>game totals</b> big, then each round with the running total; the higher score of each round is <b style="color:#12a03c">green</b> (both on a tie). Below it: your words out of every word in the grid, the shared words and your coins.</li>
         <li>Tabs: <b>Your words</b>, <b>Bot's words</b> and <b>All words</b> (every word in the grid, found or missed). Words <b>only you</b> found are <b style="color:#12a03c">green</b>; <b>shared</b> words are <b style="color:#e01e1e">red</b> and score 0. Tap a word to see its path on a small grid (blue = the first cube), how its points add up (with any bonus), and its <b>📖 clue</b> when it's a Lexicon word.</li>`)}
       ${sec('Setup', `
         <li><b>Play</b>: Duel or Solo. <b>Grid</b>: 4×4 or 5×5. <b>Timer</b>: 30 s Blitz, 1, 2 (standard), 3, 4 or 5 min; Untimed in Solo. <b>Challenge Level</b> 1–10.</li>
-        <li>Under <b>▸ More options</b>: Shortest word, Rounds per match, Scoring, <b>Bonus cubes</b> (On / Off), <b>Cube Colors</b> (Cream, Inked, Inked Blue, Steel, Navy &amp; gold), <b>Button Colors</b> (Steel, Sapphire, Navy &amp; gold) and, for Solo, Hints (free or paid, 3 per round or no limit).</li>
+        <li>Under <b>▸ More options</b>: Shortest word, Rounds per match, Scoring, <b>Bonus cubes</b> (On / Off), <b>Cube Colors</b> (Cream, Inked, Inked Blue, Steel, Sky, Candy, Navy &amp; gold, Onyx, Ruby), <b>Button Colors</b> (Steel, Sapphire, Navy &amp; gold, Ruby, Emerald, Onyx; the preview shows both) and, for Solo, Hints (free or paid, 3 per round or no limit).</li>
         <li>Every grid is rolled fresh from ${NM.cubes}' own cubes; a grid with too few words is rolled again.</li>`)}
       ${sec('Your Stats', `
-        <li>Matches, the share won, words found, your best-scoring word and your best Solo score for each grid size are kept on this device. Every match (and Solo round) also goes into <b>📜 Game History</b>.</li>`)}
+        <li>Matches, the share won, words found, your best-scoring word and your Solo bests (a rate for Untimed, a score for each timer) are kept on this device. Every match (and Solo round) also goes into <b>📜 Game History</b>.</li>`)}
       <div class="row"><button class="btn primary" data-a="close">OK</button></div>`);
     $('#sheet').onclick = e => { if (UI.helpClick && UI.helpClick(e)) return; if (e.target.closest('[data-a="close"]')) closeModal(); };
   }

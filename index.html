@@ -9,7 +9,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Master Keys">
   <meta name="description" content="Master Keys: CrossKeys, a head-to-head crossword tile game, LockWord, a word-guessing game, and KeyRing, a word builder. Plays offline.">
-  <title>Master Keys · v12d</title>
+  <title>Master Keys · v12e</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="icon" href="icons/icon-192.png" type="image/png" sizes="192x192">
@@ -51,7 +51,7 @@
       <header class="brand">
         <img class="logo" src="icons/icon.svg" alt="" width="64" height="64">
         <div class="brand-txt">
-          <h1><span data-mk="suite">Master Keys</span> <span class="vpill" id="verPill">v12d</span></h1>
+          <h1><span data-mk="suite">Master Keys</span> <span class="vpill" id="verPill">v12e</span></h1>
           <p class="tag">Word games. Play anywhere, even offline.</p>
         </div>
       </header>
@@ -422,7 +422,7 @@
       <div class="field"><span class="lbl">Grid</span>
         <div class="seg kc-seg" id="kcN"><button type="button" data-v="4">4×4<small>16 cubes</small></button><button type="button" data-v="5">5×5<small>25 cubes</small></button></div>
       </div>
-      <div class="kc-prev" id="kcPrev" aria-hidden="true"></div>
+      <div class="kc-prevw" aria-hidden="true"><div class="kc-prev" id="kcPrev"></div><span class="btn coinbtn kc-prevb" id="kcPrevB" title="Your Button Color"><span class="ic">💡</span><span class="nm">Hint</span><span class="cp">Button Color</span></span></div>
       <div class="pair">
         <label class="field"><span class="lbl">Timer</span><select id="kcTm"></select></label>
         <label class="field" id="kcLvF"><span class="lbl">Challenge Level</span><select id="kcLv"></select></label>      </div>
@@ -433,7 +433,7 @@
         <div class="opts-body">
           <div class="pair">
             <label class="field"><span class="lbl">Shortest word</span><select id="kcMin"><option value="auto">Auto (by grid)</option><option value="3">3 letters</option><option value="4">4 letters</option></select></label>
-            <label class="field" id="kcRdF"><span class="lbl">Rounds per match</span><select id="kcRd"><option value="1">1 round</option><option value="3">3 rounds</option><option value="5">5 rounds</option></select></label>
+            <label class="field" id="kcRdF"><span class="lbl">Rounds per match</span><select id="kcRd"><option value="1">1 round</option><option value="2">2 rounds</option><option value="3">3 rounds (default)</option><option value="4">4 rounds</option><option value="5">5 rounds</option></select></label>
           </div>
           <label class="field"><span class="lbl">Scoring</span><select id="kcSc"><option value="lp">Letter points + length bonus</option><option value="len">Word length only</option></select></label>
           <label class="field"><span class="lbl">Bonus cubes</span><select id="kcBon"><option value="on">On: 3W · 2W · 2L · 3L, new places every round</option><option value="off">Off</option></select></label>

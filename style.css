@@ -2895,3 +2895,21 @@ html[data-screen="night"] .kc-side .sc { background: #262626; box-shadow: inset 
 .kc-side.bot .sc { grid-row: 2; grid-column: 1; }
 .kc-side .rd { grid-row: 3; grid-column: 1 / -1; overflow: visible; text-overflow: clip; }
 .kc-side.bot .rd { text-align: right; }
+/* ---------- v12e (JM CD-121 add., CD-122) ---------- */
+/* the level pill's number is white in every game (CD-122: 2.2) */
+.lvl-pill { color: #fff; text-shadow: 0 1px 1px rgba(0, 0, 0, .55); }
+/* KeyCubes pause button: the standard blue pause / play square, twice as big (CD-122: 2.1) */
+.kc-pause { width: auto; height: auto; padding: 2px; background: transparent; box-shadow: none; font-family: var(--emoji); font-size: 40px; line-height: 1; }
+.kc-pause .mk-pp { width: 40px; height: 40px; display: block; }
+@media (max-width: 420px) { .kc-pause { font-size: 36px; } .kc-pause .mk-pp { width: 36px; height: 36px; } }
+.kc-pause:focus-visible { outline: 2px solid var(--kc-glow); outline-offset: 2px; border-radius: 10px; }
+/* the higher score of each round in bright green (CD-122: 3.1) */
+.kc-rtab td.rb { color: #10b839; font-weight: 900; }
+html[data-screen="night"] .kc-rtab td.rb { color: #3ee06a; }
+@media (prefers-color-scheme: dark) { .kc-rtab td.rb { color: #3ee06a; } }
+/* Setup preview: the cubes and a sample button in your Button Color (CD-122: 4.2) */
+.kc-prevw { display: flex; align-items: center; justify-content: center; gap: 14px; flex-wrap: wrap; }
+.kc-prevb { pointer-events: none; cursor: default; }
+/* the Solo "Best 4×4 · pts/sec" label may be long: on a narrow phone it wraps onto a second line rather than being cut off */
+.kc-side.solo .nm { overflow: visible; } .kc-side.solo .nm .t { font-size: 13px; white-space: normal; overflow: visible; text-overflow: clip; line-height: 1.15; text-align: right; }
+@media (min-width: 700px) { .kc-side.solo .nm .t { font-size: 15px; } }
