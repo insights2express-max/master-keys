@@ -9,7 +9,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Master Keys">
   <meta name="description" content="Master Keys: CrossKeys, a head-to-head crossword tile game, LockWord, a word-guessing game, and KeyRing, a word builder. Plays offline.">
-  <title>Master Keys · v12h</title>
+  <title>Master Keys · v13</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="icon" href="icons/icon-192.png" type="image/png" sizes="192x192">
@@ -51,7 +51,7 @@
       <header class="brand">
         <img class="logo" src="icons/icon.svg" alt="" width="64" height="64">
         <div class="brand-txt">
-          <h1><span data-mk="suite">Master Keys</span> <span class="vpill" id="verPill">v12h</span></h1>
+          <h1><span data-mk="suite">Master Keys</span> <span class="vpill" id="verPill">v13</span></h1>
           <p class="tag">Word games. Play anywhere, even offline.</p>
         </div>
       </header>
@@ -120,6 +120,20 @@
               <button class="btn big" id="kcSetupBtn" type="button" aria-label="Setup">⚙<span class="bt"> Setup</span></button>
             </div>
             <p class="glast" id="kcLast"></p>
+          </div></div>
+        </div>
+        <!-- v13: Hidden Keys (JM CD-130: 1.1.1), the clue word search -->
+        <div class="gcard" id="hkCard" data-g="hidden">
+          <div class="ghead"><img class="gico" src="icons/hiddenkeys.svg" alt=""><div><p class="gname"><span data-mk="hidden">Hidden Keys</span><span class="newb" id="hkNewB">NEW</span></p><p class="gpitch" data-pitch="Find the hidden words from their clues. Race the Bot to every one.">Find the hidden words from their clues. Race the Bot to every one.</p></div><button class="gchev" type="button" aria-expanded="false" aria-label="Show Hidden Keys details" data-mk-aria="Show {hidden} details" title="Show details"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button></div>
+          <div class="gbody"><div>
+            <div class="grec" id="hkRec"></div>
+            <div class="gres" id="hkUnf" hidden></div>
+            <div class="gbtns">
+              <button class="btn primary big" id="hkResumeBtn" type="button" hidden>▶ Resume</button>
+              <button class="btn big" id="hkNewBtn" type="button">🆕 New Game</button>
+              <button class="btn big" id="hkSetupBtn" type="button" aria-label="Setup">⚙<span class="bt"> Setup</span></button>
+            </div>
+            <p class="glast" id="hkLast"></p>
           </div></div>
         </div>
         <div class="gcard soon"><b>🗝️</b>More games on the way</div>
@@ -480,6 +494,85 @@
     </div>
   </section>
 
+  <!-- ===== v13: Hidden Keys (hiddenkeys.js): Setup, the game, the round results. It borrows KeyCubes' bar, score cards,
+       Paused panel and results pieces (kc-* classes), so a change to those reaches both games ===== -->
+  <section id="hiddenkeys" class="screen" hidden>
+    <header class="vt-top kc-top hk-top">
+      <button class="icon-btn" id="hkMenu" type="button" aria-label="Back to the Lobby" title="Back to the Lobby">☰</button>
+      <img class="ck-ico" src="icons/hiddenkeys.svg" alt="">
+      <h2 class="vt-title ck-title"><span data-mk="hidden">Hidden Keys</span><small id="hkSub">Setup</small></h2>
+      <button class="icon-btn snd-btn" data-snd type="button">🔇</button>
+      <button class="icon-btn" id="hkNewG" type="button" aria-label="New Game" title="New Game">🆕</button>
+      <button class="icon-btn" id="hkSet" type="button" aria-label="Hidden Keys Setup" data-mk-aria="{hidden} Setup" title="Setup">⚙</button>
+      <button class="icon-btn" id="hkHelp" type="button" aria-label="How To Play Hidden Keys" data-mk-aria="How To Play {hidden}">?</button>
+    </header>
+    <div class="home-wrap ck-wrap kc-setup" id="hkSetup">
+      <div class="unfin" id="hkSetUnf" hidden><span id="hkSetUnfTxt"></span><button class="btn primary" id="hkSetResume" type="button">▶ Resume</button></div>
+      <div class="field"><span class="lbl">Play</span>
+        <div class="seg kc-seg" id="hkMode"><button type="button" data-v="duel">⚔ Duel<small>vs the Bot</small></button><button type="button" data-v="solo">🎯 Solo<small>no Bot</small></button></div>
+      </div>
+      <div class="field"><span class="lbl">Grid</span>
+        <div class="seg kc-seg" id="hkN"><button type="button" data-v="8">8×8<small>8 words</small></button><button type="button" data-v="10">10×10<small>11 words</small></button><button type="button" data-v="12">12×12<small>14 words</small></button></div>
+      </div>
+      <div class="field"><span class="lbl">Key list</span>
+        <div class="seg kc-seg" id="hkList"><button type="button" data-v="clue">📖 Clues<small>find them from clues</small></button><button type="button" data-v="word">🔤 Words<small>the words are shown</small></button></div>
+      </div>
+      <div class="kc-prevw hk-prevw" aria-hidden="true"><div id="hkPrev"></div><span class="btn coinbtn kc-prevb" title="Your Button Color"><span class="ic">💡</span><span class="nm">Hint</span><span class="cp">Button Color</span></span></div>
+      <div class="pair">
+        <label class="field"><span class="lbl">Timer</span><select id="hkTm"></select></label>
+        <label class="field"><span class="lbl">Challenge Level</span><select id="hkLv"></select></label>
+      </div>
+      <p class="opt-desc" id="hkDesc"></p>
+      <button class="btn primary big" id="hkStart" type="button">▶ Start Hidden Keys</button>
+      <details class="opts" id="hkOpts">
+        <summary><span class="cec" aria-hidden="true">▸</span><span class="lbl">More options</span><span class="opts-sum" id="hkOptsSum"></span></summary>
+        <div class="opts-body">
+          <div class="pair">
+            <label class="field"><span class="lbl">Word directions</span><select id="hkDir"></select></label>
+            <label class="field" id="hkRdF"><span class="lbl">Rounds per match</span><select id="hkRd"><option value="1">1 round</option><option value="2">2 rounds</option><option value="3">3 rounds (default)</option><option value="4">4 rounds</option><option value="5">5 rounds</option></select></label>
+          </div>
+          <div class="pair">
+            <label class="field"><span class="lbl">Grid Colors</span><select id="hkGs"></select></label>
+            <label class="field"><span class="lbl">Button Colors</span><select id="hkBs"></select></label>
+          </div>
+          <div class="pair" id="hkSoloF">
+            <label class="field"><span class="lbl">Solo Hints</span><select id="hkSh"><option value="free">Free</option><option value="paid">Paid (🪙1 per letter)</option></select></label>
+            <label class="field"><span class="lbl">Solo Hint limit</span><select id="hkScap"><option value="3">3 per round</option><option value="none">No limit</option></select></label>
+          </div>
+        </div>
+      </details>
+      <div class="vt-stats" id="hkStats"></div>
+    </div>
+    <div class="kc-play" id="hkPlay" hidden>
+      <div class="hk-main" id="hkMain">
+        <div class="kc-bar" id="hkBar">
+          <div class="kc-side me"><span class="av" id="hkMeAv">🙂</span><span class="nm" id="hkMeNm">You</span><span class="sc" id="hkMeSc">0</span><span class="rd" id="hkMeRd"></span><span class="plus" id="hkMePlus"></span></div>
+          <div class="kc-mid"><button class="kc-clock" id="hkClock" type="button" title="Pause"><span class="e">⏱</span><span id="hkClk">0:00</span></button><button class="kc-pause" id="hkPause" type="button"></button></div>
+          <div class="kc-side bot" id="hkBot"><span class="av" id="hkBotAv">🤖</span><span class="nm" id="hkBotNm">Bot</span><span class="sc" id="hkBotSc">0</span><span class="rd" id="hkBotRd"></span><span class="plus" id="hkBotPlus">+1</span></div>
+        </div>
+        <div class="kc-msg hk-msg" id="hkMsg" aria-live="polite"></div>
+        <div class="hk-trayw"><div class="hk-tray" id="hkTray"></div><button class="kc-pz" id="hkPz" type="button" hidden><span class="mk-pzi">⏸️</span><b>Paused</b><span>Tap to resume play</span></button></div>
+        <div class="kc-btns hk-btns" id="hkBtns">
+          <button class="btn coinbtn" id="hkHint" type="button" title="Hint: stripe the first letter of a word"><span class="ic">💡</span><span class="nm" id="hkHintNm">Hint</span><span class="cp" id="hkHintCp"></span></button>
+          <button class="btn coinbtn" id="hkDone" type="button" title="End this Solo round" hidden><span class="ic">🏁</span><span class="nm">Done</span><span class="cp">Solo</span></button>
+        </div>
+        <div class="hk-keysw"><h4><span id="hkKHead">Key clues</span><span id="hkKPts"></span></h4><div class="hk-keys" id="hkKeys"></div></div>
+        <p class="kc-tip hk-tip"><kbd>A–Z</kbd> type an answer (Clues) · <kbd>Enter</kbd> submit · <kbd>⌫</kbd> back · <kbd>Esc</kbd> clear · <kbd>Space</kbd> pause</p>
+      </div>
+    </div>
+    <div class="kc-res" id="hkRes" hidden>
+      <div class="hk-rmain">
+        <div class="overbar kc-win" id="hkWin"></div>
+        <div class="kc-score hk-score" id="hkScore" hidden></div>
+        <div class="kc-sum hk-sum" id="hkSum"></div>
+        <div class="hk-rboardw"><div class="hk-tray hk-rtray" id="hkRBoardW"></div></div>
+        <div class="hk-rdet" id="hkRDet"></div>
+        <div class="hk-keys hk-rlist" id="hkRList"></div>
+        <div class="kc-nav hk-nav"><button class="btn" id="hkResLobby" type="button">☰ Lobby</button><button class="btn" id="hkResSetup" type="button">⚙ Setup</button><button class="btn primary" id="hkNext" type="button">▶ Next round</button></div>
+      </div>
+    </div>
+  </section>
+
   <section id="game" class="screen" hidden>
     <!-- v08p (JM CD-56 add'l 1.1, iPad 1.1–1.4; CD-57: 1.1, 4.2–4.3): no clue bar. Each side: name over avatar + score,
          with its clock toward the center; the hub between them holds coins · Round · bag, this game's settings (wide
@@ -588,5 +681,6 @@
   <script src="keyring.js"></script>
   <script src="keycubes-words.js"></script><!-- v12: KeyCubes cubes, letter points, 9–16-letter words (tools/build-keycubes-words.ps1) -->
   <script src="keycubes.js"></script>
+  <script src="hiddenkeys.js"></script><!-- v13: Hidden Keys, the clue word search (words and clues from lexicon.js) -->
 </body>
 </html>

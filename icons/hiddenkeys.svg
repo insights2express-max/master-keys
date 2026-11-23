@@ -1,0 +1,14 @@
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="hkb" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3b5068"/><stop offset="1" stop-color="#1c2733"/></linearGradient><linearGradient id="hkt" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fcebc0"/><stop offset="1" stop-color="#efd18c"/></linearGradient><linearGradient id="hkg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe082"/><stop offset=".55" stop-color="#f5b300"/><stop offset="1" stop-color="#b98100"/></linearGradient></defs>
+<rect width="512" height="512" rx="112" fill="url(#hkb)"/><rect x="48" y="48" width="416" height="416" rx="52" fill="#0b1016" opacity=".55"/>
+<g font-family="Arial Black, Arial, sans-serif" font-weight="900" font-size="62" text-anchor="middle" fill="#3b2a0b">
+<g fill="url(#hkt)"><rect x="70" y="70" width="80" height="80" rx="18"/><rect x="164" y="70" width="80" height="80" rx="18"/><rect x="258" y="70" width="80" height="80" rx="18"/><rect x="352" y="70" width="80" height="80" rx="18"/>
+<rect x="70" y="164" width="80" height="80" rx="18"/><rect x="164" y="164" width="80" height="80" rx="18"/><rect x="258" y="164" width="80" height="80" rx="18"/><rect x="352" y="164" width="80" height="80" rx="18"/>
+<rect x="70" y="258" width="80" height="80" rx="18"/><rect x="164" y="258" width="80" height="80" rx="18"/><rect x="258" y="258" width="80" height="80" rx="18"/><rect x="352" y="258" width="80" height="80" rx="18"/>
+<rect x="70" y="352" width="80" height="80" rx="18"/><rect x="164" y="352" width="80" height="80" rx="18"/></g>
+<line x1="110" y1="204" x2="392" y2="204" stroke="#2c6bd8" stroke-width="74" stroke-linecap="round" opacity=".55"/>
+<text x="110" y="132">W</text><text x="204" y="132">O</text><text x="298" y="132">R</text><text x="392" y="132">D</text>
+<text x="110" y="226">K</text><text x="204" y="226">E</text><text x="298" y="226">Y</text><text x="392" y="226">S</text>
+<text x="110" y="320">H</text><text x="204" y="320">I</text><text x="298" y="320">D</text><text x="392" y="320">E</text>
+<text x="110" y="414">F</text><text x="204" y="414">N</text></g>
+<g transform="translate(352 392) rotate(-35)"><circle cx="-46" cy="0" r="38" fill="url(#hkg)" stroke="#7a5100" stroke-width="8"/><circle cx="-46" cy="0" r="14" fill="#1c2733"/><rect x="-12" y="-12" width="104" height="24" rx="8" fill="url(#hkg)" stroke="#7a5100" stroke-width="7"/><rect x="58" y="8" width="16" height="30" rx="4" fill="url(#hkg)" stroke="#7a5100" stroke-width="6"/><rect x="30" y="8" width="16" height="22" rx="4" fill="url(#hkg)" stroke="#7a5100" stroke-width="6"/></g>
+</svg>

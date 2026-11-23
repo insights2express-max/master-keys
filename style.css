@@ -2916,3 +2916,185 @@ html[data-screen="night"] .kc-rtab td.rb { color: #3ee06a; }
 /* ---------- v12h (CD-126: 2.1.1): a 💡 mark on every word a Hint helped (as KeyRing marks its hinted slots) ---------- */
 .kc-chip .hm, .kc-row .hm { font-style: normal; font-family: var(--emoji); font-size: .9em; margin-right: 3px; letter-spacing: 0; }
 .kc-chip.hd { box-shadow: inset 0 0 0 2px #f5b300; }
+
+/* =====================================================================
+   v13 (JM CD-130: 1.1.1): HIDDEN KEYS, the clue word search (hiddenkeys.js). It borrows KeyCubes' glass bar, score cards,
+   clock, Paused panel, message strip, results pills and score card (kc-* classes); this block adds the letter grid (tiles,
+   find bands, letters in three layers), the Key list, the results grid and Grid Colors (class hk-gs-* on #hiddenkeys).
+   ===================================================================== */
+#hiddenkeys {
+  --kc-fx: radial-gradient(60% 45% at 88% 6%, rgba(245, 179, 0, .20), transparent 70%), radial-gradient(55% 40% at 8% 94%, rgba(44, 107, 216, .20), transparent 70%);
+  --kc-glass: linear-gradient(160deg, rgba(255, 255, 255, .15), rgba(255, 255, 255, .03) 45%, rgba(0, 0, 0, .14)), rgba(22, 30, 40, .82);
+  --kc-edge: inset 0 1px 0 rgba(255, 255, 255, .22), inset 0 0 0 1px rgba(255, 255, 255, .1), 0 10px 26px rgba(0, 0, 0, .3);
+  --kc-well: #0b1016; --kc-side: #0d131a; --kc-glow: #4fc3f7;
+  --c1: #fdf1cf; --c2: #f0d796; --ce: #c7a457; --ci: #3b2a0b; --crim: rgba(0, 0, 0, .1);
+  --o1: #8fc1ff; --o2: #3d86ec; --oi: #0b2a66;
+  --hk-me: #2c6bd8; --hk-bot: #e0302f; --hk-mk: #f5b300; --hk-sel: #4fc3f7;
+  --ts: 320px; --n: 10;
+  background: var(--kc-fx), var(--bg); overflow: hidden;
+}
+@media (prefers-color-scheme: dark) {
+  #hiddenkeys { --kc-fx: radial-gradient(60% 45% at 88% 6%, rgba(245, 179, 0, .10), transparent 70%), radial-gradient(55% 40% at 8% 94%, rgba(63, 127, 232, .22), transparent 70%);
+    --kc-glass: linear-gradient(160deg, rgba(255, 255, 255, .12), rgba(255, 255, 255, .02) 45%, rgba(0, 0, 0, .2)), rgba(30, 40, 52, .78); }
+}
+html[data-screen="night"] #hiddenkeys {
+  --kc-fx: linear-gradient(transparent, transparent);
+  --kc-glass: linear-gradient(160deg, rgba(255, 255, 255, .05), rgba(255, 255, 255, 0) 45%, rgba(0, 0, 0, .2)), #161616;
+  --kc-edge: inset 0 1px 0 rgba(255, 255, 255, .07), inset 0 0 0 1px rgba(255, 255, 255, .04), 0 8px 20px rgba(0, 0, 0, .5);
+  --kc-well: #0e0e0e; --kc-side: #070707; --kc-glow: #6f8fb0;
+}
+html[data-screen="night"] #hiddenkeys .hk-board, html[data-screen="night"] #hiddenkeys .ck-ico { filter: brightness(.72) saturate(.65); }
+/* Grid Colors (the KeyCubes / CrossKeys palette) */
+#hiddenkeys.hk-gs-ink { --c1: #ffffff; --c2: #ebe8e1; --ce: #b3ada0; --ci: #111111; }
+#hiddenkeys.hk-gs-blue { --c1: #f8fbff; --c2: #e1eaf8; --ce: #9db2d6; --ci: #1846b5; }
+#hiddenkeys.hk-gs-steel { --c1: #fbfcfd; --c2: #b3bdc8; --ce: #6d7987; --ci: #0d3a8a; --crim: #7d8995; }
+#hiddenkeys.hk-gs-sky { --c1: #eaf6ff; --c2: #b9dcf7; --ce: #6fa3cc; --ci: #0b3a6e; --crim: #8fb6d6; }
+#hiddenkeys.hk-gs-navy { --c1: #3a5788; --c2: #0d1a33; --ce: #04080f; --ci: #ffd75e; --crim: #e7b416; --oi: #fff3c4; }
+#hiddenkeys.hk-gs-onyx { --c1: #3a3d42; --c2: #0d0e10; --ce: #2a2d33; --ci: #ffffff; --crim: #5a5f66; --oi: #ffffff; }
+#hiddenkeys.hk-gs-ruby { --c1: #e2474a; --c2: #8e0f17; --ce: #5f0a10; --ci: #ffffff; --crim: #ff9a9a; --oi: #ffffff; --hk-bot: #ffcf33; }
+/* header, Setup */
+#hiddenkeys .kc-top { grid-template-columns: auto auto minmax(0, 1fr) auto auto auto auto; }
+#hiddenkeys .ck-title small { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#hkSoloF[hidden], #hkRdF[hidden] { display: none; }
+#hkN.kc-seg button { font-size: 16px; }
+.hk-prevw #hkPrev { display: flex; }
+/* coin buttons (Button Colors as in every game) */
+#hiddenkeys .btn.coinbtn { min-width: 96px; height: 52px; padding: 4px 12px; border-radius: 14px; display: grid; grid-template-columns: auto auto; grid-template-rows: auto auto; column-gap: 6px; align-items: center; justify-items: start; font-size: 15px; line-height: 1.05; position: relative; }
+#hiddenkeys .btn.coinbtn .ic { grid-row: span 2; font-size: 24px; font-family: var(--emoji); filter: drop-shadow(0 1px 1px rgba(0, 0, 0, .35)); }
+#hiddenkeys .btn.coinbtn .nm { font-weight: 900; }
+#hiddenkeys .btn.coinbtn .cp { font-size: 11.5px; font-weight: 800; white-space: nowrap; }
+#hiddenkeys .btn.coinbtn:disabled { opacity: .5; }
+#hiddenkeys .btn.coinbtn[hidden] { display: none; }
+@media (min-width: 700px) {
+  #hiddenkeys .btn.coinbtn { min-width: 120px; height: 60px; font-size: 18px; }
+  #hiddenkeys .btn.coinbtn .ic { font-size: 30px; }
+  #hiddenkeys .btn.coinbtn .cp { font-size: 13px; }
+}
+
+/* ---------- the game screen ---------- */
+.hk-main { flex: 1; min-height: 0; min-width: 0; display: grid; gap: 8px; padding: 6px 10px 10px;
+  grid-template-columns: minmax(0, 1fr) auto; grid-template-rows: auto auto auto minmax(0, 1fr) auto;
+  grid-template-areas: "bar bar" "msg btns" "tray tray" "keys keys" "tip tip"; }
+.hk-main .hk-msg { min-height: 52px; }
+.hk-main .hk-btns { align-self: center; flex-wrap: nowrap; }
+@media (max-width: 699px) { #hiddenkeys .hk-btns .btn.coinbtn { min-width: 0; padding: 4px 10px; } .hk-main .hk-msg { font-size: 14px; } }
+.kc-wide .hk-main { grid-template-columns: auto minmax(0, 1fr); grid-template-rows: auto auto auto minmax(0, 1fr) auto; column-gap: 24px; padding: 8px 22px 14px;
+  grid-template-areas: "bar bar" "tray msg" "tray btns" "tray keys" "tip tip"; max-width: 1400px; margin: 0 auto; width: 100%; }
+.hk-main .kc-bar { grid-area: bar; }
+.hk-msg { grid-area: msg; }
+.kc-mt.clue.sel { background: var(--surface); color: var(--ink); box-shadow: var(--shadow), inset 0 0 0 2px var(--primary); }
+.hk-btns { grid-area: btns; }
+.hk-tip { grid-area: tip; }
+/* the grid: a glass tray; inside it three layers: tiles, find bands (SVG in cell units), letters */
+.hk-trayw { grid-area: tray; position: relative; display: flex; justify-content: center; align-items: flex-start; }
+.hk-tray { position: relative; width: var(--ts); height: var(--ts); box-sizing: border-box; padding: calc(var(--ts) * .03); border-radius: calc(var(--ts) * .05);
+  background: var(--kc-glass); box-shadow: inset 0 2px 0 rgba(255, 255, 255, .25), inset 0 0 0 1px rgba(255, 255, 255, .12), 0 calc(var(--ts) * .02) 0 -1px var(--kc-side), 0 calc(var(--ts) * .04) 22px rgba(0, 0, 0, .35);
+  touch-action: none; -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent; cursor: pointer; transition: box-shadow .2s; }
+.hk-board { --cs: calc(var(--ts) * .94 / var(--n)); position: relative; width: 100%; height: 100%; }
+.hk-tiles, .hk-lets { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(var(--n), 1fr); grid-template-rows: repeat(var(--n), 1fr); }
+.hk-tiles i { display: block; border: calc(var(--cs) * .05) solid transparent; border-radius: 24%; background-clip: padding-box; position: relative;
+  background-image: radial-gradient(ellipse 85% 40% at 50% 16%, rgba(255, 255, 255, .55), rgba(255, 255, 255, 0) 70%), linear-gradient(var(--c1), var(--c2));
+  box-shadow: inset 0 calc(var(--cs) * -.06) 0 var(--ce), inset 0 0 0 1px var(--crim); }
+.hk-tiles i.hint { background-image: repeating-linear-gradient(45deg, rgba(44, 107, 216, .42) 0 4px, rgba(44, 107, 216, 0) 4px 8px), linear-gradient(var(--c1), var(--c2)); box-shadow: inset 0 0 0 2px #2c6bd8; }
+.hk-tiles i.hint::after { content: attr(data-hn); position: absolute; top: 4%; right: 8%; font: 900 calc(var(--cs) * .24)/1 system-ui, sans-serif; color: #fff; text-shadow: 0 0 3px #1f4fbf, 0 0 2px #1f4fbf; }
+.hk-bands { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+.hk-bands line { stroke-width: .74; stroke-linecap: round; fill: none; }
+.hk-bands line.me { stroke: var(--hk-me); opacity: .5; }
+.hk-bands line.bot { stroke: var(--hk-bot); opacity: .45; }
+.hk-bands line.mk { stroke: var(--hk-mk); opacity: .62; }
+.hk-bands line.sel { stroke: var(--hk-sel); opacity: .55; stroke-width: .8; }
+.hk-bands line.miss { stroke: #8a96a3; opacity: .3; stroke-width: .6; }
+.hk-board.picking .hk-bands line { opacity: .16; }
+.hk-board.picking .hk-bands line.pick { opacity: .8; stroke-width: .86; stroke-dasharray: none; stroke-linecap: round; }
+.hk-lets { pointer-events: none; }
+.hk-lets b { display: grid; place-items: center; font: 900 calc(var(--cs) * .54)/1 system-ui, "Segoe UI", Roboto, sans-serif; color: var(--ci); padding-bottom: calc(var(--cs) * .04); }
+.hk-lets b.f { text-shadow: 0 0 1px rgba(255, 255, 255, .5); }
+.hk-lets b.on { color: var(--oi); transform: scale(1.12); }
+.hk-lets b.ok { animation: hkOk .6s; }
+.hk-lets b.dup { animation: hkDup .6s; }
+.hk-lets b.botf { animation: hkBot .7s; }
+@keyframes hkOk { 35% { transform: scale(1.35); color: #0f7a33; } }
+@keyframes hkDup { 35% { transform: scale(1.2); color: #c76a00; } }
+@keyframes hkBot { 35% { transform: scale(1.3); color: #c01818; } }
+.hk-tray.blur .hk-lets, .hk-tray.blur .hk-bands { filter: blur(12px); opacity: 0; }
+.hk-trayw .kc-pz { top: calc(var(--ts) / 2); }
+/* the last 10 seconds: yellow (10 to 6), red (5 to 1), once a second (as every game) */
+.hk-tray.tf-y { box-shadow: 0 0 0 6px #ffe600, 0 0 26px 8px rgba(255, 230, 0, .75); }
+.hk-tray.tf-r { box-shadow: 0 0 0 6px #ff1a1a, 0 0 26px 8px rgba(255, 26, 26, .75); }
+.hk-tray.tf-y.tf-a { animation: tfYa 1s ease-out; } .hk-tray.tf-y.tf-b { animation: tfYb 1s ease-out; }
+.hk-tray.tf-r.tf-a { animation: tfRa 1s ease-out; } .hk-tray.tf-r.tf-b { animation: tfRb 1s ease-out; }
+/* the Setup preview: a 6×6 grid with a band each (you, the Bot, the Master Key) */
+.hk-pv { --n: 6; --cs: 28px; width: 168px; height: 168px; padding: 6px; box-sizing: content-box; border-radius: 12px; background: var(--kc-glass); box-shadow: var(--kc-edge); }
+.hk-pv .hk-tiles, .hk-pv .hk-lets, .hk-pv .hk-bands { inset: 6px; width: auto; height: auto; }
+.hk-pv .hk-bands { width: 168px; height: 168px; }
+
+/* the Key list: clues (or words) and who found them */
+.hk-keysw { grid-area: keys; min-height: 0; display: flex; flex-direction: column; border-radius: 16px; background: var(--surface); box-shadow: var(--shadow); padding: 8px 8px 6px; }
+.hk-keysw h4 { margin: 0 2px 6px; font-size: 12px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.hk-keys { flex: 1; min-height: 0; overflow-y: auto; display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px; align-content: start; overscroll-behavior: contain; }
+.hk-keys.words { grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); }
+.kc-wide .hk-keys:not(.words):not(.hk-rlist) { grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); }
+.hk-key { display: grid; grid-template-columns: 24px minmax(0, 1fr) auto auto auto; gap: 6px; align-items: center; width: 100%; padding: 5px 8px; border: 0; border-radius: 10px;
+  background: var(--bg); color: var(--ink); font: inherit; text-align: left; cursor: pointer; box-shadow: inset 0 0 0 1px var(--line); }
+.hk-key .hk-len { width: 24px; height: 24px; border-radius: 7px; display: grid; place-items: center; font: 900 13px/1 system-ui, sans-serif; color: #fff;
+  background: linear-gradient(#5b9bff, #2c6bd8); box-shadow: inset 0 -2px 0 #173f8f; }
+.hk-key .hk-cl { font-weight: 700; font-size: 14px; line-height: 1.2; min-width: 0; overflow-wrap: anywhere; }
+.hk-key .hk-ans { font-weight: 900; font-size: 14px; letter-spacing: .06em; white-space: nowrap; }
+.hk-key .hk-ans.blank { display: inline-flex; gap: 2px; align-items: flex-end; height: 14px; opacity: .55; }
+.hk-key .hk-ans.blank u { display: block; width: 7px; height: 2px; background: currentColor; text-decoration: none; }
+.hk-key .hk-pts { font: 900 12px/1 system-ui, sans-serif; color: #1e7a3c; font-variant-numeric: tabular-nums; }
+.hk-key .hk-by { font-family: var(--emoji); font-size: 16px; line-height: 1; width: 20px; height: 20px; overflow: hidden; border-radius: 6px; display: grid; place-items: center; }
+.hk-key .hk-by img { width: 100%; height: 100%; object-fit: cover; }
+.hk-key .hm { font-style: normal; font-family: var(--emoji); font-size: .9em; margin-right: 2px; letter-spacing: 0; }
+.hk-key.wl { grid-template-columns: 24px minmax(0, 1fr) auto auto; }
+.hk-key.wl .hk-ans { font-size: 15px; white-space: normal; overflow-wrap: anywhere; }
+.hk-key.me { background: #dcebff; box-shadow: inset 0 0 0 1px #9cc0f5; }
+.hk-key.me .hk-ans { color: #1d55b8; }
+.hk-key.bot { background: #ffe1e1; box-shadow: inset 0 0 0 1px #f2a3a3; }
+.hk-key.bot .hk-ans { color: #b31b1b; }
+.hk-key.bot .hk-pts { color: #b31b1b; }
+.hk-key.miss { opacity: .8; }
+.hk-key.miss .hk-ans { color: var(--muted); }
+.hk-key.m { background: linear-gradient(#fff8df, #ffefb8); color: #3b2a0b; box-shadow: inset 0 0 0 2px #f5b300; }
+.hk-key.m .hk-len { background: linear-gradient(#ffe082, #f5b300); color: #3a2a00; box-shadow: inset 0 -2px 0 #a87400; }
+.hk-key.m.me { background: linear-gradient(#e6f0ff, #ffefb8); } .hk-key.m.bot { background: linear-gradient(#ffe6e6, #ffefb8); }
+.hk-key.sel { box-shadow: inset 0 0 0 2px var(--primary), 0 0 0 2px rgba(44, 107, 216, .25); }
+.hk-mkl { font: 900 11px/1 system-ui, sans-serif; letter-spacing: .04em; text-transform: uppercase; color: #9a6a00; margin-right: 2px; white-space: nowrap; }
+.hk-bar { display: inline-block; width: 1.7em; height: 0; border-bottom: 2.5px solid #ff8a00; vertical-align: baseline; margin: 0 2px; }
+.hk-q { color: #ff8a00; font-weight: 900; }
+@media (prefers-color-scheme: dark) {
+  .hk-key.me { background: #1d3a5c; box-shadow: inset 0 0 0 1px #3a6aa8; } .hk-key.me .hk-ans { color: #bcdcff; }
+  .hk-key.bot { background: #4a2020; box-shadow: inset 0 0 0 1px #8a3a3a; } .hk-key.bot .hk-ans, .hk-key.bot .hk-pts { color: #ffb3b3; }
+  .hk-key .hk-pts { color: #6ad38f; }
+  .hk-key.m { background: linear-gradient(#3d3219, #4a3a12); color: #ffe8a8; } .hk-key.m.me, .hk-key.m.bot { background: linear-gradient(#2a3346, #4a3a12); }
+  .hk-mkl { color: #ffd36a; }
+}
+html[data-screen="night"] .hk-key { filter: brightness(.82); }
+@media (min-width: 700px) { .hk-key .hk-cl, .hk-key .hk-ans { font-size: 15.5px; } .hk-keysw h4 { font-size: 13px; } }
+
+/* ---------- round results ---------- */
+.hk-rmain { flex: 1; min-height: 0; min-width: 0; display: grid; gap: 8px; padding: 6px 12px 0; overflow-y: auto; align-content: start;
+  grid-template-columns: minmax(0, 1fr); grid-auto-rows: max-content; grid-template-areas: "win" "score" "sum" "board" "det" "list" "nav"; }
+.hk-rmain > .kc-win { grid-area: win; }
+.hk-score { grid-area: score; }
+.hk-sum { grid-area: sum; }
+.hk-rboardw { grid-area: board; display: flex; justify-content: center; }
+.hk-rtray { --ts: min(calc(100vw - 32px), 440px); cursor: default; touch-action: auto; }
+.hk-rdet { grid-area: det; background: var(--surface); border-radius: 14px; box-shadow: var(--shadow); padding: 8px 12px; font-size: 14px; line-height: 1.35; }
+.hk-rdet b { font: 400 19px/1.1 'Alfa Slab One', Rockwell, Georgia, serif; letter-spacing: .02em; }
+.hk-rdet .hk-dcl { display: inline-block; margin-top: 4px; font-weight: 700; }
+.hk-rlist { grid-area: list; overflow: visible; }
+.hk-nav { grid-area: nav; position: sticky; bottom: 0; z-index: 3; background: var(--bg); padding: 6px 0 10px; }
+.kc-pill.mk { background: linear-gradient(#fff8df, #ffe9a3); color: #3b2a0b; box-shadow: var(--shadow), inset 0 0 0 1.5px #f5b300; }
+@media (prefers-color-scheme: dark) { .kc-pill.mk { background: #4a3a12; color: #ffe8a8; } }
+.kc-wide .hk-rmain { grid-template-columns: auto minmax(0, 1fr); grid-template-rows: auto auto auto auto minmax(0, 1fr) auto; grid-auto-rows: auto; overflow: hidden; column-gap: 20px; padding: 8px 22px 14px;
+  grid-template-areas: "win win" "board score" "board sum" "board det" "board list" "nav nav"; max-width: 1400px; margin: 0 auto; width: 100%; box-sizing: border-box; }
+.kc-wide .hk-rmain > * { min-height: 0; }
+.kc-wide .hk-rboardw { align-items: flex-start; }
+.kc-wide .hk-rtray { --ts: min(calc(100vh - 240px), 44vw, 620px); }
+.kc-wide .hk-rlist { overflow-y: auto; }
+.kc-wide .hk-nav { position: static; background: none; padding: 0; }
+.hk-key.miss .hk-pts { color: var(--muted); }
+.hk-keys.words { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+.hk-keys.words .hk-key.m { grid-column: 1 / -1; }
+.hk-key.wl .hk-ans { white-space: nowrap; overflow-wrap: normal; font-size: 14.5px; letter-spacing: .04em; }
