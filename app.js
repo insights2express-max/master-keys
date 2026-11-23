@@ -15,7 +15,7 @@
    v08j: grid colors, final-play view, clock-out final turn, menu defaults, phone two-finger drag) */
 'use strict';
 (() => {
-  const APP_VER = 'v12b'; // Project CP: shown as a pill beside the title and in the browser tab
+  const APP_VER = 'v12d'; // Project CP: shown as a pill beside the title and in the browser tab
   const NM = window.MK_NAMES || { suite: 'Master Keys', cross: 'CrossKeys', lock: 'LockWord' }; // v09: the game names (names.js)
   // v09a (JM CD-71: 1.2c, 1.3b): the two games' own icons, shown wherever the 🧩 / 🔐 emoji stood
   const GI = { cross: 'icons/crosskeys.svg', lock: 'icons/lockword.svg', ring: 'icons/keyring.svg', cubes: 'icons/keycubes.svg' }; // v11: KeyRing; v12: KeyCubes
@@ -502,7 +502,7 @@
   $('#gridSel').innerHTML = gridOpts();
   $('#gridSel').addEventListener('change', e => { settings.grid = e.target.value; saveSettings(); });
   // v11e (JM CD-102: 1.1.1; CD-105: 1.1a, 1.2): BUTTON COLORS, the three looks for the coin buttons, in every game (Steel first)
-  const BTN_LOOKS = [['a', 'Sapphire'], ['b', 'Steel'], ['c', 'Navy & gold']];
+  const BTN_LOOKS = [['b', 'Steel'], ['a', 'Sapphire'], ['c', 'Navy & gold'], ['d', 'Ruby'], ['e', 'Emerald'], ['f', 'Onyx']]; // v12d (JM CD-119 add. 2.1): + Ruby, Emerald, Onyx in every game
   const btnOpts = () => BTN_LOOKS.map(([v, n]) => `<option value="${v}">${n}</option>`).join('');
   function setLook(el, v) { if (!el) return; if (!BTN_LOOKS.some(x => x[0] === v)) v = 'b'; for (const [k] of BTN_LOOKS) el.classList.toggle('mk-bs-' + k, k === v); }
   $('#btnSel').innerHTML = btnOpts();
@@ -2085,7 +2085,7 @@
       ${sec('Options', `
         <li>The five options you change least (${go('Letters in Hand')}, ${go('Bonus Squares')}, ${go('Clue Pics')}, ${go('Scoring')} and ${go('Timer')}) fold into one <b>▸ Options</b> row, so the Setup screen fits on one screen. The row shows your choices in one line, like "6 letters · Floating bonus · Some pics · Classic · Untimed".</li>
         <li>Tap it to open (▾) or close (▸) it. It stays the way you left it. ⚙ Settings in the game changes the same options.</li>
-        <li><b>Button Colors</b> (in More Options, and in ⚙): three looks for the coin buttons: Steel (the default), Sapphire or Navy &amp; gold. Every game has the same choice.</li>
+        <li><b>Button Colors</b> (in More Options, and in ⚙): six looks for the coin buttons: Steel (the default), Sapphire, Navy &amp; gold, Ruby, Emerald or Onyx. Every game has the same choice.</li>
         <li><b>Grid Colors</b> (at the foot of More Options, and in ⚙): five looks for the grid. <b>Board</b> (the default): empty cells are dark slots and played tiles are cream, with a colored bar for whose they are. <b>Inked</b>: no bars; your letters are blue, the Bot's red, starter letters black. <b>Inked Blue</b>: Inked, with this turn's tiles blue. <b>Painted</b>: solid blue and red tiles with white letters, light-gray starters. <b>Bold</b>: white empty cells and solid tiles. The change shows at once.</li>
         <li><b>Screen</b> (in ⚙ ${NM.suite} settings in the Lobby, and in ⚙ in the game; it changes every game): <b>Auto</b> follows your device's light or dark setting; <b>Light</b> and <b>Dark</b> stay put; <b>Night</b> is the dimmest look (charcoal grays, color only in the owner bars and clocks) for playing in the dark, with one fixed grid look.</li>
         <li>The Setup screen remembers your last choices. <b>⭐ Save as my defaults</b> keeps the Challenge Level, Grid Size and all the Options as your own defaults; <b>↺ Defaults</b> brings them back after you try something different (or the app's defaults, if you haven't saved any).</li>`)}
@@ -3566,8 +3566,21 @@
   // Boot
   // =====================================================================
   // v07c: the LockWord mini-game (lockword.js) shares the menu's modal, toasts, storage and avatar list
+  // v12d (JM CD-119 add. 1.1.4.3): while a game is paused, a tap anywhere on its screen (outside its header) resumes play,
+  // as in LockWord (lockword.js closes its overlay the same way)
+  const PZ_PANELS = [['#game', '#pauseOv'], ['#keyring', '#krPz'], ['#keycubes', '#kcPz']];
+  document.addEventListener('click', e => {
+    const m = $('#modal'); if (m && !m.hidden) return;
+    for (const [s, p] of PZ_PANELS) {
+      const sec = $(s), pz = $(p);
+      if (!sec || sec.hidden || !pz || pz.hidden || !sec.contains(e.target) || pz.contains(e.target)) continue;
+      if (e.target.closest('header')) return;
+      e.preventDefault(); e.stopPropagation(); pz.click(); return;
+    }
+  }, true);
   window.CDUI = {
     $, esc, store, toast, openModal, closeModal, APP_VER, AVATARS, coins, coinPill, COIN, // v08: coins shared with LockWord
+    OPP, // v12d (JM CD-119 add. 2.3.1): the rivals, one per Challenge Level, shared with KeyCubes
     armTap, history: hist, // v08c: two-tap coin buttons; Game History shared with LockWord
     helpSec, helpClick, // v08f: How To Play sections shared with LockWord
     showScreen, goHome: () => { showScreen('home'); renderHome(); }, lobby: () => renderHome(), // v10: the Lobby (refreshed once LockWord has loaded)

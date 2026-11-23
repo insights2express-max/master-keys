@@ -1106,7 +1106,7 @@
         <li><b>⏱ +30s</b> (top-right corner, 🪙${TIME_COST}) adds 30 seconds to a timed Ring. Once any Ring ends (cleared or out of time, timed or not), it opens the Ring again for 30 seconds more, to hunt bonus words or to finish it; a Ring finished in extra time counts as cleared. It's in the result window too.</li>
         <li><b>⏸ Pause</b> (beside the clock, or tap the clock) stops the clock and hides the Ring and the Key grid; tap <b>▶</b> or the clock to go on.</li>
         <li>In the last 10 seconds of a timed Ring, the Ring flashes every second: <b>yellow</b> from 10 to 6, <b>red</b> from 5 to 1, with a tick each second.</li>
-        <li>The coin buttons sit in the Ring's corners, shaped to follow it. They take <b>two taps</b>: the first darkens the button and shows its price, the second buys. <b>Ring Button Colors</b> (⚙ Setup › More options) picks their look: Steel (the default), Sapphire or Navy &amp; gold.</li>`)}
+        <li>The coin buttons sit in the Ring's corners, shaped to follow it. They take <b>two taps</b>: the first darkens the button and shows its price, the second buys. <b>Ring Button Colors</b> (⚙ Setup › More options) picks their look: Steel (the default), Sapphire, Navy &amp; gold, Ruby, Emerald or Onyx.</li>`)}
       ${sec('Coins', `
         <li>Help is priced by the Ring's size: one letter's worth is 100 ÷ the Ring's letters (with 50 letters, 🪙2).</li>
         <li><b>💡 Hint</b> costs one letter's worth for each letter in its slot (a 5-letter slot at 🪙2 a letter = 🪙10). <b>🔑 Key Drop</b> costs one letter's worth. <b>⏱ +30s</b> costs 🪙${TIME_COST}.</li>

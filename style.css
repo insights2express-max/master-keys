@@ -2797,3 +2797,101 @@ html[data-screen="night"] .kc-bn { filter: brightness(.75) saturate(.7); }
   .pause-s, .vt-ov .mk-pzi ~ .vt-ov-s, .kc-pz span:not(.mk-pzi):not(.mk-ic) { font-size: 20px; }
   .kc-pz { padding: 20px 30px; }
 }.kc-pz span:not(.mk-pzi):not(.mk-ic) { white-space: nowrap; }
+
+/* =====================================================================
+   v12d (JM CD-119): ONE Paused panel in every game; the title's second line clear of the "y"; KeyCubes score cards as in
+   CrossKeys, faster cube lighting, results that scroll as one page, room for your words; Cube Colors Sky / Candy / Onyx /
+   Ruby; Button Colors Ruby / Emerald / Onyx in every game
+   ===================================================================== */
+/* the Paused panel (CD-119 add. 1.1.4): KeyRing's bordered glass panel in all four games; the pause icon on its own bordered
+   glass tile; "Paused" (title caps); "Tap to resume play" about as wide as "Paused" */
+.pause-card, .vt-ov.pause .vt-ovcard, .kr-pz, .kc-pz {
+  display: flex; flex-direction: column; align-items: center; gap: 0; width: auto; max-width: 92%; box-sizing: border-box;
+  padding: 26px 44px 28px; border-radius: 26px; color: #fff; text-align: center; overflow: visible;
+  background: linear-gradient(160deg, rgba(255, 255, 255, .2), rgba(255, 255, 255, .04) 50%, rgba(0, 0, 0, .22)), rgba(14, 21, 31, .74);
+  -webkit-backdrop-filter: blur(14px) saturate(1.3); backdrop-filter: blur(14px) saturate(1.3);
+  border: 1px solid rgba(255, 255, 255, .3);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .38), inset 0 0 0 7px rgba(255, 255, 255, .05), 0 16px 44px rgba(0, 0, 0, .5);
+  font: 900 52px/1.05 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; letter-spacing: 0; }
+.pause-card, .vt-ov.pause .vt-ovcard { position: relative; }
+.pause-card::before, .vt-ov.pause .vt-ovcard::before, .kc-pz::before { content: ''; position: absolute; inset: 9px; border-radius: 18px; border: 1px solid rgba(255, 255, 255, .14); pointer-events: none;
+  background: linear-gradient(170deg, rgba(255, 255, 255, .1), rgba(255, 255, 255, 0) 40%); }
+.pause-h, .vt-ov.pause .vt-ov-big, .kr-pz b, .kc-pz b { display: block; margin: 0; font: 900 52px/1.05 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; letter-spacing: 0; text-transform: none; }
+.pause-s, .vt-ov.pause .vt-ov-s, .kr-pz > span:not(.mk-pzi), .kc-pz > span:not(.mk-pzi) { display: block; margin: 10px 0 0; font: 800 21px/1.2 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  opacity: .9; white-space: nowrap; letter-spacing: 0; }
+.pause-card .mk-pzi, .vt-ov.pause .mk-pzi, .kr-pz span.mk-pzi, .kc-pz span.mk-pzi { display: flex; align-items: center; justify-content: center; width: 116px; height: 116px; margin: 0 auto 14px;
+  border-radius: 28px; opacity: 1; background: linear-gradient(160deg, rgba(255, 255, 255, .3), rgba(255, 255, 255, .06) 55%, rgba(0, 0, 0, .18));
+  border: 1px solid rgba(255, 255, 255, .42); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .55), inset 0 0 0 5px rgba(255, 255, 255, .05), 0 6px 16px rgba(0, 0, 0, .35); }
+.pause-card .mk-pzi svg.mk-pp, .vt-ov.pause .mk-pzi svg.mk-pp, .kr-pz .mk-pzi svg.mk-pp, .kc-pz .mk-pzi svg.mk-pp { width: 82px; height: 82px; }
+@media (max-width: 420px) {
+  .pause-card, .vt-ov.pause .vt-ovcard, .kr-pz, .kc-pz { padding: 20px 30px 22px; }
+  .pause-h, .vt-ov.pause .vt-ov-big, .kr-pz b, .kc-pz b { font-size: 44px; }
+  .pause-s, .vt-ov.pause .vt-ov-s, .kr-pz > span:not(.mk-pzi), .kc-pz > span:not(.mk-pzi) { font-size: 18px; }
+  .pause-card .mk-pzi, .vt-ov.pause .mk-pzi, .kr-pz span.mk-pzi, .kc-pz span.mk-pzi { width: 96px; height: 96px; border-radius: 24px; margin-bottom: 12px; }
+  .pause-card .mk-pzi svg.mk-pp, .vt-ov.pause .mk-pzi svg.mk-pp, .kr-pz .mk-pzi svg.mk-pp, .kc-pz .mk-pzi svg.mk-pp { width: 68px; height: 68px; }
+}
+/* every game title's second line sits clear of the descender of "y" (KeyCubes, KeyRing) (CD-119 add. 2.3.5) */
+.ck-title small { margin-top: 5px; }
+
+/* ---------- KeyCubes score cards (CD-119 add. 2.3): as in CrossKeys: blue (You) / red (rival) numbers on white, no "pts",
+   the rival's name with its Challenge Level in a red 3D pill, a round line twice as big ---------- */
+.kc-side .sc { display: inline-block; justify-self: start; padding: 0 8px; border-radius: 8px; background: #fff; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .18);
+  font: 900 27px/1.08 system-ui, sans-serif; font-variant-numeric: tabular-nums; -webkit-text-stroke: 1px #000; paint-order: stroke fill; }
+.kc-side.me .sc { color: var(--you); }
+.kc-side.bot .sc { color: var(--opp); justify-self: end; }
+.kc-bar.multi .kc-side .sc { font-size: 27px; }
+html[data-screen="night"] .kc-side .sc { background: #262626; box-shadow: inset 0 0 0 1px #3a3a3a; -webkit-text-stroke: 0; }
+.kc-side.me { box-shadow: var(--kc-edge), inset 0 0 0 2px rgba(79, 140, 255, .85); }
+.kc-side.bot:not(.solo) { box-shadow: var(--kc-edge), inset 0 0 0 2px rgba(240, 110, 80, .85); }
+.kc-side .nm { display: flex; align-items: center; gap: 4px; min-width: 0; }
+.kc-side.bot .nm { justify-content: flex-end; }
+.kc-side .nm .t { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.kc-side .nm .lvl-pill { flex: none; margin-left: 0; font-size: 12px; }
+.kc-side .rd { font-size: min(22px, 5.4vw); font-weight: 900; opacity: .9; line-height: 1.15; margin-top: 2px; }
+@media (min-width: 700px) { .kc-side .sc, .kc-bar.multi .kc-side .sc { font-size: 34px; } .kc-side .rd { font-size: 24px; } .kc-side .nm .lvl-pill { font-size: 14px; } }
+/* lighting a cube is instant (CD-119: 1.1.1) */
+.kc-cube, .kc-cube.on { transition: none; }
+.kc-tray, .kc-cube { -webkit-tap-highlight-color: transparent; }
+/* your words keep room to scroll while you play (CD-119: 6.2.1) */
+.kc-found { min-height: 118px; }
+.kc-chips { overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+/* the results scroll as one page and the buttons stay pinned below (CD-119: 6.2.2): rows take their full height */
+.kc-rmain { grid-auto-rows: max-content; }
+.kc-rmain > * { min-height: auto; }
+.kc-wide .kc-rmain > .kc-list, .kc-wide .kc-rmain > .kc-det { min-height: 0; }
+/* Cube Colors (CD-119 add. 2.1): Sky, Candy (a color per letter, set on each cube), Onyx (black, white letters), Ruby (red, white letters) */
+#keycubes.kc-cs-sky { --c1: #eaf6ff; --c2: #b9dcf7; --ce: #6fa3cc; --ci: #0b3a6e; --crim: #8fb6d6; }
+#keycubes.kc-cs-candy { --ci: #111; --crim: rgba(0, 0, 0, .12); }
+#keycubes.kc-cs-onyx { --c1: #3a3d42; --c2: #0d0e10; --ce: #2a2d33; --ci: #ffffff; --crim: #5a5f66; --o1: #8fc1ff; --o2: #3d86ec; --oe: #1b4fa8; --oi: #fff; }
+#keycubes.kc-cs-ruby { --c1: #e2474a; --c2: #8e0f17; --ce: #5f0a10; --ci: #ffffff; --crim: #ff9a9a; --o1: #ffe082; --o2: #f5b300; --oe: #8f6200; --oi: #241800; }
+#keycubes.kc-cs-onyx .kc-cube, #keycubes.kc-cs-ruby .kc-cube { background-image: linear-gradient(rgba(0, 0, 0, 0) 55%, rgba(0, 0, 0, .22)), linear-gradient(var(--c1), var(--c2)); }
+#keycubes.kc-cs-onyx .kc-cube::before, #keycubes.kc-cs-ruby .kc-cube::before { background: linear-gradient(rgba(255, 255, 255, .42), rgba(255, 255, 255, .03)); }
+#keycubes.kc-cs-onyx .kc-cube.on, #keycubes.kc-cs-ruby .kc-cube.on { background-image: linear-gradient(var(--o1), var(--o2)); }
+#keycubes.kc-cs-onyx .kc-face i, #keycubes.kc-cs-ruby .kc-face i { opacity: .8; }
+/* Button Colors Ruby (d), Emerald (e), Onyx (f): the coin buttons in every game, and KeyRing's corner pieces */
+.mk-bs-d .btn.coinbtn { background: linear-gradient(180deg, #ff7b7b, #d62828 52%, #9e1218); color: #fff;
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, .38), inset 0 2px 0 rgba(255, 255, 255, .45), inset 0 -4px 0 #7d0f14, 0 4px 0 #5c0a0e, 0 7px 12px rgba(0, 0, 0, .35);
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, .35), 0 1px 0 rgba(255, 255, 255, .2); }
+.mk-bs-e .btn.coinbtn { background: linear-gradient(180deg, #6fe39a, #1f9d55 52%, #137a40); color: #fff;
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, .38), inset 0 2px 0 rgba(255, 255, 255, .45), inset 0 -4px 0 #0b5a2e, 0 4px 0 #08401f, 0 7px 12px rgba(0, 0, 0, .35);
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, .35), 0 1px 0 rgba(255, 255, 255, .2); }
+.mk-bs-f .btn.coinbtn { background: linear-gradient(180deg, #4a4f57, #1c1f24 50%, #050608); color: #fff;
+  box-shadow: inset 0 0 0 1.5px #8a9099, inset 0 2px 0 rgba(255, 255, 255, .22), inset 0 -4px 0 #000, 0 4px 0 #2b2f35, 0 7px 12px rgba(0, 0, 0, .45);
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, .6), 0 1px 0 rgba(255, 255, 255, .12); }
+#keyring.mk-bs-d .kr-cp path.b, #keyring.mk-bs-d .kr-cp.kr-bonus path.b { fill: url(#krRubyD); }
+#keyring.mk-bs-e .kr-cp path.b, #keyring.mk-bs-e .kr-cp.kr-bonus path.b { fill: url(#krEmerE); }
+#keyring.mk-bs-f .kr-cp path.b, #keyring.mk-bs-f .kr-cp.kr-bonus path.b { fill: url(#krOnyxF); }
+#keyring.mk-bs-d .kr-cp path.r, #keyring.mk-bs-e .kr-cp path.r, #keyring.mk-bs-f .kr-cp path.r { stroke: url(#krSteelR); stroke-width: 2.5; }
+#keyring.mk-bs-d .kr-cp path.g, #keyring.mk-bs-e .kr-cp path.g { opacity: .85; }
+#keyring.mk-bs-f .kr-cp path.g { opacity: .35; }
+#keyring.mk-bs-d .kr-cp path.e { fill: #5c0a0e; } #keyring.mk-bs-e .kr-cp path.e { fill: #08401f; } #keyring.mk-bs-f .kr-cp path.e { fill: #000; }
+#keyring.mk-bs-d .kr-cp, #keyring.mk-bs-e .kr-cp, #keyring.mk-bs-f .kr-cp { color: #fff; }
+#keyring.mk-bs-d .kr-cpc, #keyring.mk-bs-e .kr-cpc, #keyring.mk-bs-f .kr-cpc { text-shadow: 0 -1px 0 rgba(0, 0, 0, .5), 0 1px 0 rgba(255, 255, 255, .14); }
+/* the score card in three rows: name (+ level pill) across the top; avatar and score; the round line across the bottom */
+.kc-side .nm { grid-column: 1 / -1; grid-row: 1; }
+.kc-side .av { grid-row: 2; grid-column: 1; }
+.kc-side .sc { grid-row: 2; grid-column: 2; }
+.kc-side.bot .av { grid-row: 2; grid-column: 2; }
+.kc-side.bot .sc { grid-row: 2; grid-column: 1; }
+.kc-side .rd { grid-row: 3; grid-column: 1 / -1; overflow: visible; text-overflow: clip; }
+.kc-side.bot .rd { text-align: right; }

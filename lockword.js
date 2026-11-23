@@ -783,7 +783,7 @@
         <li><b>Letters</b> (4–8) and <b>Guesses</b> (5–10) set the word's length and how many tries you get.</li>
         <li><b>Timer:</b> the main game's choices. "Per GUESS" gives each guess its own clock (when it runs out, that guess is used up); "per WORD" times the whole round. The clock stops while a window is open or the app is hidden.</li>
         <li><b>Scoring</b> (only when you solve it): <b>Classic</b> scores the word's letter values (as in the main game) plus 2 per letter; <b>Flat</b> scores 2 per letter. Both add <b>+5</b> for every guess you didn't need and, in timed rounds, a time bonus (1 point per 5 seconds left, up to 30). (Hint and Reveal cost coins, not points.)</li>
-        <li><b>Button Colors</b>: three looks for the coin buttons: Steel (the default), Sapphire or Navy &amp; gold. Every game has the same choice.</li>
+        <li><b>Button Colors</b>: six looks for the coin buttons: Steel (the default), Sapphire, Navy &amp; gold, Ruby, Emerald or Onyx. Every game has the same choice.</li>
         <li><b>⚙ Settings</b> (in the header, or tap the line above the grid) change the game at any time; changes apply from the next word.</li>`)}
       ${sec('Your Stats', `
         <li>Your stats (played, solved %, streaks, best time, guesses needed) are kept on this device. Every finished word also goes into <b>📜 Game History</b> in the Lobby, where you can reopen its full result.</li>

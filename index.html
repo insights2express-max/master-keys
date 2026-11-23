@@ -9,7 +9,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Master Keys">
   <meta name="description" content="Master Keys: CrossKeys, a head-to-head crossword tile game, LockWord, a word-guessing game, and KeyRing, a word builder. Plays offline.">
-  <title>Master Keys · v12b</title>
+  <title>Master Keys · v12d</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="icon" href="icons/icon-192.png" type="image/png" sizes="192x192">
@@ -33,6 +33,10 @@
       <linearGradient id="krNavyC" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#34507f"/><stop offset=".5" stop-color="#1a2b4f"/><stop offset="1" stop-color="#0b1427"/></linearGradient>
       <linearGradient id="krPlumC" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6a3a8e"/><stop offset=".5" stop-color="#3a1a55"/><stop offset="1" stop-color="#1f0c30"/></linearGradient>
       <linearGradient id="krGoldR" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff3b0"/><stop offset=".5" stop-color="#e7b416"/><stop offset="1" stop-color="#9a6b00"/></linearGradient>
+      <!-- v12d (JM CD-119 add. 2.1): Button Colors Ruby, Emerald, Onyx -->
+      <linearGradient id="krRubyD" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff7b7b"/><stop offset=".45" stop-color="#d62828"/><stop offset="1" stop-color="#7d0f14"/></linearGradient>
+      <linearGradient id="krEmerE" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6fe39a"/><stop offset=".45" stop-color="#1f9d55"/><stop offset="1" stop-color="#0b5a2e"/></linearGradient>
+      <linearGradient id="krOnyxF" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4a4f57"/><stop offset=".5" stop-color="#1c1f24"/><stop offset="1" stop-color="#050608"/></linearGradient>
     </defs></svg>
   <!-- ===== Lobby (v10, JM CD-76: 3.1–3.3, CD-79): only what every game shares, plus one equal card per game ===== -->
   <section id="home" class="screen">
@@ -47,7 +51,7 @@
       <header class="brand">
         <img class="logo" src="icons/icon.svg" alt="" width="64" height="64">
         <div class="brand-txt">
-          <h1><span data-mk="suite">Master Keys</span> <span class="vpill" id="verPill">v12b</span></h1>
+          <h1><span data-mk="suite">Master Keys</span> <span class="vpill" id="verPill">v12d</span></h1>
           <p class="tag">Word games. Play anywhere, even offline.</p>
         </div>
       </header>
@@ -353,7 +357,7 @@
             <div class="seg" id="krLay"><button type="button" data-v="auto">Auto</button><button type="button" data-v="stack">Stacked</button><button type="button" data-v="side">Side by side</button></div>
           </div>
           <p class="opt-desc kr-desc">Auto picks the bigger Ring. Side by side needs a tablet or computer screen. During play, the layout pill (tablets and computers) and the Word / Letter switch (top corner of the Key grid) change them too.</p>
-          <label class="field"><span class="lbl">Ring Button Colors</span><select id="krBs"><option value="a">Sapphire</option><option value="b">Steel</option><option value="c">Navy &amp; gold</option></select></label>
+          <label class="field"><span class="lbl">Ring Button Colors</span><select id="krBs"><option value="b">Steel</option><option value="a">Sapphire</option><option value="c">Navy &amp; gold</option><option value="d">Ruby</option><option value="e">Emerald</option><option value="f">Onyx</option></select></label>
           <p class="opt-desc kr-desc">The look of the Ring's corner buttons (every game has Button Colors too).</p>
         </div>
       </details>      <div class="vt-stats" id="krStats"></div>
@@ -453,7 +457,7 @@
           <div class="kc-side bot" id="kcBot"><span class="av" id="kcBotAv">🤖</span><span class="nm" id="kcBotNm">Bot</span><span class="sc" id="kcBotSc">0</span><span class="rd" id="kcBotRd"></span><span class="plus" id="kcBotPlus">+1</span></div>
         </div>
         <div class="kc-msg" id="kcMsg" aria-live="polite"></div>
-        <div class="kc-trayw"><div class="kc-tray" id="kcTray"></div><button class="kc-pz" id="kcPz" type="button" hidden><span class="mk-pzi">⏸️</span>Paused<span>Tap to resume play</span></button></div>
+        <div class="kc-trayw"><div class="kc-tray" id="kcTray"></div><button class="kc-pz" id="kcPz" type="button" hidden><span class="mk-pzi">⏸️</span><b>Paused</b><span>Tap to resume play</span></button></div>
         <div class="kc-btns" id="kcBtns">
           <button class="btn coinbtn" id="kcHint" type="button" title="Hint: the clue for a word you have not found"><span class="ic">💡</span><span class="nm" id="kcHintNm">Hint</span><span class="cp" id="kcHintCp"></span></button>
           <button class="btn coinbtn" id="kcTurn" type="button" title="Rotate the grid a quarter turn (free)"><span class="ic">🔄</span><span class="nm">Rotate</span><span class="cp">free</span></button>
