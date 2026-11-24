@@ -3098,3 +3098,18 @@ html[data-screen="night"] .hk-key { filter: brightness(.82); }
 .hk-keys.words { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
 .hk-keys.words .hk-key.m { grid-column: 1 / -1; }
 .hk-key.wl .hk-ans { white-space: nowrap; overflow-wrap: normal; font-size: 14.5px; letter-spacing: .04em; }
+
+/* =====================================================================
+   v13a (JM CD-132): Game History picks a game from a dropdown, with "All" as a button on its left (every game);
+   Hidden Keys word count and word length settings
+   ===================================================================== */
+.hist-pick { display: flex; gap: 8px; align-items: stretch; margin: 4px 0 10px; }
+.hist-pick > button { flex: none; min-width: 76px; padding: 10px 14px; border-radius: 12px; border: 1px solid var(--line); background: var(--btn); color: var(--btn-ink); font: inherit; font-weight: 800; cursor: pointer; }
+.hist-pick > button.on { background: var(--primary); color: var(--primary-ink); border-color: var(--primary); }
+.hist-selw { flex: 1; min-width: 0; display: flex; align-items: center; gap: 6px; padding: 0 0 0 10px; border-radius: 12px; border: 1px solid var(--line); background: var(--btn); }
+.hist-selw.on { border-color: var(--primary); box-shadow: inset 0 0 0 1px var(--primary); }
+.hist-selw .hist-gi { width: 22px; height: 22px; flex: none; }
+.hist-sel { flex: 1; min-width: 0; border: 0; background: transparent; color: var(--btn-ink); font: inherit; font-weight: 800; padding: 10px 6px; cursor: pointer; }
+.hist-sel option { color: #111; background: #fff; }
+/* phones: the Key list heading stays on one line (your words and points are in your score card above) */
+@media (max-width: 480px) { #hkKPts { display: none; } .hk-keysw h4 { letter-spacing: .03em; } }

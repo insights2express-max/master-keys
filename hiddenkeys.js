@@ -17,6 +17,8 @@
    - Typing (computers): in Clues mode, type the answer and press Enter (the app finds it in the grid); in Words mode the
      list already shows the words, so you drag (typing would skip the hunt).
    Built from the suite's own parts (KeyCubes' bar, score cards, Paused panel, results; CDUI rivals, coins, history, help).
+   v13a (JM CD-132): Word count (min / max list words) and Word length (min / max letters) in More options, Auto by grid size;
+   a too-short / too-long word gets a reminder of the lengths; How To Play explains both.
    Saved on this device: settings 'cd.hk.settings', stats 'cd.hk.stats', an unfinished match 'cd.hk.save'. */
 'use strict';
 (function () {
@@ -31,7 +33,7 @@
   const reduceMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   // ---------- settings and stats ----------
-  const DEF = { mode: 'duel', n: 10, timer: 180, sTimer: 0, lv: 3, list: 'clue', dir: 'std', rounds: 3, bs: 'b', gs: 'cream', sHint: 'free', sCap: '3' };
+  const DEF = { mode: 'duel', n: 10, timer: 180, sTimer: 0, lv: 3, list: 'clue', dir: 'std', rounds: 3, bs: 'b', gs: 'cream', sHint: 'free', sCap: '3', qMin: 'auto', qMax: 'auto', lMin: 3, lMax: 'auto' };
   const hs = Object.assign({}, DEF, store.get('cd.hk.settings', {}));
   const saveHs = () => store.set('cd.hk.settings', hs);
   const blankSt = () => ({ matches: 0, won: 0, drawn: 0, rounds: 0, words: 0, keys: 0, soloN: 0, sb: {} });
@@ -40,7 +42,25 @@
   const SAVE_KEY = 'cd.hk.save';
   const TIMERS = [[60, '1 min'], [120, '2 min'], [180, '3 min'], [300, '5 min'], [480, '8 min'], [0, 'Untimed']];
   const timerName = t => (TIMERS.find(x => x[0] === +t) || TIMERS[2])[1];
-  const SIZES = { 8: 8, 10: 11, 12: 14 }; // grid size: list words
+  // v13a (JM CD-132 add. 1–2): Word count (min / max list words per grid) and Word length (shortest / longest), side by side
+  // in More options. Auto = by grid size: 8×8 7–9 words of 3–6 letters; 10×10 10–12 words, 12×12 13–15 words, 3–8 letters.
+  // (Our Lexicon's words are 3–8 letters, plus some 11-letter words, offered on 12×12 only.) Each round picks its count in the range.
+  const AUTO_Q = { 8: [7, 9], 10: [10, 12], 12: [13, 15] }, Q_CAP = { 8: 12, 10: 18, 12: 24 }, AUTO_L = { 8: 6, 10: 8, 12: 8 };
+  const lenCap = n => n <= 8 ? 7 : n >= 12 ? 11 : 8;
+  const lenOpts = n => [4, 5, 6, 7, 8].filter(L => L <= lenCap(n)).concat(n >= 12 ? [11] : []);
+  function qRange(n, s) {
+    let lo = s.qMin === 'auto' ? AUTO_Q[n][0] : Math.min(+s.qMin, Q_CAP[n]), hi = s.qMax === 'auto' ? AUTO_Q[n][1] : Math.min(+s.qMax, Q_CAP[n]);
+    if (lo > hi) { if (s.qMax === 'auto') hi = lo; else lo = hi; }
+    return [lo, hi];
+  }
+  function lRange(n, s) {
+    const cap = lenCap(n);
+    let lo = Math.min(+s.lMin || 3, 8, cap), hi = s.lMax === 'auto' ? AUTO_L[n] : Math.min(+s.lMax, cap);
+    if (lo > hi) { if (s.lMax === 'auto') hi = lo; else lo = hi; }
+    return [lo, hi];
+  }
+  const rangeTxt = (a, b) => a === b ? `${a}` : `${a}–${b}`;
+  const lensOf = () => (M && M.l) || [M && M.n <= 8 ? 3 : 4, AUTO_L[(M && M.n) || 10]]; // a v13 save has no lengths
   const DIRS_ALL = [[0, 1], [1, 0], [1, 1], [-1, 1], [0, -1], [-1, 0], [-1, -1], [1, -1]]; // → ↓ ↘ ↗ ← ↑ ↖ ↙
   const DIR_SETS = { easy: 2, std: 4, hard: 8 };
   const DIR_NAMES = { easy: 'Easy: → ↓', std: 'Standard: → ↓ ↘ ↗', hard: 'Hard: all 8 ways, backwards too' };
@@ -87,13 +107,17 @@
   const FILL = 'EEEEEEEEEEEETTTTTTTTTAAAAAAAAOOOOOOOIIIIIIINNNNNNNSSSSSSRRRRRRHHHHHLLLLLDDDDCCCUUUMMMFFPPGGWWYYBBVKXJZ';
 
   // build a grid: n×n letters, the list words + the Master Key in straight lines, the rest filled
-  function build(n, lv, dirKey) {
-    // words shorter than the grid, so none fills a whole row (8×8: up to 6 letters; bigger grids: up to n − 2)
-    const P = pool(), cap = LV_CAP[lv - 1], maxL = n <= 8 ? 6 : Math.min(n - 2, 10), count = SIZES[n];
+  // v13a: count = list words wanted; lens = [shortest, longest] (the Word length setting; Auto keeps words shorter than the
+  // grid, so none fills a whole row); minC = the fewest list words accepted if the grid is too crowded for count
+  function build(n, lv, dirKey, count, lens, minC) {
+    count = count || AUTO_Q[n][0]; lens = lens || [3, AUTO_L[n]]; minC = Math.min(count, minC || count);
+    const P = pool(), cap = LV_CAP[lv - 1], [lo, maxL] = lens;
     const dirs = DIRS_ALL.slice(0, DIR_SETS[dirKey] || 4);
-    let cand = P.filter(e => e.l <= cap && e.w.length <= maxL);
-    if (cand.length < 400) cand = P.filter(e => e.w.length <= maxL);
+    const inLen = e => e.w.length >= lo && e.w.length <= maxL;
+    let cand = P.filter(e => e.l <= cap && inLen(e));
+    if (cand.length < Math.max(400, count * 12)) cand = P.filter(inLen);
     for (let attempt = 0; attempt < 40; attempt++) {
+      const need = attempt < 20 ? count : Math.max(minC, count - 2);
       const grid = new Array(n * n).fill(''), placed = [], used = new Set(), dirUse = {};
       const fits = (w, r, c, d) => {
         let over = 0;
@@ -127,13 +151,18 @@
         return true;
       };
       // the Master Key first (5–8 letters, an easier word), then the list: a spread of lengths, longest placed first
-      const mk = shuffled(cand.filter(e => e.w.length >= 5 && e.w.length <= Math.min(8, maxL) && e.l <= Math.max(2, cap)));      if (!mk.some(e => place(e, true))) continue;
-      // a varied list: at most a quarter of the words of one length (3+ letters on 8×8, 4+ on bigger grids); placed longest first
-      const minL = n <= 8 ? 3 : 4, perLen = {}, pick = [], spare = [];
+      // (the Master Key: 5–8 letters where the Word length allows, else the nearest lengths it allows)
+      const mkLo = Math.max(lo, Math.min(5, maxL)), mkHi = Math.max(mkLo, Math.min(8, maxL));
+      let mkC = cand.filter(e => e.w.length >= mkLo && e.w.length <= mkHi && e.l <= Math.max(2, cap));
+      if (!mkC.length) mkC = cand.filter(e => e.w.length >= mkLo && e.w.length <= mkHi);
+      const mk = shuffled(mkC);
+      if (!mk.some(e => place(e, true))) continue;
+      // a varied list: a fair share of each length; placed longest first
+      const perLen = {}, pick = [], spare = [];
       for (const e of shuffled(cand)) {
         const L = e.w.length;
-        if (L < minL || e.w === placed[0].w) continue;
-        if (pick.length < count + 2 && (perLen[L] || 0) < Math.ceil(count / 4)) { pick.push(e); perLen[L] = (perLen[L] || 0) + 1; }
+        if (e.w === placed[0].w) continue;
+        if (pick.length < count + 2 && (perLen[L] || 0) < Math.ceil((count + 2) / Math.min(4, maxL - lo + 1))) { pick.push(e); perLen[L] = (perLen[L] || 0) + 1; }
         else if (spare.length < count * 4) spare.push(e);
         if (pick.length >= count + 2 && spare.length >= count * 4) break;
       }
@@ -141,7 +170,7 @@
         if (placed.length - 1 >= count) break;
         place(e, false);
       }
-      if (placed.length - 1 < count) continue;
+      if (placed.length - 1 < need) continue;
       // fill the gaps; a list word may not show up twice (any direction)
       let ok = false;
       for (let f = 0; f < 12 && !ok; f++) {
@@ -185,10 +214,12 @@
   function save() { if (!M || M.done) { store.set(SAVE_KEY, null); return; } store.set(SAVE_KEY, { M, R }); }
   function newMatch() {
     M = { mode: hs.mode, n: hs.n, timer: timerOf(), lv: hs.lv, list: hs.list, dir: hs.dir, rounds: hs.mode === 'solo' ? 1 : hs.rounds,
-      sHint: hs.sHint, sCap: hs.sCap, no: 0, me: 0, bot: 0, list2: [], done: false, histT: 0, coins: 0 };
+      sHint: hs.sHint, sCap: hs.sCap, q: qRange(hs.n, hs), l: lRange(hs.n, hs), no: 0, me: 0, bot: 0, list2: [], done: false, histT: 0, coins: 0 };
   }
   function newRound() {
-    const b = build(M.n, M.lv, M.dir) || build(M.n, M.lv, M.dir);
+    const q = M.q || AUTO_Q[M.n], count = q[0] + Math.floor(Math.random() * (q[1] - q[0] + 1));
+    const b = build(M.n, M.lv, M.dir, count, lensOf(), q[0]) || build(M.n, M.lv, M.dir, Math.max(4, count - 3), lensOf(), 4)
+      || build(M.n, M.lv, M.dir, AUTO_Q[M.n][0], [3, AUTO_L[M.n]], 4); // a very crowded choice falls back to the Auto grid
     M.no++;
     R = { grid: b.grid, words: b.words, el: 0, hints: 0, hintCoins: 0, hint: -1, hintK: 0, hinted: {}, sel: -1, over: false, paused: false, started: false, botNext: 0 };
     if (M.mode === 'duel') R.botNext = botGap() * 0.8;
@@ -278,13 +309,21 @@
     $('#hkSoloF').hidden = duel; $('#hkRdF').hidden = !duel;
     $('#hkLv').value = String(hs.lv); $('#hkRd').value = String(hs.rounds); $('#hkDir').value = hs.dir;
     $('#hkGs').value = hs.gs; $('#hkBs').value = hs.bs; $('#hkSh').value = hs.sHint; $('#hkScap').value = hs.sCap;
+    // v13a: Word count and Word length (the lists depend on the grid size; Auto shows what it means for this grid)
+    const n = hs.n, q = qRange(n, hs), l = lRange(n, hs), nums = (a, b) => Array.from({ length: b - a + 1 }, (_, i) => a + i);
+    const opt = (v, t, on) => `<option value="${v}"${on ? ' selected' : ''}>${t}</option>`;
+    $('#hkQmin').innerHTML = opt('auto', `Auto: ${AUTO_Q[n][0]}`, hs.qMin === 'auto') + nums(4, Q_CAP[n]).map(v => opt(v, v, hs.qMin !== 'auto' && v === q[0])).join('');
+    $('#hkQmax').innerHTML = opt('auto', `Auto: ${AUTO_Q[n][1]}`, hs.qMax === 'auto') + nums(4, Q_CAP[n]).map(v => opt(v, v, hs.qMax !== 'auto' && v === q[1])).join('');
+    $('#hkLmin').innerHTML = nums(3, Math.min(8, lenCap(n))).map(v => opt(v, `${v} letters`, v === l[0])).join('');
+    $('#hkLmax').innerHTML = opt('auto', `Auto: ${AUTO_L[n]} letters`, hs.lMax === 'auto') + lenOpts(n).map(v => opt(v, `${v} letters`, hs.lMax !== 'auto' && v === l[1])).join('');
+    for (const b of document.querySelectorAll('#hkN button')) { const g = +b.dataset.v, r = qRange(g, hs); b.querySelector('small').textContent = `${rangeTxt(r[0], r[1])} words`; }
     paintPreview();
     const words = ['everyday words', 'everyday words', 'common words', 'common words', 'common words', 'a wider vocabulary', 'a wider vocabulary', 'harder words', 'harder words', 'any word in the Lexicon'][hs.lv - 1];
     const clues = hs.lv >= 6 ? ' Clues are often indirect (a link, not a definition).' : '';
     $('#hkDesc').textContent = duel
-      ? `Challenge Level ${hs.lv}: ${rival(hs.lv).a} ${rival(hs.lv).n} races you for ${SIZES[hs.n]} hidden words (${words}), about one every ${Math.round(60 / BOT_WPM[hs.lv - 1] * ({ 8: 0.8, 10: 1, 12: 1.25 }[hs.n]) * (hs.list === 'word' ? 1 : 1.45))} seconds. Each word goes to whoever finds it first.${clues}`
-      : `Solo: ${SIZES[hs.n]} hidden words (${words}), no Bot. Hints ${hs.sHint === 'free' ? 'are free' : 'cost 🪙1 per letter'}, ${hs.sCap === '3' ? '3 per round' : 'no limit'}. Beat your fastest clear for ${hs.n}×${hs.n} with ${listName(hs.list)}${hs.sHint === 'free' ? '' : `: a new best pays 🪙${SOLO_BEST}`}.${clues}`;
-    $('#hkOptsSum').textContent = `Directions: ${DIR_NAMES[hs.dir].split(':')[0]} · ${duel ? plural(hs.rounds, 'round') + ' · ' : ''}Grid: ${(GRID_LOOKS.find(x => x[0] === hs.gs) || GRID_LOOKS[0])[1].replace(/ \(.*\)$/, '')} · Buttons: ${((UI.BTN_LOOKS || []).find(x => x[0] === hs.bs) || [0, 'Steel'])[1]}`;
+      ? `Challenge Level ${hs.lv}: ${rival(hs.lv).a} ${rival(hs.lv).n} races you for ${rangeTxt(q[0], q[1])} hidden words of ${rangeTxt(l[0], l[1])} letters (${words}), about one every ${Math.round(60 / BOT_WPM[hs.lv - 1] * ({ 8: 0.8, 10: 1, 12: 1.25 }[hs.n]) * (hs.list === 'word' ? 1 : 1.45))} seconds. Each word goes to whoever finds it first.${clues}`
+      : `Solo: ${rangeTxt(q[0], q[1])} hidden words of ${rangeTxt(l[0], l[1])} letters (${words}), no Bot. Hints ${hs.sHint === 'free' ? 'are free' : 'cost 🪙1 per letter'}, ${hs.sCap === '3' ? '3 per round' : 'no limit'}. Beat your fastest clear for ${hs.n}×${hs.n} with ${listName(hs.list)}${hs.sHint === 'free' ? '' : `: a new best pays 🪙${SOLO_BEST}`}.${clues}`;
+    $('#hkOptsSum').textContent = `Words: ${rangeTxt(q[0], q[1])} · ${rangeTxt(l[0], l[1])} letters · Directions: ${DIR_NAMES[hs.dir].split(':')[0]} · ${duel ? plural(hs.rounds, 'round') + ' · ' : ''}Grid: ${(GRID_LOOKS.find(x => x[0] === hs.gs) || GRID_LOOKS[0])[1].replace(/ \(.*\)$/, '')} · Buttons: ${((UI.BTN_LOOKS || []).find(x => x[0] === hs.bs) || [0, 'Steel'])[1]}`;
     const unf = unfinished();
     $('#hkSetUnf').hidden = !unf; if (unf) $('#hkSetUnfTxt').textContent = unfText();
     $('#hkStart').textContent = unf ? '🆕 New Game' : `▶ Start ${NM.hidden}`;
@@ -308,6 +347,12 @@
   onCh('#hkBs', v => { hs.bs = v; });
   onCh('#hkSh', v => { hs.sHint = v; });
   onCh('#hkScap', v => { hs.sCap = v; });
+  // a min above the max (or a max below the min) moves the other one along, so the pair always makes sense
+  const numOr = v => v === 'auto' ? v : +v;
+  onCh('#hkQmin', v => { hs.qMin = numOr(v); if (hs.qMin !== 'auto' && hs.qMax !== 'auto' && hs.qMax < hs.qMin) hs.qMax = hs.qMin; });
+  onCh('#hkQmax', v => { hs.qMax = numOr(v); if (hs.qMax !== 'auto' && hs.qMin !== 'auto' && hs.qMin > hs.qMax) hs.qMin = hs.qMax; });
+  onCh('#hkLmin', v => { hs.lMin = +v; if (hs.lMax !== 'auto' && hs.lMax < hs.lMin) hs.lMax = hs.lMin; });
+  onCh('#hkLmax', v => { hs.lMax = numOr(v); if (hs.lMax !== 'auto' && hs.lMin > hs.lMax) hs.lMin = hs.lMax; });
   $('#hkStart').addEventListener('click', newGame);
   $('#hkSetResume').addEventListener('click', () => { if (unfinished()) showPlay(); });
   paintLooks();
@@ -392,7 +437,8 @@
   }
   function paintKeys() {
     const L = listWords(), mine = R.words.filter(x => x.by === 'me').length, left = L.filter(x => !x.by).length;
-    $('#hkKHead').textContent = `${M.list === 'clue' ? 'Key clues' : 'Key words'}: ${UI.fmtN(left)} of ${UI.fmtN(L.length)} left`;
+    const lr = lenRange();
+    $('#hkKHead').textContent = `${M.list === 'clue' ? 'Key clues' : 'Key words'}: ${UI.fmtN(left)} of ${UI.fmtN(L.length)} left · ${rangeTxt(lr[0], lr[1])} letters`;
     $('#hkKPts').textContent = `You ${plural(mine, 'word')} · ${UI.fmtN(myPts())} pts`;
     $('#hkKeys').classList.toggle('words', M.list === 'word');
     $('#hkKeys').innerHTML = keyOrder().map(i => keyRow(i)).join('');
@@ -491,14 +537,26 @@
     if (s && !s.by) return `<span class="kc-mt clue sel">${s.m ? '🗝 Master Key · ' : '📖 '}${s.w.length} letters${M.list === 'clue' || s.m ? ': ' + clueHtml(s.clue) : ': ' + s.w}</span>`;
     return '';
   }
-  function nudge(t) { msg(t, 'bad', 1600); snd('bounce'); const m = $('#hkMsg'); m.classList.remove('shake'); void m.offsetWidth; m.classList.add('shake'); }
+  // v13a (JM CD-132: 6.3.1.1.1): a word shorter or longer than this grid's hidden words gets a reminder of the lengths
+  function lenRange() {
+    const [a, b] = lensOf(), ls = R.words.map(x => x.w.length);
+    return [Math.min(a, ...ls), Math.max(b, ...ls)];
+  }
+  function lenNudge(s) {
+    const [a, b] = lenRange(), L = s.length;
+    if (L >= a && L <= b) return false;
+    nudge(`${L < a ? 'Too short' : 'Too long'} (${L} letters): the hidden words here are ${rangeTxt(a, b)} letters`, 2600);
+    return true;
+  }
+  function nudge(t, ms) { msg(t, 'bad', ms || 1600); snd('bounce'); const m = $('#hkMsg'); m.classList.remove('shake'); void m.offsetWidth; m.classList.add('shake'); }
   function flashCells(cells, cls) { cells.forEach(i => { const b = lets[i]; if (b) { b.classList.remove(cls); void b.offsetWidth; b.classList.add(cls); } }); }
   function submit() {
     const path = trace.slice(); trace = []; tapStart = -1; typed = ''; paintSel();
     if (path.length < 2) { msg(''); return; }
     const s = path.map(i => R.grid[i]).join(''), r = rev(s);
     const x = R.words.find(o => o.w === s || o.w === r);
-    if (!x) { if (path.length >= 3) nudge(`${s}: not a hidden word`); else msg(''); return; }
+    if (!x && lenNudge(s)) return;
+    if (!x) { nudge(`${s}: not a hidden word`); return; }
     if (x.by) { msg(`${x.w}: already found${x.by === 'bot' ? ' by ' + esc(botFirst()) : ''}`, 'dup', 1500); snd('draw'); flashCells(path, 'dup'); return; }
     x.cells = s === x.w ? path : path.slice().reverse(); // the band where you found it, read the right way
     claim(x, 'me');
@@ -529,6 +587,7 @@
     // the highest-scoring hidden word those letters spell (the Master Key ×3 before a list word)
     const hits = R.words.filter(o => o.w === t).sort((a, b) => ptsOf(b) - ptsOf(a));
     const x = hits.find(o => !o.by) || hits[0];
+    if (!x && lenNudge(t)) return;
     if (!x) { nudge(`${t}: not a hidden word`); return; }
     if (x.by) { msg(`${x.w}: already found${x.by === 'bot' ? ' by ' + esc(botFirst()) : ''}`, 'dup', 1500); snd('draw'); return; }
     claim(x, 'me');
@@ -839,11 +898,13 @@
       ${sec('The Basics', `
         <li>Open ${NM.hidden} from its card in the ${NM.suite} Lobby: <b>🆕 New Game</b> starts at once with your last settings, <b>⚙ Setup</b> (or a tap on the card) shows the settings first, and <b>▶ Resume</b> appears while a match is unfinished.</li>
         <li>Each word sits in a <b>straight line</b> of touching letters: across, down or diagonally (Setup's <b>Word directions</b> says which ways; on <b>Hard</b> they can also run backwards). Words may cross and share a letter.</li>
+        <li><b>Word length:</b> the hidden words are <b>3 to 6 letters</b> on 8×8 and <b>3 to 8 letters</b> on 10×10 and 12×12 (the standard; Setup's <b>Word length</b> can change both ends). <b>Word count:</b> each grid hides <b>7–9</b>, <b>10–12</b> or <b>13–15</b> list words (Setup's <b>Word count</b>). The Key list's heading shows this grid's lengths, and each clue shows its own length.</li>
         <li>The <b>Key list</b> under the grid shows each word's <b>clue</b> and its number of letters (or, with <b>Words</b>, the words themselves). A found word fills in and gets a band on the grid: <b style="color:#2c6bd8">blue</b> = yours, <b style="color:#e01e1e">red</b> = the Bot's.</li>`)}
       ${sec('Find a Word', `
         <li><b>Swipe</b> (touch) or <b>drag</b> (mouse) from the first letter of a word to its last, then let go. The band snaps to the nearest straight line. Either end can come first.</li>
         <li>Or <b>tap</b> the first letter, then the last one. A tap on the same letter again cancels.</li>
         <li>On a computer, in <b>Clues</b> mode, you can also <b>type the answer</b> to a clue and press <b>Enter</b>: the app finds it in the grid (if the letters spell more than one hidden word, it takes the highest-scoring one, the 🗝 Master Key first). <b>⌫</b> takes a letter back, <b>Esc</b> clears, <b>Space</b> pauses. In <b>Words</b> mode the list already shows the words, so you drag.</li>
+        <li>A swipe, drag or typed word that is <b>shorter or longer</b> than this grid's hidden words gets a red reminder of the lengths, e.g. "Too short (2 letters): the hidden words here are 3–8 letters".</li>
         <li>Tap a clue in the Key list to pick it: it shows big above the grid, and 💡 Hint helps with that word.</li>
         <li>The strip above the grid shows your letters, then what happened: <b>green</b> = a new word and its points, <b>orange</b> = already found (or the Bot just found one), <b>red</b> = not a hidden word, <b>blue</b> = your clue or Hint.</li>`)}
       ${sec('The 🗝 Master Key', `
@@ -871,8 +932,8 @@
         <li>The score card shows the <b>game totals</b> big, then each round with the running total; the higher score of each round is <b style="color:#12a03c">green</b>.</li>
         <li>The grid shows every word: yours in blue, the Bot's in red, missed words dashed. Tap a word in the list to see where it was hidden, who found it and when, and its 📖 clue.</li>`)}
       ${sec('Setup', `
-        <li><b>Play</b>: Duel or Solo. <b>Grid</b>: 8×8 (8 words), 10×10 (11 words, standard) or 12×12 (14 words). <b>Key list</b>: Clues or Words. <b>Timer</b>: 1, 2, 3 (standard), 5 or 8 min; Untimed in Solo. <b>Challenge Level</b> 1–10.</li>
-        <li>Under <b>▸ More options</b>: <b>Word directions</b> (Easy → ↓, Standard → ↓ ↘ ↗, Hard: all 8 ways), Rounds per match, <b>Grid Colors</b> (Cream, Inked, Inked Blue, Steel, Sky, Navy &amp; gold, Onyx, Ruby), <b>Button Colors</b> (Steel, Sapphire, Navy &amp; gold, Ruby, Emerald, Onyx; the preview shows both) and, for Solo, Hints (free or paid, 3 per round or no limit).</li>
+        <li><b>Play</b>: Duel or Solo. <b>Grid</b>: 8×8, 10×10 (standard) or 12×12; each button shows its word count. <b>Key list</b>: Clues or Words. <b>Timer</b>: 1, 2, 3 (standard), 5 or 8 min; Untimed in Solo. <b>Challenge Level</b> 1–10.</li>
+        <li>Under <b>▸ More options</b>, first: <b>Word count</b>, min and max side by side (Auto = 7–9 on 8×8, 10–12 on 10×10, 13–15 on 12×12; each round picks a number in your range), then <b>Word length</b>, min and max (min 3 letters standard; max Auto = 6 letters on 8×8, 8 on bigger grids; 12×12 also offers 11-letter words). A min set above the max moves the max along (and the other way round). Then <b>Word directions</b> (Easy → ↓, Standard → ↓ ↘ ↗, Hard: all 8 ways), Rounds per match, <b>Grid Colors</b> (Cream, Inked, Inked Blue, Steel, Sky, Navy &amp; gold, Onyx, Ruby), <b>Button Colors</b> (Steel, Sapphire, Navy &amp; gold, Ruby, Emerald, Onyx; the preview shows both) and, for Solo, Hints (free or paid, 3 per round or no limit).</li>
         <li>Every grid is made fresh from our Lexicon, so every hidden word has a clue.</li>`)}
       ${sec('Your Stats', `
         <li>Matches, the share won, words found, Master Keys found and your Solo bests are kept on this device. Every match (and Solo round) also goes into <b>📜 Game History</b>.</li>`)}

@@ -9,7 +9,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Master Keys">
   <meta name="description" content="Master Keys: CrossKeys, a head-to-head crossword tile game, LockWord, a word-guessing game, and KeyRing, a word builder. Plays offline.">
-  <title>Master Keys · v13</title>
+  <title>Master Keys · v13a</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="icon" href="icons/icon-192.png" type="image/png" sizes="192x192">
@@ -51,7 +51,7 @@
       <header class="brand">
         <img class="logo" src="icons/icon.svg" alt="" width="64" height="64">
         <div class="brand-txt">
-          <h1><span data-mk="suite">Master Keys</span> <span class="vpill" id="verPill">v13</span></h1>
+          <h1><span data-mk="suite">Master Keys</span> <span class="vpill" id="verPill">v13a</span></h1>
           <p class="tag">Word games. Play anywhere, even offline.</p>
         </div>
       </header>
@@ -512,7 +512,7 @@
         <div class="seg kc-seg" id="hkMode"><button type="button" data-v="duel">⚔ Duel<small>vs the Bot</small></button><button type="button" data-v="solo">🎯 Solo<small>no Bot</small></button></div>
       </div>
       <div class="field"><span class="lbl">Grid</span>
-        <div class="seg kc-seg" id="hkN"><button type="button" data-v="8">8×8<small>8 words</small></button><button type="button" data-v="10">10×10<small>11 words</small></button><button type="button" data-v="12">12×12<small>14 words</small></button></div>
+        <div class="seg kc-seg" id="hkN"><button type="button" data-v="8">8×8<small>7–9 words</small></button><button type="button" data-v="10">10×10<small>10–12 words</small></button><button type="button" data-v="12">12×12<small>13–15 words</small></button></div>
       </div>
       <div class="field"><span class="lbl">Key list</span>
         <div class="seg kc-seg" id="hkList"><button type="button" data-v="clue">📖 Clues<small>find them from clues</small></button><button type="button" data-v="word">🔤 Words<small>the words are shown</small></button></div>
@@ -527,6 +527,15 @@
       <details class="opts" id="hkOpts">
         <summary><span class="cec" aria-hidden="true">▸</span><span class="lbl">More options</span><span class="opts-sum" id="hkOptsSum"></span></summary>
         <div class="opts-body">
+          <!-- v13a (JM CD-132 add. 1–2): Word count, then Word length, min and max side by side -->
+          <div class="pair">
+            <label class="field"><span class="lbl">Word count: min</span><select id="hkQmin"></select></label>
+            <label class="field"><span class="lbl">Word count: max</span><select id="hkQmax"></select></label>
+          </div>
+          <div class="pair">
+            <label class="field"><span class="lbl">Word length: min</span><select id="hkLmin"></select></label>
+            <label class="field"><span class="lbl">Word length: max</span><select id="hkLmax"></select></label>
+          </div>
           <div class="pair">
             <label class="field"><span class="lbl">Word directions</span><select id="hkDir"></select></label>
             <label class="field" id="hkRdF"><span class="lbl">Rounds per match</span><select id="hkRd"><option value="1">1 round</option><option value="2">2 rounds</option><option value="3">3 rounds (default)</option><option value="4">4 rounds</option><option value="5">5 rounds</option></select></label>

@@ -15,7 +15,7 @@
    v08j: grid colors, final-play view, clock-out final turn, menu defaults, phone two-finger drag) */
 'use strict';
 (() => {
-  const APP_VER = 'v13'; // Project CP: shown as a pill beside the title and in the browser tab
+  const APP_VER = 'v13a'; // Project CP: shown as a pill beside the title and in the browser tab
   const NM = window.MK_NAMES || { suite: 'Master Keys', cross: 'CrossKeys', lock: 'LockWord' }; // v09: the game names (names.js)
   // v09a (JM CD-71: 1.2c, 1.3b): the two games' own icons, shown wherever the 🧩 / 🔐 emoji stood
   const GI = { cross: 'icons/crosskeys.svg', lock: 'icons/lockword.svg', ring: 'icons/keyring.svg', cubes: 'icons/keycubes.svg', hidden: 'icons/hiddenkeys.svg' }; // v11: KeyRing; v12: KeyCubes; v13: Hidden Keys
@@ -1976,12 +1976,16 @@
     show: showHistory
   };
   const when = t => new Date(t).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+  // v13a (JM CD-132: 6.3.2): Game History picks a game from a dropdown (the row of game buttons scrolled sideways and
+  // dragged the whole window with it); "All" stays a button on its left. One list for every game, in Lobby order.
+  const HIST_GAMES = [['duel', NM.cross, 'cross'], ['vault', NM.lock, 'lock'], ['ring', NM.ring, 'ring'], ['cubes', NM.cubes || 'KeyCubes', 'cubes'], ['hidden', NM.hidden || 'Hidden Keys', 'hidden']];
   function showHistory(filter) {
     const f = filter || 'all', all = hist.list();
     const rows = all.map((e, i) => ({ e, i })).filter(x => f === 'all' || x.e.g === f);
     const tab = (v, l) => `<button type="button" data-f="${v}" class="${f === v ? 'on' : ''}">${l}</button>`;
     openModal(`<h2>📜 Game History</h2>
-      <div class="seg one hist-seg">${tab('all', 'All')}${tab('duel', gimg('cross') + ' ' + NM.cross)}${tab('vault', gimg('lock') + ' ' + NM.lock)}${tab('ring', gimg('ring') + ' ' + NM.ring)}${tab('cubes', gimg('cubes') + ' ' + (NM.cubes || 'KeyCubes'))}${tab('hidden', gimg('hidden') + ' ' + (NM.hidden || 'Hidden Keys'))}</div>
+      <div class="hist-pick">${tab('all', 'All')}<label class="hist-selw${f !== 'all' ? ' on' : ''}">${f !== 'all' && HIST_GAMES.some(g => g[0] === f) ? gimg(HIST_GAMES.find(g => g[0] === f)[2], 'gi hist-gi') : ''}<select class="hist-sel" aria-label="Show one game">
+        <option value=""${f === 'all' ? ' selected' : ''}>One game…</option>${HIST_GAMES.map(([v, l]) => `<option value="${v}"${f === v ? ' selected' : ''}>${esc(l)}</option>`).join('')}</select></label></div>
       ${rows.length ? `<ul class="hist-list">${rows.map(({ e, i }) => `<li><button type="button" class="hist-it ${e.win ? 'won' : 'lost'}" data-i="${i}">
           <span class="hi-ico">${gimg(e.g === 'duel' ? 'cross' : e.g === 'ring' ? 'ring' : e.g === 'cubes' ? 'cubes' : e.g === 'hidden' ? 'hidden' : 'lock')}</span>
           <span class="hi-main"><b>${esc(e.title)}</b><small>${esc(e.sub || '')}</small><small>${when(e.t)}</small></span>
@@ -1990,6 +1994,7 @@
       <p class="hist-note">The last ${HIST_MAX} results, kept on this device. Tap one to see its full result.</p>
       <div class="row"><button class="btn primary" data-a="close">Close</button></div>`);
     $('#modal').onclick = e => { if (e.target === $('#modal')) closeModal(); };
+    $('#sheet').onchange = e => { if (e.target.matches && e.target.matches('.hist-sel')) showHistory(e.target.value || 'all'); };
     $('#sheet').onclick = e => {
       const t = e.target.closest('[data-f]'); if (t) return showHistory(t.dataset.f);
       const it = e.target.closest('[data-i]');
@@ -2050,7 +2055,7 @@
         <li>You earn coins by playing well (finishing turns quickly in timed ${NM.cross} games, winning, solving ${NM.lock} words, clearing ${NM.ring} Rings and finding bonus words, winning ${NM.cubes || 'KeyCubes'} and ${NM.hidden || 'Hidden Keys'} rounds) and spend them on help like hints. Coin buttons are <b>blue</b> and take <b>two taps</b>, so you never spend by accident. Each game's How To Play has the details.</li>`)}
       ${sec('Game History', `
         <li><b>📜 Game History</b> (top corner of the Lobby) lists your last 100 results from every game, newest first: the date, the settings, the score and the coins won or spent. A green edge marks a win, a red edge a loss.</li>
-        <li>Filter it by game (All, ${gimg('cross')} ${NM.cross}, ${gimg('lock')} ${NM.lock}, ${gimg('ring')} ${NM.ring}, ${gimg('cubes')} ${NM.cubes || 'KeyCubes'}, ${gimg('hidden')} ${NM.hidden || 'Hidden Keys'}), and tap any result to see its full result window again; ◂ History goes back to the list.</li>
+        <li>Tap <b>All</b> for every game, or pick one game from the dropdown beside it (${gimg('cross')} ${NM.cross}, ${gimg('lock')} ${NM.lock}, ${gimg('ring')} ${NM.ring}, ${gimg('cubes')} ${NM.cubes || 'KeyCubes'}, ${gimg('hidden')} ${NM.hidden || 'Hidden Keys'}), and tap any result to see its full result window again; ◂ History goes back to the list.</li>
         <li>It's kept on this device only, like your stats and coins.</li>`)}
       ${sec('Sound', `
         <li>Sound effects are <b>off</b> until you turn them on. Tap the <b>speaker</b> (in the Lobby and in every game's header; red with a ✕ while muted) to turn them on. Tap again to mute. One switch covers every game, and it's remembered on this device.</li>`)}
