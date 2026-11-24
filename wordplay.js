@@ -36,9 +36,9 @@ FOOT|Inches you stand on?
 GAME|Ready for a match?
 HAIL|Icy greeting?
 IRON|Press metal?
-JAM|Traffic you can spread?
-KEY|It opens doors and plays notes
-KIND|Nice sort
+JAM|Spreadable traffic?
+KEY|Door-opening note?
+KIND|Nice sort?
 LEAD|Guide made of metal?
 LEAN|Thin, or tilt
 LIGHT|Neither heavy nor dark
@@ -122,7 +122,7 @@ DRAW|Tie by pencil?
 FINE|OK penalty?
 FIT|Healthy tantrum?
 HOST|Party crowd?
-JAR|Container that jolts
+JAR|Jolting container?
 LONG|Yearn to be lengthy
 PUPPY|Young dog, love?
 SAGE|Wise herb
@@ -434,22 +434,22 @@ HOOT|Owl riot?
 HORSE|Neighing vault?
 HOT|Spicy loot?
 HUMOR|Comic indulgence?
-ICE|Diamonds, or frozen water
-ICON|Desktop picture, or a star
-INK|Sign a deal, or a tattoo
-ISSUE|Magazine edition, or a problem
-ITEM|Couple in the gossip pages
-JACKET|Book cover, or a coat
-JET|Black, or a plane
-JOG|Trigger a memory, or run
-JOINT|Knee, or shared
+ICE|Frozen gems?
+ICON|Desktop star?
+INK|Sign a tattoo?
+ISSUE|Problem edition?
+ITEM|Gossip couple?
+JACKET|Coat cover?
+JET|Black plane?
+JOG|Memory run?
+JOINT|Shared knee?
 JUMBO|Huge jet?
-KEEP|Castle tower, or hold on to
-KICK|Thrill, or punt
-KID|Joke, or a child
-KING|Bed size fit for a ruler?
-KNIGHT|Chess piece that sounds like bedtime?
-KNOT|Speed at sea, or a tie
+KEEP|Castle hold?
+KICK|Thrilling punt?
+KID|Joking child?
+KING|Royal bed size?
+KNIGHT|Bedtime chess piece?
+KNOT|Sea-speed tie?
 LAB|Dog breed, or a science room
 LACE|Shoe tie, or spike a drink
 LAP|Pool length, or a seated person's knees

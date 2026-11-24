@@ -5,7 +5,7 @@
    Words are 2–7 letters, plus 11-letter words for Large grids (A–Z only). A repeated word adds an extra clue set (see above). */
 // Lexicon edition (JM, CD-24 other edits 1.1): its own number, separate from the game version. Add 1 whenever the word data or the Lexicon page changes.
 // L01 v07a · L02 v07b · L03 v07c · L04 v07d (wrapping cells) · L05 v07e (8-letter hint clues, edition number) · L06 v08 (8-letter easy and hard hints) · L07 (editor page: Status, Comments, Edit Mode + Copy Edits, advanced search; "/" in 23 Word Vault clues) · L08 v08b (58 country-code clues "Madrid URL" style, JM CD-27; Word Vault tricky hints) · L09 (JM's first Copy Edits, CD-29: ZAR clues, EXCITE added ON-DECK; ";" separates alternative clues, one picked at random) · L10 v08q (JM's Copy Edits, CD-59 + CD-60: 28 clue changes, "on an exchange board" / "on a bag tag" / "on a T-shirt tag" dropped, EXCITE active, new 1-letter clues, T pictures, drawn ICEBERG picture "@iceberg"; the Lexicon page gives each 1-letter row its own key) · L11 v08r (CD-62: 2.1a: 1-letter answers have one clue per row, so F, K and X's new ";" clues became separate rows; page: missing-letter marks drawn as in the game + "Missing-letter clues" filter) · L12 v08s (JM's Copy Edits CD-64 + CD-65: 34 changes, sorted Literal = plain / Indirect = figurative; page: permanent edit record, Reviewed ticks, Wordplay column, Claude drafts) · L13 v08t (JM's Copy Edits CD-66 + CD-67: 375 Claude drafts for A accepted, three-kind test — sound-alike clues to Wordplay, blanks to Indirect; ACRID; 125 new 1-letter clues with the blank inside the word; page: Draft toggle, clue lengths, Wrap / Clip, two-row filters)
-self.LEXICON_VER = 'L14.11'; // L14.11 (v13; same edition + ICE typo fix "Assassinate", JM 2026-11-24, no version bump per JM's lexicon CP): JM's CD-131: 22 edits; round 8: 100 letter-J-K drafts + KeyRing tier 2 round 2, 269 ON-DECK rows C; L14.10 (v12h): JM's CD-129: 618 drafts + 28 edits applied, tier 1 done; round 7: 84 letter-I drafts + KeyRing tier 2 round 1, 313 ON-DECK rows A-B; L14.09 (v12h): JM's CD-127 Copy Edits: 886 drafts applied, 363 KeyRing words ACTIVE; round 6: 156 letter-H drafts + KeyRing round 4, 462 ON-DECK rows Q-Z; L14.08 (v12g): JM's CD-124 fixes: 6 clues; L14.07 (v12e): JM's CD-108 Copy Edits applied, 335 KeyRing words ACTIVE; round 5: 130 letter-G drafts + KeyRing round 3, 363 ON-DECK rows I-P; L14.06 (v11e): KeyRing everyday words round 2: 335 ON-DECK rows D-H with drafts (CD-104: 2.3); L14.05 (v11e): JM's CD-104 Copy Edits: 2,033 drafts applied, 315 KeyRing words ACTIVE; drafts round 4: 175 letter-F rows; L14.04 (v11c): KeyRing everyday words round 1: 315 ON-DECK rows A-C with drafts (CD-100: 1.2.1; CD-101: 2.1-2.4); L14.03 (v11c): data-only, drafts round 3 (138 letter-E rows); L14.02 (v09a): data-only, drafts round 2 (162 letter-D rows, 32 shorter B rows, short CALF Wordplay); L14.01: drafts round 1 (C, short B Wordplay, shorter A); L14 = the renamed page (Master Keys Lexicon; CrossKeys / LockWord), a structure change
+self.LEXICON_VER = 'L14.12'; // L14.12 (v13b): JM's CD-135: all 760 drafts accepted, 582 tier-2 KeyRing words ACTIVE; L14.11 (v13; same edition + ICE typo fix "Assassinate", JM 2026-11-24, no version bump per JM's lexicon CP): JM's CD-131: 22 edits; round 8: 100 letter-J-K drafts + KeyRing tier 2 round 2, 269 ON-DECK rows C; L14.10 (v12h): JM's CD-129: 618 drafts + 28 edits applied, tier 1 done; round 7: 84 letter-I drafts + KeyRing tier 2 round 1, 313 ON-DECK rows A-B; L14.09 (v12h): JM's CD-127 Copy Edits: 886 drafts applied, 363 KeyRing words ACTIVE; round 6: 156 letter-H drafts + KeyRing round 4, 462 ON-DECK rows Q-Z; L14.08 (v12g): JM's CD-124 fixes: 6 clues; L14.07 (v12e): JM's CD-108 Copy Edits applied, 335 KeyRing words ACTIVE; round 5: 130 letter-G drafts + KeyRing round 3, 363 ON-DECK rows I-P; L14.06 (v11e): KeyRing everyday words round 2: 335 ON-DECK rows D-H with drafts (CD-104: 2.3); L14.05 (v11e): JM's CD-104 Copy Edits: 2,033 drafts applied, 315 KeyRing words ACTIVE; drafts round 4: 175 letter-F rows; L14.04 (v11c): KeyRing everyday words round 1: 315 ON-DECK rows A-C with drafts (CD-100: 1.2.1; CD-101: 2.1-2.4); L14.03 (v11c): data-only, drafts round 3 (138 letter-E rows); L14.02 (v09a): data-only, drafts round 2 (162 letter-D rows, 32 shorter B rows, short CALF Wordplay); L14.01: drafts round 1 (C, short B Wordplay, shorter A); L14 = the renamed page (Master Keys Lexicon; CrossKeys / LockWord), a structure change
 self.LEXICON_DATA = `
 # ---------- 2 letters ----------
 AD|Commercial; Selling; Promo|Spot on TV; Billboard filler|1
@@ -27,9 +27,9 @@ GO|Move along|Green-light word; Board game of stones|1|🟢
 HA|Laugh sound|Chuckle; "Gotcha!"|1
 HE|That man|Helium; ___-man|1
 HI|Hello|Aloha State; Wave word|1|👋
-ID|Photo card|Ego's partner|2
-IF|Conditional word|Big little word|1
-IN|Not out|Trendy|1
+ID|Photo card|Ego's partner; Driver's license|2
+IF|Conditional word|Big little word; ___ only|1
+IN|Not out|Trendy; ___ the know|1
 IS|Exists|3rd-person "be"; That ___ to say|1
 IT|Tag player|Tech dept.; Stephen King novel|1
 LA|Note after so|City of Angels|1
@@ -66,7 +66,7 @@ GM|Car giant|Chess title; Detroit automaker|3
 OZ|Ounce|Land of a wizard|2
 RE|Regarding|About|2
 EG|For example|"Say," in short; Like, briefly|2
-IE|That is|"That is"|3
+IE|That is|In other words; Namely|3
 ET|And, in Latin|"___ cetera"; Spielberg alien|3
 PM|Afternoon|Prime Minister|1
 AC|Air conditioning; Cool unit|Cool!; Chillin'; Summer's best friend|2
@@ -102,12 +102,12 @@ OB|Doctor for births|___-GYN|4
 TB|Lung disease|Terabyte|4
 GB|Gigabyte|Great Britain; Storage unit|3
 MB|Megabyte|Data size|3
-KO|Knockout|Boxer's win|2|🥊
+KO|Knockout|Boxer's win; Down for the count|2|🥊
 TI|Note before do|Seventh note|2
 FA|Note after mi|Fourth note; Do-re-mi-___|2
 MI|Note after re|Third note|2
 DA|Prosecutor|Russian yes; Courtroom accuser|3
-JA|German yes|Yes, in Berlin|3
+JA|German yes|Yes, in Berlin; Swedish yes|3
 SI|Spanish yes|Yes, in Madrid|3
 OM|Meditation chant|Yoga sound|2
 UM|Hesitation sound|"Er..."|1
@@ -272,26 +272,26 @@ HUG|Embrace|Squeeze; Bear ___|1|🤗
 HUM|Closed-mouth sing|Buzz; Drone|1
 HUT|Cabin|Shack; Pizza ___|1|🛖
 ICE|Frozen water|Cancel; Rink; Assassinate|1
-ICY|Freezing|Unfriendly|1
-ILL|Sick|Badly|1
-INK|Pen fluid|Squid's spray|1|🖋️
-INN|Small hotel|Lodge|1
-ION|Charged atom|Particle|2
-IRE|Anger|Wrath|2
-IVY|Climbing plant|League of colleges|2
-JAM|Fruit spread|Traffic snarl|1|🍓
-JAR|Glass container|Jolt|1
-JAW|Chin bone|Chat|1
-JET|Fast plane|Black stone|1|✈️
-JOB|Work|Task|1|💼
-JOG|Slow run|Nudge|1
-JOY|Happiness|Delight|1|😊
-JUG|Pitcher|Jail, slangily|1
-KEG|Beer barrel|Party barrel|2
-KEY|Lock opener|Crucial|1|🔑
-KID|Child|Tease|1|🧒
-KIN|Relatives|Family|2
-KIT|Gear set|Fox cub|1|🧰
+ICY|Freezing|Unfriendly; Slippery|1
+ILL|Sick|Badly; Under the weather|1
+INK|Pen fluid|Squid's spray; Tattoo|1|🖋️
+INN|Small hotel|Lodge; B&B|1
+ION|Charged atom|Particle; Lithium-___|2
+IRE|Anger|Wrath; Rage|2
+IVY|Climbing plant|League of colleges; Poison ___|2
+JAM|Fruit spread|Traffic snarl; Tight spot|1|🍓
+JAR|Glass container|Jolt; Cookie ___|1
+JAW|Chin bone|Chat; ___-dropping|1
+JET|Fast plane|Black stone; Spray|1|✈️
+JOB|Work|Task; Inside ___|1|💼
+JOG|Slow run|Nudge; ___ one's memory|1
+JOY|Happiness|Delight; Pride and ___|1|😊
+JUG|Pitcher|Jail, slangily; Milk ___|1
+KEG|Beer barrel|Party barrel; Powder ___|2
+KEY|Lock opener|Crucial; Piano part|1|🔑
+KID|Child|Tease; Young goat|1|🧒
+KIN|Relatives|Family; Next of ___|2
+KIT|Gear set|Fox cub; First-aid ___|1|🧰
 LAB|Science room|Retriever|1
 LAD|Boy|Young fellow|1
 LAP|Track circuit|Drink like a cat|1
@@ -504,13 +504,13 @@ HEM|Skirt edge|Border; ___ and haw|1
 HEW|Chop|Cut down; Stick (to)|3
 HOE|Garden tool|Weeder; Row to ___|2
 HUH|"What?"|"Eh?"; Puzzled grunt|1
-ILK|Kind|Sort|3
-IMP|Mischief maker|Little devil|2|😈
-INC|Corp.|Company abbr.|3
-ITS|Belonging to it|Possessive pronoun|1
-JAB|Poke|Quick punch|1
-JOT|Note down|Iota|2
-KEN|Understanding|Range of knowledge|4
+ILK|Kind|Sort; Type|3
+IMP|Mischief maker|Little devil; Rascal|2|😈
+INC|Corp.|Company abbr.; Ltd., in the U.S.|3
+ITS|Belonging to it|Possessive pronoun; ___ own reward|1
+JAB|Poke|Quick punch; Flu shot|1
+JOT|Note down|Iota; ___ down|2
+KEN|Understanding|Range of knowledge; Barbie's guy|4
 LAG|Delay|Trail|1
 LAX|Slack|Lenient|2
 LEI|Hawaiian garland|Flower necklace|2|🌺
@@ -852,35 +852,35 @@ HOUR|60 minutes|Time unit; Rush ___|1|⏰
 HUGE|Giant|Massive; Enormous|1
 HUNT|Search|Chase; Scavenger ___|1
 HURT|Injured|Pained; Ache|1
-ICON|Symbol|Idol|1
-IDEA|Thought|Notion|1
-IDLE|Inactive|Lazy|1
-INCH|Small unit|Creep|1
-INTO|Inside|Keen on|1
-IRON|Metal|Press|1
-ISLE|Island|Small island|1|🏝️
-ITEM|Thing|Object|1
-JADE|Green gem|Worn out|2
-JAIL|Prison|Lockup|1
-JAZZ|Music style|Liven up|1|🎷
-JEAN|Denim|Fabric|1|👖
-JOIN|Unite|Connect|1
-JOKE|Gag|Jest|1|😂
-JUMP|Leap|Spring|1
-JURY|Panel|Twelve judges|1
-JUST|Fair|Only|1
-KEEN|Eager|Sharp|1
-KEEP|Retain|Castle tower|1
-KICK|Boot|Punt|1
-KILT|Scottish skirt|Tartan wear|1
-KIND|Nice|Type|1
-KING|Monarch|Chess piece|1|👑
-KISS|Smooch|Peck|1|💋
-KITE|Flying toy|Bad check|1|🪁
-KNEE|Leg joint|Bend|1
-KNIT|Weave|Purl|1|🧶
-KNOT|Tie|Nautical speed|1
-KNOW|Understand|Ken|1
+ICON|Symbol|Idol; App picture|1
+IDEA|Thought|Notion; Bright ___|1
+IDLE|Inactive|Lazy; Engine at rest|1
+INCH|Small unit|Creep; Give an ___|1
+INTO|Inside|Keen on; Fond of|1
+IRON|Metal|Press; Golf club|1
+ISLE|Island|Small island; Key|1|🏝️
+ITEM|Thing|Object; Couple|1
+JADE|Green gem|Worn out; Weary|2
+JAIL|Prison|Lockup; Monopoly corner|1
+JAZZ|Music style|Liven up; All that ___|1|🎷
+JEAN|Denim|Fabric; ___ jacket|1|👖
+JOIN|Unite|Connect; Sign up|1
+JOKE|Gag|Jest; Inside ___|1|😂
+JUMP|Leap|Spring; ___ the gun|1
+JURY|Panel|Twelve judges; ___ duty|1
+JUST|Fair|Only; ___ in case|1
+KEEN|Eager|Sharp; Peachy ___|1
+KEEP|Retain|Castle tower; ___ calm|1
+KICK|Boot|Punt; Thrill|1
+KILT|Scottish skirt|Tartan wear; Highland garb|1
+KIND|Nice|Type; One of a ___|1
+KING|Monarch|Chess piece; ___-size bed|1|👑
+KISS|Smooch|Peck; ___ and make up|1|💋
+KITE|Flying toy|Bad check; Bird of prey|1|🪁
+KNEE|Leg joint|Bend; ___-jerk|1
+KNIT|Weave|Purl; Close-___|1|🧶
+KNOT|Tie|Nautical speed; Tie the ___|1
+KNOW|Understand|Ken; In the ___|1
 LACE|Shoelace|Mesh|1
 LADY|Woman|Dame|1
 LAKE|Pond|Loch|1
@@ -1292,10 +1292,10 @@ GNAT|Small fly|Midge; Picnic pest|3
 HALO|Angel's ring|Nimbus; Saintly glow|2|😇
 HEED|Pay attention|Mind; Take ___|3
 HONE|Sharpen|Perfect; Refine|3
-IDOL|Star|Icon|2
-INKY|Black|Dark|3
-IOTA|Tiny bit|Greek letter|3
-JEST|Joke|Quip|3
+IDOL|Star|Icon; American ___|2
+INKY|Black|Dark; Squid-like|3
+IOTA|Tiny bit|Greek letter; Not one ___|3
+JEST|Joke|Quip; In ___|3
 LAUD|Praise|Extol|4
 LIEU|In ___ of|Place|4
 LIMB|Arm or leg|Branch; Out on a ___ (taking a risk)|2
@@ -1390,7 +1390,7 @@ ERNE|Sea eagle|Eagle; Coastal raptor|5
 AEON|Very long time; Epoch; Era; Age|Forever and a day; Ages and ages|4
 ONUS|Burden|Responsibility|4
 EDEN|Paradise|Garden; Adam's home|2
-IRIS|Eye part|Flower|2
+IRIS|Eye part|Flower; Rainbow goddess|2
 AGUE|Fever; Chills|Swamp-fever shakes|5
 # ---------- 5 letters ----------
 ABOUT|Approximately; Regarding|Give or take; In the ballpark|1
@@ -1659,23 +1659,23 @@ HOUSE|Home|Dwelling; Full ___|1
 HUMAN|Person|Mortal; ___ being|1
 HUMOR|Comedy|Wit; Go along with; Indulge|1
 HURRY|Rush|Hasten; ___ up!|1
-IDEAL|Perfect|Model|1
-IMAGE|Picture|Likeness|1
-INDEX|List|Pointer finger|1
-INNER|Inside|Internal|1
-INPUT|Data entry|Feedback|1
-IRONY|Sarcasm|Twist|2
-ISSUE|Problem|Edition|1
-IVORY|Tusk material|Off-white|2
-JEANS|Denims|Work pants|1
-JELLY|Jam|Gelatin|1
-JEWEL|Gem|Treasure|1|💎
-JOINT|Hinge|Shared|1
-JUDGE|Referee|Magistrate|1
-JUICE|Drink|Power|1|🧃
-KNIFE|Blade|Cutter|1|🔪
-KNOCK|Rap|Criticize|1
-KOALA|Aussie bear|Eucalyptus eater|1|🐨
+IDEAL|Perfect|Model; Dream|1
+IMAGE|Picture|Likeness; Public ___|1
+INDEX|List|Pointer finger; Book's back pages|1
+INNER|Inside|Internal; ___ child|1
+INPUT|Data entry|Feedback; Two cents|1
+IRONY|Sarcasm|Twist; Oh, the ___!|2
+ISSUE|Problem|Edition; Hot-button ___|1
+IVORY|Tusk material|Off-white; Piano key|2
+JEANS|Denims|Work pants; Blue ___|1
+JELLY|Jam|Gelatin; ___ bean|1
+JEWEL|Gem|Treasure; Crown ___|1|💎
+JOINT|Hinge|Shared; Knee or elbow|1
+JUDGE|Referee|Magistrate; Size up|1
+JUICE|Drink|Power; OJ|1|🧃
+KNIFE|Blade|Cutter; Butter ___|1|🔪
+KNOCK|Rap|Criticize; ___-___ joke|1
+KOALA|Aussie bear|Eucalyptus eater; Tree hugger|1|🐨
 LABEL|Tag|Brand|1
 LADLE|Soup spoon|Dipper|1
 LARGE|Big|Ample|1
@@ -2063,20 +2063,20 @@ HELIX|Spiral|Coil; DNA shape|4
 HERON|Wading bird|Egret kin; Marsh stalker|3
 HOVEL|Shack|Hut; Dump|4
 HUSKY|Sled dog|Hoarse; Burly|3
-IDIOM|Expression|Phrase|3
-IGLOO|Ice house|Snow hut|2
-IMBUE|Instill|Infuse|5
-IMPEL|Drive|Urge|5
-INANE|Silly|Senseless|4
-INEPT|Clumsy|Incompetent|4
-INERT|Inactive|Still|4
-INFER|Deduce|Conclude|3
-INLET|Bay|Cove|3
-IRATE|Angry|Furious|3
-JUMBO|Huge|Giant|2
-KARMA|Fate|Destiny|3
-KAYAK|Canoe|Paddle boat|2
-KNACK|Talent|Gift|3
+IDIOM|Expression|Phrase; Turn of phrase|3
+IGLOO|Ice house|Snow hut; Arctic dome|2
+IMBUE|Instill|Infuse; Steep|5
+IMPEL|Drive|Urge; Spur|5
+INANE|Silly|Senseless; Pointless|4
+INEPT|Clumsy|Incompetent; All thumbs|4
+INERT|Inactive|Still; Noble, as gas|4
+INFER|Deduce|Conclude; Read into|3
+INLET|Bay|Cove; Sound|3
+IRATE|Angry|Furious; Seeing red|3
+JUMBO|Huge|Giant; ___ jet|2
+KARMA|Fate|Destiny; What goes around|3
+KAYAK|Canoe|Paddle boat; Inuit boat|2
+KNACK|Talent|Gift; Flair|3
 LAPSE|Error|Slip|3
 LATTE|Coffee drink|Milky coffee|2
 LEDGE|Shelf|Sill|3
@@ -2248,13 +2248,13 @@ HAMMER|Tool|Pound; Sledge___|1|🔨
 HELMET|Hard hat|Headgear; Bike ___|1|⛑️
 HIDDEN|Concealed|Secret; ___ gem|1
 HOCKEY|Ice sport|Puck game; Stanley Cup|1|🏒
-INSECT|Bug|Creepy crawler|1
-ISLAND|Isle|Atoll|1
-JACKET|Coat|Cover|1
-JIGSAW|Puzzle|Saw|1
-JUNGLE|Rainforest|Wild|1
-KETTLE|Teapot|Pot|1
-KITTEN|Young cat|Kitty|1|🐱
+INSECT|Bug|Creepy crawler; Six-legger|1
+ISLAND|Isle|Atoll; Kitchen counter|1
+JACKET|Coat|Cover; Book cover|1
+JIGSAW|Puzzle|Saw; Piece work|1
+JUNGLE|Rainforest|Wild; ___ gym|1
+KETTLE|Teapot|Pot; Pot calling the ___|1
+KITTEN|Young cat|Kitty; ___ heels|1|🐱
 LADDER|Steps|Hierarchy|1|🪜
 LAPTOP|Notebook PC|Portable computer|1|💻
 LEADER|Head|Chief|1
@@ -2355,8 +2355,8 @@ GAMBIT|Opening move|Ploy; Chess ploy|4
 GARISH|Gaudy|Flashy; Loud|4
 HAMLET|Small village|Dane prince; To be or...|3
 HEYDAY|Prime|Peak; Glory days|4
-INCITE|Provoke|Stir up|4
-JOVIAL|Cheerful|Jolly|4
+INCITE|Provoke|Stir up; Spur on|4
+JOVIAL|Cheerful|Jolly; Merry|4
 LAMENT|Mourn|Dirge|4
 LUSTER|Shine|Gloss|4
 MALICE|Spite|Ill will|4
@@ -2441,8 +2441,8 @@ HISTORY|Past|Record; ___ buff|1
 HOLIDAY|Vacation|Festival; Day off|1
 HORIZON|Skyline|Range; Sunset line|1
 HUNDRED|Century|Number; C-note|1|💯
-JOURNEY|Trip|Voyage|1
-KITCHEN|Cookroom|Galley|1
+JOURNEY|Trip|Voyage; Trek|1
+KITCHEN|Cookroom|Galley; ___ sink|1
 LEOPARD|Spotted cat|Big cat|1|🐆
 LIBRARY|Book room|Archive|1|📚
 LOBSTER|Shellfish|Crustacean|1|🦞
@@ -2509,9 +2509,9 @@ FIDGETY|Restless|Jittery; Antsy|3
 GALLANT|Brave|Chivalrous; Dashing|4
 GLIMMER|Flicker|Hint; ___ of hope|3
 HAUGHTY|Proud|Arrogant; Snooty|4
-INKLING|Hint|Notion|4
-JOCULAR|Joking|Funny|5
-KINDRED|Related|Kin|4
+INKLING|Hint|Notion; Faint idea|4
+JOCULAR|Joking|Funny; Playful|5
+KINDRED|Related|Kin; ___ spirits|4
 LACONIC|Terse|Brief|5
 MIRACLE|Wonder|Marvel|2
 NOSTRUM|Remedy|Panacea|5
@@ -2535,7 +2535,7 @@ BURY|Put underground|Hide in the yard; ___ the hatchet|2
 FARE|Ticket price|Get along; Food served|2
 HIVE|Bee home|Buzzing colony; ___ mind|1
 HOOT|Owl's call|Great fun; Don't give a ___|2
-ITCH|Need to scratch|Strong urge|1
+ITCH|Need to scratch|Strong urge; Seven-year ___|1
 MALE|Not female|Masculine|1
 ODDS|Betting chances|Likelihood|2
 SEAM|Stitched line|Coal layer|2
@@ -2555,7 +2555,7 @@ STEAL|Take without paying|Bargain|1
 WEIGH|Put on a scale|Consider|2
 HEARD|Listened to|Caught, as news; Word got out|1
 AISLE|Store walkway; Wedding path|Down the ___; Window-seat rival|2
-KNIGHT|Armored warrior|Chess piece|2
+KNIGHT|Armored warrior|Chess piece; Sir|2
 WEIGHT|Heaviness|Gym plate|2
 SAILOR|Seaman|Deckhand|1
 CHANCE|Luck|Opportunity; Fat ___|1
@@ -2578,7 +2578,7 @@ MAILBOX|Letter drop|Inbox|1
 HANDBAG|Purse|Clutch; Tote|1
 SEAWEED|Kelp|Ocean plant|1
 SEAGULL|Beach bird|Fry thief|1
-KEYHOLE|Lock opening|Peeping spot|1
+KEYHOLE|Lock opening|Peeping spot; ___ surgery|1
 BOWTIE|Formal neckwear|Farfalle shape; Tux topper|2
 EYEBALL|Orb of sight|Look over; Size up|2
 PIGPEN|Sty|Messy room|2
@@ -2588,7 +2588,7 @@ BEEHIVE|Bee home|Tall hairdo; Buzzing box|2
 BOOKEND|Shelf support|Book stopper; Shelf's end piece|2
 SANDBOX|Kids' play pit|Test area|1
 EGGCUP|Breakfast holder|Soft-boiled stand; Yolk perch|2
-ICEBOX|Old fridge|Cold storage|2|🧊
+ICEBOX|Old fridge|Cold storage; Cooler|2|🧊
 EARWAX|Cerumen|Q-tip target; Canal gunk|2
 FISHNET|Mesh catch|Stocking style; Trawler's mesh|2
 MOONLIT|Lit by the moon|Like a night stroll|2
@@ -2616,7 +2616,7 @@ MUSEUM|Place with exhibits|Art or history hall|1|🏛️
 TONIGHT|This evening|After today's sunset|1
 CANDLES|Wax lights|Birthday-cake lights; Blow them out|1|🕯️
 CLOWNS|Circus jokers|Big-shoe performers; Red-nose crew|1|🤡
-KINGDOM|Land ruled by a king|Realm|1
+KINGDOM|Royal realm|Realm; Animal ___|1
 VIOLIN|Instrument played with a bow|Fiddle|1|🎻
 DRUMMER|Band's beat keeper|Person with sticks; Little ___ boy|1|🥁
 SOCCER|Game with goals and a round ball|Football, outside the US|1|⚽
@@ -2640,7 +2640,7 @@ LEMONS|Sour yellow fruits|Lemonade fruits|1|🍋
 PEANUTS|Ballpark snack|Nuts in shells|1|🥜
 NOODLES|Pasta strands|Soup strands|1|🍜
 PRETZEL|Twisted snack|Salty knot|1|🥨
-ICEBERG|Floating ice mountain|Titanic's foe|1|@iceberg
+ICEBERG|Floating ice|Titanic's foe; Tip of the ___|1|@iceberg
 CANYON|Deep valley; Gorge|Grand ___; Echo spot|1
 RIVERS|Flowing waters|Streams|1
 OCEANS|Big seas|Atlantic and Pacific|1|🌊
@@ -2664,7 +2664,7 @@ FAIRIES|Tiny winged sprites|Tinker Bell; Tooth takers|1|🧚
 GIANTS|Huge folk|Beanstalk dwellers; NY football team|1
 ROBOTS|Metal helpers|Machines that act human|1|🤖
 ALIENS|Space visitors; Little green men|E.T. and friends; Roswell visitors|1|👽
-JEWELS|Gems|Crown stones|1|💎
+JEWELS|Gems|Crown stones; Bling|1|💎
 WALLET|Money holder|Billfold|1|👛
 STAMPS|Postage|Envelope stickers|1
 POSTER|Wall picture|Big printed sign|1
@@ -2685,7 +2685,7 @@ COCONUT|Hairy palm fruit|Palm-tree fruit; Piña colada flavor|1|🥥
 CRACKER|Crisp snack|Saltine; Animal ___|1
 DESSERT|After-dinner sweet|Pie or cake course; Sweet tooth's goal|1|🍨
 HOTDOGS|Ballpark franks|Wieners in buns; Show-offs|1|🌭
-KETCHUP|Red tomato sauce|Fries dip|1
+KETCHUP|Tomato sauce|Fries dip; Catsup|1
 MUSTARD|Yellow hot dog topper|Tangy spread|1
 NUGGETS|Chicken bites|Gold lumps|1
 OATMEAL|Hot breakfast cereal|Porridge|1
@@ -2746,7 +2746,7 @@ WINNER|Champ|Victor|1
 PLAYER|Team member|Game participant|1
 REFEREE|Game official|Whistle blower|1
 STADIUM|Big sports arena|Ballpark|1|🏟️
-JUMPING|Leaping|Hopping|1
+JUMPING|Leaping|Hopping; ___ jacks|1
 RUNNING|Jogging|Racing on foot|1|🏃
 SINGING|Making music with your voice|Vocal music|1
 DANCING|Moving to music|Ballroom fun; ___ queen|1
@@ -2764,7 +2764,7 @@ GOLDEN|Made of gold|Retriever's coat; ___ Gate|1
 MONDAY|Start of the work week|Day after Sunday|1
 FRIDAY|Workweek end|<SAT; TGIF day|1
 TUESDAY|Day after Monday|Taco day|1
-JANUARY|First month|New Year's month|1
+JANUARY|First month|New Year's month; Jan.|1
 OCTOBER|Halloween month|Tenth month|1
 AUGUST|Eighth month; Summer month|Dog days month; Majestic|1
 MINUTES|Sixty-second spans|Clock units|1
@@ -2822,13 +2822,13 @@ PROGRAMMING|Writing code|Computer instructions work|2|💻
 PROGRAMMERS|Code writers|App builders|2
 POLICEWOMAN|Female officer|Woman on the beat|2|👮‍♀️
 TAMBOURINES|Jingly hand drums|Shakers with little cymbals|2
-INSTRUMENTS|Pianos, drums and flutes|Things in a band|1|🎻
+INSTRUMENTS|Music makers|Band gear; Tools|1|🎻
 EXPLORATION|Searching new lands|Adventurer's work; Mapping the unknown|2
-IMAGINATION|Make-believe power|What dreams are made of|1
-INFORMATION|Facts|Data|1
+IMAGINATION|Make-believe power|Dream stuff; Creativity|1
+INFORMATION|Facts|Data; Desk at the mall|1
 COMPETITION|Contest|Rivalry; Friendly ___|1|🏆
 EDUCATIONAL|Teaching something|Good for learning; Instructive|2
-INTERESTING|Not boring|Holding your attention|1
+INTERESTING|Not boring|Engaging; Curious|1
 BEAUTIFULLY|In a lovely way; Gorgeously|With style; Picture-perfect|2
 WONDERFULLY|In a great way|Marvelously|2
 FRIENDSHIPS|Bonds between pals|Buddy ties; Pen-pal links|1
@@ -2875,12 +2875,12 @@ ARCHAEOLOGY|Study of ruins; Dig science|Indy Jones's field|3
 ASTRONOMERS|Star scientists; Telescope users|Galileo and company|2|🔭
 MATHEMATICS|Numbers subject|Math, in full|1
 BIOGRAPHIES|Life stories|Books about people; Lives in print|2
-JOURNALISTS|News writers|Reporters|2
+JOURNALISTS|News writers|Reporters; The press|2
 MAGNIFICENT|Splendid|Grand|2
 SPECTACULAR|Amazing to see|Showstopping|1
 MISCHIEVOUS|Playfully naughty|Prankish|2
 ADVENTUROUS|Daring; Bold and curious|Up for anything; Off the beaten path|2
-INDEPENDENT|Free|Self-reliant|2
+INDEPENDENT|Free|Self-reliant; Third-party voter|2
 REFRESHMENT|Snack or drink|Pick-me-up|2
 ENVIRONMENT|Surroundings|Nature around us; Habitat|2
 NEWSLETTERS|Club bulletins|Regular mailed updates|2
@@ -2894,7 +2894,7 @@ WINDSHIELDS|Car front windows|Wiper surfaces|1
 SPEEDOMETER|Dashboard gauge|It shows how fast you go|1
 BLOCKBUSTER|Huge hit movie|Box-office smash; Summer tentpole|2|🎬
 MASTERPIECE|Great work of art|Artist's finest|1|🖼️
-ILLUSTRATOR|Book picture artist|Drawing pro|2
+ILLUSTRATOR|Book artist|Drawing pro; Picture maker|2
 CARTOONISTS|Comic artists|Funny-page drawers; Strip makers|2
 MARIONETTES|Puppets on strings|String-pulled figures|2
 RINGMASTERS|Circus hosts|Big-top announcers|2|🎪
@@ -2969,16 +2969,16 @@ HP|Horsepower|Engine power; Printer brand|2
 HR|Hour|Hiring dept.; Home run|1
 IA|Iowa|Des Moines; Hawkeye State|2
 IL|Illinois|Chicago; Prairie State|2
-IM|Instant message|Quick online note|2
-IP|Internet address letters|Online ID #; Brand rights|2
-IV|Hospital drip|Four, in Roman numerals|2
-JR|Junior|Son of a "Sr."|2
-JK|"Just kidding!" in a text|"Only joking"|1
-KG|Kilogram|1,000 grams|2
-KM|Kilometer|1,000 meters|2
-KS|Kansas|Topeka's state|2
-KY|Kentucky|Bluegrass State|2
-KB|Kilobyte|Tiny file size unit|2
+IM|Instant message|Quick online note; DM, earlier|2
+IP|Internet address|Online ID #; Brand rights|2
+IV|Hospital drip|Roman four; Saline line|2
+JR|Junior|Son of a "Sr."; Kid, briefly|2
+JK|"Just kidding!"|"Only joking"; Text joke tag|1
+KG|Kilogram|1,000 grams; Weight unit|2
+KM|Kilometer|1,000 meters; Road-sign unit|2
+KS|Kansas|Topeka's state; Sunflower State|2
+KY|Kentucky|Bluegrass State; Derby state|2
+KB|Kilobyte|Tiny file size; Data unit|2
 LB|Pound, as a weight|Scale unit|2
 LT|Lieutenant|Army rank|2
 MC|Host of a show|Emcee|2
@@ -3091,11 +3091,11 @@ GUST|Sudden wind|Blast of air; Strong ___s|1
 HAZE|Light mist|Smoggy blur; Mental fog|2
 HOOP|Basketball ring|Hula ___; Earring style|1
 HUSH|Make quiet|Lullaby's 1st word; ___ puppy|1
-JEEP|Rugged vehicle|Off-roader|2
-JOLT|Sudden jerk|Coffee's kick|2
-KALE|Leafy green|Superfood in a smoothie|2
-KEEL|Boat's backbone|Fall over, with "over"|4
-KIWI|Fuzzy green fruit|New Zealander|1|🥝
+JEEP|Rugged vehicle|Off-roader; Army ride|2
+JOLT|Sudden jerk|Coffee's kick; Shock|2
+KALE|Leafy green|Smoothie green; ___ chips|2
+KEEL|Boat's backbone|Fall, with "over"; Even ___|4
+KIWI|Fuzzy green fruit|New Zealander; Flightless bird|1|🥝
 LAVA|Volcano's flow|Molten rock|1
 LILY|Easter flower|Pond pad flower|1
 PAIL|Bucket|Jack and Jill's carrier|1
@@ -3151,7 +3151,7 @@ HATCH|Emerge from an egg|Small door; Escape ___|2
 HIPPO|River horse|Big-mouthed beast; Nile wallower; Whale relative|1|🦛
 HOBBY|Pastime|Interest; Weekend passion|1
 HONEST|Truthful|Sincere; ___ Abe|1
-JOKER|Wild card|Class clown|1|🃏
+JOKER|Wild card|Class clown; Batman foe|1|🃏
 LEMUR|Madagascar primate|Ring-tailed animal|3
 LILAC|Pale purple|Fragrant spring shrub|2
 LOTUS|Water lily of Asia|Yoga pose|2|🪷
@@ -3201,10 +3201,10 @@ GLOBAL|Worldwide|Planet-wide; ___ warming|2
 GOBLIN|Ugly little creature|Halloween ghoul; Gremlin kin|2
 HANGER|Closet hook|Coat holder; Wire ___|1
 HARBOR|Ship's shelter|Hold, as a grudge; Pearl ___|2
-IGUANA|Large tropical lizard|Pet with a dewlap; Green reptile|2
-JERSEY|Team shirt|New ___ (state)|1
-JUNIOR|Younger person|Third-year student|1
-KIDNEY|Bean-shaped organ|Filter organ|2
+IGUANA|Large lizard|Pet with a dewlap; Green reptile|2
+JERSEY|Team shirt|New ___; Dairy cow|1
+JUNIOR|Younger person|Third-year student; Jr.|1
+KIDNEY|Bean-shaped organ|Filter organ; ___ bean|2
 LAGOON|Shallow coastal pool|Water behind a reef|2
 LOCKET|Pendant with a photo|Keepsake necklace|2
 MARBLE|Small glass ball|Statue stone|1
@@ -3259,8 +3259,8 @@ HAIRCUT|Trim|Barber's work; Buzz, e.g.|1
 HALIBUT|Flatfish|Large flatfish; Fish-and-chips|4
 HICCUPS|Diaphragm spasms|Small setbacks; Hiccoughs; Geeku|1
 HIGHWAY|Main road|Freeway; ___ robbery|1
-JACKPOT|Big prize|Big win|1
-JASMINE|Fragrant flower|Tea flower|2
+JACKPOT|Big prize|Big win; Hit the ___|1
+JASMINE|Fragrant flower|Tea flower; ___ rice|2
 LADYBUG|Red spotted beetle|Spotted bug|1|🐞
 LAUNDRY|Dirty clothes|Wash-day pile|1
 MAMMOTH|Woolly elephant of old|Huge|2|🦣
@@ -3315,10 +3315,10 @@ XI|Greek >Nu|Greek letter drawn as three stacked lines|1
 CM|Centimeter|Hundredth of a meter; Ruler mark|1
 ML|Milliliter|Medicine-spoon unit|1
 DL|Deciliter|Tenth of a liter; Down-low, slangily|2
-KW|Kilowatt|Thousand watts|1
+KW|Kilowatt|Thousand watts; Power unit|1
 HZ|Hertz|Radio-frequency; RF; Cycles / sec|2
 DB|Decibel|Loudness unit; Sound-meter mark|1
-KJ|Kilojoule|Food-energy unit on many labels|2
+KJ|Kilojoule|Food-energy unit; Label energy|2
 MW|Megawatt|Power-plant output unit|2
 NS|Nanosecond|Billionth of a second|2
 # Chemical symbols
@@ -3334,7 +3334,7 @@ AU|Gold|First-place metal; Gold medal symbol|1
 HG|Mercury|Thermo metal; Element 80|2
 SN|Tin|Tin-can metal|2
 XE|Xenon|Bright-headlight gas|2
-KR|Krypton|Superman's home-planet gas|2
+KR|Krypton|Superman's gas; Element 36|2
 BR|Bromine|Red-brown element; Element 35|3
 PU|Plutonium|Reactor fuel|2
 # Common global abbreviations
@@ -3357,7 +3357,7 @@ FR|Father, briefly|Priest's title; Padre, abbr.|1
 CF|"Compare," in notes|Scholar's "see also"; Footnote word|3
 HB|Middle pencil grade|No. 2 grade; Pencil letters|2
 GT|Gran Turismo|Sports-car letters; Grand tourer|2
-IR|Infrared|TV remote's beam|2
+IR|Infrared|TV remote's beam; Heat light|2
 # ---------- v07a additions (JM CD-13: 2.1–2.3, CD-17: 2.3.1, CD-18: 5.1) ----------
 # Format adds an optional 6th field: the Challenge Levels where the clue set may be used ("2-4" = 2 to 4, "7" = 7 and up).
 # A word that is already in the list gets an EXTRA clue set from these lines (one set is picked at random per grid).
@@ -3383,16 +3383,16 @@ FR|France URL|Paris URL; Eiffel web|2||2-4
 GR|Greece URL|Athens URL; Acropolis web|2||2-4
 HK|Hong Kong URL|Kowloon URL; Dim sum web|2||2-4
 HU|Hungary URL|Budapest URL; Danube web|2||2-4
-ID|Indonesia URL|Jakarta URL|2||2-4
-IE|Ireland URL|Dublin URL|2||2-4
-IL|Israel URL|Tel Aviv URL|2||2-4
-IN|India URL|Mumbai URL|2||2-4
-IS|Iceland URL|Reykjavik URL|2||2-4
-IT|Italy URL|Rome URL|2||2-4
-JM|Jamaica URL|Kingston URL|2||2-4
-JP|Japan URL|Tokyo URL|2||2-4
-KE|Kenya URL|Nairobi URL|2||2-4
-KR|South Korea URL|Seoul URL|2||2-4
+ID|Indonesia URL|Jakarta URL; Bali web|2||2-4
+IE|Ireland URL|Dublin URL; Emerald web|2||2-4
+IL|Israel URL|Tel Aviv URL; Jaffa web|2||2-4
+IN|India URL|Mumbai URL; Taj web|2||2-4
+IS|Iceland URL|Reykjavik URL; Geyser web|2||2-4
+IT|Italy URL|Rome URL; Pasta web|2||2-4
+JM|Jamaica URL|Kingston URL; Reggae web|2||2-4
+JP|Japan URL|Tokyo URL; Sushi web|2||2-4
+KE|Kenya URL|Nairobi URL; Safari web|2||2-4
+KR|South Korea URL|Seoul URL; K-pop web|2||2-4
 MA|Morocco URL|Casablanca URL|2||2-4
 MX|Mexico URL|Cancun URL|2||2-4
 MY|Malaysia URL|Kuala Lumpur URL|2||2-4
@@ -3424,15 +3424,15 @@ QA|Qatar URL|Doha URL|2||2-4
 USD|U.S. dollar's code|Greenback|3||4
 EUR|EU money code|Rome money tag; Berlin cash code|3||4
 GBP|British pound code|Sterling; UK's money; Royal coin; U.K. cash|3||4
-JPY|Japanese yen's code|Tokyo money; Japanese cash|3||4
+JPY|Japanese yen code|Tokyo money; Japanese cash|3||4
 CNY|Chinese yuan code|Beijing money; Renminbi tag|3||4
-INR|Indian rupee's code|Mumbai money; Indian cash|3||4
+INR|Indian rupee code|Mumbai money; Indian cash|3||4
 CAD|Canadian dollar code|Loonie; Maple money|3||4
 AUD|Aussie dollar code|Aussie money; Money down under; G'day mate money|3||4
 CHF|Swiss franc code|Zurich money; Alpine cash|3||4
 MXN|Mexican peso's code|Peso|3||4
 BRL|Brazil's money code|Rio money; Samba cash|3||4
-KRW|South Korean won's code|Seoul money; Korean cash; We won|3||4
+KRW|Korean won code|Seoul money; Korean cash; We won|3||4
 ZAR|S. African rand; Money in S. Africa; S. African currency|Rand; S. African cash|3||4
 SEK|Swedish krona's code|Stockholm money|3||4
 NOK|Norwegian krone's code|Oslo money|3||4
@@ -3446,7 +3446,7 @@ PLN|Polish zloty's code|Warsaw money|3||4
 AED|UAE dirham's code|Dubai money; Dubai cash|3||4
 # Airport codes, Challenge Level 7 and up
 LAX|Los Angeles airport code|Bag tag for Hollywood trips|4||7
-JFK|New York's biggest airport code|Bag tag for Queens arrivals|4||7
+JFK|New York airport|Queens trip tag; Big Apple gateway|4||7
 LHR|London Heathrow code|Bag tag for Big Ben trips|4||7
 CDG|Paris airport|Eiffel trip tag; Charles de Gaulle|4||7
 ORD|Chicago O'Hare code|Bag tag for Windy City trips|4||7
@@ -3470,17 +3470,17 @@ FCO|Rome airport|Colosseum; Eternal City|4||7
 MUC|Munich airport code|Bag tag for Oktoberfest trips|4||7
 ZRH|Zurich airport code|Bag tag for Swiss banking trips|4||7
 DUB|Dublin airport|Irish trip tag; Emerald Isle gateway|4||7
-IST|Istanbul airport code|Bag tag for Bosphorus trips|4||7
+IST|Istanbul airport|Bosphorus trip tag; Turkish gateway|4||7
 DXB|Dubai airport|Burj trip tag; Gulf gateway|4||7
 DOH|Doha airport|Qatar trip tag; Gulf hub|4||7
 SIN|Singapore airport code|Bag tag for Lion City trips|4||7
 HKG|Hong Kong airport|Harbour trip tag; Kowloon gateway|4||7
 NRT|Tokyo Narita code|Bag tag for Japan trips|4||7
-ICN|Seoul airport code|Bag tag for K-pop capital trips|4||7
+ICN|Seoul airport|K-pop trip tag; Korea gateway|4||7
 PEK|Beijing airport code|Bag tag for Forbidden City trips|4||7
 SYD|Sydney airport code|Bag tag for Opera House trips|4||7
 AKL|Auckland airport|Kiwi gateway; Sky Tower city|4||7
-JNB|Johannesburg airport code|Bag tag for South African trips|4||7
+JNB|Johannesburg airport|Safari trip tag; Joburg gateway|4||7
 CAI|Cairo airport|Pyramid trip tag; Nile gateway|4||7
 DEL|Delhi airport|Taj Mahal trip tag; India gateway|4||7
 BOM|Mumbai airport code|Bollywood gateway|4||7
@@ -3506,12 +3506,12 @@ ND|Neodymium|Super-magnet metal|3||4
 AM|Americium|Smoke-alarm element|3||4
 CF|Californium|Golden State element; Element 98|3||4
 MD|Mendelevium|Element named for the periodic table's creator|4||7
-IR|Iridium|Hardest-to-corrode metal|3||4
+IR|Iridium|Rustproof metal; Element 77|3||4
 SR|Strontium|Red-firework metal|3||4
 AS|Arsenic|Old-mystery poison|2
 BE|Beryllium|Emerald element; Element 4|3||4
 OS|Osmium|Densest metal|3||4
-IN|Indium|Touch-screen metal|3||4
+IN|Indium|Touch-screen metal; Element 49|3||4
 GA|Gallium|Melts-in-hand metal; Element 31|3||4
 PD|Palladium|Car-converter metal|3||4
 NO|Nobelium|Element named for Nobel|3||4
@@ -3548,7 +3548,7 @@ NACL|Salt|Sodium chloride|3||5
 SALT|NaCl|Sodium chloride|2||5
 WATER|Two H's and an O|Wet compound|2||5
 RUST|Fe2O3|Iron oxide|2||5
-IRON|Fe|Element 26|2||5
+IRON|Fe|Element 26; Steel base|2||5
 SILVER|Ag|Element 47|2||5
 GOLD|Au|Element 79; Fort Knox metal|2||5
 TIN|Sn|Element 50|2||5
@@ -3569,13 +3569,13 @@ EMU|Large bird|Outback runner; Ostrich cousin|1
 BOA|Large snake|Fluffy scarf; Constrictor|2
 TOME|Large book|Hefty volume|4
 TUBA|Large brass horn|Low oompah maker|1
-INN|Little hotel|Roadside lodge|1
+INN|Little hotel|Roadside lodge; Coaching ___|1
 POND|Little lake|Duck pool|1
 CANOE|Little boat|Paddle craft; Camp boat|1
 SIP|Tiny drink|Wee taste|1
 DOT|Tiny spot|Period; Web address part|1
 ANT|Small insect|Picnic pest|1
-INCH|Tiny unit|Move slowly|1
+INCH|Tiny unit|Move slowly; ___worm|1
 VIAL|Little bottle|Lab tube|3
 CAMEO|Brief role|Walk-on part; Star's drop-in|3
 OCEAN|Big sea|The deep blue|1
@@ -5060,590 +5060,590 @@ WRITTEN|Penned|In writing; Composed|1
 WRONG|Incorrect|Mistaken; Injustice|1
 WROTE|Penned|Composed; Authored|1
 YOURS|Belonging to you|Thine; Sincerely ___|1
-# ---------- KeyRing everyday words, tier 2, round 1 A-B (CD-129: 2.1). ON-DECK until JM accepts the drafts ----------
-AARDVARK||Master digger|2|||ON-DECK
-ABIDE|||2|||ON-DECK
-ABNORMAL|||2|||ON-DECK
-ABOLISH|||2|||ON-DECK
-ABORT|||2|||ON-DECK
-ABORTED|||2|||ON-DECK
-ABORTING|||2|||ON-DECK
-ABORTS|||2|||ON-DECK
-ABROAD|||2|||ON-DECK
-ABSENT|||2|||ON-DECK
-ABSORB|||2|||ON-DECK
-ABSORBED|||2|||ON-DECK
-ABSORBS|||2|||ON-DECK
-ABSTRACT||Summary; Inexact; Imprecise|2|||ON-DECK
-ABSURD|||2|||ON-DECK
-ABUSED|||2|||ON-DECK
-ABUSES|||2|||ON-DECK
-ABUSING|||2|||ON-DECK
-ABUSIVE|||2|||ON-DECK
-ABYSMAL|||2|||ON-DECK
-ACCENT|||2|||ON-DECK
-ACCENTS|||2|||ON-DECK
-ACCESSED|||2|||ON-DECK
-ACCESSES|||2|||ON-DECK
-ACCUSE|||2|||ON-DECK
-ACCUSED|||2|||ON-DECK
-ACCUSES|||2|||ON-DECK
-ACCUSING|||2|||ON-DECK
-ACCUSTOM|||2|||ON-DECK
-ACOUSTIC|||2|||ON-DECK
-ACRONYM|||2|||ON-DECK
-ACRONYMS|||2|||ON-DECK
-ACTIVATE|||2|||ON-DECK
-ACUTE|||2|||ON-DECK
-ADDICT|||2|||ON-DECK
-ADDICTED|||2|||ON-DECK
-ADDICTS|||2|||ON-DECK
-ADHERE|||2|||ON-DECK
-ADHERED|||2|||ON-DECK
-ADHERES|||2|||ON-DECK
-ADHERING|||2|||ON-DECK
-ADJACENT|||2|||ON-DECK
-ADJUSTED|||2|||ON-DECK
-ADJUSTS|||2|||ON-DECK
-ADMIRE|||2|||ON-DECK
-ADOPTION|||2|||ON-DECK
-ADVENT||Coming|2|||ON-DECK
-ADVERSE|||2|||ON-DECK
-ADVERT|||2|||ON-DECK
-ADVERTS|||2|||ON-DECK
-ADVISER|||2|||ON-DECK
-ADVISERS|||2|||ON-DECK
-ADVISOR|||2|||ON-DECK
-ADVISORS|||2|||ON-DECK
-ADVISORY|||2|||ON-DECK
-ADVOCATE|||2|||ON-DECK
-AERIAL|||2|||ON-DECK
-AGING|||2|||ON-DECK
-AGONY|||2|||ON-DECK
-AIRCRAFT|||2|||ON-DECK
-AKIN|||2|||ON-DECK
-ALBEIT|||2|||ON-DECK
-ALCOHOL|||2|||ON-DECK
-ALGEBRA||Equations; Solve for x|2|||ON-DECK
-ALIASES|||2|||ON-DECK
-ALIGN|||2|||ON-DECK
-ALIGNED|||2|||ON-DECK
-ALIGNING|||2|||ON-DECK
-ALIGNS|||2|||ON-DECK
-ALLEGE|||2|||ON-DECK
-ALLEGED|||2|||ON-DECK
-ALLEGES|||2|||ON-DECK
-ALLEGING|||2|||ON-DECK
-ALLERGIC|||2|||ON-DECK
-ALLIANCE|||2|||ON-DECK
-ALLIES|||2|||ON-DECK
-ALLOCATE|||2|||ON-DECK
-ALLY|||2|||ON-DECK
-ALOUD|||2|||ON-DECK
-ALPHA|||2|||ON-DECK
-AMATEUR|||2|||ON-DECK
-AMAZE|||2|||ON-DECK
-AMAZED|||2|||ON-DECK
-AMAZES|||2|||ON-DECK
-AMAZING|||2|||ON-DECK
-AMBIENT|||2|||ON-DECK
-AMENDED|||2|||ON-DECK
-AMENDING|||2|||ON-DECK
-AMENDS|||2|||ON-DECK
-ANALOGY|||2|||ON-DECK
-ANALYSES|||2|||ON-DECK
-ANALYST|||2|||ON-DECK
-ANALYZE|||2|||ON-DECK
-ANALYZED|||2|||ON-DECK
-ANALYZES|||2|||ON-DECK
-ANARCHY|||2|||ON-DECK
-ANATOMY|||2|||ON-DECK
-ANCESTOR|||2|||ON-DECK
-ANECDOTE|||2|||ON-DECK
-ANGUISH|||2|||ON-DECK
-ANNUALLY|||2|||ON-DECK
-ANOMALY|||2|||ON-DECK
-ANORAK|||2|||ON-DECK
-ANORAKS|||2|||ON-DECK
-ANTIDOTE|||2|||ON-DECK
-ANTIQUE|||2|||ON-DECK
-ANXIOUS|||2|||ON-DECK
-ANYHOW|||2|||ON-DECK
-APATHY|||2|||ON-DECK
-APPALL|||2|||ON-DECK
-APPALLED|||2|||ON-DECK
-APPALLS|||2|||ON-DECK
-APPEALED|||2|||ON-DECK
-APPEALS|||2|||ON-DECK
-APPEND|||2|||ON-DECK
-APPENDED|||2|||ON-DECK
-APPENDIX||Organ; Book's ending|2|||ON-DECK
-APPENDS|||2|||ON-DECK
-APPLAUSE|||2|||ON-DECK
-APPOINT|||2|||ON-DECK
-APPOINTS|||2|||ON-DECK
-ARCADE|||2|||ON-DECK
-ARCHAIC|||2|||ON-DECK
-ARCHIVE|||2|||ON-DECK
-ARCHIVED|||2|||ON-DECK
-ARCHIVES|||2|||ON-DECK
-ARGUABLE|||2|||ON-DECK
-ARGUABLY|||2|||ON-DECK
-ARISEN|||2|||ON-DECK
-ARISING|||2|||ON-DECK
-AROSE|||2|||ON-DECK
-ARRAY|||2|||ON-DECK
-ARRAYS|||2|||ON-DECK
-ARREST|||2|||ON-DECK
-ARRESTED|||2|||ON-DECK
-ARRESTS|||2|||ON-DECK
-ARRIVAL|||2|||ON-DECK
-ARROGANT|||2|||ON-DECK
-ARTISTIC|||2|||ON-DECK
-ASCEND|||2|||ON-DECK
-ASCENDED|||2|||ON-DECK
-ASCENDS|||2|||ON-DECK
-ASHAMED|||2|||ON-DECK
-ASHCAN|||2|||ON-DECK
-ASS|||2|||ON-DECK
-ASSAULT|||2|||ON-DECK
-ASSEMBLE|||2|||ON-DECK
-ASSERT|||2|||ON-DECK
-ASSERTED|||2|||ON-DECK
-ASSERTS|||2|||ON-DECK
-ASSESS|||2|||ON-DECK
-ASSESSED|||2|||ON-DECK
-ASSESSES|||2|||ON-DECK
-ASSIGN|||2|||ON-DECK
-ASSIGNED|||2|||ON-DECK
-ASSIGNS|||2|||ON-DECK
-ASSIST|||2|||ON-DECK
-ASSISTED|||2|||ON-DECK
-ASSISTS|||2|||ON-DECK
-ASSORT|||2|||ON-DECK
-ASSORTED|||2|||ON-DECK
-ASSORTS|||2|||ON-DECK
-ASTERISK|||2|||ON-DECK
-ATHEISM||Unbelief|2|||ON-DECK
-ATHEIST|||2|||ON-DECK
-ATHEISTS|||2|||ON-DECK
-ATOMIC|||2|||ON-DECK
-ATROCITY|||2|||ON-DECK
-ATTAIN|||2|||ON-DECK
-ATTORNEY|||2|||ON-DECK
-ATTRACTS|||2|||ON-DECK
-AUDIBLE||Clear|2|||ON-DECK
-AUTOMATE|||2|||ON-DECK
-AWAIT|||2|||ON-DECK
-AWAITED|||2|||ON-DECK
-AWAITING|||2|||ON-DECK
-AWAITS|||2|||ON-DECK
-AWFULLY|||2|||ON-DECK
-AXIOM|||2|||ON-DECK
-AXIOMS|||2|||ON-DECK
-BABIES|||2|||ON-DECK
-BACKBONE|||2|||ON-DECK
-BACKLOG|||2|||ON-DECK
-BACKWARD|||2|||ON-DECK
-BACTERIA|||2|||ON-DECK
-BAFFLE|||2|||ON-DECK
-BAFFLED|||2|||ON-DECK
-BAFFLES|||2|||ON-DECK
-BAFFLING|||2|||ON-DECK
-BAGGAGE|||2|||ON-DECK
-BALLOT|||2|||ON-DECK
-BANG|||2|||ON-DECK
-BANKRUPT|||2|||ON-DECK
-BANNED|||2|||ON-DECK
-BANNER|||2|||ON-DECK
-BANNING|||2|||ON-DECK
-BARGAIN|||2|||ON-DECK
-BAROQUE|||2|||ON-DECK
-BARRED|||2|||ON-DECK
-BARREL|||2|||ON-DECK
-BARRIER|||2|||ON-DECK
-BARRIERS|||2|||ON-DECK
-BARRING|||2|||ON-DECK
-BASEMENT|||2|||ON-DECK
-BASH|||2|||ON-DECK
-BASHED|||2|||ON-DECK
-BASHES|||2|||ON-DECK
-BASHING|||2|||ON-DECK
-BASS|||2|||ON-DECK
-BASSES|||2|||ON-DECK
-BATTLE|||2|||ON-DECK
-BAUD|||2|||ON-DECK
-BEATEN|||2|||ON-DECK
-BEAUTY||Looker; ___ & the Beast|2|||ON-DECK
-BEERS|||2|||ON-DECK
-BEGINNER|||2|||ON-DECK
-BEHAVED||Self-conducted; Well-___|2|||ON-DECK
-BEHAVES|||2|||ON-DECK
-BEHAVING|||2|||ON-DECK
-BELIEF|||2|||ON-DECK
-BELIEFS|||2|||ON-DECK
-BELIEVER|||2|||ON-DECK
-BELONGED|||2|||ON-DECK
-BELOVED|||2|||ON-DECK
-BENEATH|||2|||ON-DECK
-BENT|||2|||ON-DECK
-BESIDE|||2|||ON-DECK
-BETA|||2|||ON-DECK
-BEWARE|||2|||ON-DECK
-BIAS|||2|||ON-DECK
-BIASED|||2|||ON-DECK
-BIASES|||2|||ON-DECK
-BIASING|||2|||ON-DECK
-BIBLE|||2|||ON-DECK
-BIBLICAL||Epic; The Good Book|2|||ON-DECK
-BIGOT|||2|||ON-DECK
-BIGOTED|||2|||ON-DECK
-BIGOTRY|||2|||ON-DECK
-BILLFOLD|||2|||ON-DECK
-BILLION||Huge number; Big sum; 2-comma Club; Sagan's phrase|2|||ON-DECK
-BILLIONS|||2|||ON-DECK
-BISHOP|||2|||ON-DECK
-BITTER|||2|||ON-DECK
-BLACKS|||2|||ON-DECK
-BLAMING|||2|||ON-DECK
-BLATANT|||2|||ON-DECK
-BLESS|||2|||ON-DECK
-BLESSED|||2|||ON-DECK
-BLESSES|||2|||ON-DECK
-BLESSING|||2|||ON-DECK
-BLISS|||2|||ON-DECK
-BLOB|||2|||ON-DECK
-BLOOD|||2|||ON-DECK
-BLOODY|||2|||ON-DECK
-BLOWING|||2|||ON-DECK
-BLOWN|||2|||ON-DECK
-BLOWS|||2|||ON-DECK
-BLURB|||2|||ON-DECK
-BOGGED|||2|||ON-DECK
-BOGGING|||2|||ON-DECK
-BOGGLE|||2|||ON-DECK
-BOGGLES|||2|||ON-DECK
-BOMB|||2|||ON-DECK
-BOMBED|||2|||ON-DECK
-BOMBING|||2|||ON-DECK
-BOMBS|||2|||ON-DECK
-BOND|||2|||ON-DECK
-BOOKLET|||2|||ON-DECK
-BOOKSHOP|||2|||ON-DECK
-BOOM|||2|||ON-DECK
-BORDER|||2|||ON-DECK
-BOREDOM|||2|||ON-DECK
-BORING|||2|||ON-DECK
-BORN|||2|||ON-DECK
-BOUNCE|||2|||ON-DECK
-BOUNDARY|||2|||ON-DECK
-BOUNDS|||2|||ON-DECK
-BOUT|||2|||ON-DECK
-BRASS|||2|||ON-DECK
-BREATH|||2|||ON-DECK
-BREATHE|||2|||ON-DECK
-BREATHED|||2|||ON-DECK
-BREATHES|||2|||ON-DECK
-BRED|||2|||ON-DECK
-BREED|||2|||ON-DECK
-BREEDING|||2|||ON-DECK
-BREEDS|||2|||ON-DECK
-BRETHREN|||2|||ON-DECK
-BRIGADE|||2|||ON-DECK
-BROAD|||2|||ON-DECK
-BROADLY|||2|||ON-DECK
-BROWSE|||2|||ON-DECK
-BROWSED|||2|||ON-DECK
-BROWSES|||2|||ON-DECK
-BROWSING|||2|||ON-DECK
-BRUTAL|||2|||ON-DECK
-BUCK|||2|||ON-DECK
-BUCKS|||2|||ON-DECK
-BUFFERED|||2|||ON-DECK
-BUFFERS|||2|||ON-DECK
-BULLET|||2|||ON-DECK
-BULLETS|||2|||ON-DECK
-BUMP|||2|||ON-DECK
-BUNDLE|||2|||ON-DECK
-BURDEN|||2|||ON-DECK
-BURNT|||2|||ON-DECK
-BURST|||2|||ON-DECK
-BURSTING||Exploding; To the brim|2|||ON-DECK
-BURSTS|||2|||ON-DECK
-BUSH|||2|||ON-DECK
-BUST|||2|||ON-DECK
-BUYERS|||2|||ON-DECK
-BYPASS|||2|||ON-DECK
-# ---------- KeyRing everyday words, tier 2, round 2 C (+ BUGGERS, JM CD-131: 2.2 N) (CD-131: 2.3). ON-DECK until JM accepts the drafts ----------
-BUGGERS|||2|||ON-DECK
-CABINET|||2|||ON-DECK
-CABLING|||2|||ON-DECK
-CAFFEINE|||2|||ON-DECK
-CALCULUS|||2|||ON-DECK
-CAM|||2|||ON-DECK
-CAMPUS|||2|||ON-DECK
-CANCEL|||2|||ON-DECK
-CANCELED|||2|||ON-DECK
-CANCELS|||2|||ON-DECK
-CANCER|||2|||ON-DECK
-CANT|||2|||ON-DECK
-CAPITALS|||2|||ON-DECK
-CAPTURE|||2|||ON-DECK
-CAPTURED|||2|||ON-DECK
-CAPTURES|||2|||ON-DECK
-CAREERS|||2|||ON-DECK
-CARELESS|||2|||ON-DECK
-CARRIAGE|||2|||ON-DECK
-CARRIER|||2|||ON-DECK
-CASING|||2|||ON-DECK
-CASUAL|||2|||ON-DECK
-CATALOGS|||2|||ON-DECK
-CATERED|||2|||ON-DECK
-CATERING|||2|||ON-DECK
-CATERS|||2|||ON-DECK
-CATHOLIC|||2|||ON-DECK
-CATTLE|||2|||ON-DECK
-CAUSAL|||2|||ON-DECK
-CAUTION|||2|||ON-DECK
-CAVEAT|||2|||ON-DECK
-CEASED|||2|||ON-DECK
-CEASES|||2|||ON-DECK
-CEASING|||2|||ON-DECK
-CELLULAR|||2|||ON-DECK
-CENSOR|||2|||ON-DECK
-CENSORED|||2|||ON-DECK
-CENSORS|||2|||ON-DECK
-CENTERED|||2|||ON-DECK
-CENTERS|||2|||ON-DECK
-CEREMONY|||2|||ON-DECK
-CHAMBER|||2|||ON-DECK
-CHAOTIC|||2|||ON-DECK
-CHAPEL|||2|||ON-DECK
-CHARITY|||2|||ON-DECK
-CHASING|||2|||ON-DECK
-CHAT|||2|||ON-DECK
-CHATS|||2|||ON-DECK
-CHATTED|||2|||ON-DECK
-CHATTING|||2|||ON-DECK
-CHEAT|||2|||ON-DECK
-CHEATED|||2|||ON-DECK
-CHEATING|||2|||ON-DECK
-CHEATS|||2|||ON-DECK
-CHEERFUL|||2|||ON-DECK
-CHEMIST|||2|||ON-DECK
-CHEMISTS|||2|||ON-DECK
-CHESTNUT|||2|||ON-DECK
-CHEW|||2|||ON-DECK
-CHEWED|||2|||ON-DECK
-CHEWING|||2|||ON-DECK
-CHEWS|||2|||ON-DECK
-CHILDISH|||2|||ON-DECK
-CHOICES|||2|||ON-DECK
-CHOP|||2|||ON-DECK
-CHOPPED|||2|||ON-DECK
-CHOPPING|||2|||ON-DECK
-CHOPS|||2|||ON-DECK
-CHORAL|||2|||ON-DECK
-CHORD|||2|||ON-DECK
-CHORUS|||2|||ON-DECK
-CHUCK|||2|||ON-DECK
-CHUCKED|||2|||ON-DECK
-CHUCKING|||2|||ON-DECK
-CHUCKS|||2|||ON-DECK
-CHURCHES|||2|||ON-DECK
-CINEMA|||2|||ON-DECK
-CIRCA|||2|||ON-DECK
-CIRCULAR|||2|||ON-DECK
-CITE|||2|||ON-DECK
-CITED|||2|||ON-DECK
-CITES|||2|||ON-DECK
-CITIES|||2|||ON-DECK
-CITING|||2|||ON-DECK
-CITIZENS|||2|||ON-DECK
-CIVIL|||2|||ON-DECK
-CIVILIAN|||2|||ON-DECK
-CIVILIZE|||2|||ON-DECK
-CLARITY|||2|||ON-DECK
-CLASH|||2|||ON-DECK
-CLASHES|||2|||ON-DECK
-CLASSIC|||2|||ON-DECK
-CLASSICS|||2|||ON-DECK
-CLASSIFY|||2|||ON-DECK
-CLAUSE|||2|||ON-DECK
-CLAUSES|||2|||ON-DECK
-CLEANERS|||2|||ON-DECK
-CLEANEST|||2|||ON-DECK
-CLIENT|||2|||ON-DECK
-CLIENTS|||2|||ON-DECK
-CLINIC|||2|||ON-DECK
-CLINICAL|||2|||ON-DECK
-CLIP|||2|||ON-DECK
-CLIPPED|||2|||ON-DECK
-CLIPPING|||2|||ON-DECK
-CLIPS|||2|||ON-DECK
-CLIQUE|||2|||ON-DECK
-CLOG|||2|||ON-DECK
-CLONE|||2|||ON-DECK
-CLONES|||2|||ON-DECK
-CLOSURE|||2|||ON-DECK
-CLOTHE|||2|||ON-DECK
-CLUMSY|||2|||ON-DECK
-CLUSTER|||2|||ON-DECK
-CLUSTERS|||2|||ON-DECK
-COARSE|||2|||ON-DECK
-COBBLER|||2|||ON-DECK
-COBBLERS|||2|||ON-DECK
-COHERENT|||2|||ON-DECK
-COINCIDE|||2|||ON-DECK
-COKE|||2|||ON-DECK
-COLLAR|||2|||ON-DECK
-COLLATE|||2|||ON-DECK
-COLLATED|||2|||ON-DECK
-COLLATES|||2|||ON-DECK
-COLON|||2|||ON-DECK
-COLONY|||2|||ON-DECK
-COLUMNS|||2|||ON-DECK
-COMBAT|||2|||ON-DECK
-COMFORT|||2|||ON-DECK
-COMIC|||2|||ON-DECK
-COMICS|||2|||ON-DECK
-COMMA|||2|||ON-DECK
-COMMAS|||2|||ON-DECK
-COMMENCE|||2|||ON-DECK
-COMMIT|||2|||ON-DECK
-COMMITS|||2|||ON-DECK
-COMMONS|||2|||ON-DECK
-COMMUNAL|||2|||ON-DECK
-COMPACT|||2|||ON-DECK
-COMPEL|||2|||ON-DECK
-COMPELS|||2|||ON-DECK
-COMPETE|||2|||ON-DECK
-COMPETED|||2|||ON-DECK
-COMPETES|||2|||ON-DECK
-COMPILE|||2|||ON-DECK
-COMPILED|||2|||ON-DECK
-COMPILES|||2|||ON-DECK
-COMPLY|||2|||ON-DECK
-COMPOSER|||2|||ON-DECK
-COMPOUND|||2|||ON-DECK
-COMPRESS|||2|||ON-DECK
-COMPRISE|||2|||ON-DECK
-CON|||2|||ON-DECK
-CONCEAL|||2|||ON-DECK
-CONCEALS|||2|||ON-DECK
-CONCEDE|||2|||ON-DECK
-CONCEIVE|||2|||ON-DECK
-CONCEPTS|||2|||ON-DECK
-CONCERTO|||2|||ON-DECK
-CONCISE|||2|||ON-DECK
-CONCLUDE|||2|||ON-DECK
-CONCUR|||2|||ON-DECK
-CONDEMN|||2|||ON-DECK
-CONDEMNS|||2|||ON-DECK
-CONDENSE|||2|||ON-DECK
-CONDONE|||2|||ON-DECK
-CONDUCT|||2|||ON-DECK
-CONDUCTS|||2|||ON-DECK
-CONFESS|||2|||ON-DECK
-CONFINE|||2|||ON-DECK
-CONFINED|||2|||ON-DECK
-CONFINES|||2|||ON-DECK
-CONFLICT|||2|||ON-DECK
-CONFORM|||2|||ON-DECK
-CONFRONT|||2|||ON-DECK
-CONGEST|||2|||ON-DECK
-CONGESTS|||2|||ON-DECK
-CONSENT|||2|||ON-DECK
-CONSENTS|||2|||ON-DECK
-CONSOLE|||2|||ON-DECK
-CONSULT|||2|||ON-DECK
-CONSULTS|||2|||ON-DECK
-CONSUME|||2|||ON-DECK
-CONSUMED|||2|||ON-DECK
-CONSUMER|||2|||ON-DECK
-CONSUMES|||2|||ON-DECK
-CONTACTS|||2|||ON-DECK
-CONTEMPT|||2|||ON-DECK
-CONTEND|||2|||ON-DECK
-CONTEST|||2|||ON-DECK
-CONTEXTS|||2|||ON-DECK
-CONTOUR|||2|||ON-DECK
-CONTRIVE|||2|||ON-DECK
-CONVERSE|||2|||ON-DECK
-CONVERTS|||2|||ON-DECK
-CONVEY|||2|||ON-DECK
-CONVICT|||2|||ON-DECK
-CONVICTS|||2|||ON-DECK
-CORPSE|||2|||ON-DECK
-CORPSES|||2|||ON-DECK
-CORRIDOR|||2|||ON-DECK
-COSMIC|||2|||ON-DECK
-COUNCILS|||2|||ON-DECK
-COUNSEL|||2|||ON-DECK
-COUNSELS|||2|||ON-DECK
-COUPLED|||2|||ON-DECK
-COUPLES|||2|||ON-DECK
-COUPLING|||2|||ON-DECK
-COURAGE|||2|||ON-DECK
-COURIER|||2|||ON-DECK
-COVERAGE|||2|||ON-DECK
-CRACK|||2|||ON-DECK
-CRACKED|||2|||ON-DECK
-CRACKING|||2|||ON-DECK
-CRACKS|||2|||ON-DECK
-CRAMP|||2|||ON-DECK
-CRAMPED|||2|||ON-DECK
-CRAMPING|||2|||ON-DECK
-CRAMPS|||2|||ON-DECK
-CRASS|||2|||ON-DECK
-CREATOR|||2|||ON-DECK
-CREDIBLE|||2|||ON-DECK
-CREDITS|||2|||ON-DECK
-CREED|||2|||ON-DECK
-CREEP|||2|||ON-DECK
-CRIED|||2|||ON-DECK
-CRIES|||2|||ON-DECK
-CRIMINAL|||2|||ON-DECK
-CRITERIA|||2|||ON-DECK
-CRITIC|||2|||ON-DECK
-CRITICS|||2|||ON-DECK
-CROSSED|||2|||ON-DECK
-CROSSES|||2|||ON-DECK
-CROSSING|||2|||ON-DECK
-CRUCIAL|||2|||ON-DECK
-CRUDE|||2|||ON-DECK
-CRUEL|||2|||ON-DECK
-CRUELTY|||2|||ON-DECK
-CRUISE|||2|||ON-DECK
-CRUISED|||2|||ON-DECK
-CRUISES|||2|||ON-DECK
-CRUISING|||2|||ON-DECK
-CRUNCH|||2|||ON-DECK
-CRUNCHED|||2|||ON-DECK
-CRUNCHES|||2|||ON-DECK
-CRYPTIC|||2|||ON-DECK
-CUBIC|||2|||ON-DECK
-CUCKOO|||2|||ON-DECK
-CUDDLY|||2|||ON-DECK
-CULPRIT|||2|||ON-DECK
-CULT|||2|||ON-DECK
-CULTURAL|||2|||ON-DECK
-CULTURES|||2|||ON-DECK
-CUNNING|||2|||ON-DECK
-CUPBOARD|||2|||ON-DECK
-CURING|||2|||ON-DECK
-CURLY|||2|||ON-DECK
-CURRENCY|||2|||ON-DECK
-CURRY|||2|||ON-DECK
-CURSE|||2|||ON-DECK
-CUSTOM|||2|||ON-DECK
-CUSTOMS|||2|||ON-DECK
-CYCLING|||2|||ON-DECK
-CYCLIST|||2|||ON-DECK
-CYCLISTS|||2|||ON-DECK
-CYLINDER|||2|||ON-DECK
-CYNIC|||2|||ON-DECK
-CYNICAL|||2|||ON-DECK
+# ---------- KeyRing everyday words, tier 2, round 1 A-B (CD-129: 2.1). Drafts accepted (CD-135), ACTIVE since L14.12 ----------
+AARDVARK|Ant-eating mammal|Master digger|2
+ABIDE|Tolerate|Stand; Dwell|2
+ABNORMAL|Unusual|Odd; Irregular|2
+ABOLISH|End|Do away with; Repeal|2
+ABORT|Call off|Cancel; Scrub, as a launch|2
+ABORTED|Called off|Canceled; Scrubbed|2
+ABORTING|Calling off|Canceling; Scrubbing|2
+ABORTS|Calls off|Cancels; Scrubs|2
+ABROAD|Overseas|Away from home; Widely|2
+ABSENT|Missing|Away; Not here|2
+ABSORB|Soak up|Take in; Engross|2
+ABSORBED|Soaked up|Engrossed; Took in|2
+ABSORBS|Soaks up|Takes in; Engrosses|2
+ABSTRACT|Theoretical|Summary; Inexact; Imprecise|2
+ABSURD|Ridiculous|Silly; Nonsensical|2
+ABUSED|Mistreated|Misused; Harmed|2
+ABUSES|Mistreats|Misuses; Wrongs|2
+ABUSING|Mistreating|Misusing; Harming|2
+ABUSIVE|Cruel|Harmful; Insulting|2
+ABYSMAL|Dreadful|Terrible; Bottomless|2
+ACCENT|Way of speaking|Stress; Highlight|2
+ACCENTS|Speech styles|Stresses; Highlights|2
+ACCESSED|Got into|Opened; Reached|2
+ACCESSES|Gets into|Opens; Ways in|2
+ACCUSE|Blame|Charge; Point at|2
+ACCUSED|Blamed|Charged; Defendant|2
+ACCUSES|Blames|Charges; Points at|2
+ACCUSING|Blaming|Charging; Pointing at|2
+ACCUSTOM|Get used to|Adapt; Familiarize|2
+ACOUSTIC|Sound-related|Unplugged; Hall quality|2
+ACRONYM|Initials word|NASA, e.g.; Abbreviation|2
+ACRONYMS|Initials words|NASA and RADAR; Abbreviations|2
+ACTIVATE|Turn on|Start; Trigger|2
+ACUTE|Sharp|Severe; ___ angle|2
+ADDICT|Dependent|Junkie; Big fan|2
+ADDICTED|Hooked|Dependent; Obsessed|2
+ADDICTS|Dependents|Junkies; Big fans|2
+ADHERE|Stick|Follow; Cling|2
+ADHERED|Stuck|Followed; Clung|2
+ADHERES|Sticks|Follows; Clings|2
+ADHERING|Sticking|Following; Clinging|2
+ADJACENT|Next to|Neighboring; Beside|2
+ADJUSTED|Tweaked|Adapted; Fine-tuned|2
+ADJUSTS|Tweaks|Adapts; Fine-tunes|2
+ADMIRE|Look up to|Respect; Gaze at|2
+ADOPTION|Taking in|Acceptance; Pet rescue|2
+ADVENT|Arrival|Coming|2
+ADVERSE|Harmful|Unfavorable; Hostile|2
+ADVERT|Ad, in UK|Commercial; Promo|2
+ADVERTS|Ads, in UK|Commercials; Promos|2
+ADVISER|Counselor|Consultant; Mentor|2
+ADVISERS|Counselors|Consultants; Mentors|2
+ADVISOR|Counselor|Consultant; Guide|2
+ADVISORS|Counselors|Consultants; Guides|2
+ADVISORY|Warning|Consultative; Weather alert|2
+ADVOCATE|Supporter|Champion; Argue for|2
+AERIAL|Antenna|Airborne; Overhead view|2
+AGING|Getting older|Maturing; Ripening|2
+AGONY|Anguish|Torment; ___ aunt|2
+AIRCRAFT|Plane|Jet; Flying machine|2
+AKIN|Similar|Related; Like|2
+ALBEIT|Although|Though; Even if|2
+ALCOHOL|Liquor|Spirits; Booze|2
+ALGEBRA|Math with x|Equations; Solve for x|2
+ALIASES|Assumed names|Pen names; AKAs|2
+ALIGN|Line up|Straighten; Side with|2
+ALIGNED|Lined up|Straight; In sync|2
+ALIGNING|Lining up|Straightening; Syncing|2
+ALIGNS|Lines up|Straightens; Sides with|2
+ALLEGE|Claim|Assert; Charge|2
+ALLEGED|Claimed|Supposed; So-called|2
+ALLEGES|Claims|Asserts; Charges|2
+ALLEGING|Claiming|Asserting; Charging|2
+ALLERGIC|Sensitive|Averse; Sneezy|2
+ALLIANCE|Union|Pact; Coalition|2
+ALLIES|Partners|Friends; WWII winners|2
+ALLOCATE|Assign|Allot; Budget|2
+ALLY|Partner|Friend; Supporter|2
+ALOUD|Out loud|Audibly; Vocally|2
+ALPHA|First letter|Top dog; ___ male|2
+AMATEUR|Hobbyist|Novice; Unpaid|2
+AMAZE|Astonish|Stun; Wow|2
+AMAZED|Astonished|Stunned; Wowed|2
+AMAZES|Astonishes|Stuns; Wows|2
+AMAZING|Astonishing|Stunning; Awesome|2
+AMBIENT|Surrounding|Background; Chill music|2
+AMENDED|Changed|Revised; Fixed|2
+AMENDING|Changing|Revising; Fixing|2
+AMENDS|Changes|Revisions; Make ___|2
+ANALOGY|Comparison|Likeness; Parallel|2
+ANALYSES|Studies|Breakdowns; Reviews|2
+ANALYST|Examiner|Expert; Shrink|2
+ANALYZE|Examine|Study; Break down|2
+ANALYZED|Examined|Studied; Broke down|2
+ANALYZES|Examines|Studies; Breaks down|2
+ANARCHY|Chaos|Lawlessness; Disorder|2
+ANATOMY|Body science|Structure; Makeup|2
+ANCESTOR|Forebear|Forefather; Root|2
+ANECDOTE|Short story|Tale; Yarn|2
+ANGUISH|Agony|Torment; Heartache|2
+ANNUALLY|Yearly|Each year; Per annum|2
+ANOMALY|Oddity|Exception; Fluke|2
+ANORAK|Parka|Rain jacket; Geek, in UK|2
+ANORAKS|Parkas|Rain jackets; Geeks, in UK|2
+ANTIDOTE|Cure|Remedy; Poison fix|2
+ANTIQUE|Old|Vintage; Heirloom|2
+ANXIOUS|Worried|Nervous; Eager|2
+ANYHOW|Anyway|Regardless; In any case|2
+APATHY|Indifference|Unconcern; Who cares?|2
+APPALL|Horrify|Shock; Dismay|2
+APPALLED|Horrified|Shocked; Dismayed|2
+APPALLS|Horrifies|Shocks; Dismays|2
+APPEALED|Pleaded|Attracted; Went to court|2
+APPEALS|Pleas|Attracts; Charms|2
+APPEND|Add|Attach; Tack on|2
+APPENDED|Added|Attached; Tacked on|2
+APPENDIX|Supplement|Organ; Book's ending|2
+APPENDS|Adds|Attaches; Tacks on|2
+APPLAUSE|Clapping|Ovation; Hand|2
+APPOINT|Name|Assign; Choose|2
+APPOINTS|Names|Assigns; Chooses|2
+ARCADE|Game hall|Covered walk; Pinball spot|2
+ARCHAIC|Ancient|Outdated; Old-fashioned|2
+ARCHIVE|Record store|Store; File away|2
+ARCHIVED|Stored|Filed away; Saved|2
+ARCHIVES|Records|Stores; Files|2
+ARGUABLE|Debatable|Disputable; Moot|2
+ARGUABLY|Possibly|Debatably; It could be said|2
+ARISEN|Come up|Emerged; Risen|2
+ARISING|Coming up|Emerging; Rising|2
+AROSE|Came up|Emerged; Rose|2
+ARRAY|Range|Display; Lineup|2
+ARRAYS|Ranges|Displays; Lineups|2
+ARREST|Detain|Stop; Collar|2
+ARRESTED|Detained|Stopped; Busted|2
+ARRESTS|Detains|Stops; Busts|2
+ARRIVAL|Coming|Entrance; Newcomer|2
+ARROGANT|Haughty|Cocky; Conceited|2
+ARTISTIC|Creative|Arty; Stylish|2
+ASCEND|Climb|Rise; Go up|2
+ASCENDED|Climbed|Rose; Went up|2
+ASCENDS|Climbs|Rises; Goes up|2
+ASHAMED|Embarrassed|Sheepish; Red-faced|2
+ASHCAN|Garbage bin|Dustbin; ___ School art|2
+ASS|Donkey|Burro; Fool|2
+ASSAULT|Attack|Raid; Onslaught|2
+ASSEMBLE|Put together|Gather; Build|2
+ASSERT|Declare|Claim; Insist|2
+ASSERTED|Declared|Claimed; Insisted|2
+ASSERTS|Declares|Claims; Insists|2
+ASSESS|Evaluate|Judge; Size up|2
+ASSESSED|Evaluated|Judged; Sized up|2
+ASSESSES|Evaluates|Judges; Sizes up|2
+ASSIGN|Allot|Appoint; Give out|2
+ASSIGNED|Allotted|Appointed; Given|2
+ASSIGNS|Allots|Appoints; Gives out|2
+ASSIST|Help|Aid; Pass to a scorer|2
+ASSISTED|Helped|Aided; Supported|2
+ASSISTS|Helps|Aids; Passes|2
+ASSORT|Sort|Classify; Group|2
+ASSORTED|Mixed|Various; Sundry|2
+ASSORTS|Sorts|Classifies; Groups|2
+ASTERISK|Star symbol|Footnote mark; Caveat|2
+ATHEISM|Disbelief in God|Unbelief|2
+ATHEIST|Nonbeliever|Skeptic; Unbeliever|2
+ATHEISTS|Nonbelievers|Skeptics; Unbelievers|2
+ATOMIC|Nuclear|Tiny; ___ clock|2
+ATROCITY|Horror|Outrage; Crime|2
+ATTAIN|Reach|Achieve; Gain|2
+ATTORNEY|Lawyer|Counsel; ___ general|2
+ATTRACTS|Draws|Pulls; Lures|2
+AUDIBLE|Hearable|Clear|2
+AUTOMATE|Mechanize|Computerize; Robotize|2
+AWAIT|Wait for|Expect; Anticipate|2
+AWAITED|Waited for|Expected; Long-___|2
+AWAITING|Waiting for|Expecting; Pending|2
+AWAITS|Waits for|Expects; Lies ahead|2
+AWFULLY|Terribly|Very; Badly|2
+AXIOM|Truth|Principle; Maxim|2
+AXIOMS|Truths|Principles; Maxims|2
+BABIES|Infants|Tots; Pampers|2
+BACKBONE|Spine|Courage; Mainstay|2
+BACKLOG|Pile-up|Arrears; To-do pile|2
+BACKWARD|Reverse|Behind; Shy|2
+BACTERIA|Germs|Microbes; Bugs|2
+BAFFLE|Puzzle|Confuse; Stump|2
+BAFFLED|Puzzled|Confused; Stumped|2
+BAFFLES|Puzzles|Confuses; Stumps|2
+BAFFLING|Puzzling|Confusing; Mysterious|2
+BAGGAGE|Luggage|Bags; Emotional ___|2
+BALLOT|Vote|Ticket; Voting paper|2
+BANG|Boom|Slam; Fringe|2
+BANKRUPT|Broke|Insolvent; Bust|2
+BANNED|Barred|Forbidden; Outlawed|2
+BANNER|Flag|Sign; Headline|2
+BANNING|Barring|Forbidding; Outlawing|2
+BARGAIN|Deal|Haggle; Steal|2
+BAROQUE|Ornate|Bach's era; Fancy|2
+BARRED|Banned|Blocked; Striped|2
+BARREL|Cask|Keg; Gun tube|2
+BARRIER|Wall|Obstacle; Fence|2
+BARRIERS|Walls|Obstacles; Fences|2
+BARRING|Excluding|Banning; Except for|2
+BASEMENT|Cellar|Lower level; Bargain ___|2
+BASH|Party|Hit; Criticize|2
+BASHED|Hit|Dented; Criticized|2
+BASHES|Parties|Hits; Criticizes|2
+BASHING|Hitting|Criticism; Pounding|2
+BASS|Low voice|Fish; Guitar type|2
+BASSES|Low voices|Fish; Low singers|2
+BATTLE|Fight|Combat; Clash|2
+BAUD|Modem speed unit|Data rate; Old modem measure|2
+BEATEN|Defeated|Whipped; Worn path|2
+BEAUTY|Loveliness|Looker; ___ & the Beast|2
+BEERS|Brews|Ales; Lagers|2
+BEGINNER|Newcomer|Novice; Rookie|2
+BEHAVED|Acted|Self-conducted; Well-___|2
+BEHAVES|Acts|Conducts oneself; Minds manners|2
+BEHAVING|Acting|Minding manners; Conducting oneself|2
+BELIEF|Faith|Trust; Conviction|2
+BELIEFS|Faiths|Convictions; Views|2
+BELIEVER|Faithful one|Follower; Fan|2
+BELONGED|Fit in|Was owned; Was a member|2
+BELOVED|Dear|Darling; Cherished|2
+BENEATH|Under|Below; Unworthy of|2
+BENT|Curved|Crooked; Knack|2
+BESIDE|Next to|Near; ___ oneself|2
+BETA|Second letter|Test version; ___ test|2
+BEWARE|Watch out|Be careful; ___ of dog|2
+BIAS|Prejudice|Slant; Leaning|2
+BIASED|Prejudiced|Slanted; One-sided|2
+BIASES|Prejudices|Slants; Leanings|2
+BIASING|Prejudicing|Slanting; Skewing|2
+BIBLE|Scripture|Good Book; Guide|2
+BIBLICAL|Scriptural|Epic; The Good Book|2
+BIGOT|Intolerant one|Zealot; Racist|2
+BIGOTED|Intolerant|Prejudiced; Narrow-minded|2
+BIGOTRY|Intolerance|Prejudice; Bias|2
+BILLFOLD|Wallet|Purse; Money holder|2
+BILLION|Thousand millions|Huge number; Big sum; 2-comma Club; Sagan's phrase|2
+BILLIONS|Huge numbers|Countless; Fortunes|2
+BISHOP|Church leader|Chess piece; Diocese head|2
+BITTER|Sour|Resentful; Harsh|2
+BLACKS|Darks|Ebonies; Inks|2
+BLAMING|Accusing|Faulting; Pointing at|2
+BLATANT|Obvious|Glaring; Flagrant|2
+BLESS|Sanctify|Consecrate; ___ you!|2
+BLESSED|Holy|Lucky; Sacred|2
+BLESSES|Sanctifies|Favors; Consecrates|2
+BLESSING|Gift|Approval; Grace|2
+BLISS|Joy|Happiness; Heaven|2
+BLOB|Lump|Glob; Mass|2
+BLOOD|Red fluid|Kin; ___ type|2
+BLOODY|Bleeding|Gory; Brit intensifier|2
+BLOWING|Puffing|Gusting; Squandering|2
+BLOWN|Puffed|Gusted; Squandered|2
+BLOWS|Puffs|Hits; Gusts|2
+BLURB|Short ad|Cover copy; Promo text|2
+BOGGED|Stuck|Mired; ___ down|2
+BOGGING|Sticking|Miring; ___ down|2
+BOGGLE|Baffle|Stun; Mind-___|2
+BOGGLES|Baffles|Stuns; Mind-___|2
+BOMB|Explosive|Flop; Dud|2
+BOMBED|Flopped|Failed; Blew up|2
+BOMBING|Flopping|Failing; Air raid|2
+BOMBS|Flops|Failures; Explosives|2
+BOND|Tie|Link; Agent 007|2
+BOOKLET|Pamphlet|Brochure; Leaflet|2
+BOOKSHOP|Book retailer|Reading shop; Literary store|2
+BOOM|Bang|Surge; Sonic ___|2
+BORDER|Edge|Frontier; Boundary|2
+BOREDOM|Tedium|Dullness; Ennui|2
+BORING|Dull|Tedious; Drilling|2
+BORN|Brought forth|Natural; Newly ___|2
+BOUNCE|Rebound|Bound; Spring|2
+BOUNDARY|Limit|Edge; Border|2
+BOUNDS|Limits|Leaps; Out of ___|2
+BOUT|Match|Round; Spell|2
+BRASS|Copper alloy|Top officers; Horns|2
+BREATH|Inhale|Puff; Gasp|2
+BREATHE|Inhale|Exhale; Live|2
+BREATHED|Inhaled|Exhaled; Lived|2
+BREATHES|Inhales|Exhales; Lives|2
+BRED|Raised|Reared; Born and ___|2
+BREED|Raise|Type; Pedigree|2
+BREEDING|Raising|Manners; Upbringing|2
+BREEDS|Raises|Types; Pedigrees|2
+BRETHREN|Brothers|Kin; Fellow members|2
+BRIGADE|Troop|Unit; Fire ___|2
+BROAD|Wide|General; Sweeping|2
+BROADLY|Widely|Generally; In general|2
+BROWSE|Look around|Skim; Window-shop|2
+BROWSED|Looked around|Skimmed; Window-shopped|2
+BROWSES|Looks around|Skims; Grazes|2
+BROWSING|Looking around|Skimming; Surfing|2
+BRUTAL|Savage|Harsh; Cruel|2
+BUCK|Dollar|Male deer; Pass the ___|2
+BUCKS|Dollars|Male deer; Milwaukee team|2
+BUFFERED|Cushioned|Shielded; Padded|2
+BUFFERS|Cushions|Shields; Pads|2
+BULLET|Round|Dot point; Bite the ___|2
+BULLETS|Rounds|Dot points; List marks|2
+BUMP|Bulge|Knock; Fist ___|2
+BUNDLE|Bunch|Package; Fortune|2
+BURDEN|Load|Weight; Duty|2
+BURNT|Scorched|Charred; Singed|2
+BURST|Pop|Explode; Spurt|2
+BURSTING|Popping|Exploding; To the brim|2
+BURSTS|Pops|Explodes; Spurts|2
+BUSH|Shrub|Thicket; Outback|2
+BUST|Statue|Flop; Raid|2
+BUYERS|Shoppers|Customers; Purchasers|2
+BYPASS|Detour|Go around; Heart surgery|2
+# ---------- KeyRing everyday words, tier 2, round 2 C (+ BUGGERS, JM CD-131: 2.2 N) (CD-131: 2.3). Drafts accepted (CD-135), ACTIVE since L14.12 ----------
+BUGGERS|Rascals, in UK|Scamps; Little devils|2
+CABINET|Cupboard|Advisers; Kitchen ___|2
+CABLING|Wiring|Cords; Network lines|2
+CAFFEINE|Coffee kick|Stimulant; Jolt in a cup|2
+CALCULUS|Advanced math|Derivatives class; Tartar|2
+CAM|Video recorder|Web ___; Engine part|2
+CAMPUS|College grounds|School site; Quad|2
+CANCEL|Call off|Scrap; Void|2
+CANCELED|Called off|Scrapped; Voided|2
+CANCELS|Calls off|Scraps; Voids|2
+CANCER|Disease|Zodiac crab; Tumor|2
+CANT|Jargon|Hypocrisy; Tilt|2
+CAPITALS|Main cities|Upper-case letters; Funds|2
+CAPTURE|Catch|Seize; Record|2
+CAPTURED|Caught|Seized; Recorded|2
+CAPTURES|Catches|Seizes; Records|2
+CAREERS|Professions|Jobs; Callings|2
+CARELESS|Sloppy|Negligent; Heedless|2
+CARRIAGE|Coach|Buggy; Posture|2
+CARRIER|Bearer|Airline; Phone company|2
+CASING|Cover|Shell; Window frame|2
+CASUAL|Relaxed|Informal; Laid-back|2
+CATALOGS|Lists|Mail-order books; Indexes|2
+CATERED|Supplied food|Served; Indulged|2
+CATERING|Food service|Serving; Indulging|2
+CATERS|Supplies food|Serves; Indulges|2
+CATHOLIC|Universal|Wide-ranging; Roman ___|2
+CATTLE|Cows|Livestock; Herd|2
+CAUSAL|Cause-related|Linked; Underlying|2
+CAUTION|Care|Warning; Yellow light|2
+CAVEAT|Warning|Proviso; ___ emptor|2
+CEASED|Stopped|Ended; Quit|2
+CEASES|Stops|Ends; Quits|2
+CEASING|Stopping|Ending; Quitting|2
+CELLULAR|Mobile|Cell-based; Phone type|2
+CENSOR|Ban|Bleep; Suppress|2
+CENSORED|Banned|Bleeped; Cut|2
+CENSORS|Bans|Bleeps; Cuts|2
+CENTERED|Middled|Balanced; Focused|2
+CENTERS|Middles|Hubs; Focuses|2
+CEREMONY|Rite|Ritual; Formal event|2
+CHAMBER|Room|Hall; ___ music|2
+CHAOTIC|Disorderly|Wild; Messy|2
+CHAPEL|Small church|Sanctuary; Wedding ___|2
+CHARITY|Generosity|Aid group; Kindness|2
+CHASING|Pursuing|Following; Hunting|2
+CHAT|Talk|Gab; Text session|2
+CHATS|Talks|Gabs; Texts|2
+CHATTED|Talked|Gabbed; Texted|2
+CHATTING|Talking|Gabbing; Texting|2
+CHEAT|Swindle|Trick; Copy answers|2
+CHEATED|Swindled|Tricked; Copied|2
+CHEATING|Swindling|Tricking; Copying|2
+CHEATS|Swindles|Tricks; Copies|2
+CHEERFUL|Happy|Sunny; Upbeat|2
+CHEMIST|Scientist|Pharmacist; Lab worker|2
+CHEMISTS|Scientists|Pharmacists; Lab workers|2
+CHESTNUT|Nut|Reddish brown; Old joke|2
+CHEW|Munch|Gnaw; ___ the fat|2
+CHEWED|Munched|Gnawed; ___ out|2
+CHEWING|Munching|Gnawing; ___ gum|2
+CHEWS|Munches|Gnaws; Taffy treats|2
+CHILDISH|Immature|Babyish; Silly|2
+CHOICES|Options|Picks; Selections|2
+CHOP|Cut|Hack; Pork ___|2
+CHOPPED|Cut|Hacked; Minced|2
+CHOPPING|Cutting|Hacking; ___ block|2
+CHOPS|Cuts|Hacks; Lamb ___|2
+CHORAL|Sung|Choir-based; Vocal|2
+CHORD|Notes together|Harmony; Strike a ___|2
+CHORUS|Refrain|Choir; In unison|2
+CHUCK|Toss|Throw; ___ steak|2
+CHUCKED|Tossed|Threw; Dumped|2
+CHUCKING|Tossing|Throwing; Dumping|2
+CHUCKS|Tosses|Throws; Sneakers|2
+CHURCHES|Chapels|Places of worship; Congregations|2
+CINEMA|Movies|Theater; Film art|2
+CIRCA|About|Around; Approximately|2
+CIRCULAR|Round|Flyer; Ring-shaped|2
+CITE|Quote|Mention; Ticket|2
+CITED|Quoted|Mentioned; Ticketed|2
+CITES|Quotes|Mentions; Tickets|2
+CITIES|Towns|Metropolises; Urban areas|2
+CITING|Quoting|Mentioning; Ticketing|2
+CITIZENS|Residents|Nationals; Voters|2
+CIVIL|Polite|Courteous; Not military|2
+CIVILIAN|Non-soldier|Private citizen; Layperson|2
+CIVILIZE|Refine|Educate; Tame|2
+CLARITY|Clearness|Lucidity; Precision|2
+CLASH|Conflict|Collide; Bang|2
+CLASHES|Conflicts|Collides; Fights|2
+CLASSIC|Timeless|Vintage; Standard|2
+CLASSICS|Timeless works|Greats; Old favorites|2
+CLASSIFY|Sort|Categorize; Make secret|2
+CLAUSE|Section|Provision; Sentence part|2
+CLAUSES|Sections|Provisions; Sentence parts|2
+CLEANERS|Janitors|Dry ___; Detergents|2
+CLEANEST|Purest|Most spotless; Tidiest|2
+CLIENT|Customer|Patron; Account|2
+CLIENTS|Customers|Patrons; Accounts|2
+CLINIC|Health center|Workshop; Outpatient site|2
+CLINICAL|Medical|Detached; ___ trial|2
+CLIP|Fastener|Trim; Video snippet|2
+CLIPPED|Fastened|Trimmed; Curt|2
+CLIPPING|Cutting|Trimming; News cutout|2
+CLIPS|Fasteners|Trims; Snippets|2
+CLIQUE|In-crowd|Circle; Gang|2
+CLOG|Block|Jam; Wooden shoe|2
+CLONE|Copy|Duplicate; Dolly the sheep|2
+CLONES|Copies|Duplicates; Look-alikes|2
+CLOSURE|Ending|Closing; Peace of mind|2
+CLOTHE|Dress|Garb; Outfit|2
+CLUMSY|Awkward|Bumbling; All thumbs|2
+CLUSTER|Bunch|Group; Star ___|2
+CLUSTERS|Bunches|Groups; Clumps|2
+COARSE|Rough|Crude; Grainy|2
+COBBLER|Shoemaker|Fruit pie; Peach ___|2
+COBBLERS|Shoemakers|Fruit pies; Nonsense, in UK|2
+COHERENT|Logical|Clear; Consistent|2
+COINCIDE|Concur|Overlap; Clash, as dates|2
+COKE|Cola|Soda; Coal fuel|2
+COLLAR|Neckband|Arrest; Blue-___|2
+COLLATE|Gather|Sort pages; Compare|2
+COLLATED|Gathered|Sorted; Compared|2
+COLLATES|Gathers|Sorts; Compares|2
+COLON|Punctuation mark|Intestine; Two dots|2
+COLONY|Settlement|Outpost; Ant ___|2
+COLUMNS|Pillars|Newspaper pieces; Vertical lines|2
+COMBAT|Fight|Battle; Oppose|2
+COMFORT|Ease|Console; ___ food|2
+COMIC|Funny|Comedian; Cartoon book|2
+COMICS|Comedians|Cartoons; Funny pages|2
+COMMA|Punctuation mark|Pause mark; Oxford ___|2
+COMMAS|Pause marks|Punctuation; List separators|2
+COMMENCE|Begin|Start; Kick off|2
+COMMIT|Pledge|Perform; Devote|2
+COMMITS|Pledges|Performs; Devotes|2
+COMMONS|Shared land|Green; House of ___|2
+COMMUNAL|Shared|Common; Collective|2
+COMPACT|Small|Dense; Makeup case|2
+COMPEL|Force|Oblige; Drive|2
+COMPELS|Forces|Obliges; Drives|2
+COMPETE|Contend|Vie; Race|2
+COMPETED|Contended|Vied; Raced|2
+COMPETES|Contends|Vies; Races|2
+COMPILE|Gather|Assemble; Build code|2
+COMPILED|Gathered|Assembled; Built|2
+COMPILES|Gathers|Assembles; Builds|2
+COMPLY|Obey|Follow; Conform|2
+COMPOSER|Songwriter|Mozart, e.g.; Creator|2
+COMPOUND|Mixture|Combine; Walled area|2
+COMPRESS|Squeeze|Condense; Cold pack|2
+COMPRISE|Include|Consist of; Make up|2
+CON|Swindle|Trick; Pro's opposite|2
+CONCEAL|Hide|Cover up; Mask|2
+CONCEALS|Hides|Covers up; Masks|2
+CONCEDE|Admit|Yield; Give up|2
+CONCEIVE|Imagine|Devise; Dream up|2
+CONCEPTS|Ideas|Notions; Theories|2
+CONCERTO|Solo piece|Orchestral work; Violin ___|2
+CONCISE|Brief|Short; Succinct|2
+CONCLUDE|End|Finish; Deduce|2
+CONCUR|Agree|Coincide; Assent|2
+CONDEMN|Denounce|Sentence; Blame|2
+CONDEMNS|Denounces|Sentences; Blames|2
+CONDENSE|Shorten|Compress; Thicken|2
+CONDONE|Excuse|Allow; Overlook|2
+CONDUCT|Behavior|Lead; Direct music|2
+CONDUCTS|Leads|Directs; Transmits|2
+CONFESS|Admit|Own up; Come clean|2
+CONFINE|Limit|Restrict; Imprison|2
+CONFINED|Limited|Cramped; Restricted|2
+CONFINES|Limits|Boundaries; Restricts|2
+CONFLICT|Clash|Fight; Disagreement|2
+CONFORM|Comply|Fit in; Follow|2
+CONFRONT|Face|Challenge; Stand up to|2
+CONGEST|Clog|Crowd; Jam|2
+CONGESTS|Clogs|Crowds; Jams|2
+CONSENT|Agree|Permission; OK|2
+CONSENTS|Agrees|Permits; OKs|2
+CONSOLE|Comfort|Control panel; Game box|2
+CONSULT|Ask|Confer; Check with|2
+CONSULTS|Asks|Confers; Checks with|2
+CONSUME|Eat|Use up; Devour|2
+CONSUMED|Ate|Used up; Obsessed|2
+CONSUMER|Buyer|User; Shopper|2
+CONSUMES|Eats|Uses up; Devours|2
+CONTACTS|Connections|Lenses; Touches|2
+CONTEMPT|Scorn|Disdain; ___ of court|2
+CONTEND|Compete|Argue; Claim|2
+CONTEST|Competition|Dispute; Game|2
+CONTEXTS|Settings|Backgrounds; Frames|2
+CONTOUR|Outline|Shape; Map line|2
+CONTRIVE|Devise|Scheme; Engineer|2
+CONVERSE|Talk|Opposite; Chat|2
+CONVERTS|Changes|New believers; Transforms|2
+CONVEY|Carry|Transmit; Express|2
+CONVICT|Prisoner|Find guilty; Inmate|2
+CONVICTS|Prisoners|Finds guilty; Inmates|2
+CORPSE|Body|Remains; Cadaver|2
+CORPSES|Bodies|Remains; Cadavers|2
+CORRIDOR|Hallway|Passage; Aisle|2
+COSMIC|Universal|Vast; Space-related|2
+COUNCILS|Boards|Committees; Assemblies|2
+COUNSEL|Advice|Lawyer; Advise|2
+COUNSELS|Advises|Guides; Lawyers|2
+COUPLED|Paired|Joined; Linked|2
+COUPLES|Pairs|Twosomes; Joins|2
+COUPLING|Joint|Link; Pairing|2
+COURAGE|Bravery|Nerve; Valor|2
+COURIER|Messenger|Delivery person; Carrier|2
+COVERAGE|Reporting|Insurance; Extent|2
+CRACK|Split|Break; Quip|2
+CRACKED|Split|Broke; Solved|2
+CRACKING|Splitting|Breaking; Solving|2
+CRACKS|Splits|Breaks; Fissures|2
+CRAMP|Spasm|Restrict; Charley horse|2
+CRAMPED|Tight|Confined; Spasmed|2
+CRAMPING|Spasming|Restricting; ___ one's style|2
+CRAMPS|Spasms|Restricts; Pangs|2
+CRASS|Crude|Tasteless; Vulgar|2
+CREATOR|Maker|Inventor; Author|2
+CREDIBLE|Believable|Plausible; Trusty|2
+CREDITS|Movie list|Loan amounts; Praise|2
+CREED|Belief|Faith; Doctrine|2
+CREEP|Crawl|Sneak; Weirdo|2
+CRIED|Wept|Shouted; Sobbed|2
+CRIES|Weeps|Shouts; Sobs|2
+CRIMINAL|Crook|Outlaw; Illegal|2
+CRITERIA|Standards|Measures; Benchmarks|2
+CRITIC|Reviewer|Judge; Faultfinder|2
+CRITICS|Reviewers|Judges; Faultfinders|2
+CROSSED|Went over|Angered; Traversed|2
+CROSSES|Goes over|Hybrids; Crucifixes|2
+CROSSING|Intersection|Zebra stripes; Journey|2
+CRUCIAL|Vital|Key; Critical|2
+CRUDE|Raw|Rough; Oil|2
+CRUEL|Mean|Harsh; Brutal|2
+CRUELTY|Meanness|Brutality; Harshness|2
+CRUISE|Sail|Voyage; Coast|2
+CRUISED|Sailed|Coasted; Glided|2
+CRUISES|Sails|Voyages; Coasts|2
+CRUISING|Sailing|Coasting; ___ altitude|2
+CRUNCH|Munch|Squeeze; Ab exercise|2
+CRUNCHED|Munched|Squeezed; Calculated|2
+CRUNCHES|Munches|Ab exercises; Squeezes|2
+CRYPTIC|Mysterious|Puzzling; Coded|2
+CUBIC|Cube-shaped|Three-dimensional; ___ feet|2
+CUCKOO|Bird|Crazy; ___ clock|2
+CUDDLY|Huggable|Cozy; Soft|2
+CULPRIT|Wrongdoer|Offender; Guilty party|2
+CULT|Sect|Following; ___ film|2
+CULTURAL|Artistic|Ethnic; Societal|2
+CULTURES|Societies|Civilizations; Lab growths|2
+CUNNING|Sly|Crafty; Shrewd|2
+CUPBOARD|Cabinet|Closet; Pantry|2
+CURING|Healing|Smoking, as meat; Remedying|2
+CURLY|Wavy|Kinky; Coiled|2
+CURRENCY|Money|Cash; Tender|2
+CURRY|Spicy dish|Indian stew; ___ favor|2
+CURSE|Swear|Hex; Jinx|2
+CUSTOM|Tradition|Habit; Tailor-made|2
+CUSTOMS|Traditions|Border check; Habits|2
+CYCLING|Biking|Rotating; Tour de France sport|2
+CYCLIST|Biker|Rider; Peloton member|2
+CYCLISTS|Bikers|Riders; Peloton|2
+CYLINDER|Tube|Drum; Engine part|2
+CYNIC|Skeptic|Doubter; Pessimist|2
+CYNICAL|Skeptical|Doubting; Jaded|2
 `;
 
 /* v04 (JM, CD-9: 1.1): clues for 1-letter answers, which let every clue cell hold a clue.
