@@ -15,7 +15,7 @@
    v08j: grid colors, final-play view, clock-out final turn, menu defaults, phone two-finger drag) */
 'use strict';
 (() => {
-  const APP_VER = 'v13a'; // Project CP: shown as a pill beside the title and in the browser tab
+  const APP_VER = 'v13b'; // Project CP: shown as a pill beside the title and in the browser tab
   const NM = window.MK_NAMES || { suite: 'Master Keys', cross: 'CrossKeys', lock: 'LockWord' }; // v09: the game names (names.js)
   // v09a (JM CD-71: 1.2c, 1.3b): the two games' own icons, shown wherever the 🧩 / 🔐 emoji stood
   const GI = { cross: 'icons/crosskeys.svg', lock: 'icons/lockword.svg', ring: 'icons/keyring.svg', cubes: 'icons/keycubes.svg', hidden: 'icons/hiddenkeys.svg' }; // v11: KeyRing; v12: KeyCubes; v13: Hidden Keys
@@ -476,7 +476,20 @@
     if (HK) lobbyPitch('#hkCard', HK.unf ? '⏸ ' + HK.unf : '');
     const co = store.get('cd.cardsOpen', {}) || {};
     for (const c of document.querySelectorAll('.gcard[data-g]')) setCardOpen(c, !!co[c.dataset.g]);
+    sortGames();
   }
+  // v13b (JM CD-134: 3.1.2): the Lobby's game cards sort A–Z (the standard) or Z–A by the name on each card (LockWord's
+  // own name too, if the Player gave it one); "More games on the way" stays last. Remembered on this device ('cd.lobbySort').
+  function sortGames() {
+    const box = $('.games'), dir = store.get('cd.lobbySort', 'az') === 'za' ? -1 : 1;
+    if (!box) return;
+    const nm = c => (c.querySelector('.gname [data-mk], #vaultBtnName') || c.querySelector('.gname') || c).textContent.trim();
+    const cards = [...box.querySelectorAll('.gcard[data-g]')].sort((a, b) => dir * nm(a).localeCompare(nm(b), undefined, { sensitivity: 'base' }));
+    const soon = box.querySelector('.gcard.soon');
+    for (const c of cards) box.insertBefore(c, soon);
+    for (const b of document.querySelectorAll('#lobbySort button')) { const on = (b.dataset.v === 'za') === (dir < 0); b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); }
+  }
+  if ($('#lobbySort')) $('#lobbySort').addEventListener('click', e => { const b = e.target.closest('button[data-v]'); if (!b) return; store.set('cd.lobbySort', b.dataset.v); sortGames(); });
   // v10a (JM CD-83: 3.1.1): game cards start collapsed; the chevron shows the details. Each card's state is remembered.
   function lobbyPitch(sel, unfTxt) {
     const p = $(sel + ' .gpitch');
@@ -1977,8 +1990,9 @@
   };
   const when = t => new Date(t).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
   // v13a (JM CD-132: 6.3.2): Game History picks a game from a dropdown (the row of game buttons scrolled sideways and
-  // dragged the whole window with it); "All" stays a button on its left. One list for every game, in Lobby order.
-  const HIST_GAMES = [['duel', NM.cross, 'cross'], ['vault', NM.lock, 'lock'], ['ring', NM.ring, 'ring'], ['cubes', NM.cubes || 'KeyCubes', 'cubes'], ['hidden', NM.hidden || 'Hidden Keys', 'hidden']];
+  // dragged the whole window with it); "All" stays a button on its left. One list for every game, A–Z (v13b, JM CD-134: 3.1.1).
+  const HIST_GAMES = [['duel', NM.cross, 'cross'], ['vault', NM.lock, 'lock'], ['ring', NM.ring, 'ring'], ['cubes', NM.cubes || 'KeyCubes', 'cubes'], ['hidden', NM.hidden || 'Hidden Keys', 'hidden']]
+    .sort((a, b) => a[1].localeCompare(b[1]));
   function showHistory(filter) {
     const f = filter || 'all', all = hist.list();
     const rows = all.map((e, i) => ({ e, i })).filter(x => f === 'all' || x.e.g === f);
@@ -2033,6 +2047,7 @@
       ${sec('The Lobby', `
         <li>The Lobby is the first screen: the ${NM.suite} title, ${go('You')}, your ${go('Coins', 'coins')}, and one card per game.</li>
         <li>The small buttons in the top corner: the speaker ${go('Sound')}, 📜 ${go('Game History')}, ⚙ ${go(NM.suite + ' Settings')} and ? (this window).</li>
+        <li><b>A–Z</b> / <b>Z–A</b> beside "Games" sorts the game cards by name (A–Z is the standard; your choice is remembered).</li>
         <li><b>☰</b> in every game takes you back to the Lobby. An unfinished game is kept, ready to resume.</li>`)}
       ${sec('You', `
         <li>Tap the face to choose your avatar from the icon list, or to upload your own picture (kept on this device).</li>

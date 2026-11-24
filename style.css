@@ -3113,3 +3113,24 @@ html[data-screen="night"] .hk-key { filter: brightness(.82); }
 .hist-sel option { color: #111; background: #fff; }
 /* phones: the Key list heading stays on one line (your words and points are in your score card above) */
 @media (max-width: 480px) { #hkKPts { display: none; } .hk-keysw h4 { letter-spacing: .03em; } }
+
+/* =====================================================================
+   v13b (JM CD-134): Lobby A–Z / Z–A sort beside "Games"; Hidden Keys' Clues / Words toggle in the Key list heading
+   ===================================================================== */
+.games-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.games-head .games-lbl { margin: 0; }
+.seg.lobby-sort { display: inline-flex; gap: 0; border-radius: 10px; overflow: hidden; box-shadow: inset 0 0 0 1px var(--line); }
+.seg.lobby-sort button { padding: 5px 11px; min-height: 0; font-size: 13px; font-weight: 800; border: 0; border-radius: 0; line-height: 1.2; }
+.seg.lobby-sort button + button { border-left: 1px solid var(--line); }
+/* the Key list heading: the count and lengths on the left, the Clues / Words toggle on the right */
+.hk-keysw h4 { align-items: center; }
+.hk-keysw h4 #hkKHead { flex: 1 1 auto; min-width: 0; }
+.seg.hk-view { display: inline-flex; gap: 0; flex: none; border-radius: 9px; overflow: hidden; box-shadow: inset 0 0 0 1px var(--line); text-transform: none; letter-spacing: 0; }
+.seg.hk-view button { padding: 4px 9px; min-height: 0; font-size: 12.5px; font-weight: 800; border: 0; border-radius: 0; line-height: 1.2; white-space: nowrap; }
+.seg.hk-view button + button { border-left: 1px solid var(--line); }
+.seg.hk-view button:disabled { opacity: .55; cursor: default; }
+@media (max-width: 480px) { .hk-keysw h4 .kl { display: none; } .seg.hk-view button { padding: 4px 7px; font-size: 12px; } }
+/* phones: the message strip keeps one height, so a long message never pushes the grid down (it may overlap the gap a little);
+ Solo's Done button drops its small "Solo" line to leave the strip more room */
+@media (max-width: 699px) { .hk-main .hk-msg { height: 52px; min-height: 52px; overflow: visible; position: relative; z-index: 4; } .hk-main .hk-msg .kc-mt { font-size: 13px; line-height: 1.2; padding: 5px 10px; } #hiddenkeys #hkDone .cp { display: none; } #hiddenkeys #hkDone { grid-template-columns: auto auto; } #hiddenkeys #hkDone .nm { grid-row: span 2; } }
+@media (max-width: 699px) { .hk-main:has(#hkDone:not([hidden])) .hk-msg .kc-mt { font-size: 12px; line-height: 1.12; padding: 4px 7px; } }

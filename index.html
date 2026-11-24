@@ -9,7 +9,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Master Keys">
   <meta name="description" content="Master Keys: CrossKeys, a head-to-head crossword tile game, LockWord, a word-guessing game, and KeyRing, a word builder. Plays offline.">
-  <title>Master Keys · v13a</title>
+  <title>Master Keys · v13b</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="icon" href="icons/icon-192.png" type="image/png" sizes="192x192">
@@ -51,7 +51,7 @@
       <header class="brand">
         <img class="logo" src="icons/icon.svg" alt="" width="64" height="64">
         <div class="brand-txt">
-          <h1><span data-mk="suite">Master Keys</span> <span class="vpill" id="verPill">v13a</span></h1>
+          <h1><span data-mk="suite">Master Keys</span> <span class="vpill" id="verPill">v13b</span></h1>
           <p class="tag">Word games. Play anywhere, even offline.</p>
         </div>
       </header>
@@ -65,7 +65,8 @@
         </div>
       </div>
 
-      <span class="lbl games-lbl">Games</span>
+      <!-- v13b (JM CD-134: 3.1.2): the game cards sort A–Z (the standard) or Z–A -->
+      <div class="games-head"><span class="lbl games-lbl">Games</span><div class="seg lobby-sort" id="lobbySort" role="group" aria-label="Sort the games"><button type="button" data-v="az" title="Sort the games A to Z">A–Z</button><button type="button" data-v="za" title="Sort the games Z to A">Z–A</button></div></div>
       <div class="games">
         <!-- v10a (JM CD-83: 3.1.1): each card starts collapsed. Tap the name (or the card) for the game's Setup screen;
              the chevron at the far right shows the details: record, ▶ Resume, 🆕 New Game (your last settings), ⚙ Setup -->
@@ -565,7 +566,7 @@
           <button class="btn coinbtn" id="hkHint" type="button" title="Hint: stripe the first letter of a word"><span class="ic">💡</span><span class="nm" id="hkHintNm">Hint</span><span class="cp" id="hkHintCp"></span></button>
           <button class="btn coinbtn" id="hkDone" type="button" title="End this Solo round" hidden><span class="ic">🏁</span><span class="nm">Done</span><span class="cp">Solo</span></button>
         </div>
-        <div class="hk-keysw"><h4><span id="hkKHead">Key clues</span><span id="hkKPts"></span></h4><div class="hk-keys" id="hkKeys"></div></div>
+        <div class="hk-keysw"><h4><span id="hkKHead">Key list</span><span id="hkKPts"></span><span class="seg hk-view" id="hkView" role="group" aria-label="Show clues or words"><button type="button" data-v="clue" title="Show the clues">📖 Clues</button><button type="button" data-v="word" title="Show the words">🔤 Words</button></span></h4><div class="hk-keys" id="hkKeys"></div></div>
         <p class="kc-tip hk-tip"><kbd>A–Z</kbd> type an answer (Clues) · <kbd>Enter</kbd> submit · <kbd>⌫</kbd> back · <kbd>Esc</kbd> clear · <kbd>Space</kbd> pause</p>
       </div>
     </div>
