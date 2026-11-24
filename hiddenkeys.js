@@ -17,6 +17,8 @@
    - Typing (computers): in Clues mode, type the answer and press Enter (the app finds it in the grid); in Words mode the
      list already shows the words, so you drag (typing would skip the hunt).
    Built from the suite's own parts (KeyCubes' bar, score cards, Paused panel, results; CDUI rivals, coins, history, help).
+   v13c (JM CD-136): a warning to agree to before Clues switch to Words (half points in a Duel); Solo speed (wpm / lps) live and
+   in the results, Untimed speed bests, Timed best score per grid size + timer; History entries carry pts / res.
    v13b (JM CD-134): Auto word count / longest word follow the grid size AND the Challenge Level; a 📖 Clues / 🔤 Words toggle
    in the Key list heading during play.
    v13a (JM CD-132): Word count (min / max list words) and Word length (min / max letters) in More options, Auto by grid size;
@@ -84,9 +86,16 @@
   const timerOf = () => hs.mode === 'solo' ? hs.sTimer : hs.timer;
   const listName = l => l === 'word' ? 'Words' : 'Clues';
   const lastLine = () => `${hs.mode === 'solo' ? 'Solo' : 'Duel'} · Challenge Level ${hs.lv} · ${hs.n}×${hs.n} · ${listName(hs.list)} · ${timerName(timerOf())}${hs.mode === 'duel' ? ' · ' + plural(hs.rounds, 'round') : ''}`;
-  const sbKey = (n, l) => `${n}_${l}`;
-  const sbLab = (n, l) => `Best ${n}×${n} · ${listName(l)}`;
-  const sbVal = (n, l) => { const b = (st.sb || {})[sbKey(n, l)]; return b == null ? '–' : fmt(b); };
+  // v13c (JM CD-136 add. 1): Solo bests. Untimed: the fastest clear (as before) and the best SPEED, words per minute (wpm) and
+  // letters per second (lps), which count once a round has run 1 minute and found 5 words. Timed: the best score for each grid
+  // size, timer and Key list ("Best 10×10 in 3m · Clues"), as KeyCubes does.
+  const tShort = t => t < 60 ? `${t}s` : `${t / 60}m`;
+  const sbKey = (n, l, t) => t ? `${n}_${t}_${l}` : `${n}_${l}`;
+  const sbLab = (n, l, t) => t ? `Best ${n}×${n} in ${tShort(t)} · ${listName(l)}` : `Best ${n}×${n} · ${listName(l)}`;
+  const sbVal = (n, l, t) => { const b = (st.sb || {})[sbKey(n, l, t)]; return b == null ? '–' : t ? UI.fmtN(b) : fmt(b); };
+  const RATE_MIN_MS = 60000, RATE_MIN_W = 5;
+  const srGet = (n, l) => (st.sr || {})[sbKey(n, l)] || {};
+  const rateTxt = (w, l) => `${w == null ? '–' : w.toFixed(1)} wpm · ${l == null ? '–' : l.toFixed(2)} lps`;
 
   // ---------- words and clues (our Lexicon: every hidden word has a clue) ----------
   const BLOCK = new Set(String(K.block || '').split(' ').filter(Boolean));
@@ -206,7 +215,9 @@
     }
     return w.length === 1 ? c / 8 : (rev(w) === w ? c / 2 : c);
   }
-  const ptsOf = x => x.w.length * (x.m ? MASTER_X : 1);
+  // v13c (JM CD-136: 2.4 N): in a Duel that started with Clues, a word you find while the list shows the words scores half
+  // (rounded up); the Master Key is never shown as a word, so it keeps its ×3
+  const ptsOf = x => { const p = x.w.length * (x.m ? MASTER_X : 1); return x.half ? Math.ceil(p / 2) : p; };
 
   // ---------- the match and the round ----------
   let M = null, R = null;
@@ -332,7 +343,7 @@
     const clues = hs.lv >= 6 ? ' Clues are often indirect (a link, not a definition).' : '';
     $('#hkDesc').textContent = duel
       ? `Challenge Level ${hs.lv}: ${rival(hs.lv).a} ${rival(hs.lv).n} races you for ${rangeTxt(q[0], q[1])} hidden words of ${rangeTxt(l[0], l[1])} letters (${words}), about one every ${Math.round(60 / BOT_WPM[hs.lv - 1] * ({ 8: 0.8, 10: 1, 12: 1.25 }[hs.n]) * (hs.list === 'word' ? 1 : 1.45))} seconds. Each word goes to whoever finds it first.${clues}`
-      : `Solo: ${rangeTxt(q[0], q[1])} hidden words of ${rangeTxt(l[0], l[1])} letters (${words}), no Bot. Hints ${hs.sHint === 'free' ? 'are free' : 'cost 🪙1 per letter'}, ${hs.sCap === '3' ? '3 per round' : 'no limit'}. Beat your fastest clear for ${hs.n}×${hs.n} with ${listName(hs.list)}${hs.sHint === 'free' ? '' : `: a new best pays 🪙${SOLO_BEST}`}.${clues}`;
+      : `Solo: ${rangeTxt(q[0], q[1])} hidden words of ${rangeTxt(l[0], l[1])} letters (${words}), no Bot. Hints ${hs.sHint === 'free' ? 'are free' : 'cost 🪙1 per letter'}, ${hs.sCap === '3' ? '3 per round' : 'no limit'}. ${hs.sTimer ? `Beat your best score for ${hs.n}×${hs.n} in ${tShort(hs.sTimer)} with ${listName(hs.list)}` : `Beat your fastest clear and your best speed (words per minute and letters per second, shown live under your score) for ${hs.n}×${hs.n} with ${listName(hs.list)}`}${hs.sHint === 'free' ? '' : `: a new best pays 🪙${SOLO_BEST}`}.${clues}`;
     $('#hkOptsSum').textContent = `Words: ${rangeTxt(q[0], q[1])} · ${rangeTxt(l[0], l[1])} letters · Directions: ${DIR_NAMES[hs.dir].split(':')[0]} · ${duel ? plural(hs.rounds, 'round') + ' · ' : ''}Grid: ${(GRID_LOOKS.find(x => x[0] === hs.gs) || GRID_LOOKS[0])[1].replace(/ \(.*\)$/, '')} · Buttons: ${((UI.BTN_LOOKS || []).find(x => x[0] === hs.bs) || [0, 'Steel'])[1]}`;
     const unf = unfinished();
     $('#hkSetUnf').hidden = !unf; if (unf) $('#hkSetUnfTxt').textContent = unfText();
@@ -340,7 +351,7 @@
     $('#hkStart').classList.toggle('primary', !unf);
     const pct = st.matches ? Math.round(100 * st.won / st.matches) + '%' : '–';
     $('#hkStats').innerHTML = st.matches || st.soloN
-      ? [[UI.fmtN(st.matches), 'Matches'], [pct, 'Won'], [UI.fmtN(st.words), 'Words'], [UI.fmtN(st.keys), 'Master Keys'], [sbVal(hs.n, hs.list), `Solo ${sbLab(hs.n, hs.list)}`]].map(([v, l]) => `<div class="vt-st"><b>${v}</b><span>${l}</span></div>`).join('')
+      ? [[UI.fmtN(st.matches), 'Matches'], [pct, 'Won'], [UI.fmtN(st.words), 'Words'], [UI.fmtN(st.keys), 'Master Keys'], [sbVal(hs.n, hs.list, hs.sTimer) + (hs.sTimer && sbVal(hs.n, hs.list, hs.sTimer) !== '–' ? ' pts' : ''), `Solo ${sbLab(hs.n, hs.list, hs.sTimer)}`]].concat(hs.sTimer ? [] : [[rateTxt(srGet(hs.n, hs.list).wpm, srGet(hs.n, hs.list).lps), 'Solo best speed']]).map(([v, l]) => `<div class="vt-st"><b>${v}</b><span>${l}</span></div>`).join('')
       : '<p class="vt-none">No games played yet. Pick your settings and start.</p>';
     paintLooks();
   }
@@ -405,18 +416,28 @@
     const solo = M.mode === 'solo';
     $('#hkBot').classList.toggle('solo', solo);
     $('#hkBotAv').textContent = solo ? '🎯' : botAv();
-    $('#hkBotNm').innerHTML = solo ? `<span class="t">${sbLab(M.n, bestList())}</span>` : `<span class="t">${esc(botNm())}</span><span class="lvl-pill" title="Challenge Level">${M.lv}</span>`;
+    $('#hkBotNm').innerHTML = solo ? `<span class="t">${sbLab(M.n, bestList(), M.timer)}</span>` : `<span class="t">${esc(botNm())}</span><span class="lvl-pill" title="Challenge Level">${M.lv}</span>`;
     $('#hkBotNm').title = solo ? '' : `${botNm()}, Challenge Level ${M.lv}`;
     $('#hkMeAv').innerHTML = UI.meWin().av || '🙂';
     $('#hkMeNm').textContent = (UI.settings().name || '').trim() || 'You';
     $('#hkDone').hidden = !solo;
     paintScores(); paintKeys(); paintHintBtn(); paintPause();
   }
+  // v13c (CD-136 add. 1): the speed "heartbeat": your running words per minute and letters per second (Untimed Solo, under
+  // your score; it counts from 10 seconds in so the first word doesn't read as a huge rate)
+  function speedNow() {
+    const mine = R.words.filter(x => x.by === 'me'), s = (R.el || 0) / 1000;
+    if (s < 10) return { wpm: null, lps: null, n: mine.length };
+    return { wpm: mine.length / (s / 60), lps: mine.reduce((a, x) => a + x.w.length, 0) / s, n: mine.length };
+  }
+  const meterOn = () => M && M.mode === 'solo' && !M.timer;
+  function paintMeter() { if (!meterOn() || !R || R.over) return; const s = speedNow(), el = $('#hkMeRd'); el.innerHTML = `<span class="hk-meter" title="Your running speed: words per minute and letters per second">${rateTxt(s.wpm, s.lps)}</span>`; }
   function paintScores() {
     const duel = M.mode === 'duel', my = myPts(), bp = botPts();
     $('#hkMeSc').textContent = UI.fmtN(duel ? M.me + my : my);
     $('#hkMeRd').textContent = duel && M.rounds > 1 ? `Rd ${M.no}: ${UI.fmtN(my)}` : '';
-    $('#hkBotSc').textContent = duel ? UI.fmtN(M.bot + bp) : sbVal(M.n, bestList());
+    paintMeter();
+    $('#hkBotSc').textContent = duel ? UI.fmtN(M.bot + bp) : sbVal(M.n, bestList(), M.timer);
     $('#hkBotRd').textContent = duel && M.rounds > 1 ? `Rd ${M.no}: ${UI.fmtN(bp)}` : '';
     $('#hkMeRd').title = $('#hkBotRd').title = duel ? `Round ${M.no} of ${M.rounds}; the big number is the game total` : '';
     $('#hkBar').classList.toggle('multi', duel && M.rounds > 1);
@@ -443,7 +464,7 @@
     const tag = x.by === 'me' ? `<span class="hk-by">${UI.meWin().av || '🙂'}</span>` : x.by === 'bot' ? `<span class="hk-by">${botAv()}</span>` : '';
     const clue = view() === 'clue' || x.m || res ? `<span class="hk-cl">${x.m ? '<b class="hk-mkl">🗝 Master Key ×3</b> ' : ''}${clueHtml(x.clue)}</span>` : '';
     return `<button type="button" class="hk-key ${who}${x.m ? ' m' : ''}${i === (res ? resSel : R.sel) ? ' sel' : ''}${view() === 'word' && !x.m && !res ? ' wl' : ''}" data-k="${i}">
-      <span class="hk-len">${x.w.length}</span>${clue}${ans}${x.by || res ? `<span class="hk-pts">${x.by ? '+' : ''}${ptsOf(x)}</span>` : ''}${tag}</button>`;
+      <span class="hk-len">${x.w.length}</span>${clue}${ans}${x.by || res ? `<span class="hk-pts"${x.half ? ' title="Half points: found while the words were shown"' : ''}>${x.by ? '+' : ''}${ptsOf(x)}${x.half ? '<span class="hk-half">½</span>' : ''}</span>` : ''}${tag}</button>`;
   }
   function paintKeys() {
     const L = listWords(), mine = R.words.filter(x => x.by === 'me').length, left = L.filter(x => !x.by).length;
@@ -467,8 +488,16 @@
   // words were shown counts toward the Words best, not the Clues best.
   $('#hkView').addEventListener('click', e => {
     const b = e.target.closest('button[data-v]'); if (!b || !R || R.over || b.dataset.v === view()) return;
-    M.view = b.dataset.v; if (M.view === 'word') R.sawW = true;
-    typed = ''; snd('row'); paintGame(); msg(''); save();
+    const go = () => { M.view = b.dataset.v; if (M.view === 'word') R.sawW = true; typed = ''; snd('row'); paintGame(); msg(''); save(); };
+    if (b.dataset.v !== 'word' || M.list === 'word') { go(); return; }
+    // v13c (JM CD-136: 2.4.1): switching a Clues game to Words first shows a warning the Player must agree to (the clock waits)
+    const duel = M.mode === 'duel';
+    openModal(`<h2>⚠️ Show the words?</h2>
+      <p>The Key list will show every hidden word instead of its clue, which makes them much easier to find.</p>
+      <p>${duel ? `<b>In this Duel, each word you find while the words show scores half points</b> (rounded up). The 🗝 Master Key stays a clue and keeps its ×3. ${esc(botNm())} keeps its pace.`
+        : `<b>This Solo round will then count toward your Words bests</b> (time, speed or score), not your Clues bests.`} You can switch back to Clues at any time.</p>
+      <div class="row"><button class="btn" data-a="no">Keep clues</button><button class="btn primary" data-a="yes">I agree: show the words</button></div>`);
+    $('#sheet').onclick = ev => { const a = ev.target.closest('[data-a]'); if (!a) return; closeModal(); if (a.dataset.a === 'yes') go(); };
   });
 
   // ---------- picking a word: swipe / drag / tap first + last / type ----------
@@ -583,12 +612,13 @@
   }
   function claim(x, who) {
     x.by = who; x.t = Math.round(R.el / 100) / 10;
+    if (who === 'me' && M.mode === 'duel' && M.list === 'clue' && view() === 'word' && !x.m) x.half = true; // v13c (CD-136: 2.4)
     const i = R.words.indexOf(x);
     if (R.hint === i) { R.hint = -1; R.hintK = 0; }
     if (R.sel === i) R.sel = -1;
     const p = ptsOf(x);
     if (who === 'me') {
-      msg(`${x.m ? '🗝 MASTER KEY! ' : ''}${x.w} +${p}`, 'good', 1600); snd('word'); flashCells(x.cells, 'ok');
+      msg(`${x.m ? '🗝 MASTER KEY! ' : ''}${x.w} +${p}${x.half ? ' (half: words shown)' : ''}`, 'good', 1600); snd('word'); flashCells(x.cells, 'ok');
       const pl = $('#hkMePlus'); pl.textContent = '+' + p; pl.classList.remove('go'); void pl.offsetWidth; pl.classList.add('go');
     } else {
       msg(`${botAv()} ${esc(botFirst())} found ${x.m ? 'the 🗝 Master Key: ' : ''}${x.w} (+${p})`, 'dup', 1800); snd('oppword'); flashCells(x.cells, 'botf');
@@ -727,6 +757,7 @@
     if (M.mode === 'duel' && !R.over && !R.paused && R.botNext && R.el / 1000 >= R.botNext) { R.botNext = R.el / 1000 + botGap(); botFind(); }
     if (T && !R.over && rem !== lastSec && rem > 0 && rem <= 10 && dt && !R.paused) snd(rem <= 5 ? 'tock' : 'tick');
     setFlash(T && !R.over && !R.paused ? rem : 0);
+    if (rem !== lastSec) paintMeter(); // v13c: the speed heartbeat, once a second
     lastSec = rem;
     if (T && rem <= 0 && !R.over) { setFlash(0); endRound(false); }
   }
@@ -767,10 +798,26 @@
     st.rounds++; st.words += mine.length; if (mk && mk.by === 'me') st.keys++;
     if (duel && M.done) { st.matches++; if (M.me > M.bot) st.won++; else if (M.me === M.bot) st.drawn++; }
     let newBest = false;
+    // v13c (CD-136 add. 1): this round's speed (all Solo rounds show it; Untimed rounds keep the bests)
+    const sp = speedNow(); R.wpm = sp.wpm; R.lps = sp.lps; R.newWpm = R.newLps = false;
     if (!duel) {
-      st.soloN++; if (!st.sb) st.sb = {};
-      const k = sbKey(M.n, bestList()), old = st.sb[k];
-      if (R.cleared && (old == null || sec < old)) { st.sb[k] = sec; newBest = true; }
+      st.soloN++; if (!st.sb) st.sb = {}; if (!st.sr) st.sr = {};
+      const L = bestList();
+      if (!T) { // Untimed: the fastest clear, and the best wpm / lps once the round has run 1 minute and found 5 words
+        const k = sbKey(M.n, L), old = st.sb[k];
+        if (R.cleared && (old == null || sec < old)) { st.sb[k] = sec; newBest = true; }
+        R.rateOk = R.el >= RATE_MIN_MS && mine.length >= RATE_MIN_W;
+        if (R.rateOk) {
+          const o = Object.assign({}, st.sr[k]), w = Math.round(R.wpm * 10) / 10, l = Math.round(R.lps * 100) / 100;
+          if (o.wpm == null || w > o.wpm) { o.wpm = w; R.newWpm = true; }
+          if (o.lps == null || l > o.lps) { o.lps = l; R.newLps = true; }
+          st.sr[k] = o;
+        }
+      } else { // Timed: the best score for this grid size, timer and Key list
+        const k = sbKey(M.n, L, T), old = st.sb[k];
+        if (R.meTot > 0 && (old == null || R.meTot > old)) { st.sb[k] = R.meTot; newBest = true; }
+      }
+      newBest = newBest || R.newWpm || R.newLps;
       if (M.sHint === 'paid') {
         if (newBest) { R.earn = SOLO_BEST; if (UI.coins) UI.coins.add(SOLO_BEST, `${NM.hidden}: Solo new best`); }
         if (T && R.cleared && rem > 0) R.speed = Math.min(rem, speedCap);
@@ -801,7 +848,7 @@
   function winHtml() {
     if (midMatch()) return leadHtml();
     if (M.mode !== 'solo') return UI.winLine(winObj());
-    const sc = R.cleared ? fmt(R.time) : `${UI.fmtN(R.meTot)} pts`;
+    const sc = R.cleared && !M.timer ? fmt(R.time) : `${UI.fmtN(R.meTot)} pts`; // v13c: Timed shows the points (its best)
     const big = R.newBest ? 'NEW BEST!' : R.cleared ? 'ALL FOUND!' : 'ROUND OVER';
     return `<span class="ob-h" role="status" aria-label="${big}, ${sc}"><span class="ob-line" aria-hidden="true"><span class="ob-av">${UI.meWin().av || ''}</span><b class="ob-v">${big}</b><span class="ob-sym">${R.newBest ? '🏆' : R.cleared ? '🗝' : '🎯'}</span><span class="ob-sc">${sc}</span></span></span>`;
   }
@@ -819,10 +866,11 @@
       ${duel && M.rounds > 1 ? `<tr class="total"><td>Match</td><td>${UI.fmtN(M.me)}</td><td>${UI.fmtN(M.bot)}</td><td></td></tr>` : ''}</table>
       <p class="help-note">Last round, your words: ${R.words.filter(x => x.by === 'me').map(x => `<b>${hd(x) ? '💡' : ''}${x.m ? '🗝' : ''}${x.w}</b> ${ptsOf(x)}`).join(' · ') || 'none'}${mk ? ` · Master Key: <b>${mk.w}</b> (${esc(mk.clue)})` : ''}</p>`;
     const entry = {
-      g: 'hidden', win: duel ? (M.done ? M.me > M.bot : M.me >= M.bot) : R.cleared,
+      g: 'hidden', win: duel ? (M.done ? M.me > M.bot : M.me >= M.bot) : !!(R.cleared || R.newBest), // v13c: a Solo new best counts as a win
       title: `${NM.hidden} · ${duel ? (M.done ? (M.me > M.bot ? 'Match won' : M.me === M.bot ? 'Match drawn' : 'Match lost') : `Round ${M.no} of ${M.rounds}`) : 'Solo'} (${M.n}×${M.n})`,
       sub: [duel ? `vs ${botNm()} · Challenge Level ${M.lv}` : `Solo · Challenge Level ${M.lv}`, `${M.n}×${M.n}`, listName(M.list), timerName(M.timer)].concat(duel ? [plural(M.rounds, 'round')] : []).join(' · '),
-      score: duel ? `${UI.fmtN(M.me)}–${UI.fmtN(M.bot)}` : R.cleared ? `Cleared in ${fmt(R.time)}` : `${UI.fmtN(R.meTot)} pts`, coins: M.coins, html: body
+      score: duel ? `${UI.fmtN(M.me)}–${UI.fmtN(M.bot)}` : (R.cleared && !M.timer ? `Cleared in ${fmt(R.time)}` : `${UI.fmtN(R.meTot)} pts`) + (!M.timer && R.wpm != null ? ` · ${R.wpm.toFixed(1)} wpm` : ''), coins: M.coins, html: body,
+      pts: duel ? M.me : R.meTot, res: duel && M.done && M.me === M.bot ? 'tie' : undefined // v13c: for History's Sort and Filters
     };
     if (!M.histT || !UI.history.put) M.histT = UI.history.add(entry) || 0;
     else UI.history.put(M.histT, entry);
@@ -842,7 +890,10 @@
     const coinsTxt = [R.earn ? (duel ? `Round ${R.earn === WIN ? 'win' : 'draw'} +${R.earn}` : `New best +${R.earn}`) : duel ? 'No round coins' : '', R.speed ? `Speed +${R.speed}` : '', R.matchEarn ? `Match win +${R.matchEarn}` : '', R.hintCoins ? `Hints −${R.hintCoins}` : ''].filter(Boolean).join(' · ')
       || (M.sHint === 'paid' ? 'No coins this round' : 'Solo: no coins');
     $('#hkSum').innerHTML = `<span class="kc-pill"><span class="e">🙂</span> ${UI.fmtN(R.words.filter(x => x.by === 'me' && !x.m).length)} of ${UI.fmtN(L.length)} words</span>`
-      + (duel ? `<span class="kc-pill"><span class="e">${botAv()}</span> ${plural(R.words.filter(x => x.by === 'bot' && !x.m).length, 'word')}</span>` : `<span class="kc-pill"><span class="e">⏱</span> ${R.cleared ? 'Cleared in ' + fmt(R.time) : 'Not cleared'}</span><span class="kc-pill"><span class="e">🎯</span> ${sbLab(M.n, bestList())}: ${sbVal(M.n, bestList())}</span>`)
+      + (duel ? `<span class="kc-pill"><span class="e">${botAv()}</span> ${plural(R.words.filter(x => x.by === 'bot' && !x.m).length, 'word')}</span>` : `<span class="kc-pill"><span class="e">⏱</span> ${R.cleared ? 'Cleared in ' + fmt(R.time) : 'Not cleared'}</span><span class="kc-pill${R.newBest && !(R.newWpm || R.newLps) ? ' mk' : ''}"><span class="e">🎯</span> ${sbLab(M.n, bestList(), M.timer)}: ${sbVal(M.n, bestList(), M.timer)}${M.timer ? ' pts' : ''}</span>`
+        // v13c (CD-136 add. 1): your speed this round, and (Untimed) your best speed for this grid size and Key list
+        + `<span class="kc-pill" title="Words per minute · letters per second"><span class="e">⚡</span> ${rateTxt(R.wpm, R.lps)}</span>`
+        + (M.timer ? '' : `<span class="kc-pill${R.newWpm || R.newLps ? ' mk' : ''}" title="A round counts toward your best speed after 1 minute and ${RATE_MIN_W} words"><span class="e">🏆</span> Best speed: ${rateTxt(srGet(M.n, bestList()).wpm, srGet(M.n, bestList()).lps)}${R.rateOk ? '' : ` (counts after 1 min + ${RATE_MIN_W} words)`}</span>`))
       + `<span class="kc-pill mk"><span class="e">🗝</span> Master Key: ${mk && mk.by === 'me' ? 'yours! ×3' : mk && mk.by === 'bot' ? esc(botFirst()) + "'s" : 'not found'}</span>`
       + `<span class="kc-pill">🪙 ${coinsTxt}</span>`;
     $('#hkNext').textContent = M.done ? '🆕 New Game' : '▶ Next round';
@@ -874,7 +925,7 @@
     rb.querySelectorAll('.hk-lets b').forEach((b, i) => { b.className = on[i] ? 'on' : ''; });
     $('#hkRList').innerHTML = keyOrder().map(i => keyRow(i, true)).join('');
     const x = R.words[resSel];
-    $('#hkRDet').innerHTML = x ? `<b>${hd(x) ? '💡' : ''}${x.m ? '🗝 ' : ''}${x.w}</b> · ${x.by === 'me' ? `You found it${x.t ? ' at ' + fmt(Math.floor(x.t)) : ''}` : x.by === 'bot' ? `${esc(botNm())} found it${x.t ? ' at ' + fmt(Math.floor(x.t)) : ''}` : 'Nobody found it'} · ${ptsOf(x)} pts${x.m ? ' (×3)' : ''}<br><span class="hk-dcl">📖 ${clueHtml(x.clue)}</span>`
+    $('#hkRDet').innerHTML = x ? `<b>${hd(x) ? '💡' : ''}${x.m ? '🗝 ' : ''}${x.w}</b> · ${x.by === 'me' ? `You found it${x.t ? ' at ' + fmt(Math.floor(x.t)) : ''}` : x.by === 'bot' ? `${esc(botNm())} found it${x.t ? ' at ' + fmt(Math.floor(x.t)) : ''}` : 'Nobody found it'} · ${ptsOf(x)} pts${x.m ? ' (×3)' : ''}${x.half ? ' (half: found while the words were shown)' : ''}<br><span class="hk-dcl">📖 ${clueHtml(x.clue)}</span>`
       : '<span class="kc-empty">Tap a word to see where it was hidden.</span>';
   }
   $('#hkRList').addEventListener('click', e => { const b = e.target.closest('.hk-key'); if (!b) return; const i = +b.dataset.k; resSel = resSel === i ? -1 : i; paintRes(); });
@@ -925,7 +976,8 @@
         <li>Or <b>tap</b> the first letter, then the last one. A tap on the same letter again cancels.</li>
         <li>On a computer, in <b>Clues</b> mode, you can also <b>type the answer</b> to a clue and press <b>Enter</b>: the app finds it in the grid (if the letters spell more than one hidden word, it takes the highest-scoring one, the 🗝 Master Key first). <b>⌫</b> takes a letter back, <b>Esc</b> clears, <b>Space</b> pauses. In <b>Words</b> mode the list already shows the words, so you drag.</li>
         <li>A swipe, drag or typed word that is <b>shorter or longer</b> than this grid's hidden words gets a red reminder of the lengths, e.g. "Too short (2 letters): the hidden words here are 3–8 letters".</li>
-        <li><b>📖 Clues / 🔤 Words</b> in the Key list's heading switches the list between the clues and the words at any time; it keeps for the rest of the match (a new game starts with your Setup choice). The Bot's pace stays as set in Setup. In Solo, a round in which the words were shown counts toward your <b>Words</b> best.</li>
+        <li><b>📖 Clues / 🔤 Words</b> in the Key list's heading switches the list between the clues and the words at any time; it keeps for the rest of the match (a new game starts with your Setup choice). The Bot's pace stays as set in Setup.</li>
+        <li>In a game that started with <b>Clues</b>, switching to <b>Words</b> first shows a <b>warning</b> you must agree to (the clock waits). In a <b>Duel</b>, each word you find while the words show scores <b>half points</b> (rounded up, marked ½); the 🗝 Master Key stays a clue and keeps its ×3. In <b>Solo</b>, a round in which the words were shown counts toward your <b>Words</b> bests.</li>
         <li>Tap a clue in the Key list to pick it: it shows big above the grid, and 💡 Hint helps with that word.</li>
         <li>The strip above the grid shows your letters, then what happened: <b>green</b> = a new word and its points, <b>orange</b> = already found (or the Bot just found one), <b>red</b> = not a hidden word, <b>blue</b> = your clue or Hint.</li>`)}
       ${sec('The 🗝 Master Key', `
@@ -935,9 +987,9 @@
         <li><b>⚔ Duel</b>: a Bot rival hunts the same grid at the same time. Each Challenge Level has its own rival (Benny Bear at 1 … Professor Hoot at 10, as in every ${NM.suite} game), shown with its level in a red pill. Each word goes to <b>whoever finds it first</b>.</li>
         <li>A round ends when every list word has been found, or when the clock runs out. A match is <b>1 to 5 rounds</b> (3 is the standard), each on a fresh grid; the higher <b>total</b> wins. Tap <b>▶ Next round</b> (or press <b>Enter twice</b>).</li>
         <li><b>Challenge Level</b> (1–10, default 3) sets how fast the Bot finds words, and how hard the words and clues are (in Solo too): everyday words at 1–2, a wider vocabulary from 6, and from 6 up the clues are often indirect (a link, not a definition). The Bot is slower with Clues, on bigger grids and with harder directions, as you are.</li>
-        <li><b>🎯 Solo</b>: no Bot. Untimed (the clock counts up) or timed; <b>🏁 Done</b> ends the round. Beat your <b>fastest clear</b> (every list word found) for each grid size and Key list.</li>`)}
+        <li><b>🎯 Solo</b>: no Bot. Untimed (the clock counts up) or timed; <b>🏁 Done</b> ends the round. <b>Untimed</b>: beat your <b>fastest clear</b> (every list word found) and your best <b>speed</b>: <b>wpm</b> (words per minute) and <b>lps</b> (letters per second). Your running speed shows live under your score (from 10 seconds in), and a round counts toward the speed bests once it has run <b>1 minute</b> and found <b>5 words</b>. <b>Timed</b>: beat your best <b>score</b> for each grid size and timer ("Best 10×10 in 3m"). Every best is kept for each grid size and Key list.</li>`)}
       ${sec('Scoring', `
-        <li>Every word scores <b>1 point per letter</b>; the 🗝 Master Key scores <b>×3</b>.</li>`)}
+        <li>Every word scores <b>1 point per letter</b>; the 🗝 Master Key scores <b>×3</b>. In a Duel that started with Clues, a word found while the words show scores half (see Find a Word).</li>`)}
       ${sec('The Buttons', `
         <li><b>💡 Hint</b> stripes the <b>first letter</b> of a word (the clue you picked, or else any word still open): a signal, not a solve. It costs <b>🪙1 per letter</b> of that word (two taps: the first shows the price), at most <b>3 per round</b> in a Duel. In Solo, Hints are free or paid, 3 per round or no limit (Setup).</li>
         <li>While your hinted word is still unfound, the button reads <b>💡 Next</b>: each tap stripes its <b>next letter</b> (numbered 1, 2, 3…) for <b>🪙1</b>. It never shows the last letter, and it doesn't count toward the Hint limit.</li>
@@ -947,7 +999,7 @@
       ${sec('Coins', `
         <li>In a Duel: a round won pays <b>🪙${WIN}</b>, a draw <b>🪙${DRAW}</b>, and a match won <b>🪙${MATCH}</b> more.</li>
         <li><b>Speed coins</b>: win a round by finding the last word before the clock runs out, and every second left pays <b>🪙1</b> (never more than ${SPEED_PER_MIN} per minute of the clock).</li>
-        <li>Solo: with free Hints, no coins. With <b>Paid</b> Hints, a new best pays <b>🪙${SOLO_BEST}</b>, and a timed round cleared early pays speed coins.</li>`)}
+        <li>Solo: with free Hints, no coins. With <b>Paid</b> Hints, any new best (a fastest clear, a speed best or a timed score) pays <b>🪙${SOLO_BEST}</b>, and a timed round cleared early pays speed coins.</li>`)}
       ${sec('Results', `
         <li>After rounds before the last: "<b>Round 1 of 3 · You lead: 48 – 31</b>". After the last round: the gold "<b>You WIN!</b>" row with the final game total.</li>
         <li>The score card shows the <b>game totals</b> big, then each round with the running total; the higher score of each round is <b style="color:#12a03c">green</b>.</li>
@@ -957,7 +1009,7 @@
         <li>Under <b>▸ More options</b>, first: <b>Word count</b>, min and max side by side (Auto follows the grid size and Challenge Level, as in The Basics, and shows its number; each round picks a number in your range), then <b>Word length</b>, min and max (min 3 letters standard; max Auto by grid size and Challenge Level; 12×12 also offers 11-letter words). A min set above the max moves the max along (and the other way round). Then <b>Word directions</b> (Easy → ↓, Standard → ↓ ↘ ↗, Hard: all 8 ways), Rounds per match, <b>Grid Colors</b> (Cream, Inked, Inked Blue, Steel, Sky, Navy &amp; gold, Onyx, Ruby), <b>Button Colors</b> (Steel, Sapphire, Navy &amp; gold, Ruby, Emerald, Onyx; the preview shows both) and, for Solo, Hints (free or paid, 3 per round or no limit).</li>
         <li>Every grid is made fresh from our Lexicon, so every hidden word has a clue.</li>`)}
       ${sec('Your Stats', `
-        <li>Matches, the share won, words found, Master Keys found and your Solo bests are kept on this device. Every match (and Solo round) also goes into <b>📜 Game History</b>.</li>`)}
+        <li>Matches, the share won, words found, Master Keys found and your Solo bests (fastest clear, best speed, best timed scores) are kept on this device. Every match (and Solo round) also goes into <b>📜 Game History</b>, where you can sort and filter them.</li>`)}
       <div class="row"><button class="btn primary" data-a="close">OK</button></div>`);
     $('#sheet').onclick = e => { if (UI.helpClick && UI.helpClick(e)) return; if (e.target.closest('[data-a="close"]')) closeModal(); };
   }

@@ -15,7 +15,7 @@
    v08j: grid colors, final-play view, clock-out final turn, menu defaults, phone two-finger drag) */
 'use strict';
 (() => {
-  const APP_VER = 'v13b'; // Project CP: shown as a pill beside the title and in the browser tab
+  const APP_VER = 'v13c'; // Project CP: shown as a pill beside the title and in the browser tab
   const NM = window.MK_NAMES || { suite: 'Master Keys', cross: 'CrossKeys', lock: 'LockWord' }; // v09: the game names (names.js)
   // v09a (JM CD-71: 1.2c, 1.3b): the two games' own icons, shown wherever the 🧩 / 🔐 emoji stood
   const GI = { cross: 'icons/crosskeys.svg', lock: 'icons/lockword.svg', ring: 'icons/keyring.svg', cubes: 'icons/keycubes.svg', hidden: 'icons/hiddenkeys.svg' }; // v11: KeyRing; v12: KeyCubes; v13: Hidden Keys
@@ -1993,33 +1993,110 @@
   // dragged the whole window with it); "All" stays a button on its left. One list for every game, A–Z (v13b, JM CD-134: 3.1.1).
   const HIST_GAMES = [['duel', NM.cross, 'cross'], ['vault', NM.lock, 'lock'], ['ring', NM.ring, 'ring'], ['cubes', NM.cubes || 'KeyCubes', 'cubes'], ['hidden', NM.hidden || 'Hidden Keys', 'hidden']]
     .sort((a, b) => a[1].localeCompare(b[1]));
+  // v13c (JM CD-136: 3.2.1): Game History gets a multi-choice game list (checkboxes; "All" stays on its left), a Sort
+  // (Date, Points, Coins, Game; newest / highest first, or the other way) and Filters (Result: Win / Loss / Tie, a date range,
+  // a points range, a coins range). Sort choices and filters fill themselves from the results of the games picked: Points
+  // and its range appear only when those results carry points, Tie only when there is a tie, and each range box shows the
+  // lowest and highest value as a hint. The choices stay while the app is open. Older results are read as they were saved:
+  // Points = your side of "48–31" or "52 pts" (a KeyRing Ring keeps no points); Tie = a drawn game.
+  const HS = { games: [], sort: 'date', dir: -1, res: { win: 1, loss: 1, tie: 1 }, from: '', to: '', pmin: '', pmax: '', cmin: '', cmax: '', filt: false, pick: false };
+  const numOf = s => { const v = parseFloat(String(s).replace(/,/g, '')); return isFinite(v) ? v : null; };
+  function histFacts(e) {
+    const s = String(e.score || ''), duelish = s.match(/^\s*([\d,]+)\s*[–-]\s*([\d,]+)/), pt = s.match(/([\d,]+)\s*pts\b/);
+    const pts = typeof e.pts === 'number' ? e.pts : duelish ? numOf(duelish[1]) : pt ? numOf(pt[1]) : null;
+    const tie = e.res === 'tie' || /\b(draw|drawn|drew)\b/i.test(e.title || '') || (duelish && numOf(duelish[1]) === numOf(duelish[2]) && /drawn|draw/i.test(e.title || ''));
+    return { pts, coins: typeof e.coins === 'number' ? e.coins : numOf(e.coins) || 0, res: e.res || (tie ? 'tie' : e.win ? 'win' : 'loss') };
+  }
+  const gameName = g => (HIST_GAMES.find(x => x[0] === g) || [0, g])[1];
+  const dayStart = v => v ? new Date(v + 'T00:00:00').getTime() : null, dayEnd = v => v ? new Date(v + 'T23:59:59.999').getTime() : null;
   function showHistory(filter) {
-    const f = filter || 'all', all = hist.list();
-    const rows = all.map((e, i) => ({ e, i })).filter(x => f === 'all' || x.e.g === f);
-    const tab = (v, l) => `<button type="button" data-f="${v}" class="${f === v ? 'on' : ''}">${l}</button>`;
+    if (filter === 'all') HS.games = []; else if (filter) HS.games = [filter];
+    HS.pick = false;
+    const all = hist.list().map((e, i) => ({ e, i, f: histFacts(e) }));
+    const chk = (k, l, on) => `<label class="hs-chk"><input type="checkbox" data-r="${k}"${on ? ' checked' : ''}><span>${l}</span></label>`;
     openModal(`<h2>📜 Game History</h2>
-      <div class="hist-pick">${tab('all', 'All')}<label class="hist-selw${f !== 'all' ? ' on' : ''}">${f !== 'all' && HIST_GAMES.some(g => g[0] === f) ? gimg(HIST_GAMES.find(g => g[0] === f)[2], 'gi hist-gi') : ''}<select class="hist-sel" aria-label="Show one game">
-        <option value=""${f === 'all' ? ' selected' : ''}>One game…</option>${HIST_GAMES.map(([v, l]) => `<option value="${v}"${f === v ? ' selected' : ''}>${esc(l)}</option>`).join('')}</select></label></div>
-      ${rows.length ? `<ul class="hist-list">${rows.map(({ e, i }) => `<li><button type="button" class="hist-it ${e.win ? 'won' : 'lost'}" data-i="${i}">
+      <div class="hist-pick"><button type="button" data-f="all">All</button>
+        <div class="hs-gw"><button type="button" class="hs-gbtn" id="hsGBtn" aria-haspopup="true" aria-expanded="false"></button>
+          <div class="hs-gpan" id="hsGPan" hidden>${HIST_GAMES.map(([v, l, ic]) => `<label class="hs-chk hs-g"><input type="checkbox" data-g="${v}">${gimg(ic, 'gi hist-gi')}<span>${esc(l)}</span></label>`).join('')}</div></div></div>
+      <div class="hs-tools"><label class="hs-sort"><span>Sort</span><select id="hsSort"></select></label><button type="button" class="hs-dir" id="hsDir"></button>
+        <button type="button" class="hs-fbtn" id="hsFBtn" aria-expanded="false"><span class="cec" aria-hidden="true">▸</span> Filters<b id="hsFN"></b></button></div>
+      <div class="hs-filt" id="hsFilt" hidden>
+        <div class="hs-row" id="hsRes"><span class="hs-l">Result</span>${chk('win', 'Win', HS.res.win)}${chk('loss', 'Loss', HS.res.loss)}<span id="hsTieW">${chk('tie', 'Tie', HS.res.tie)}</span></div>
+        <div class="hs-row"><span class="hs-l">Date</span><input type="date" id="hsFrom" value="${HS.from}" aria-label="From date"><span class="hs-to">to</span><input type="date" id="hsTo" value="${HS.to}" aria-label="To date"></div>
+        <div class="hs-row" id="hsPtsR"><span class="hs-l">Points</span><input type="number" inputmode="numeric" id="hsPmin" value="${HS.pmin}" aria-label="Fewest points"><span class="hs-to">to</span><input type="number" inputmode="numeric" id="hsPmax" value="${HS.pmax}" aria-label="Most points"></div>
+        <div class="hs-row"><span class="hs-l">Coins</span><input type="number" inputmode="numeric" id="hsCmin" value="${HS.cmin}" aria-label="Fewest coins"><span class="hs-to">to</span><input type="number" inputmode="numeric" id="hsCmax" value="${HS.cmax}" aria-label="Most coins"></div>
+        <button type="button" class="btn hs-clear" id="hsClear">Clear filters</button>
+      </div>
+      <p class="hs-count" id="hsCount"></p>
+      <div id="hsList"></div>
+      <p class="hist-note">The last ${HIST_MAX} results, kept on this device. Tap one to see its full result.</p>
+      <div class="row"><button class="btn primary" data-a="close">Close</button></div>`);
+    const sh = $('#sheet');
+    function paint() {
+      const gs = HS.games, inG = all.filter(x => !gs.length || gs.includes(x.e.g));
+      // the game picker's label and boxes
+      $('#hsGBtn').innerHTML = `${gs.length === 1 ? gimg((HIST_GAMES.find(g => g[0] === gs[0]) || [0, 0, 'cross'])[2], 'gi hist-gi') : ''}<span>${!gs.length ? 'Games: all' : gs.length === 1 ? esc(gameName(gs[0])) : `${gs.length} games`}</span><span class="cv" aria-hidden="true">▾</span>`;
+      $('#hsGBtn').classList.toggle('on', gs.length > 0); sh.querySelector('[data-f="all"]').classList.toggle('on', !gs.length);
+      sh.querySelectorAll('[data-g]').forEach(c => { c.checked = gs.includes(c.dataset.g); });
+      $('#hsGPan').hidden = !HS.pick; $('#hsGBtn').setAttribute('aria-expanded', HS.pick);
+      // sort choices that fit these results
+      const hasP = inG.some(x => x.f.pts != null), hasC = inG.some(x => x.f.coins), hasTie = inG.some(x => x.f.res === 'tie');
+      const opts = [['date', 'Date']].concat(hasP ? [['pts', 'Points']] : [], hasC ? [['coins', 'Coins']] : [], gs.length !== 1 ? [['game', 'Game']] : []);
+      if (!opts.some(o => o[0] === HS.sort)) { HS.sort = 'date'; HS.dir = -1; }
+      $('#hsSort').innerHTML = opts.map(([v, l]) => `<option value="${v}"${v === HS.sort ? ' selected' : ''}>${l}</option>`).join('');
+      $('#hsDir').textContent = HS.sort === 'date' ? (HS.dir < 0 ? '↓ Newest first' : '↑ Oldest first') : HS.sort === 'game' ? (HS.dir < 0 ? '↓ Z–A' : '↑ A–Z') : (HS.dir < 0 ? '↓ Highest first' : '↑ Lowest first');
+      // filters that fit, with the range of each as its hint
+      $('#hsFilt').hidden = !HS.filt; $('#hsFBtn').setAttribute('aria-expanded', HS.filt); $('#hsFBtn').querySelector('.cec').textContent = HS.filt ? '▾' : '▸';
+      $('#hsTieW').hidden = !hasTie; $('#hsPtsR').hidden = !hasP;
+      const rng = (a, id1, id2) => { const v = a.filter(x => x != null); if (!v.length) return; $(id1).placeholder = 'from ' + fmtN(Math.min(...v)); $(id2).placeholder = 'to ' + fmtN(Math.max(...v)); };
+      rng(inG.map(x => x.f.pts), '#hsPmin', '#hsPmax'); rng(inG.map(x => x.f.coins), '#hsCmin', '#hsCmax');
+      if (inG.length) { const ds = inG.map(x => new Date(x.e.t)), iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; $('#hsFrom').min = $('#hsTo').min = iso(new Date(Math.min(...ds))); $('#hsFrom').max = $('#hsTo').max = iso(new Date(Math.max(...ds))); }
+      // apply
+      const n = v => v === '' ? null : +v, f0 = dayStart(HS.from), f1 = dayEnd(HS.to), pm = n(HS.pmin), pM = n(HS.pmax), cm = n(HS.cmin), cM = n(HS.cmax);
+      const rows = inG.filter(({ e, f }) => (HS.res[f.res] || (f.res === 'tie' && !hasTie))
+        && (f0 == null || e.t >= f0) && (f1 == null || e.t <= f1)
+        && (pm == null || (f.pts != null && f.pts >= pm)) && (pM == null || (f.pts != null && f.pts <= pM))
+        && (cm == null || f.coins >= cm) && (cM == null || f.coins <= cM));
+      const key = { date: x => x.e.t, pts: x => x.f.pts == null ? -Infinity : x.f.pts, coins: x => x.f.coins, game: x => gameName(x.e.g) }[HS.sort];
+      rows.sort((a, b) => { const p = key(a), q = key(b); const c = typeof p === 'string' ? p.localeCompare(q) : p - q; return HS.dir * c || b.e.t - a.e.t; });
+      const nf = ['win', 'loss', 'tie'].filter(k => !HS.res[k] && (k !== 'tie' || hasTie)).length + [HS.from, HS.to, HS.pmin, HS.pmax, HS.cmin, HS.cmax].filter(v => v !== '').length;
+      $('#hsFN').textContent = nf ? ` (${nf})` : '';
+      $('#hsCount').textContent = all.length ? `Showing ${fmtN(rows.length)} of ${fmtN(inG.length)}${gs.length === 1 ? ` ${esc(gameName(gs[0]))} results` : gs.length ? ` results from ${gs.length} games` : ' results'}` : '';
+      $('#hsList').innerHTML = rows.length ? `<ul class="hist-list">${rows.map(({ e, i, f }) => `<li><button type="button" class="hist-it ${f.res === 'tie' ? 'tie' : e.win ? 'won' : 'lost'}" data-i="${i}">
           <span class="hi-ico">${gimg(e.g === 'duel' ? 'cross' : e.g === 'ring' ? 'ring' : e.g === 'cubes' ? 'cubes' : e.g === 'hidden' ? 'hidden' : 'lock')}</span>
           <span class="hi-main"><b>${esc(e.title)}</b><small>${esc(e.sub || '')}</small><small>${when(e.t)}</small></span>
           <span class="hi-side"><b>${esc(e.score || '')}</b><small>🪙${signed(e.coins)}</small></span></button></li>`).join('')}</ul>`
-        : `<p class="hist-none">No ${f === 'duel' ? NM.cross + ' ' : f === 'vault' ? NM.lock + ' ' : f === 'ring' ? NM.ring + ' ' : f === 'cubes' ? (NM.cubes || 'KeyCubes') + ' ' : f === 'hidden' ? (NM.hidden || 'Hidden Keys') + ' ' : ''}results yet. Finished games show up here.</p>`}
-      <p class="hist-note">The last ${HIST_MAX} results, kept on this device. Tap one to see its full result.</p>
-      <div class="row"><button class="btn primary" data-a="close">Close</button></div>`);
+        : `<p class="hist-none">${inG.length ? 'No results match these filters.' : `No ${gs.length === 1 ? esc(gameName(gs[0])) + ' ' : ''}results yet. Finished games show up here.`}</p>`;
+    }
+    paint();
     $('#modal').onclick = e => { if (e.target === $('#modal')) closeModal(); };
-    $('#sheet').onchange = e => { if (e.target.matches && e.target.matches('.hist-sel')) showHistory(e.target.value || 'all'); };
-    $('#sheet').onclick = e => {
-      const t = e.target.closest('[data-f]'); if (t) return showHistory(t.dataset.f);
+    const val = { hsFrom: 'from', hsTo: 'to', hsPmin: 'pmin', hsPmax: 'pmax', hsCmin: 'cmin', hsCmax: 'cmax' };
+    sh.oninput = e => { const k = val[e.target.id]; if (k) { HS[k] = e.target.value; paint(); } };
+    sh.onchange = e => {
+      const t = e.target;
+      if (t.dataset.g) { const s = new Set(HS.games); if (t.checked) s.add(t.dataset.g); else s.delete(t.dataset.g); HS.games = HIST_GAMES.map(g => g[0]).filter(g => s.has(g)); if (HS.games.length === HIST_GAMES.length) HS.games = []; paint(); }
+      else if (t.dataset.r) { HS.res[t.dataset.r] = t.checked ? 1 : 0; paint(); }
+      else if (t.id === 'hsSort') { HS.sort = t.value; HS.dir = t.value === 'game' ? 1 : -1; paint(); }
+      else if (val[t.id]) { HS[val[t.id]] = t.value; paint(); }
+    };
+    sh.onclick = e => {
+      if (e.target.closest('#hsGPan')) return; // ticking a game keeps the list open
+      if (e.target.closest('#hsGBtn')) { HS.pick = !HS.pick; paint(); return; }
+      if (HS.pick) { HS.pick = false; paint(); }
+      if (e.target.closest('[data-f="all"]')) { HS.games = []; paint(); return; }
+      if (e.target.closest('#hsDir')) { HS.dir = -HS.dir; paint(); return; }
+      if (e.target.closest('#hsFBtn')) { HS.filt = !HS.filt; paint(); return; }
+      if (e.target.closest('#hsClear')) { Object.assign(HS, { res: { win: 1, loss: 1, tie: 1 }, from: '', to: '', pmin: '', pmax: '', cmin: '', cmax: '' }); for (const id in val) $('#' + id).value = ''; sh.querySelectorAll('[data-r]').forEach(c => { c.checked = true; }); paint(); return; }
       const it = e.target.closest('[data-i]');
       if (it) {
-        const h = all[+it.dataset.i]; if (!h) return;
+        const h = hist.list()[+it.dataset.i]; if (!h) return;
+        sh.oninput = sh.onchange = null;
         openModal(`<div class="hist-when">📜 ${when(h.t)}</div><div class="hist-res">${h.html || ''}</div>
           <div class="row res-bar"><button class="btn" data-a="back">◂ History</button><button class="btn primary" data-a="close">Close</button></div>`, 'res');
-        $('#sheet').onclick = ev => { const b = ev.target.closest('[data-a]'); if (!b) return; if (b.dataset.a === 'back') showHistory(f); else closeModal(); };
+        $('#sheet').onclick = ev => { const b = ev.target.closest('[data-a]'); if (!b) return; if (b.dataset.a === 'back') showHistory(); else closeModal(); };
         return;
       }
-      if (e.target.closest('[data-a="close"]')) closeModal();
+      if (e.target.closest('[data-a="close"]')) { sh.oninput = sh.onchange = null; closeModal(); }
     };
   }
 
@@ -2070,7 +2147,9 @@
         <li>You earn coins by playing well (finishing turns quickly in timed ${NM.cross} games, winning, solving ${NM.lock} words, clearing ${NM.ring} Rings and finding bonus words, winning ${NM.cubes || 'KeyCubes'} and ${NM.hidden || 'Hidden Keys'} rounds) and spend them on help like hints. Coin buttons are <b>blue</b> and take <b>two taps</b>, so you never spend by accident. Each game's How To Play has the details.</li>`)}
       ${sec('Game History', `
         <li><b>📜 Game History</b> (top corner of the Lobby) lists your last 100 results from every game, newest first: the date, the settings, the score and the coins won or spent. A green edge marks a win, a red edge a loss.</li>
-        <li>Tap <b>All</b> for every game, or pick one game from the dropdown beside it (${gimg('cross')} ${NM.cross}, ${gimg('lock')} ${NM.lock}, ${gimg('ring')} ${NM.ring}, ${gimg('cubes')} ${NM.cubes || 'KeyCubes'}, ${gimg('hidden')} ${NM.hidden || 'Hidden Keys'}), and tap any result to see its full result window again; ◂ History goes back to the list.</li>
+        <li>Tap <b>All</b> for every game, or open <b>Games ▾</b> beside it and tick one or more games (A–Z), and tap any result to see its full result window again; ◂ History goes back to the list (your choices stay while the app is open).</li>
+        <li><b>Sort</b> by Date, Points, Coins or Game; the arrow button turns the order around (newest / highest first, or oldest / lowest first). Only the sorts that fit the results you're looking at are offered.</li>
+        <li><b>▸ Filters</b>: Result (Win, Loss, and Tie when there is one), a date range, a points range and a coins range; each box shows the lowest and highest value as a hint. "Showing 12 of 40" counts what's left; <b>Clear filters</b> starts again. Points are your side of a score ("48" in "48–31") or "52 pts"; a ${NM.ring} Ring keeps no points, so a points filter leaves it out.</li>
         <li>It's kept on this device only, like your stats and coins.</li>`)}
       ${sec('Sound', `
         <li>Sound effects are <b>off</b> until you turn them on. Tap the <b>speaker</b> (in the Lobby and in every game's header; red with a ✕ while muted) to turn them on. Tap again to mute. One switch covers every game, and it's remembered on this device.</li>`)}

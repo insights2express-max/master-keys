@@ -3134,3 +3134,40 @@ html[data-screen="night"] .hk-key { filter: brightness(.82); }
  Solo's Done button drops its small "Solo" line to leave the strip more room */
 @media (max-width: 699px) { .hk-main .hk-msg { height: 52px; min-height: 52px; overflow: visible; position: relative; z-index: 4; } .hk-main .hk-msg .kc-mt { font-size: 13px; line-height: 1.2; padding: 5px 10px; } #hiddenkeys #hkDone .cp { display: none; } #hiddenkeys #hkDone { grid-template-columns: auto auto; } #hiddenkeys #hkDone .nm { grid-row: span 2; } }
 @media (max-width: 699px) { .hk-main:has(#hkDone:not([hidden])) .hk-msg .kc-mt { font-size: 12px; line-height: 1.12; padding: 4px 7px; } }
+
+/* =====================================================================
+   v13c (JM CD-136): Game History game checkboxes, Sort and Filters (every game); Hidden Keys Solo speed meter
+   ===================================================================== */
+.hs-gw { position: relative; flex: 1; min-width: 0; }
+.hs-gbtn { width: 100%; height: 100%; display: flex; align-items: center; gap: 6px; padding: 9px 10px; border-radius: 12px; border: 1px solid var(--line); background: var(--btn); color: var(--btn-ink); font: inherit; font-weight: 800; cursor: pointer; text-align: left; }
+.hs-gbtn > span:not(.cv) { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hs-gbtn.on { border-color: var(--primary); box-shadow: inset 0 0 0 1px var(--primary); }
+.hs-gbtn .cv { opacity: .7; }
+.hs-gpan { position: absolute; left: 0; right: 0; top: calc(100% + 4px); z-index: 20; display: grid; gap: 2px; padding: 6px; border-radius: 12px; background: var(--surface); box-shadow: 0 10px 28px rgba(0, 0, 0, .3), 0 0 0 1px var(--line); }
+.hs-gpan[hidden] { display: none; }
+.hs-chk { display: inline-flex; align-items: center; gap: 7px; cursor: pointer; font-weight: 700; }
+.hs-chk input { width: 18px; height: 18px; margin: 0; accent-color: var(--primary); }
+.hs-g { padding: 7px 8px; border-radius: 8px; }
+.hs-g:hover { background: var(--hl); }
+.hs-tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 0 0 8px; }
+.hs-sort { display: inline-flex; align-items: center; gap: 6px; font-weight: 800; font-size: 14px; }
+.hs-sort select { padding: 7px 8px; border-radius: 10px; border: 1px solid var(--line); background: var(--btn); color: var(--btn-ink); font: inherit; font-weight: 700; }
+.hs-dir, .hs-fbtn { padding: 7px 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--btn); color: var(--btn-ink); font: inherit; font-size: 14px; font-weight: 800; cursor: pointer; white-space: nowrap; }
+.hs-fbtn { margin-left: auto; }
+.hs-fbtn[aria-expanded="true"] { border-color: var(--primary); }
+.hs-filt { display: grid; gap: 8px; padding: 10px; margin: 0 0 8px; border-radius: 12px; background: var(--bg); box-shadow: inset 0 0 0 1px var(--line); }
+.hs-filt[hidden], .hs-row[hidden], #hsTieW[hidden] { display: none; }
+.hs-row { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; }
+.hs-l { width: 54px; font-weight: 800; font-size: 13px; color: var(--muted); }
+.hs-row input[type="date"], .hs-row input[type="number"] { flex: 1 1 110px; min-width: 0; padding: 7px 8px; border-radius: 9px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: inherit; font-size: 14px; }
+.hs-to { font-size: 13px; color: var(--muted); }
+.hs-clear { justify-self: start; padding: 6px 12px; font-size: 13px; }
+.hs-count { margin: 0 0 6px; font-size: 13px; font-weight: 700; color: var(--muted); }
+.hist-it.tie { box-shadow: inset 4px 0 0 #f5b300, var(--shadow); }
+@media (max-width: 420px) { .hs-l { width: 100%; } .hs-fbtn { margin-left: 0; } }
+/* Hidden Keys: the Solo speed meter in your score card (Untimed), and a half-points mark */
+.hk-meter { font-variant-numeric: tabular-nums; }
+.hk-half { font-size: .8em; opacity: .85; margin-left: 1px; }
+/* phones: a found word in the two-column Words list keeps room for its points (the row color already says who found it) */
+.hk-key.wl .hk-ans { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+@media (max-width: 480px) { .hk-key.wl .hk-by { display: none; } .hk-key.wl { grid-template-columns: 24px minmax(0, 1fr) auto; gap: 5px; padding: 5px 6px; } .hk-key.wl .hk-ans { font-size: 14px; letter-spacing: .02em; } }
