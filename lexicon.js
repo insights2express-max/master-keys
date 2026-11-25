@@ -5,7 +5,7 @@
    Words are 2–7 letters, plus 11-letter words for Large grids (A–Z only). A repeated word adds an extra clue set (see above). */
 // Lexicon edition (JM, CD-24 other edits 1.1): its own number, separate from the game version. Add 1 whenever the word data or the Lexicon page changes.
 // L01 v07a · L02 v07b · L03 v07c · L04 v07d (wrapping cells) · L05 v07e (8-letter hint clues, edition number) · L06 v08 (8-letter easy and hard hints) · L07 (editor page: Status, Comments, Edit Mode + Copy Edits, advanced search; "/" in 23 Word Vault clues) · L08 v08b (58 country-code clues "Madrid URL" style, JM CD-27; Word Vault tricky hints) · L09 (JM's first Copy Edits, CD-29: ZAR clues, EXCITE added ON-DECK; ";" separates alternative clues, one picked at random) · L10 v08q (JM's Copy Edits, CD-59 + CD-60: 28 clue changes, "on an exchange board" / "on a bag tag" / "on a T-shirt tag" dropped, EXCITE active, new 1-letter clues, T pictures, drawn ICEBERG picture "@iceberg"; the Lexicon page gives each 1-letter row its own key) · L11 v08r (CD-62: 2.1a: 1-letter answers have one clue per row, so F, K and X's new ";" clues became separate rows; page: missing-letter marks drawn as in the game + "Missing-letter clues" filter) · L12 v08s (JM's Copy Edits CD-64 + CD-65: 34 changes, sorted Literal = plain / Indirect = figurative; page: permanent edit record, Reviewed ticks, Wordplay column, Claude drafts) · L13 v08t (JM's Copy Edits CD-66 + CD-67: 375 Claude drafts for A accepted, three-kind test — sound-alike clues to Wordplay, blanks to Indirect; ACRID; 125 new 1-letter clues with the blank inside the word; page: Draft toggle, clue lengths, Wrap / Clip, two-row filters)
-self.LEXICON_VER = 'L15'; // L15 (v13c): page change (JM CD-137: Music Library features: bold FULL CAPS defaults, green active filters with ✕, chevron About, All reviewed, Screen button); same words and clues as L14.12. L14.12 (v13b): JM's CD-135: all 760 drafts accepted, 582 tier-2 KeyRing words ACTIVE; L14.11 (v13; same edition + ICE typo fix "Assassinate", JM 2026-11-24, no version bump per JM's lexicon CP): JM's CD-131: 22 edits; round 8: 100 letter-J-K drafts + KeyRing tier 2 round 2, 269 ON-DECK rows C; L14.10 (v12h): JM's CD-129: 618 drafts + 28 edits applied, tier 1 done; round 7: 84 letter-I drafts + KeyRing tier 2 round 1, 313 ON-DECK rows A-B; L14.09 (v12h): JM's CD-127 Copy Edits: 886 drafts applied, 363 KeyRing words ACTIVE; round 6: 156 letter-H drafts + KeyRing round 4, 462 ON-DECK rows Q-Z; L14.08 (v12g): JM's CD-124 fixes: 6 clues; L14.07 (v12e): JM's CD-108 Copy Edits applied, 335 KeyRing words ACTIVE; round 5: 130 letter-G drafts + KeyRing round 3, 363 ON-DECK rows I-P; L14.06 (v11e): KeyRing everyday words round 2: 335 ON-DECK rows D-H with drafts (CD-104: 2.3); L14.05 (v11e): JM's CD-104 Copy Edits: 2,033 drafts applied, 315 KeyRing words ACTIVE; drafts round 4: 175 letter-F rows; L14.04 (v11c): KeyRing everyday words round 1: 315 ON-DECK rows A-C with drafts (CD-100: 1.2.1; CD-101: 2.1-2.4); L14.03 (v11c): data-only, drafts round 3 (138 letter-E rows); L14.02 (v09a): data-only, drafts round 2 (162 letter-D rows, 32 shorter B rows, short CALF Wordplay); L14.01: drafts round 1 (C, short B Wordplay, shorter A); L14 = the renamed page (Master Keys Lexicon; CrossKeys / LockWord), a structure change
+self.LEXICON_VER = 'L16'; // L16 (v13c): page change (JM CD-140: each over-length clue choice marked in its cell; Longest clue names its column) + 47 pre-approved ordinal edits (first → 1st, etc.) in Literal and Indirect clues. L15 (v13c): L15 (v13c): page change (JM CD-137: Music Library features: bold FULL CAPS defaults, green active filters with ✕, chevron About, All reviewed, Screen button); same words and clues as L14.12. L14.12 (v13b): JM's CD-135: all 760 drafts accepted, 582 tier-2 KeyRing words ACTIVE; L14.11 (v13; same edition + ICE typo fix "Assassinate", JM 2026-11-24, no version bump per JM's lexicon CP): JM's CD-131: 22 edits; round 8: 100 letter-J-K drafts + KeyRing tier 2 round 2, 269 ON-DECK rows C; L14.10 (v12h): JM's CD-129: 618 drafts + 28 edits applied, tier 1 done; round 7: 84 letter-I drafts + KeyRing tier 2 round 1, 313 ON-DECK rows A-B; L14.09 (v12h): JM's CD-127 Copy Edits: 886 drafts applied, 363 KeyRing words ACTIVE; round 6: 156 letter-H drafts + KeyRing round 4, 462 ON-DECK rows Q-Z; L14.08 (v12g): JM's CD-124 fixes: 6 clues; L14.07 (v12e): JM's CD-108 Copy Edits applied, 335 KeyRing words ACTIVE; round 5: 130 letter-G drafts + KeyRing round 3, 363 ON-DECK rows I-P; L14.06 (v11e): KeyRing everyday words round 2: 335 ON-DECK rows D-H with drafts (CD-104: 2.3); L14.05 (v11e): JM's CD-104 Copy Edits: 2,033 drafts applied, 315 KeyRing words ACTIVE; drafts round 4: 175 letter-F rows; L14.04 (v11c): KeyRing everyday words round 1: 315 ON-DECK rows A-C with drafts (CD-100: 1.2.1; CD-101: 2.1-2.4); L14.03 (v11c): data-only, drafts round 3 (138 letter-E rows); L14.02 (v09a): data-only, drafts round 2 (162 letter-D rows, 32 shorter B rows, short CALF Wordplay); L14.01: drafts round 1 (C, short B Wordplay, shorter A); L14 = the renamed page (Master Keys Lexicon; CrossKeys / LockWord), a structure change
 self.LEXICON_DATA = `
 # ---------- 2 letters ----------
 AD|Commercial; Selling; Promo|Spot on TV; Billboard filler|1
@@ -35,7 +35,7 @@ IT|Tag player|Tech dept.; Stephen King novel|1
 LA|Note after so|City of Angels|1
 LO|"___ and behold"|Look, old-style|3
 MA|Mom|Pa's partner|1
-ME|Myself|First-person object|1
+ME|Myself|1st-person object|1
 MY|Belonging to me|"Oh ___!"|1
 NO|Opposite of yes|Veto|1|🚫
 OF|Made ___ wood|Belonging to|1
@@ -95,7 +95,7 @@ PR|Public relations|Spin|3
 LP|Vinyl album|Record|3
 EP|Short album|Mini-album; Few-track release|3
 SF|Sci-fi|San Francisco|3
-VP|Number two|Second in command|2
+VP|Number two|2nd in command|2
 PE|Gym class|School workout|1
 RV|Camper|Motor home|2
 OB|Doctor for births|___-GYN|4
@@ -103,9 +103,9 @@ TB|Lung disease|Terabyte|4
 GB|Gigabyte|Great Britain; Storage unit|3
 MB|Megabyte|Data size|3
 KO|Knockout|Boxer's win; Down for the count|2|🥊
-TI|Note before do|Seventh note|2
-FA|Note after mi|Fourth note; Do-re-mi-___|2
-MI|Note after re|Third note|2
+TI|Note before do|7th note|2
+FA|Note after mi|4th note; Do-re-mi-___|2
+MI|Note after re|3rd note|2
 DA|Prosecutor|Russian yes; Courtroom accuser|3
 JA|German yes|Yes, in Berlin; Swedish yes|3
 SI|Spanish yes|Yes, in Madrid|3
@@ -464,7 +464,7 @@ YAP|Bark|Chatter|2
 YEN|Craving|Tokyo money|2|💴
 YES|Affirmative|Aye|1|✅
 YET|Still|But|1
-YOU|Second person|Thee|1
+YOU|2nd person|Thee|1
 ZAP|Shock|Microwave|1|⚡
 ZEN|Calm|Meditation school|2
 ZIP|Fasten|Zero|1|🤐
@@ -803,7 +803,7 @@ GLOW|Shine|Radiance; ___ stick|1
 GLUE|Adhesive|Stick; Super ___|1
 GOAL|Aim|Score; Life ___|1|🥅
 GOAT|Billy|Greatest of all time; Kid's mom|1|🐐
-GOLD|Precious metal|First prize; ___ medal|1|🥇
+GOLD|Precious metal|1st prize; ___ medal|1|🥇
 GOLF|Links game|Tee sport; Mini-___|1
 GONE|Departed|Away; ___ with the Wind|1
 GOOD|Fine|Virtuous; ___ morning|1|👍
@@ -1567,7 +1567,7 @@ DIZZY|Giddy|Dazed; Spun out|1|😵
 DONOR|Giver|Benefactor; Blood-drive hero|1
 DOUGH|Bread mix|Money; Cookie ___|1
 DOZEN|Twelve|Baker's ___; Egg carton count|1
-DRAFT|Sketch|Breeze; First try|1
+DRAFT|Sketch|Breeze; 1st try|1
 DRAIN|Sink hole|Exhaust; Down the ___|1
 DRAMA|Theater|Tension; ___ queen|1
 DREAM|Fantasy|Vision; American ___|1|💭
@@ -2000,7 +2000,7 @@ CREDO|Belief; Motto|Life motto; Words to live by|4
 CRONY|Pal; Buddy|Sidekick; Insider's pal|4
 CRYPT|Vault; Tomb|Church basement; Tales from the ___|3
 CUMIN|Spice|Seed; Chili spice|3
-DEBUT|First appearance|Launch; Opening night|2
+DEBUT|1st appearance|Launch; Opening night|2
 DECOR|Interior design|Furnishings; Room style|3
 DEIGN|Condescend|Stoop; Lower oneself|5
 DELTA|River mouth|Greek letter; Mississippi ___|3
@@ -2040,7 +2040,7 @@ FJORD|Steep sea inlet|Norway feature; Glacial bay|4
 FLAIR|Talent|Panache; Style|3
 FLORA|Plants|Plant life; ___ and fauna|3
 FOLIO|Page|Book size; Page number|5
-FORAY|Raid|Venture; First ___|4
+FORAY|Raid|Venture; 1st ___|4
 FOYER|Lobby|Entrance hall; Front hall|3
 FRAIL|Weak|Fragile; Delicate|3
 FUROR|Uproar|Outcry; Commotion|5
@@ -2296,7 +2296,7 @@ SCHOOL|Academy|Fish group|1|🏫
 SECRET|Hidden|Mystery|1
 SHADOW|Shade|Follow|1
 SHOWER|Rain|Wash|1|🚿
-SILVER|Metal|Second prize|1|🥈
+SILVER|Metal|2nd prize|1|🥈
 SISTER|Sibling|Nun|1
 SMOOTH|Even|Slick|1
 SPIDER|Arachnid|Web spinner|1|🕷️
@@ -2413,7 +2413,7 @@ CARAMEL|Toffee|Candy; Salted ___|1
 CARTOON|Animation|Comic; Saturday fare|1
 CEILING|Overhead|Upper limit; Glass ___|1
 CHAPTER|Section|Branch; Book part|1
-CHICKEN|Hen|Coward; Which came first?|1
+CHICKEN|Hen|Coward; Which came 1st?|1
 CIRCUIT|Loop; Lap|Electric path; Tour route|1
 CLIMATE|Weather|Atmosphere; ___ change|1
 CONCERT|Show; Performance|Gig; Rock ___|1
@@ -2764,11 +2764,11 @@ GOLDEN|Made of gold|Retriever's coat; ___ Gate|1
 MONDAY|Start of the work week|Day after Sunday|1
 FRIDAY|Workweek end|<SAT; TGIF day|1
 TUESDAY|Day after Monday|Taco day|1
-JANUARY|First month|New Year's month; Jan.|1
-OCTOBER|Halloween month|Tenth month|1
-AUGUST|Eighth month; Summer month|Dog days month; Majestic|1
+JANUARY|1st month|New Year's month; Jan.|1
+OCTOBER|Halloween month|10th month|1
+AUGUST|8th month; Summer month|Dog days month; Majestic|1
 MINUTES|Sixty-second spans|Clock units|1
-SECONDS|Short time units|Second helpings|1
+SECONDS|Short time units|2nd helpings|1
 CLOCKS|Time tellers|Things with hands; Spring-forward items|1
 # ---------- v04: 11 letters (the left column of Large grids, JM CD-9: 1.1) ----------
 BUTTERFLIES|Bright-winged bugs|Ex-caterpillars; Stage nerves|1|🦋
@@ -2839,7 +2839,7 @@ THERMOMETER|Fever checker|Temperature tool|1|🌡️
 EARTHQUAKES|Ground shakers|Tremors; Seismic events|1
 HANDWRITING|Penmanship|Pen's trail; Script|1|✍️
 EXPERIMENTS|Science tests|Lab trials; Trial runs|1|🧪
-DISCOVERIES|First finds|Explorers' finds; Eureka moments|2
+DISCOVERIES|1st finds|Explorers' finds; Eureka moments|2
 LOCOMOTIVES|Train engines|Steam pullers|2|🚂
 CONVERTIBLE|Folding-roof car|Top-down car; Sofa bed|2
 SKYSCRAPERS|Very tall buildings|City towers|1|🏙️
@@ -2880,7 +2880,7 @@ MAGNIFICENT|Splendid|Grand|2
 SPECTACULAR|Amazing to see|Showstopping|1
 MISCHIEVOUS|Playfully naughty|Prankish|2
 ADVENTUROUS|Daring; Bold and curious|Up for anything; Off the beaten path|2
-INDEPENDENT|Free|Self-reliant; Third-party voter|2
+INDEPENDENT|Free|Self-reliant; 3rd-party voter|2
 REFRESHMENT|Snack or drink|Pick-me-up|2
 ENVIRONMENT|Surroundings|Nature around us; Habitat|2
 NEWSLETTERS|Club bulletins|Regular mailed updates|2
@@ -2952,7 +2952,7 @@ CO|Colorado|Company; Rockies state|2
 CT|Connecticut|Hartford's state; Nutmeg State|2
 CV|Résumé|Career summary; Job-hunt paper|2
 DC|U.S. capital|Washington letters; Not AC|1
-DE|Delaware|First State; Wilmington's state|2
+DE|Delaware|1st State; Wilmington's state|2
 DM|Direct message|Private note online; Slide into the ___s|2
 EA|Each|Per item; Price-tag abbr.|2
 ED|Education|Driver's ___; Phys ___|2
@@ -3203,7 +3203,7 @@ HANGER|Closet hook|Coat holder; Wire ___|1
 HARBOR|Ship's shelter|Hold, as a grudge; Pearl ___|2
 IGUANA|Large lizard|Pet with a dewlap; Green reptile|2
 JERSEY|Team shirt|New ___; Dairy cow|1
-JUNIOR|Younger person|Third-year student; Jr.|1
+JUNIOR|Younger person|3rd-year student; Jr.|1
 KIDNEY|Bean-shaped organ|Filter organ; ___ bean|2
 LAGOON|Shallow coastal pool|Water behind a reef|2
 LOCKET|Pendant with a photo|Keepsake necklace|2
@@ -3312,9 +3312,9 @@ OG|The original, in slang|Old-school pioneer, in slang|2
 MU|Greek M|Greek >Lambda|1
 XI|Greek >Nu|Greek letter drawn as three stacked lines|1
 # Metric units
-CM|Centimeter|Hundredth of a meter; Ruler mark|1
+CM|Centimeter|100th of a meter; Ruler mark|1
 ML|Milliliter|Medicine-spoon unit|1
-DL|Deciliter|Tenth of a liter; Down-low, slangily|2
+DL|Deciliter|10th of a liter; Down-low, slangily|2
 KW|Kilowatt|Thousand watts; Power unit|1
 HZ|Hertz|Radio-frequency; RF; Cycles / sec|2
 DB|Decibel|Loudness unit; Sound-meter mark|1
@@ -3329,8 +3329,8 @@ CR|Chromium|Shiny-bumper metal; Chrome element|2
 NI|Nickel|Coin metal that sticks to magnets|1
 CU|Copper|Wire metal; Penny element|1
 ZN|Zinc|Sunscreen metal|1
-AG|Silver; Second-place metal|Gold's kid brother; Second-place symbol|1
-AU|Gold|First-place metal; Gold medal symbol|1
+AG|Silver; 2nd-place metal|Gold's kid brother; 2nd-place symbol|1
+AU|Gold|1st-place metal; Gold medal symbol|1
 HG|Mercury|Thermo metal; Element 80|2
 SN|Tin|Tin-can metal|2
 XE|Xenon|Bright-headlight gas|2
@@ -3779,7 +3779,7 @@ CATEGORY|Class|Group; Kind|1
 CAUGHT|Grabbed|Nabbed; ___ red-handed|1
 CAUSING|Bringing about|Creating; Producing|1
 CEASE|Stop|End; ___ and desist|1
-CENT|Penny|Hundredth; Red ___|1
+CENT|Penny|100th; Red ___|1
 CENTER|Middle|Core; Hub|1
 CENTRAL|Main|Middle; Grand ___|1
 CENTURY|Hundred years|Age; 100-mile bike ride|1
@@ -4031,7 +4031,7 @@ DUMP|Unload|Junkyard; Ditch|1
 DURING|Throughout|In the course of; While|1
 DYING|Expiring|Fading; ___ to know|1
 EARLIER|Before|Sooner; Previously|1
-EARLIEST|First|Soonest; Oldest|1
+EARLIEST|1st|Soonest; Oldest|1
 EASIER|Simpler|Less hard; Smoother|1
 EASIEST|Simplest|Least hard; Smoothest|1
 EATEN|Consumed|Devoured; Dined on|1
@@ -4163,7 +4163,7 @@ FORMAT|Layout|Arrangement; Wipe a disk|1
 FORTH|Forward|Onward; Back and ___|1
 FORTUNE|Luck|Wealth; Cookie message|1
 FORWARD|Ahead|Onward; Pass along|1
-FOURTH|Quarter|After third; ___ of July|1
+FOURTH|Quarter|After 3rd; ___ of July|1
 FRENCH|Of France|Paris speaks; ___ fries; Paris country|1
 FREQUENT|Common|Often; Haunt|1
 FRIES|Cooks in oil|Spuds; Burger side|1
@@ -4264,14 +4264,14 @@ INCOME|Earnings|Pay; ___ tax|1
 INDEED|Truly|Yes, really; Certainly|1
 INDICATE|Show|Signal; Point out|1
 INDUSTRY|Business|Trade; Hard work|1
-INFERIOR|Lesser|Second-rate; Subpar|1
+INFERIOR|Lesser|2nd-rate; Subpar|1
 INFINITE|Endless|Limitless; Boundless|1
 INFO|Facts, briefly|Data; Need-to-know stuff|1
 INFORM|Tell|Notify; Brief|1
 INFORMED|Told|Notified; Well-read|1
 INFORMS|Tells|Notifies; Briefs|1
-INITIAL|First|Opening; Sign briefly|1
-INITIALS|First letters|Monogram; JFK, e.g.|1
+INITIAL|1st|Opening; Sign briefly|1
+INITIALS|1st letters|Monogram; JFK, e.g.|1
 INNOCENT|Not guilty|Naive; Blameless|1
 INPUTTED|Entered|Typed in; Keyed|1
 INSERT|Put in|Add; Slip in|1
@@ -4601,7 +4601,7 @@ PUTTS|Taps in|Short strokes; Green shots|1
 QUALIFY|Be eligible|Make the cut; Limit|1
 QUALITY|Grade|Caliber; Trait|1
 QUANTITY|Amount|Number; Sum|1
-QUARTER|One fourth|Coin; School term|1
+QUARTER|1/4|Coin; School term|1
 QUEUE|Line|Wait in line; Playlist|1
 QUICKEST|Fastest|Speediest; Swiftest|1
 QUITE|Very|Rather; Completely|1
@@ -4821,7 +4821,7 @@ SOME|A few|Several; Certain|1
 SOMEHOW|Some way|Anyhow; 1 way or another|1
 SOMETIME|Someday|Eventually; Once|1
 SOMEWHAT|Rather|Kind of; Partly|1
-SOONEST|Earliest|First; Quickest|1
+SOONEST|Earliest|1st; Quickest|1
 SORRY|Apologetic|Pitiful; My bad|1
 SOUGHT|Looked for|Wanted; Pursued|1
 SOURCE|Origin|Root; Informant|1
@@ -4934,7 +4934,7 @@ THEORY|Idea|Hypothesis; In ___|1
 THERE|In that place|Yonder; Here and ___|1
 THEREBY|By that|Thus; So|1
 THESE|Those here|This group; ___ days|1
-THIRD|After second|Bronze place; One of three|1
+THIRD|After 2nd|Bronze place; One of three|1
 THIS|The one here|Today's; ___ and that|1
 THOSE|The ones there|Them; ___ were the days|1
 THOUGH|However|Even so; Yet|1
@@ -5140,7 +5140,7 @@ ALLIES|Partners|Friends; WWII winners|2
 ALLOCATE|Assign|Allot; Budget|2
 ALLY|Partner|Friend; Supporter|2
 ALOUD|Out loud|Audibly; Vocally|2
-ALPHA|First letter|Top dog; ___ male|2
+ALPHA|1st letter|Top dog; ___ male|2
 AMATEUR|Hobbyist|Novice; Unpaid|2
 AMAZE|Astonish|Stun; Wow|2
 AMAZED|Astonished|Stunned; Wowed|2
@@ -5288,7 +5288,7 @@ BELOVED|Dear|Darling; Cherished|2
 BENEATH|Under|Below; Unworthy of|2
 BENT|Curved|Crooked; Knack|2
 BESIDE|Next to|Near; ___ oneself|2
-BETA|Second letter|Test version; ___ test|2
+BETA|2nd letter|Test version; ___ test|2
 BEWARE|Watch out|Be careful; ___ of dog|2
 BIAS|Prejudice|Slant; Leaning|2
 BIASED|Prejudiced|Slanted; One-sided|2
@@ -5652,14 +5652,14 @@ self.LETTER_DATA = `
 A|ZEBR_|1
 A|PIZZ_|1
 A|Top grade|1
-A|First letter|1
+A|1st letter|1
 A|Blood type|1|🅰️
 A|Vitamin in carrots|2
 A|Note before B|3
 B|_ANANA|1
 B|Grade after A|1
 B|Blood type|1|🅱️
-B|Second letter|1
+B|2nd letter|1
 B|Sounds like a honey maker|2
 B|Boron|3
 C|_AMEL|1
@@ -5675,25 +5675,25 @@ D|Roman 500|2
 D|Musical note after C|3
 E|_LEPHANT|1
 E|East|1
-E|Fifth letter|1
+E|5th letter|1
 E|Most common letter in English|2
 E|Vitamin in nuts and seeds|3
 F|_LAMINGO|1
 F|Failing grade|1
-F|Sixth letter|1
+F|6th letter|1
 F|°_, in USA|2
 F|Fluorine|3
 F|Old-school degrees|2
 F|Old-fash temp|2
 F|N.A. temps|2
 G|_IRAFFE|1
-G|Seventh letter|1
+G|7th letter|1
 G|Sounds like "gee!"|2
 G|Musical note after F|3
 G|A thousand dollars, in slang|3
 H|_IPPO|1
 H|_ELICOPTER|1
-H|Eighth letter|1
+H|8th letter|1
 H|Hydrogen|2
 H|Shape of a rugby goalpost|3
 I|_GLOO|1
@@ -5703,7 +5703,7 @@ I|Roman 1|2
 I|Sounds like an eye|2
 J|_ELLYFISH|1
 J|_UICE|1
-J|Tenth letter|1
+J|10th letter|1
 J|Sounds like a blue bird|3
 K|_ANGAROO|1
 K|_OALA|1
@@ -5715,17 +5715,17 @@ K|Half-OK|2
 K|Lazy fine|2
 L|_OLLIPOP|1
 L|Large T-shirt|1
-L|Twelfth letter|1
+L|12th letter|1
 L|Roman 50|2
 L|Shape of a carpenter's square|3
 M|_USHROOM|1
 M|Medium T-shirt|1
 M|Metro sign letter|1|Ⓜ️
 M|Roman 1000|2
-M|Thirteenth letter|1
+M|13th letter|1
 N|PEA _ UT|1
 N|North|1
-N|Fourteenth letter|1
+N|14th letter|1
 N|Nitrogen|3
 O|_CTOPUS|1
 O|Shape of a donut|1|⭕
@@ -5765,7 +5765,7 @@ V|Roman 5|2
 V|Shape of a flock of geese|3
 W|_ATERMELON|1
 W|West|1
-W|Twenty-third letter|1
+W|23rd letter|1
 W|Double-U|2
 W|Tungsten|3
 X|_YLOPHONE|1
