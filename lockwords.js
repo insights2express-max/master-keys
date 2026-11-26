@@ -108,7 +108,7 @@ NUMEROUS|3|Very many|Many|Too many to count
 OBSTACLE|3|Something in your way|Barrier|A hurdle on the course, real or not
 OCCASION|3|Special event|Event|You "rise to" it when it calls
 ORDINARY|2|Plain and normal|Normal|Run-of-the-mill
-ORIGINAL|2|First of its kind / not a copy|First|The first recording, not the cover
+ORIGINAL|2|First of its kind / not a copy|1st|The 1st recording, not the cover
 OUTDOORS|1|Out in the open air|Outside|The great ___, beyond the walls
 OVERCOAT|2|Warm coat worn over other clothes|Coat|A final layer of paint, or winter wear
 PAINTING|1|Art made with a brush|Picture|The Mona Lisa, for one
@@ -161,7 +161,7 @@ SUNSHINE|1|Bright rays on a clear day|Brightness|A cheerful person's nickname, o
 SURPRISE|1|"___ party!"|Shock|What an unexpected gift brings
 SWIMMING|1|Pool activity|Paddling|What your head does when you're dizzy
 TAPESTRY|4|Woven wall hanging with a picture|Weaving|A rich mix, as in "life's rich ___"
-TEASPOON|1|Small spoon for stirring|Utensil|A recipe's small measure, a third of a tablespoon
+TEASPOON|1|Small spoon for stirring|Utensil|A recipe's small measure, a 3rd of a tablespoon
 TERRIBLE|1|Very bad|Awful|Russia's Ivan was given this name
 THOUSAND|1|Ten hundred|Grand|What a picture is worth, in words
 THRILLER|2|Edge-of-your-seat story|Suspense|A best-selling Michael Jackson album
@@ -197,7 +197,7 @@ OBDURATE|5|Stubbornly unyielding|Stubborn|Like a mule digging in its hooves
 PALISADE|5|Fence of pointed stakes|Fence|Cliffs along a river, like the Hudson's
 QUIXOTIC|5|Idealistic but impractical|Idealistic|Tilting at windmills
 REVERENT|4|Deeply respectful|Respectful|Hushed, as in a cathedral
-SERENITY|4|Calm peacefulness|Calm|What a famous prayer asks for first
+SERENITY|4|Calm peacefulness|Calm|What a famous prayer asks for 1st
 SOLITUDE|4|Being alone|Aloneness|A hundred years of it, in a famous novel
 SYCAMORE|4|Tree with peeling bark|Tree|A tax collector climbed one to see over the crowd
 TENACITY|4|Determined persistence|Persistence|A bulldog's grip on a goal
