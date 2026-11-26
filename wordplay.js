@@ -42,13 +42,13 @@ KIND|Nice sort?
 LEAD|Guide made of metal?
 LEAN|Thin, or tilt
 LIGHT|Neither heavy nor dark
-LOCK|Curl of hair that keeps things safe?
+LOCK|Secure hair bit?
 LOG|Diary of wood?
 MATCH|Contest you can strike
 MINE|Gold pit that's all yours
 MINT|Candy, or a coin factory
 MOLE|Spy that digs?
-NAIL|Get exactly right with a hammer?
+NAIL|Get right with a hammer?
 NOTE|Memo you can sing
 PALM|Tree in your hand?
 PANE|Glass that sounds painful
@@ -452,7 +452,6 @@ KNIGHT|Bedtime chess piece?
 KNOT|Sea-speed tie?
 LAB|Dog breed, or a science room
 LACE|Shoe tie, or spike a drink
-LAP|Pool length, or a seated person's knees
 LAST|Endure, or final
 LEAF|Page, or a tree part
 LEAP|Year with an extra day
@@ -464,7 +463,6 @@ LEVEL|Floor, or flat
 LID|Cap, or an eyelid
 LIFT|Elevator in London, or a ride
 LIKE|Similar, or enjoy
-LIME|Green citrus, or chalky mineral
 LINK|Chain piece, or a web address
 LIP|Sass, or the edge of a cup
 LIST|Lean, or a to-do
@@ -479,7 +477,6 @@ MARK|Target, or a grade
 MASS|Weight, or a church service
 MEET|Sports event, or greet
 METAL|Rock music, or iron
-METER|Parking clock, or a poem's beat
 MIGHT|Power, or maybe
 MINOR|Child, or less important
 MOP|Hairdo you clean with?
@@ -500,11 +497,9 @@ OVER|Done, or above
 PACK|Wolf group, or fill a bag
 PAD|Apartment, or a notebook
 PAGE|Book leaf, or call someone
-PAN|Criticize a movie, or a skillet
 PART|Hair line, or a piece
 PARTY|Political group, or a bash
 PASS|Mountain route, or a ticket
-PAT|Gentle tap, or a butter serving
 PATCH|Garden plot, or a software fix
 PEACH|Great person, or a fruit
 PEARL|Gem of wisdom?
@@ -521,12 +516,10 @@ PLAIN|Simple, or prairie
 PLANE|Flat surface, or an aircraft
 PLATE|Home base, or a dish
 PLOT|Story line, or a garden patch
-PLUG|Advertise, or an outlet fitting
 POLE|North or South, or a stick
 POLL|Survey, or vote
 POOL|Shared fund, or a swim spot
 POP|Dad, or soda
-PORT|Left side of a ship, or a harbor
 POT|Kitty in poker, or a pan
 PRESS|Reporters, or push
 PRIDE|Lion family
@@ -551,7 +544,6 @@ RICH|Wealthy, or creamy
 RIDE|Tease, or a lift
 RIP|Tear, or an epitaph
 RIVER|Bank's location?
-ROAST|Comic insult event, or a dinner
 ROCKET|Arugula, or a space ride
 ROLE|Part in a play
 ROLL|Bread, or a list of names
@@ -566,9 +558,7 @@ SAFE|Home free, or a vault
 SALT|Old sailor, or seasoning
 SAND|Grit, or smooth wood
 SAP|Fool, or tree juice
-SCHOOL|Fish group, or a place to learn
 SEASON|Add salt, or summer
-SEED|Tournament ranking, or a plant start
 SET|Ready, or a TV stage
 SHADE|Insult, or a tree's shadow
 SHAKE|Milk drink, or tremble
@@ -598,7 +588,6 @@ STORM|Charge, or bad weather
 STORY|Floor of a building, or a tale
 STUDY|Den, or learn
 SUPER|Building manager, or great
-SWING|Jazz style, or a playground seat
 TABLE|Postpone, or furniture
 TAG|Game of chase, or a label
 TAIL|Follow, or the back end
@@ -623,10 +612,8 @@ VET|Check out, or an animal doctor
 WASH|Even trade?
 WAX|Grow, as the moon, or polish
 WEB|Internet, or spider work
-WING|Hospital section, or a flier's part
 WIRE|Telegram, or cable
 WORM|Bait, or wriggle
-WRAP|Finish filming, or a rolled sandwich
 YARN|Tall tale, or knitting wool
 YELLOW|Cowardly, or sun-colored
 ZERO|Nothing, or a nobody
@@ -644,4 +631,6 @@ FOIL|Thwarting wrap?
 HOCKEY|Pucker up?
 # L14.11 (CD-131): new Wordplay clues (JM edits)
 AARDVARK|Ants or uncles?
+# L16.01 (JM Copy Edits from L16): new Wordplay clues (JM edits)
+XI|Is she Chinese?
 `;

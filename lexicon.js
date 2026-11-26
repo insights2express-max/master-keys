@@ -5,7 +5,7 @@
    Words are 2–7 letters, plus 11-letter words for Large grids (A–Z only). A repeated word adds an extra clue set (see above). */
 // Lexicon edition (JM, CD-24 other edits 1.1): its own number, separate from the game version. Add 1 whenever the word data or the Lexicon page changes.
 // L01 v07a · L02 v07b · L03 v07c · L04 v07d (wrapping cells) · L05 v07e (8-letter hint clues, edition number) · L06 v08 (8-letter easy and hard hints) · L07 (editor page: Status, Comments, Edit Mode + Copy Edits, advanced search; "/" in 23 Word Vault clues) · L08 v08b (58 country-code clues "Madrid URL" style, JM CD-27; Word Vault tricky hints) · L09 (JM's first Copy Edits, CD-29: ZAR clues, EXCITE added ON-DECK; ";" separates alternative clues, one picked at random) · L10 v08q (JM's Copy Edits, CD-59 + CD-60: 28 clue changes, "on an exchange board" / "on a bag tag" / "on a T-shirt tag" dropped, EXCITE active, new 1-letter clues, T pictures, drawn ICEBERG picture "@iceberg"; the Lexicon page gives each 1-letter row its own key) · L11 v08r (CD-62: 2.1a: 1-letter answers have one clue per row, so F, K and X's new ";" clues became separate rows; page: missing-letter marks drawn as in the game + "Missing-letter clues" filter) · L12 v08s (JM's Copy Edits CD-64 + CD-65: 34 changes, sorted Literal = plain / Indirect = figurative; page: permanent edit record, Reviewed ticks, Wordplay column, Claude drafts) · L13 v08t (JM's Copy Edits CD-66 + CD-67: 375 Claude drafts for A accepted, three-kind test — sound-alike clues to Wordplay, blanks to Indirect; ACRID; 125 new 1-letter clues with the blank inside the word; page: Draft toggle, clue lengths, Wrap / Clip, two-row filters)
-self.LEXICON_VER = 'L16'; // L16 (v13c; same edition + 4 LockWord 8-letter ordinal edits, JM CD-141: 2.2, no version bump per JM's lexicon CP): page change (JM CD-140: each over-length clue choice marked in its cell; Longest clue names its column) + 47 pre-approved ordinal edits (first → 1st, etc.) in Literal and Indirect clues. L15 (v13c): L15 (v13c): page change (JM CD-137: Music Library features: bold FULL CAPS defaults, green active filters with ✕, chevron About, All reviewed, Screen button); same words and clues as L14.12. L14.12 (v13b): JM's CD-135: all 760 drafts accepted, 582 tier-2 KeyRing words ACTIVE; L14.11 (v13; same edition + ICE typo fix "Assassinate", JM 2026-11-24, no version bump per JM's lexicon CP): JM's CD-131: 22 edits; round 8: 100 letter-J-K drafts + KeyRing tier 2 round 2, 269 ON-DECK rows C; L14.10 (v12h): JM's CD-129: 618 drafts + 28 edits applied, tier 1 done; round 7: 84 letter-I drafts + KeyRing tier 2 round 1, 313 ON-DECK rows A-B; L14.09 (v12h): JM's CD-127 Copy Edits: 886 drafts applied, 363 KeyRing words ACTIVE; round 6: 156 letter-H drafts + KeyRing round 4, 462 ON-DECK rows Q-Z; L14.08 (v12g): JM's CD-124 fixes: 6 clues; L14.07 (v12e): JM's CD-108 Copy Edits applied, 335 KeyRing words ACTIVE; round 5: 130 letter-G drafts + KeyRing round 3, 363 ON-DECK rows I-P; L14.06 (v11e): KeyRing everyday words round 2: 335 ON-DECK rows D-H with drafts (CD-104: 2.3); L14.05 (v11e): JM's CD-104 Copy Edits: 2,033 drafts applied, 315 KeyRing words ACTIVE; drafts round 4: 175 letter-F rows; L14.04 (v11c): KeyRing everyday words round 1: 315 ON-DECK rows A-C with drafts (CD-100: 1.2.1; CD-101: 2.1-2.4); L14.03 (v11c): data-only, drafts round 3 (138 letter-E rows); L14.02 (v09a): data-only, drafts round 2 (162 letter-D rows, 32 shorter B rows, short CALF Wordplay); L14.01: drafts round 1 (C, short B Wordplay, shorter A); L14 = the renamed page (Master Keys Lexicon; CrossKeys / LockWord), a structure change
+self.LEXICON_VER = 'L16.01'; // L16.01 (v13c): JM's Copy Edits from L16 (56 edits: 13 Wordplay clues folded into Indirect, airport codes shortened, XI Wordplay added). L16 L16 (v13c; same edition + 4 LockWord 8-letter ordinal edits, JM CD-141: 2.2, no version bump per JM's lexicon CP): page change (JM CD-140: each over-length clue choice marked in its cell; Longest clue names its column) + 47 pre-approved ordinal edits (first → 1st, etc.) in Literal and Indirect clues. L15 (v13c): L15 (v13c): page change (JM CD-137: Music Library features: bold FULL CAPS defaults, green active filters with ✕, chevron About, All reviewed, Screen button); same words and clues as L14.12. L14.12 (v13b): JM's CD-135: all 760 drafts accepted, 582 tier-2 KeyRing words ACTIVE; L14.11 (v13; same edition + ICE typo fix "Assassinate", JM 2026-11-24, no version bump per JM's lexicon CP): JM's CD-131: 22 edits; round 8: 100 letter-J-K drafts + KeyRing tier 2 round 2, 269 ON-DECK rows C; L14.10 (v12h): JM's CD-129: 618 drafts + 28 edits applied, tier 1 done; round 7: 84 letter-I drafts + KeyRing tier 2 round 1, 313 ON-DECK rows A-B; L14.09 (v12h): JM's CD-127 Copy Edits: 886 drafts applied, 363 KeyRing words ACTIVE; round 6: 156 letter-H drafts + KeyRing round 4, 462 ON-DECK rows Q-Z; L14.08 (v12g): JM's CD-124 fixes: 6 clues; L14.07 (v12e): JM's CD-108 Copy Edits applied, 335 KeyRing words ACTIVE; round 5: 130 letter-G drafts + KeyRing round 3, 363 ON-DECK rows I-P; L14.06 (v11e): KeyRing everyday words round 2: 335 ON-DECK rows D-H with drafts (CD-104: 2.3); L14.05 (v11e): JM's CD-104 Copy Edits: 2,033 drafts applied, 315 KeyRing words ACTIVE; drafts round 4: 175 letter-F rows; L14.04 (v11c): KeyRing everyday words round 1: 315 ON-DECK rows A-C with drafts (CD-100: 1.2.1; CD-101: 2.1-2.4); L14.03 (v11c): data-only, drafts round 3 (138 letter-E rows); L14.02 (v09a): data-only, drafts round 2 (162 letter-D rows, 32 shorter B rows, short CALF Wordplay); L14.01: drafts round 1 (C, short B Wordplay, shorter A); L14 = the renamed page (Master Keys Lexicon; CrossKeys / LockWord), a structure change
 self.LEXICON_DATA = `
 # ---------- 2 letters ----------
 AD|Commercial; Selling; Promo|Spot on TV; Billboard filler|1
@@ -294,7 +294,7 @@ KIN|Relatives|Family; Next of ___|2
 KIT|Gear set|Fox cub; First-aid ___|1|🧰
 LAB|Science room|Retriever|1
 LAD|Boy|Young fellow|1
-LAP|Track circuit|Drink like a cat|1
+LAP|Track circuit|Drink like a cat; Pool length; Above seated knees|1
 LAW|Rule|Legal code|1
 LAY|Put down|Not clerical|1
 LED|Guided|Diode light|1
@@ -350,8 +350,8 @@ OWL|Night bird|Hooter|1|🦉
 OWN|Possess|Personal|1
 PAD|Notebook|Apartment|1
 PAL|Friend|Buddy|1
-PAN|Frying ___|Criticize|1|🍳
-PAT|Tap lightly|Butter portion|1
+PAN|Frying ___|Criticize; Skillet|1|🍳
+PAT|Tap lightly|Butter portion; Gentle tap|1
 PAW|Animal's foot|Handle clumsily|1|🐾
 PAY|Wages|Settle up|1
 PEA|Green veggie|Pod member|1
@@ -904,7 +904,7 @@ LIAR|Fibber|Fabricator|1
 LIFE|Living|Existence|1
 LIFT|Raise|Elevator|1
 LIKE|Enjoy|Similar|1
-LIME|Green citrus|Calcium compound|1
+LIME|Green citrus|Calcium compound; Chalky mineral|1
 LINE|Row|Queue|1
 LINK|Chain part|Connect|1|🔗
 LION|Big cat|King of beasts|1|🦁
@@ -968,7 +968,7 @@ MOVE|Shift|Relocate|1
 MUCH|Lots|Plenty|1
 MULE|Pack animal|Courier|1
 MUSE|Ponder|Inspiration|1
-NAIL|Fingernail|Spike|1|💅
+NAIL|Fingernail|Spike; Fastener; Fingertip; Toe tip; __ clippers|1|💅
 NAME|Title|Call|1
 NAVY|Fleet|Dark blue|1
 NEAR|Close|Nigh|1
@@ -1024,7 +1024,7 @@ PIPE|Tube|Smoking tube|1
 PLAN|Scheme|Blueprint|1
 PLAY|Game|Drama|1
 PLOT|Story|Scheme|1
-PLUG|Stopper|Socket insert|1|🔌
+PLUG|Stopper|Socket insert; Advertise; Outlet fitting|1|🔌
 PLUM|Fruit|Prized|1
 PLUS|Added|Bonus|1|➕
 POEM|Verse|Ode|1|📜
@@ -1035,7 +1035,7 @@ POND|Small lake|Pool|1
 POOL|Swimming spot|Billiards|1|🏊
 POOR|Needy|Broke|1
 PORK|Pig meat|Bacon|1
-PORT|Harbor|Left side|1|⚓
+PORT|Harbor|Left side; Harbor; Sweet Wine|1|⚓
 POSE|Model|Posture|1
 POST|Mail|Pole|1
 POUR|Rain hard|Flow|1
@@ -1102,7 +1102,7 @@ SAVE|Rescue|Keep|1
 SCAR|Mark|Blemish|1
 SEAL|Sea mammal|Stamp|1|🦭
 SEAT|Chair|Place|1|🪑
-SEED|Pit|Ranking|1
+SEED|Pit|Ranking; A plant start|1
 SEEK|Search|Look for|1
 SEEM|Appear|Look like|1
 SELF|Ego|Identity|1
@@ -1241,7 +1241,7 @@ WILD|Untamed|Savage|1
 WILL|Testament|Desire|1
 WIND|Breeze|Gust|1|🌬️
 WINE|Vino|Grape drink|1|🍷
-WING|Arm|Flank|1
+WING|Arm|Flank; Hospital part; Plane part; "__ it"|1
 WIRE|Cable|Telegram|1
 WISE|Sage|Smart|1
 WISH|Desire|Want|1
@@ -1251,7 +1251,7 @@ WOOL|Fleece|Yarn|1
 WORD|Term|Promise|1
 WORK|Labor|Job|1
 WORM|Crawler|Grub|1|🪱
-WRAP|Bundle|Burrito|1
+WRAP|Bundle|Burrito; Finish filming; Rolled sandwich|1
 YARD|Lawn|Three feet|1
 YARN|Thread|Tale|1
 YEAR|12 months|Annum|1|📆
@@ -1715,7 +1715,7 @@ MEDAL|Award|Honor|1
 MERCY|Pity|Leniency|1
 MERIT|Worth|Deserve|1
 METAL|Iron|Rock genre|1
-METER|Measure|Gauge|1
+METER|Measure|Gauge; 100cm; km's base; Parking clock; Poem's beat|1
 MIGHT|Power|May|1
 MINOR|Small|Underage|1
 MINUS|Less|Negative|1|➖
@@ -1801,7 +1801,7 @@ RIDER|Horseman|Clause|1
 RIDGE|Crest|Mountain spine|1
 RIGHT|Correct|Direction|1|➡️
 RIVER|Stream|Waterway|1
-ROAST|Cook|Tease|1
+ROAST|Cook|Tease; Comic insults; Cooking method; Large meat meal|1
 ROBIN|Red bird|Songbird|1
 ROBOT|Android|Automaton|1|🤖
 ROCKY|Stony|Unsteady|1
@@ -1884,7 +1884,7 @@ SUGAR|Sweetener|Honey|1
 SUNNY|Bright|Cheerful|1
 SUPER|Great|Superb|1
 SWEET|Sugary|Cute|1
-SWING|Sway|Playground seat|1
+SWING|Sway|Playground seat; 40s Jazz; Oscillate|1
 SWORD|Blade|Saber|1|🗡️
 TABLE|Desk|Postpone|1
 TASTE|Flavor|Style|1|😋
@@ -2292,7 +2292,7 @@ ROCKET|Spacecraft|Salad green|1|🚀
 SADDLE|Seat|Burden|1
 SAFARI|Expedition|Trek|1
 SALMON|Pink fish|Fish|1
-SCHOOL|Academy|Fish group|1|🏫
+SCHOOL|Academy|Fish group; Learning; Classrooms; Edu|1|🏫
 SECRET|Hidden|Mystery|1
 SHADOW|Shade|Follow|1
 SHOWER|Rain|Wash|1|🚿
@@ -2619,7 +2619,7 @@ CLOWNS|Circus jokers|Big-shoe performers; Red-nose crew|1|🤡
 KINGDOM|Royal realm|Realm; Animal ___|1
 VIOLIN|Instrument played with a bow|Fiddle|1|🎻
 DRUMMER|Band's beat keeper|Person with sticks; Little ___ boy|1|🥁
-SOCCER|Game with goals and a round ball|Football, outside the US|1|⚽
+SOCCER|Kick ball, score goals|Football, > USA; No-hands game; Hands-free game|1|⚽
 SCOOTER|Kick-along ride|Little two-wheeled ride|1|🛴
 STATION|Train stop|Place for trains|1|🚉
 PHONES|Things you call on|Cell devices|1
@@ -2845,7 +2845,7 @@ CONVERTIBLE|Folding-roof car|Top-down car; Sofa bed|2
 SKYSCRAPERS|Very tall buildings|City towers|1|🏙️
 CANDLELIGHT|Wick's glow|Romantic glow; Dinner by ___|1|🕯️
 DAYDREAMING|Mind wandering|Woolgathering; Staring off|2
-SLEEPWALKER|Person who roams at night asleep|Somnambulist|2
+SLEEPWALKER|Person who walks asleep|Walking dreamer; Dream-walker; Somnambulist|2
 STORYTELLER|Person who spins tales|Bedtime yarn spinner|1
 SHIPWRECKED|Stranded after a sinking|Castaway, maybe|2
 SALAMANDERS|Lizard-like amphibians|Newts' relatives|2|🦎
@@ -2905,7 +2905,7 @@ HAIRBRUSHES|Grooming tools|Comb cousins; Tangle fixers|1
 TRAFFICJAMS|Rush-hour backups|Gridlock|1
 RAINFORESTS|Jungles|Tropical woods|1|🌳
 WATERSLIDES|Pool chutes|Water park rides|1
-PAPERWEIGHT|Desk item that holds sheets down|Desk paper holder|2
+PAPERWEIGHT|Holds down desk paper|Desk paper holder|2
 SWEETHEARTS|Darlings|Valentines|1|💕
 HEARTBREAKS|Romance endings|Lovers' sorrows; Sad songs' topic|2
 BOOKKEEPING|Account records work|Ledger work; Double-entry job|3
@@ -3001,10 +3001,10 @@ OS|Computer's operating system|Windows or macOS, e.g.|2
 OT|Overtime|Extra period in a tied game|2
 PB|Peanut butter|Runner's personal best|2
 PD|Police department|Cop-shop letters|2
-PG|Movie rating: parental guidance|Rating just above G|1
+PG|Movie guidance|Rating > G|1
 PH|Acid-test number|Pool-water reading|2
 PO|Post office|___ box (mail slot)|2
-PS|Note after a letter's signature|Afterthought in a letter|1
+PS|Note > letter's signature|Letter's afterthought; NY public school|1
 PT|Physical therapy|Pint|2
 QB|Quarterback|Football passer|2
 RA|Egyptian sun god|Dorm adviser|2
@@ -3310,7 +3310,7 @@ OD|Overdose|Have way too much of, in slang|2
 OG|The original, in slang|Old-school pioneer, in slang|2
 # Greek letters
 MU|Greek M|Greek >Lambda|1
-XI|Greek >Nu|Greek letter drawn as three stacked lines|1
+XI|Greek >Nu|Greek letter X; Jinping; "She" sound|1
 # Metric units
 CM|Centimeter|100th of a meter; Ruler mark|1
 ML|Milliliter|Medicine-spoon unit|1
@@ -3326,7 +3326,7 @@ NA|Sodium|Half of table salt|1
 LI|Lithium|Phone-battery metal|1
 CL|Chlorine|Pool chemical; Bleach element|1
 CR|Chromium|Shiny-bumper metal; Chrome element|2
-NI|Nickel|Coin metal that sticks to magnets|1
+NI|Nickel|U.S. coin; Silvery metal|1
 CU|Copper|Wire metal; Penny element|1
 ZN|Zinc|Sunscreen metal|1
 AG|Silver; 2nd-place metal|Gold's kid brother; 2nd-place symbol|1
@@ -3340,7 +3340,7 @@ PU|Plutonium|Reactor fuel|2
 # Common global abbreviations
 CE|Common Era|Modern era, like AD; Year label|1
 FC|Football Club|Soccer club|1
-QR|___ code (scan it with a phone)|Square-barcode letters|1
+QR|___ code (scan)|Square-barcode|1
 UX|User experience|App designer's focus|2
 QA|Quality assurance|Product testers' department|2
 BP|Blood pressure|Nurse's cuff reading; Cuff reading|1
@@ -3461,14 +3461,14 @@ LAS|Vegas airport code|Bag tag for Strip trips|4||7
 MCO|Orlando airport code|Bag tag for theme-park trips|4||7
 YYZ|Toronto airport code|Bag tag for CN Tower trips|4||7
 YVR|Vancouver airport code|Bag tag for Stanley Park trips|4||7
-MEX|Mexico City airport code|Bag tag for Aztec-capital trips|4||7
+MEX|Mexico City airport|Aztec capital now|4||7
 GRU|Sao Paulo airport|Brazil trip tag; Samba gateway|4||7
 FRA|Frankfurt airport|DE bank city; German gate|4||7
 AMS|Amsterdam airport|Canal-city gateway|4||7
-MAD|Madrid airport code|Bag tag for Spanish-capital trips|4||7
+MAD|Madrid code|Spain's capital|4||7
 FCO|Rome airport|Colosseum; Eternal City|4||7
 MUC|Munich airport code|Bag tag for Oktoberfest trips|4||7
-ZRH|Zurich airport code|Bag tag for Swiss banking trips|4||7
+ZRH|Zurich airport|Swiss banking|4||7
 DUB|Dublin airport|Irish trip tag; Emerald Isle gateway|4||7
 IST|Istanbul airport|Bosphorus trip tag; Turkish gateway|4||7
 DXB|Dubai airport|Burj trip tag; Gulf gateway|4||7
@@ -3477,7 +3477,7 @@ SIN|Singapore airport code|Bag tag for Lion City trips|4||7
 HKG|Hong Kong airport|Harbour trip tag; Kowloon gateway|4||7
 NRT|Tokyo Narita code|Bag tag for Japan trips|4||7
 ICN|Seoul airport|K-pop trip tag; Korea gateway|4||7
-PEK|Beijing airport code|Bag tag for Forbidden City trips|4||7
+PEK|Beijing airport|Forbidden City|4||7
 SYD|Sydney airport code|Bag tag for Opera House trips|4||7
 AKL|Auckland airport|Kiwi gateway; Sky Tower city|4||7
 JNB|Johannesburg airport|Safari trip tag; Joburg gateway|4||7
@@ -3505,7 +3505,7 @@ SE|Selenium|Element named for the moon|3||4
 ND|Neodymium|Super-magnet metal|3||4
 AM|Americium|Smoke-alarm element|3||4
 CF|Californium|Golden State element; Element 98|3||4
-MD|Mendelevium|Element named for the periodic table's creator|4||7
+MD|Mendelevium|Periodic table's creator; Maryland; Doctor|4||7
 IR|Iridium|Rustproof metal; Element 77|3||4
 SR|Strontium|Red-firework metal|3||4
 AS|Arsenic|Old-mystery poison|2
@@ -3521,7 +3521,7 @@ BI|Bismuth|Stomach-remedy metal; Element 83|3||4
 CS|Cesium|Atomic-clock element; Element 55|3||4
 ES|Einsteinium|Element 99; Einstein's element|3||4
 GE|Germanium|Transistor element; Element 32|3||4
-TH|Thorium|Element named for the god of thunder|3||4
+TH|Thorium|God of thunder; _ _ e; Ma_ _; La_ _ e; Soo_ _ e; Loa_ _ e|3||4
 CN|Copernicium|Copernicus's element; Element 112|4||7
 BK|Berkelium|Berkeley's element; Element 97|4||7
 # ---------- v07b additions (JM CD-20: 3.4.6–3.4.8) ----------
@@ -3529,7 +3529,7 @@ BK|Berkelium|Berkeley's element; Element 97|4||7
 AMMONIA|Pungent cleaning gas; Cleaner chemical|Smelling-salt sniff|3
 AMMONIA|NH3|Nitrogen + hydrogen|3||5
 OXYGEN|Gas we breathe|Element number 8|1
-OXYGEN|O2|Air's life-giving gas, chemically|2||5
+OXYGEN|O2|Life-giving gas|2||5
 METHANE|Natural gas|Swamp gas|3
 METHANE|CH4|Cow-burp gas, chemically|3||5
 COPPER|Wire metal|Penny metal; Police, slangily|1
@@ -5710,7 +5710,7 @@ K|_OALA|1
 K|J _ L|1
 K|A thousand (as in 5_)|2
 K|Potassium|3
-K|Strikeout, on a baseball scorecard|3
+K|Short "good"|3
 K|Half-OK|2
 K|Lazy fine|2
 L|_OLLIPOP|1
@@ -5731,7 +5731,7 @@ O|_CTOPUS|1
 O|Shape of a donut|1|⭕
 O|Hug, in XOXO|2
 O|Oxygen|2
-O|Zero, when reading a phone number|2
+O|Zero's twin|2
 P|_ENGUIN|1
 P|Parking sign letter|1|🅿️
 P|Sounds like a green veggie|2
