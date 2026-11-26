@@ -59,22 +59,19 @@ PUPIL|Student in your eye?
 RACE|Sprint, or a people
 RING|Jewelry that calls?
 ROCK|Stone that's also music
-ROW|Line of seats, or a quarrel
 RULER|Measuring king?
 SAW|Tool that was seen
 SCALE|Fish coat, or weight tool
-SEAL|Animal that closes envelopes?
+SEAL|Envelope-closing animal?
 SHED|Lose fur in the garden hut?
 SHIP|Send by boat
-SINK|Kitchen basin, or go under
 SOLE|Only fish under your shoe?
 SPELL|Word magic?
 SPRING|Season with a bounce
 STAMP|Postage, or a foot pound
-STAR|Celebrity in the night sky
+STAR|Celeb in the night?
 STRAW|Sipper in the hay?
 TAP|Faucet, or a light touch
-TEAR|Rip, or a drop from the eye
 TIE|Neckwear, or a draw
 TIRE|Wheel that gets weary?
 TOAST|Bread that honors a guest?
@@ -93,7 +90,6 @@ FAST|Quick not to eat?
 FLAT|Airless apartment?
 GRAVE|Serious rest spot?
 LIE|Fib, or recline
-LINE|Queue, or an actor's words
 MEAN|Unkind average
 NET|Catch the profit?
 PARK|Green space for a car
@@ -108,7 +104,7 @@ STAND|Booth to rise in?
 STICK|Twig that clings?
 SUIT|Outfit that's fitting
 TICK|Clock sound, or a bug
-TOP|Spinning toy at the summit
+TOP|Toy at the summit?
 TRIP|Journey, or stumble
 WAKE|Boat trail when you get up?
 BLUE|Sad color
@@ -125,7 +121,6 @@ LONG|Yearn to be lengthy
 PUPPY|Young dog, love?
 SAGE|Wise herb
 SPARE|Extra bowling score
-TOWER|Tall building, or a tugboat
 TRACK|Path you follow
 # ---------- v03 batch (JM, CD-7: 7): double meanings and puns ----------
 ACT|Stage law?
@@ -305,7 +300,7 @@ CUT|Sliced share?
 CYCLE|Bike setting?
 DAM|Beaver's mom?
 DANCE|Ball, or sway
-DARE|Truth's partner in a game?
+DARE|Truth's game partner?
 DART|Pub dash?
 DEAL|Card bargain?
 DEAR|Costly letter start?
@@ -447,7 +442,6 @@ KID|Joking child?
 KING|Royal bed size?
 KNIGHT|Bedtime chess piece?
 KNOT|Sea-speed tie?
-LACE|Shoe tie, or spike a drink
 LAST|Endure, or final
 LEAF|Page, or a tree part
 LEAP|Year with an extra day
@@ -458,7 +452,6 @@ LETTER|Mail, or an A or B
 LEVEL|Floor, or flat
 LID|Cap, or an eyelid
 LIKE|Similar, or enjoy
-LIP|Sass, or the edge of a cup
 LIST|Lean, or a to-do
 LOAF|Lounge, or bread
 LOT|Parking area, or many
@@ -478,53 +471,41 @@ MOUTH|River's end, or lips
 MOVE|Relocate, or a chess turn
 MUG|Face, or a coffee cup
 NAVY|Dark blue, or sailors
-NECK|Kiss, or a giraffe feature
 NEEDLE|Tease, or a sewing tool
 NERVE|Gall, or a body wire
 NOVEL|New, or a book
-NURSE|Sip slowly, or a caregiver
 NUT|Fan, or a bolt partner
 ODD|Strange, or not even
-ORDER|Command, or a menu request
 OVER|Done, or above
 PACK|Wolf group, or fill a bag
 PAD|Apartment, or a notebook
-PAGE|Book leaf, or call someone
 PART|Hair line, or a piece
-PARTY|Political group, or a bash
 PEACH|Great person, or a fruit
 PEARL|Gem of wisdom?
 PET|Favorite, or a dog
 PICK|Choice, or a guitar tool
 PIE|Chart, or dessert
 PINE|Long for, or a tree
-PIPE|Smoker's tool, or plumbing
 PLACE|Spot, or put
 PLAIN|Simple, or prairie
 PLATE|Home base, or a dish
-POLE|North or South, or a stick
 POLL|Survey, or vote
-POOL|Shared fund, or a swim spot
 POP|Dad, or soda
 POT|Kitty in poker, or a pan
 PRESS|Reporters, or push
 PRIDE|Lion family
 PROOF|Evidence, or a test page
 PUMP|Shoe, or inflate
-QUEEN|Chess piece, or a bee boss
+QUEEN|Mercury Champions?
 QUICK|Fast, or the nail bed
 RACKET|Noise, or tennis gear
-RAIL|Complain, or a train track
 RAISE|Pay hike, or lift
 RAM|Butt, or a male sheep
-RANGE|Stove, or a mountain chain
 RANK|Smelly, or military grade
 RAP|Knock, or a music style
 RASH|Hasty, or itchy spots
 RATE|Speed, or score
 RAVE|Party, or rant
-RAY|Beam of light, or a flat fish
-REAR|Raise children, or the back
 REST|Remainder, or relax
 RICH|Wealthy, or creamy
 RIDE|Tease, or a lift
@@ -538,7 +519,7 @@ ROOT|Cheer, or a plant base
 ROUND|Drink order, or circular
 RUB|Massage, or a snag
 RULE|Measuring stick, or a law
-RUN|Snag in a stocking, or jog
+RUN|Ladder in tights?
 RUSH|Hurry, or a reed
 SAFE|Home free, or a vault
 SALT|Old sailor, or seasoning
@@ -546,7 +527,6 @@ SAND|Grit, or smooth wood
 SAP|Fool, or tree juice
 SEASON|Add salt, or summer
 SET|Ready, or a TV stage
-SHADE|Insult, or a tree's shadow
 SHAKE|Milk drink, or tremble
 SHARK|Card cheat with fins?
 SHARP|Smart, or pointy
@@ -556,7 +536,6 @@ SHOT|Photo, or an injection
 SIDE|Dish next to the main?
 SKIRT|Avoid, or clothing
 SLIP|Mistake, or a petticoat
-SLOTH|Laziness, or a slow animal
 SOCK|Punch, or a foot cover
 SOUND|Healthy, or noise
 SPADE|Card suit, or a shovel
@@ -569,21 +548,16 @@ STIR|Mix, or jail, in slang
 STONE|British weight, or a rock
 STORM|Charge, or bad weather
 STUDY|Den, or learn
-SUPER|Building manager, or great
 TABLE|Postpone, or furniture
 TAG|Game of chase, or a label
 TAIL|Follow, or the back end
-TANK|Fail badly, or a fish home
 TAPE|Record, or a sticky strip
 TASTE|Style, or flavor
 TEE|Golf peg, or a shirt
 TERM|Word, or a school period
 THROW|Blanket, or toss
-TIP|Advice, or a waiter's extra
 TITLE|Championship, or a name
-TOLL|Road fee, or a bell's ring
 TON|Lots, or 2,000 pounds
-TRAP|Snare, or a mouth, in slang
 TURKEY|Flop, or a holiday bird
 TWIST|Plot surprise, or a dance
 TYPE|Kind, or key in
@@ -593,7 +567,6 @@ WASH|Even trade?
 WEB|Internet, or spider work
 WIRE|Telegram, or cable
 WORM|Bait, or wriggle
-YARN|Tall tale, or knitting wool
 YELLOW|Cowardly, or sun-colored
 ZERO|Nothing, or a nobody
 ZIP|Nothing, or speed along
@@ -613,6 +586,6 @@ AARDVARK|Ants or uncles?
 # L16.01 (JM Copy Edits from L16): new Wordplay clues (JM edits)
 XI|Is she Chinese?
 # L16.02 (JM Copy Edits from L16, 2nd paste): new Wordplay clues (JM edits)
-SANDCASTLES|Sandy fort? Gritty palace?
+SANDCASTLES|Gritty palace?; Granular palace?
 SODIUM|Salty partner?
 `;
