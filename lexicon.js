@@ -5,7 +5,7 @@
    Words are 2–7 letters, plus 11-letter words for Large grids (A–Z only). A repeated word adds an extra clue set (see above). */
 // Lexicon edition (JM, CD-24 other edits 1.1): its own number, separate from the game version. Add 1 whenever the word data or the Lexicon page changes.
 // L01 v07a · L02 v07b · L03 v07c · L04 v07d (wrapping cells) · L05 v07e (8-letter hint clues, edition number) · L06 v08 (8-letter easy and hard hints) · L07 (editor page: Status, Comments, Edit Mode + Copy Edits, advanced search; "/" in 23 Word Vault clues) · L08 v08b (58 country-code clues "Madrid URL" style, JM CD-27; Word Vault tricky hints) · L09 (JM's first Copy Edits, CD-29: ZAR clues, EXCITE added ON-DECK; ";" separates alternative clues, one picked at random) · L10 v08q (JM's Copy Edits, CD-59 + CD-60: 28 clue changes, "on an exchange board" / "on a bag tag" / "on a T-shirt tag" dropped, EXCITE active, new 1-letter clues, T pictures, drawn ICEBERG picture "@iceberg"; the Lexicon page gives each 1-letter row its own key) · L11 v08r (CD-62: 2.1a: 1-letter answers have one clue per row, so F, K and X's new ";" clues became separate rows; page: missing-letter marks drawn as in the game + "Missing-letter clues" filter) · L12 v08s (JM's Copy Edits CD-64 + CD-65: 34 changes, sorted Literal = plain / Indirect = figurative; page: permanent edit record, Reviewed ticks, Wordplay column, Claude drafts) · L13 v08t (JM's Copy Edits CD-66 + CD-67: 375 Claude drafts for A accepted, three-kind test — sound-alike clues to Wordplay, blanks to Indirect; ACRID; 125 new 1-letter clues with the blank inside the word; page: Draft toggle, clue lengths, Wrap / Clip, two-row filters)
-self.LEXICON_VER = 'L16.01'; // L16.01 (v13c): JM's Copy Edits from L16 (56 edits: 13 Wordplay clues folded into Indirect, airport codes shortened, XI Wordplay added). L16 L16 (v13c; same edition + 4 LockWord 8-letter ordinal edits, JM CD-141: 2.2, no version bump per JM's lexicon CP): page change (JM CD-140: each over-length clue choice marked in its cell; Longest clue names its column) + 47 pre-approved ordinal edits (first → 1st, etc.) in Literal and Indirect clues. L15 (v13c): L15 (v13c): page change (JM CD-137: Music Library features: bold FULL CAPS defaults, green active filters with ✕, chevron About, All reviewed, Screen button); same words and clues as L14.12. L14.12 (v13b): JM's CD-135: all 760 drafts accepted, 582 tier-2 KeyRing words ACTIVE; L14.11 (v13; same edition + ICE typo fix "Assassinate", JM 2026-11-24, no version bump per JM's lexicon CP): JM's CD-131: 22 edits; round 8: 100 letter-J-K drafts + KeyRing tier 2 round 2, 269 ON-DECK rows C; L14.10 (v12h): JM's CD-129: 618 drafts + 28 edits applied, tier 1 done; round 7: 84 letter-I drafts + KeyRing tier 2 round 1, 313 ON-DECK rows A-B; L14.09 (v12h): JM's CD-127 Copy Edits: 886 drafts applied, 363 KeyRing words ACTIVE; round 6: 156 letter-H drafts + KeyRing round 4, 462 ON-DECK rows Q-Z; L14.08 (v12g): JM's CD-124 fixes: 6 clues; L14.07 (v12e): JM's CD-108 Copy Edits applied, 335 KeyRing words ACTIVE; round 5: 130 letter-G drafts + KeyRing round 3, 363 ON-DECK rows I-P; L14.06 (v11e): KeyRing everyday words round 2: 335 ON-DECK rows D-H with drafts (CD-104: 2.3); L14.05 (v11e): JM's CD-104 Copy Edits: 2,033 drafts applied, 315 KeyRing words ACTIVE; drafts round 4: 175 letter-F rows; L14.04 (v11c): KeyRing everyday words round 1: 315 ON-DECK rows A-C with drafts (CD-100: 1.2.1; CD-101: 2.1-2.4); L14.03 (v11c): data-only, drafts round 3 (138 letter-E rows); L14.02 (v09a): data-only, drafts round 2 (162 letter-D rows, 32 shorter B rows, short CALF Wordplay); L14.01: drafts round 1 (C, short B Wordplay, shorter A); L14 = the renamed page (Master Keys Lexicon; CrossKeys / LockWord), a structure change
+self.LEXICON_VER = 'L16.02'; // L16.02 (v13c): JM's 2nd Copy Edits paste from L16 (111 new edits, incl. 4 new letter rows for G and Q), CD-142 fixes (11), 4 bag-tag economizer edits. L16.01 L16.01 (v13c): JM's Copy Edits from L16 (56 edits: 13 Wordplay clues folded into Indirect, airport codes shortened, XI Wordplay added). L16 L16 (v13c; same edition + 4 LockWord 8-letter ordinal edits, JM CD-141: 2.2, no version bump per JM's lexicon CP): page change (JM CD-140: each over-length clue choice marked in its cell; Longest clue names its column) + 47 pre-approved ordinal edits (first → 1st, etc.) in Literal and Indirect clues. L15 (v13c): L15 (v13c): page change (JM CD-137: Music Library features: bold FULL CAPS defaults, green active filters with ✕, chevron About, All reviewed, Screen button); same words and clues as L14.12. L14.12 (v13b): JM's CD-135: all 760 drafts accepted, 582 tier-2 KeyRing words ACTIVE; L14.11 (v13; same edition + ICE typo fix "Assassinate", JM 2026-11-24, no version bump per JM's lexicon CP): JM's CD-131: 22 edits; round 8: 100 letter-J-K drafts + KeyRing tier 2 round 2, 269 ON-DECK rows C; L14.10 (v12h): JM's CD-129: 618 drafts + 28 edits applied, tier 1 done; round 7: 84 letter-I drafts + KeyRing tier 2 round 1, 313 ON-DECK rows A-B; L14.09 (v12h): JM's CD-127 Copy Edits: 886 drafts applied, 363 KeyRing words ACTIVE; round 6: 156 letter-H drafts + KeyRing round 4, 462 ON-DECK rows Q-Z; L14.08 (v12g): JM's CD-124 fixes: 6 clues; L14.07 (v12e): JM's CD-108 Copy Edits applied, 335 KeyRing words ACTIVE; round 5: 130 letter-G drafts + KeyRing round 3, 363 ON-DECK rows I-P; L14.06 (v11e): KeyRing everyday words round 2: 335 ON-DECK rows D-H with drafts (CD-104: 2.3); L14.05 (v11e): JM's CD-104 Copy Edits: 2,033 drafts applied, 315 KeyRing words ACTIVE; drafts round 4: 175 letter-F rows; L14.04 (v11c): KeyRing everyday words round 1: 315 ON-DECK rows A-C with drafts (CD-100: 1.2.1; CD-101: 2.1-2.4); L14.03 (v11c): data-only, drafts round 3 (138 letter-E rows); L14.02 (v09a): data-only, drafts round 2 (162 letter-D rows, 32 shorter B rows, short CALF Wordplay); L14.01: drafts round 1 (C, short B Wordplay, shorter A); L14 = the renamed page (Master Keys Lexicon; CrossKeys / LockWord), a structure change
 self.LEXICON_DATA = `
 # ---------- 2 letters ----------
 AD|Commercial; Selling; Promo|Spot on TV; Billboard filler|1
@@ -292,7 +292,7 @@ KEY|Lock opener|Crucial; Piano part|1|🔑
 KID|Child|Tease; Young goat|1|🧒
 KIN|Relatives|Family; Next of ___|2
 KIT|Gear set|Fox cub; First-aid ___|1|🧰
-LAB|Science room|Retriever|1
+LAB|Science room|Retriever; Dog breed|1
 LAD|Boy|Young fellow|1
 LAP|Track circuit|Drink like a cat; Pool length; Above seated knees|1
 LAW|Rule|Legal code|1
@@ -359,8 +359,8 @@ PEN|Writing tool|Pigpen|1|🖊️
 PET|Domestic animal|Favorite|1
 PIE|Baked dessert|Pizza, in some cities|1|🥧
 PIG|Hog|Glutton|1|🐷
-PIN|Sewing needle|Bowling target|1|📌
-PIT|Hole|Cherry stone|1
+PIN|Sewing needle|Bowling target; Brooch|1|📌
+PIT|Hole|Cherry stone; Peach stone; Race-car stop|1
 POD|Pea case|Whale group|2
 POT|Cooking pan|Kitty in poker|1|🪴
 PRO|Expert|Professional|1
@@ -418,7 +418,7 @@ SUM|Total|Add up|1
 SUN|Star in our sky|Sol|1|🌞
 TAB|Bill|Browser page|1
 TAG|Label|Chase game|1|🏷️
-TAN|Bronze|Beige|1
+TAN|Bronze|Beige; Beach color; Hide treatment|1
 TAP|Faucet|Light knock|1|🚰
 TAR|Road goo|Sailor|1
 TAX|Levy|Strain|1
@@ -441,12 +441,12 @@ URN|Vase|Coffee maker|2|⚱️
 USE|Utilize|Purpose|1
 VAN|Delivery vehicle|Vanguard|1|🚐
 VAT|Large tub|Sales tax abroad|2
-VET|Animal doctor|Check out|1
+VET|Animal doctor|Check out; Investigate|1
 VIA|By way of|Through|2
 VOW|Promise|Oath|1
 WAR|Battle|Conflict|1
 WAS|Existed|Used to be|1
-WAX|Candle stuff|Grow, like the moon|1|🕯️
+WAX|Candle stuff|Grow, like the moon; Polish|1|🕯️
 WAY|Path|Method|1
 WEB|Spider's home|Internet|1|🕸️
 WET|Damp|Rainy|1
@@ -902,11 +902,11 @@ LENS|Glass|Camera eye|1
 LESS|Fewer|Minus|1
 LIAR|Fibber|Fabricator|1
 LIFE|Living|Existence|1
-LIFT|Raise|Elevator|1
+LIFT|Raise|U.K. elevator; A ride|1
 LIKE|Enjoy|Similar|1
 LIME|Green citrus|Calcium compound; Chalky mineral|1
 LINE|Row|Queue|1
-LINK|Chain part|Connect|1|🔗
+LINK|Chain part|Connect; URL; Web address; File shortcut|1|🔗
 LION|Big cat|King of beasts|1|🦁
 LIST|Roster|Tilt|1|📋
 LIVE|Exist|Not recorded|1
@@ -935,7 +935,7 @@ MANE|Lion's hair|Horse hair|1
 MANY|Lots|Numerous|1
 MARK|Spot|Grade|1
 MASK|Cover|Disguise|1|🎭
-MASS|Bulk|Church service|1
+MASS|Bulk|Weight; Church service|1
 MAST|Ship's pole|Spar|1
 MATH|Arithmetic|Numbers class|1|➗
 MAZE|Labyrinth|Puzzle|1
@@ -953,7 +953,7 @@ MILK|Dairy drink|Exploit|1|🥛
 MIND|Brain|Care|1|🧠
 MINE|Dig|Belonging to me|1
 MINT|Herb|Coin factory|1
-MISS|Fail to hit|Young woman|1
+MISS|Fail to hit|Young woman; O.g. Maiden; O.g. Unmarried woman|1
 MIST|Fog|Haze|1
 MOAT|Castle ditch|Ditch|1
 MODE|Way|Fashion|1
@@ -968,7 +968,7 @@ MOVE|Shift|Relocate|1
 MUCH|Lots|Plenty|1
 MULE|Pack animal|Courier|1
 MUSE|Ponder|Inspiration|1
-NAIL|Fingernail|Spike; Fastener; Fingertip; Toe tip; __ clippers|1|💅
+NAIL|Fingernail|Spike; Fastener; Fingertip; Toe tip; ___ clippers|1|💅
 NAME|Title|Call|1
 NAVY|Fleet|Dark blue|1
 NEAR|Close|Nigh|1
@@ -1008,7 +1008,7 @@ PALE|Wan|Fence stake|1
 PALM|Hand part|Tree|1|🌴
 PARK|Green space|Leave a car|1|🏞️
 PART|Piece|Role|1
-PASS|Go by|Throw|1
+PASS|Go by|Throw; Mountain route; Ticket; Boarding ___|1
 PAST|History|Beyond|1
 PATH|Trail|Course|1
 PEAK|Summit|Top|1|⛰️
@@ -1017,13 +1017,13 @@ PEEL|Skin|Rind|1
 PICK|Choose|Guitar plectrum|1
 PIER|Dock|Jetty|1
 PILE|Heap|Stack|1
-PILL|Tablet|Capsule|1
+PILL|Tablet|Capsule; Annoying person; Medicine|1
 PINE|Evergreen|Yearn|1|🌲
 PINK|Rosy color|Salmon color|1
 PIPE|Tube|Smoking tube|1
 PLAN|Scheme|Blueprint|1
 PLAY|Game|Drama|1
-PLOT|Story|Scheme|1
+PLOT|Story|Scheme; Story line; Garden patch; UK allocation|1
 PLUG|Stopper|Socket insert; Advertise; Outlet fitting|1|🔌
 PLUM|Fruit|Prized|1
 PLUS|Added|Bonus|1|➕
@@ -1035,7 +1035,7 @@ POND|Small lake|Pool|1
 POOL|Swimming spot|Billiards|1|🏊
 POOR|Needy|Broke|1
 PORK|Pig meat|Bacon|1
-PORT|Harbor|Left side; Harbor; Sweet Wine|1|⚓
+PORT|Harbor|Left side; Sweet Wine|1|⚓
 POSE|Model|Posture|1
 POST|Mail|Pole|1
 POUR|Rain hard|Flow|1
@@ -1108,7 +1108,7 @@ SEEM|Appear|Look like|1
 SELF|Ego|Identity|1
 SELL|Vend|Peddle|1
 SEND|Mail|Dispatch|1
-SHED|Hut|Cast off|1
+SHED|Hut|Cast off; Small outbuilding; Lawnmower hut|1
 SHIP|Vessel|Send|1|🚢
 SHOE|Footwear|Horseshoe|1|👟
 SHOP|Store|Buy|1
@@ -1241,7 +1241,7 @@ WILD|Untamed|Savage|1
 WILL|Testament|Desire|1
 WIND|Breeze|Gust|1|🌬️
 WINE|Vino|Grape drink|1|🍷
-WING|Arm|Flank; Hospital part; Plane part; "__ it"|1
+WING|Arm|Flank; Hospital part; Plane part; "___ it"|1
 WIRE|Cable|Telegram|1
 WISE|Sage|Smart|1
 WISH|Desire|Want|1
@@ -1298,7 +1298,7 @@ IOTA|Tiny bit|Greek letter; Not one ___|3
 JEST|Joke|Quip; In ___|3
 LAUD|Praise|Extol|4
 LIEU|In ___ of|Place|4
-LIMB|Arm or leg|Branch; Out on a ___ (taking a risk)|2
+LIMB|Arm or leg|Branch; Out on a ___; Take a risk|2
 LORE|Folklore|Tradition|3
 LURE|Bait|Tempt|2
 LUTE|Old guitar|Strings|3
@@ -1754,7 +1754,7 @@ PANEL|Board|Committee|1
 PAPER|Sheet|Newspaper|1
 PARTY|Celebration|Bash|1|🥳
 PASTA|Noodles|Spaghetti|1|🍝
-PATCH|Fix|Plot|1
+PATCH|Fix|Plot: Garden spot; Allocation (U.K.); Software fix; Repair|1
 PEACE|Calm|Harmony|1|☮️
 PEACH|Fruit|Something lovely|1|🍑
 PEARL|Gem|Oyster jewel|1
@@ -1764,11 +1764,11 @@ PHONE|Telephone|Call|1
 PHOTO|Picture|Snap|1|📷
 PIANO|Keyboard|Ivories|1|🎹
 PIECE|Part|Fragment|1|🧩
-PILOT|Aviator|Test episode|1
+PILOT|Aviator|Test episode; Test TV; Flier|1
 PIZZA|Pie|Slice|1|🍕
 PLACE|Spot|Put|1
 PLAIN|Simple|Prairie|1
-PLANE|Aircraft|Flat surface|1
+PLANE|Aircraft|Flat surface; Geometry|1
 PLANT|Flora|Factory|1
 PLATE|Dish|Home base|1
 POINT|Tip|Purpose|1|👉
@@ -1827,12 +1827,12 @@ SHARP|Keen|Clever|1
 SHEEP|Ewe|Followers|1|🐑
 SHELF|Ledge|Rack|1
 SHELL|Casing|Seashell|1|🐚
-SHIFT|Change|Work period|1
+SHIFT|Change|Work period; Keyboard key; KB key; Adjust; Move; Rearrange|1
 SHINE|Glow|Polish|1
 SHIRT|Top|Tee|1|👕
 SHOCK|Surprise|Jolt|1
 SHORE|Coast|Beach|1
-SHORT|Brief|Small|1
+SHORT|Brief|Small; Circuit problem|1
 SHOUT|Yell|Cry|1
 SIGHT|Vision|View|1
 SKATE|Glide|Fish|1|⛸️
@@ -1866,7 +1866,7 @@ SPOON|Utensil|Cuddle|1|🥄
 SPORT|Game|Good loser|1
 STACK|Pile|Heap|1
 STAFF|Crew|Rod|1
-STAGE|Platform|Phase|1
+STAGE|Platform|Phase; Theater platform|1
 STAIR|Step|Flight|1
 STAMP|Postage|Stomp|1
 STAND|Rise|Booth|1
@@ -1884,7 +1884,7 @@ SUGAR|Sweetener|Honey|1
 SUNNY|Bright|Cheerful|1
 SUPER|Great|Superb|1
 SWEET|Sugary|Cute|1
-SWING|Sway|Playground seat; 40s Jazz; Oscillate|1
+SWING|Sway|Playground seat; '40s Jazz; Oscillate|1
 SWORD|Blade|Saber|1|🗡️
 TABLE|Desk|Postpone|1
 TASTE|Flavor|Style|1|😋
@@ -1905,7 +1905,7 @@ TOAST|Grilled bread|Salute|1
 TODAY|This day|Now|1
 TOOTH|Molar|Tusk; Sweet ___|1
 TOPIC|Subject|Theme|1
-TORCH|Flashlight|Burn|1|🔦
+TORCH|Flashlight|Burn; Tiki|1|🔦
 TOTAL|Sum|Complete|1
 TOUCH|Feel|Contact|1
 TOWEL|Bath cloth|Dryer|1
@@ -2606,7 +2606,7 @@ CRAYON|Wax coloring stick|Kid's drawing stick; Box of 64|1|🖍️
 ERASER|Mistake remover|Pencil's pink tip; Whiteboard wiper|1
 LUNCHES|Midday meals|School cafeteria meals|1
 COOKIES|Sweet baked treats|Milk's dunkers; Jar fillers|1|🍪
-WAFFLES|Grid-pattern breakfast cakes|Syrup holders|1|🧇
+WAFFLES|Grid-pattern cakes|Syrup holders; Belgian ___; Griddle cakes|1|🧇
 DONKEY|Small horse kin|Animal that brays; Shrek's pal|1|🫏
 HAMSTER|Wheel pet|Cheeky pet; Pocket pet|1|🐹
 FARMER|Crop grower|Barn owner; ___'s market|1|🧑‍🌾
@@ -2617,9 +2617,9 @@ TONIGHT|This evening|After today's sunset|1
 CANDLES|Wax lights|Birthday-cake lights; Blow them out|1|🕯️
 CLOWNS|Circus jokers|Big-shoe performers; Red-nose crew|1|🤡
 KINGDOM|Royal realm|Realm; Animal ___|1
-VIOLIN|Instrument played with a bow|Fiddle|1|🎻
+VIOLIN|Bowed instrument|Fiddle; < Viola; 1st & 2nd in Orchestras|1|🎻
 DRUMMER|Band's beat keeper|Person with sticks; Little ___ boy|1|🥁
-SOCCER|Kick ball, score goals|Football, > USA; No-hands game; Hands-free game|1|⚽
+SOCCER|Kick ball, score goals|Non-US football; No-hands game; Hands-free game|1|⚽
 SCOOTER|Kick-along ride|Little two-wheeled ride|1|🛴
 STATION|Train stop|Place for trains|1|🚉
 PHONES|Things you call on|Cell devices|1
@@ -2748,7 +2748,7 @@ REFEREE|Game official|Whistle blower|1
 STADIUM|Big sports arena|Ballpark|1|🏟️
 JUMPING|Leaping|Hopping; ___ jacks|1
 RUNNING|Jogging|Racing on foot|1|🏃
-SINGING|Making music with your voice|Vocal music|1
+SINGING|Making vocal music|Vocal music; "___ in the Rain"|1
 DANCING|Moving to music|Ballroom fun; ___ queen|1
 DRAWING|Sketch|Pencil picture; Raffle|1
 COOKING|Making meals|Kitchen work; What's ___?|1|🍳
@@ -2773,18 +2773,18 @@ CLOCKS|Time tellers|Things with hands; Spring-forward items|1
 # ---------- v04: 11 letters (the left column of Large grids, JM CD-9: 1.1) ----------
 BUTTERFLIES|Bright-winged bugs|Ex-caterpillars; Stage nerves|1|🦋
 GRASSHOPPER|Jumping green insect|Field leaper; Kung fu pupil|1|🦗
-WATERMELONS|Big striped summer fruits|Picnic melons with black seeds|1|🍉
+WATERMELONS|Big striped summer fruits|Picnic melons|1|🍉
 BASKETBALLS|Hoop balls|Things shot at a rim; NBA balls|1|🏀
 VOLLEYBALLS|Balls hit over a high net|Beach-game balls|1|🏐
-PLAYGROUNDS|Parks with swings and slides|Recess spots|1
-SCHOOLHOUSE|Building for classes|Old one-room learning place|1|🏫
+PLAYGROUNDS|Swings & slides|Recess spots|1
+SCHOOLHOUSE|Students building|O.g. 1-room learning|1|🏫
 THUNDERBOLT|Lightning strike|Flash from a storm|1|⚡
 FIREFIGHTER|Blaze extinguisher|Hose handler; Red truck rider; Blaze-master; Pole-slider; 4-alarmist|1|🧑‍🚒
 FINGERNAILS|Digit tips|Manicure; Clipped tips; Mani|1|💅
 GRANDMOTHER|Parent's mother|Granny; Nana|1|👵
 GRANDFATHER|Parent's father|Pop-pop; ___ clock|1|👴
 GRANDPARENT|Parent's parent|Family elder; Nana or Pop|1
-SANDCASTLES|Beach buildings with towers|Things kids build by the waves|1
+SANDCASTLES|Beach buildings|Buildings by the shore|1
 SKATEBOARDS|Boards with four wheels|Half-pipe rides|1|🛹
 MOTORCYCLES|Two-wheelers with engines|Bikers' rides|1|🏍️
 HELICOPTERS|Rotor aircraft|Choppers; Whirlybirds|1|🚁
@@ -2807,7 +2807,7 @@ MICROPHONES|Things singers sing into|Mics|1|🎤
 CALCULATORS|Math machines|Number crunchers; Exam gadgets|1|🧮
 BOOKSHELVES|Places to keep books|Library racks; Reading nooks|1|📚
 WHEELBARROW|One-wheeled garden cart|Gardener's load carrier|1
-PHOTOGRAPHS|Pictures taken with a camera|Snapshots|1|📷
+PHOTOGRAPHS|Camera pictures|Snapshots; Pics; Images|1|📷
 TRAMPOLINES|Bouncy backyard mats|Places to jump high|1
 FIRECRACKER|Popping firework|Party popper; Big bangs|1|🧨
 CELEBRATION|Party|Festive event; Confetti time|1|🎉
@@ -2816,7 +2816,7 @@ INVITATIONS|Party cards|RSVP cards|1|💌
 GREENHOUSES|Glass plant houses|Winter tomato homes; Hothouses|1
 RESTAURANTS|Places to eat out|Diners and cafes|1|🍽️
 SUPERMARKET|Big grocery store|Place with carts and aisles|1|🛒
-PHARMACISTS|Drugstore workers|People who fill prescriptions|2
+PHARMACISTS|Drugstore workers|Rx-fillers; Druggists; U.K. Chemists; Prescriptions|2
 ELECTRICIAN|Wiring worker|Outlet fixer; Sparky|2
 PROGRAMMING|Writing code|Computer instructions work|2|💻
 PROGRAMMERS|Code writers|App builders|2
@@ -2845,7 +2845,7 @@ CONVERTIBLE|Folding-roof car|Top-down car; Sofa bed|2
 SKYSCRAPERS|Very tall buildings|City towers|1|🏙️
 CANDLELIGHT|Wick's glow|Romantic glow; Dinner by ___|1|🕯️
 DAYDREAMING|Mind wandering|Woolgathering; Staring off|2
-SLEEPWALKER|Person who walks asleep|Walking dreamer; Dream-walker; Somnambulist|2
+SLEEPWALKER|Roams while dreaming|Night roamer; Somnambulist|2
 STORYTELLER|Person who spins tales|Bedtime yarn spinner|1
 SHIPWRECKED|Stranded after a sinking|Castaway, maybe|2
 SALAMANDERS|Lizard-like amphibians|Newts' relatives|2|🦎
@@ -2861,7 +2861,7 @@ SWEATSHIRTS|Warm tops with sleeves|Hoodies, maybe|1
 BROTHERHOOD|Fellowship|Band of brothers; Lodge bond|2
 COUNTRYSIDE|Rural area|Farmland; Rolling hills|1
 HONEYSUCKLE|Sweet-smelling vine|Fragrant climber; Nectar vine|2
-SNAPDRAGONS|Garden flowers with "mouths"|Tall bloom spikes|2
+SNAPDRAGONS|Mouthed flowers|Tall blooms|2
 WILDFLOWERS|Meadow blooms|Flowers nobody planted|1|🌼
 MOUNTAINTOP|Summit|Peak|1|🏔️
 SNOWMOBILES|Winter motor sleds|Snow scooters|2
@@ -2914,7 +2914,7 @@ STEPMOTHERS|Dad's wives, to kids|Fairy-tale villains, often|2
 SCHOOLGIRLS|Young students|Girls in class|1
 BLACKBOARDS|Classroom slates|Chalk surfaces; Teacher's canvas|1
 HIGHLIGHTER|Bright marker pen|Yellow pen; Text marker|1|🖍️
-SPREADSHEET|Table of data on a computer|Excel file|2
+SPREADSHEET|Data table|Excel file|2
 DISHWASHERS|Kitchen machines|Plate scrubbers; Busboys' jobs|1
 SALTSHAKERS|Table seasoning dispensers|Pepper partners|1|🧂
 PEPPERMILLS|Grinders for a spice|Table spice grinders|2
@@ -2922,7 +2922,7 @@ REFRIGERATE|Keep cold|Chill in the fridge|2
 MICROWAVING|Zapping food|Heating in seconds|2
 BREADSTICKS|Long crunchy snacks|Italian table snack; Pasta-night sides|1|🥖
 CHOCOLATIER|Chocolate maker|Truffle crafter; Bonbon pro|3
-SWEETPOTATO|Orange root veggie|Thanksgiving casserole veggie|1|🍠
+SWEETPOTATO|Orange root veggie|Thanksgiving veggie|1|🍠
 NIGHTLIGHTS|Bedroom glow lamps|Kid's lamps for the dark|1
 HOUSEPLANTS|Indoor greenery|Potted pals; Sill-sitters; CO2-lovers; Green = grow|1|🪴
 WATERINGCAN|Gardener's sprinkling pot|Spout pot for plants|1
@@ -2931,7 +2931,7 @@ HOUSEKEEPER|Home caretaker|Maid; Cleaner|2
 SHOPKEEPERS|Store owners|Merchants|2
 BATHINGSUIT|Swimwear|Beach outfit; Poolside wear|2|🩱
 SUPERHEROES|Caped crime fighters|Comic-book saviors|1|🦸
-SUPERPOWERS|Heroes' special abilities|Flying and X-ray vision, e.g.|1
+SUPERPOWERS|Heroes' abilities|X-ray vision e.g.|1
 TRANSFORMER|Thing that changes shape|Robot that becomes a truck|2
 # ---------- v05 additions (JM CD-10: 7.1.1.1) ----------
 # Easy 2-letter answers: they let the 'full' grid style fill more clue cells (levels 1–2)
@@ -2997,7 +2997,7 @@ NU|Greek >Mu|Greek N|2
 NV|Nevada|Las Vegas's state|2
 OJ|Orange juice|Breakfast drink|1
 OP|Photo ___ (posed moment)|___ art (optical style)|2
-OS|Computer's operating system|Windows or macOS, e.g.|2
+OS|Operating system|Windows; Linux; MacOS; iOS; Android|2
 OT|Overtime|Extra period in a tied game|2
 PB|Peanut butter|Runner's personal best|2
 PD|Police department|Cop-shop letters|2
@@ -3008,7 +3008,7 @@ PS|Note > letter's signature|Letter's afterthought; NY public school|1
 PT|Physical therapy|Pint|2
 QB|Quarterback|Football passer|2
 RA|Egyptian sun god|Dorm adviser|2
-RC|Radio-controlled, as a toy car|Remote-run|2
+RC|Radio-controlled|Remote-run|2
 RD|Road, on maps|Street|1
 RI|Rhode Island|Smallest state|2
 RM|Room|Hotel space|2
@@ -3026,7 +3026,7 @@ TN|Tennessee|Nashville's state|2
 TP|Toilet paper|Bathroom roll|1
 TX|Texas|Lone Star State|1
 TY|"Thanks!" in a text|Quick gratitude|1
-UI|User interface|Screen layout, to app makers|2
+UI|User interface|Screen layout|2
 UV|Sunburn rays|Ultraviolet|2
 VA|Virginia|Richmond's state|2
 VI|Six, in Roman numerals|Half of XII|2
@@ -3040,7 +3040,7 @@ WV|West Virginia|Mountain State|2
 WY|Wyoming|Cheyenne's state|2
 XO|Hugs-and-kisses sign-off|Love, in a note|1
 XS|Extra small T-shirt|Tiniest shirt size|1
-YA|Young adult, as a book section|Teen-fiction label|2
+YA|Young adult book section|Teen-fiction label|2
 YD|Yard|Three feet|2
 YR|Year|12 months|1
 # 3 letters
@@ -3157,7 +3157,7 @@ LILAC|Pale purple|Fragrant spring shrub|2
 LOTUS|Water lily of Asia|Yoga pose|2|🪷
 MELON|Cantaloupe, e.g.|Big round fruit|1|🍈
 MOCHA|Chocolate coffee|Coffee-shop flavor|2
-MOOSE|Antlered giant deer|Canadian icon with a big snout|1
+MOOSE|Biggest deer|Canada icon|1
 MUDDY|Covered in wet dirt|Unclear, as water|1
 NACHO|Chip with cheese|Tex-Mex snack|1
 PLAID|Tartan pattern|Checkered pattern|2
@@ -3169,7 +3169,7 @@ QUILT|Patchwork bed cover|Comforter|1
 RELAX|Calm down|Unwind|1
 RHYME|Words that sound alike|Verse|1
 SALSA|Chip dip|Latin dance|1
-SKUNK|Smelly black-and-white animal|Shut out in a game|1|🦨
+SKUNK|Smelly animal|B&W animal|1|🦨
 SNEAK|Move quietly|Tattletale|1
 SPARK|Tiny flash|Ignite|1
 SPIRE|Church steeple|Tapering top|3
@@ -3217,7 +3217,7 @@ PLENTY|Lots|Abundance|1
 POETRY|Verse|Rhymed writing|1
 POODLE|Curly-haired dog|French dog|1|🐩
 PUDDLE|Small pool of rain|Splash spot|1
-PUPPET|Hand doll|Person controlled by another|1
+PUPPET|Hand doll|Controlled person; Punch & Judy|1
 REMOTE|TV controller|Far-off|1
 RIBBON|Bow material|Award strip|1|🎀
 SCREEN|Monitor|Movie surface|1
@@ -3300,17 +3300,17 @@ WHISTLE|Referee's tool|Blow a tune|1
 # Families that work worldwide: words and interjections, Greek letters, metric units, chemical symbols and
 # common global abbreviations. No US state codes. Country and airport codes are NOT used as clues (under discussion).
 # Words and interjections
-OI|"Hey, you!" in Britain|Cockney shout for attention|1
+OI|"Hey, you!" in U.K.|Cockney shout|1
 AY|Yes vote, variant; Sailor's yes|___, there's the rub|1
 OY|"___ vey!"|Yiddish groan|1
 HO|"Land ___!"|"Westward ___!"; Santa's laugh|1
 YE|"Hear ___! Hear ___!"|Olde "you"|1
-QI|Life force in Chinese medicine|Tai chi energy|2
+QI|Life force|Tai chi energy; Chi's twin|2
 OD|Overdose|Have way too much of, in slang|2
-OG|The original, in slang|Old-school pioneer, in slang|2
+OG|The original|Old-school pioneer|2
 # Greek letters
 MU|Greek M|Greek >Lambda|1
-XI|Greek >Nu|Greek letter X; Jinping; "She" sound|1
+XI|Greek >Nu|Greek letter Ξ; Jinping; "She" sound|1
 # Metric units
 CM|Centimeter|100th of a meter; Ruler mark|1
 ML|Milliliter|Medicine-spoon unit|1
@@ -3347,7 +3347,7 @@ BP|Blood pressure|Nurse's cuff reading; Cuff reading|1
 XP|Experience points, in games|Gamer's level-up points|1
 PK|Penalty kick|Soccer spot shot|2
 HT|Half-time|Mid-match break; Height, abbr.|2
-NP|"No problem," in texts|"Don't mention it," in texts|1
+NP|"No problem!"|"Don't mention it,"|1
 BF|Boyfriend, in texts|Steady guy, in texts; Date-night guy|1
 GF|Girlfriend, in texts|Steady gal, in texts; Date-night gal|1
 SR|Senior|A Jr.'s father, often|1
@@ -3445,40 +3445,40 @@ THB|Thai baht's code|Bangkok money|3||4
 PLN|Polish zloty's code|Warsaw money|3||4
 AED|UAE dirham's code|Dubai money; Dubai cash|3||4
 # Airport codes, Challenge Level 7 and up
-LAX|Los Angeles airport code|Bag tag for Hollywood trips|4||7
+LAX|L.A. airport|Hollywood|4||7
 JFK|New York airport|Queens trip tag; Big Apple gateway|4||7
-LHR|London Heathrow code|Bag tag for Big Ben trips|4||7
+LHR|London Heathrow code|Big Ben|4||7
 CDG|Paris airport|Eiffel trip tag; Charles de Gaulle|4||7
-ORD|Chicago O'Hare code|Bag tag for Windy City trips|4||7
+ORD|Chicago O'Hare|Windy City|4||7
 ATL|Atlanta airport code|Busiest airport; Peachy planes|4||7
 DFW|Dallas airport|Texas trip tag; Big D gateway|4||7
 DEN|Denver airport|Mile High trip tag; Rockies gateway|4||7
-SFO|San Francisco airport code|Bag tag for Golden Gate trips|4||7
-SEA|Seattle airport code|Bag tag for Space Needle trips|4||7
-MIA|Miami airport code|Bag tag for South Beach trips|4||7
+SFO|San Francisco airport code|Golden Gate|4||7
+SEA|Seattle airport|Space Needle|4||7
+MIA|Miami airport|South Beach|4||7
 BOS|Boston airport code|Logan, on a ticket; Pahk the cahr|4||7
-LAS|Vegas airport code|Bag tag for Strip trips|4||7
-MCO|Orlando airport code|Bag tag for theme-park trips|4||7
-YYZ|Toronto airport code|Bag tag for CN Tower trips|4||7
-YVR|Vancouver airport code|Bag tag for Stanley Park trips|4||7
+LAS|Vegas airport code|The Strip|4||7
+MCO|Orlando airport|Theme-parks city|4||7
+YYZ|Toronto airport code|CN Tower|4||7
+YVR|Vancouver airport|Stanley Park trips|4||7
 MEX|Mexico City airport|Aztec capital now|4||7
 GRU|Sao Paulo airport|Brazil trip tag; Samba gateway|4||7
 FRA|Frankfurt airport|DE bank city; German gate|4||7
 AMS|Amsterdam airport|Canal-city gateway|4||7
 MAD|Madrid code|Spain's capital|4||7
 FCO|Rome airport|Colosseum; Eternal City|4||7
-MUC|Munich airport code|Bag tag for Oktoberfest trips|4||7
+MUC|Munich airport|Oktoberfest|4||7
 ZRH|Zurich airport|Swiss banking|4||7
 DUB|Dublin airport|Irish trip tag; Emerald Isle gateway|4||7
 IST|Istanbul airport|Bosphorus trip tag; Turkish gateway|4||7
 DXB|Dubai airport|Burj trip tag; Gulf gateway|4||7
 DOH|Doha airport|Qatar trip tag; Gulf hub|4||7
-SIN|Singapore airport code|Bag tag for Lion City trips|4||7
+SIN|Singapore airport code|Lion City|4||7
 HKG|Hong Kong airport|Harbour trip tag; Kowloon gateway|4||7
-NRT|Tokyo Narita code|Bag tag for Japan trips|4||7
+NRT|Tokyo Narita code|Japan|4||7
 ICN|Seoul airport|K-pop trip tag; Korea gateway|4||7
 PEK|Beijing airport|Forbidden City|4||7
-SYD|Sydney airport code|Bag tag for Opera House trips|4||7
+SYD|Sydney airport|Opera House|4||7
 AKL|Auckland airport|Kiwi gateway; Sky Tower city|4||7
 JNB|Johannesburg airport|Safari trip tag; Joburg gateway|4||7
 CAI|Cairo airport|Pyramid trip tag; Nile gateway|4||7
@@ -3538,7 +3538,7 @@ NEON|Glowing-sign gas|Las Vegas lights gas|1
 NEON|Ne|Element 10|2||5
 HELIUM|Balloon gas|Squeaky gas; Blimp filler|1
 HELIUM|He|Element 2; Noble gas|2||5
-SODIUM|Salt element|Partner of chlorine in salt|2
+SODIUM|Salt element|Cl's salt partner|2
 SODIUM|Na|Element 11|2||5
 CARBON|Diamond element|Graphite element; ___ copy|1
 CARBON|C|Element 6; Life's element|2||5
@@ -5676,7 +5676,7 @@ D|Musical note after C|3
 E|_LEPHANT|1
 E|East|1
 E|5th letter|1
-E|Most common letter in English|2
+E|Most common Eng letter|2
 E|Vitamin in nuts and seeds|3
 F|_LAMINGO|1
 F|Failing grade|1
@@ -5690,7 +5690,7 @@ G|_IRAFFE|1
 G|7th letter|1
 G|Sounds like "gee!"|2
 G|Musical note after F|3
-G|A thousand dollars, in slang|3
+G|1,000 USD|3
 H|_IPPO|1
 H|_ELICOPTER|1
 H|8th letter|1
@@ -5717,7 +5717,7 @@ L|_OLLIPOP|1
 L|Large T-shirt|1
 L|12th letter|1
 L|Roman 50|2
-L|Shape of a carpenter's square|3
+L|Carpenter's square|3
 M|_USHROOM|1
 M|Medium T-shirt|1
 M|Metro sign letter|1|Ⓜ️
@@ -5739,7 +5739,7 @@ P|Phosphorus|3
 Q|_UEEN|1
 Q|_UILT|1
 Q|Letter nearly always before U|2
-Q|Sounds like a line of people|2
+Q|A line of people|2
 R|_ABBIT|1
 R|_AINBOW|1
 R|A pirate's favorite letter|2
@@ -5911,4 +5911,9 @@ Z|BLI _ _ ARD|2
 Z|PUZ _ LE|1
 Z|LI _ ARD|1
 Z|DO _ EN|1
+# L16.02 (JM): Indirect choices for 1-letter answers G and Q, each its own row (Lexicon ";" rule for 1-letter answers)
+G|Gravity|3
+G|Grand|3
+Q|Ppl lined up|2
+Q|Waiting _|2
 `;

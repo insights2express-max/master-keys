@@ -54,7 +54,6 @@ PALM|Tree in your hand?
 PANE|Glass that sounds painful
 PEN|Pig home that writes?
 PIG|Hog, or a road hog
-PIT|Peach stone, or race-car stop
 PRESENT|Gift for here and now
 PUPIL|Student in your eye?
 RACE|Sprint, or a people
@@ -64,7 +63,7 @@ ROW|Line of seats, or a quarrel
 RULER|Measuring king?
 SAW|Tool that was seen
 SCALE|Fish coat, or weight tool
-SEAL|Animal that closes envelopes
+SEAL|Animal that closes envelopes?
 SHED|Lose fur in the garden hut?
 SHIP|Send by boat
 SINK|Kitchen basin, or go under
@@ -96,7 +95,6 @@ GRAVE|Serious rest spot?
 LIE|Fib, or recline
 LINE|Queue, or an actor's words
 MEAN|Unkind average
-MISS|Young lady who fails to hit
 NET|Catch the profit?
 PARK|Green space for a car
 PLANT|Factory that grows?
@@ -127,7 +125,6 @@ LONG|Yearn to be lengthy
 PUPPY|Young dog, love?
 SAGE|Wise herb
 SPARE|Extra bowling score
-TAN|Beach color, or hide treatment
 TOWER|Tall building, or a tugboat
 TRACK|Path you follow
 # ---------- v03 batch (JM, CD-7: 7): double meanings and puns ----------
@@ -450,7 +447,6 @@ KID|Joking child?
 KING|Royal bed size?
 KNIGHT|Bedtime chess piece?
 KNOT|Sea-speed tie?
-LAB|Dog breed, or a science room
 LACE|Shoe tie, or spike a drink
 LAST|Endure, or final
 LEAF|Page, or a tree part
@@ -461,9 +457,7 @@ LEMON|Bad car, or a citrus
 LETTER|Mail, or an A or B
 LEVEL|Floor, or flat
 LID|Cap, or an eyelid
-LIFT|Elevator in London, or a ride
 LIKE|Similar, or enjoy
-LINK|Chain piece, or a web address
 LIP|Sass, or the edge of a cup
 LIST|Lean, or a to-do
 LOAF|Lounge, or bread
@@ -474,13 +468,12 @@ MAIL|Armor, or letters
 MAKE|Brand, or create
 MARCH|Month to walk in step?
 MARK|Target, or a grade
-MASS|Weight, or a church service
 MEET|Sports event, or greet
 METAL|Rock music, or iron
 MIGHT|Power, or maybe
 MINOR|Child, or less important
 MOP|Hairdo you clean with?
-MOUSE|Computer pointer that squeaks?
+MOUSE|Squeaky computer pointer?
 MOUTH|River's end, or lips
 MOVE|Relocate, or a chess turn
 MUG|Face, or a coffee cup
@@ -499,23 +492,16 @@ PAD|Apartment, or a notebook
 PAGE|Book leaf, or call someone
 PART|Hair line, or a piece
 PARTY|Political group, or a bash
-PASS|Mountain route, or a ticket
-PATCH|Garden plot, or a software fix
 PEACH|Great person, or a fruit
 PEARL|Gem of wisdom?
 PET|Favorite, or a dog
 PICK|Choice, or a guitar tool
 PIE|Chart, or dessert
-PILL|Annoying person, or medicine
-PILOT|Test TV episode, or a flier
-PIN|Bowling target, or a brooch
 PINE|Long for, or a tree
 PIPE|Smoker's tool, or plumbing
 PLACE|Spot, or put
 PLAIN|Simple, or prairie
-PLANE|Flat surface, or an aircraft
 PLATE|Home base, or a dish
-PLOT|Story line, or a garden patch
 POLE|North or South, or a stick
 POLL|Survey, or vote
 POOL|Shared fund, or a swim spot
@@ -565,9 +551,7 @@ SHAKE|Milk drink, or tremble
 SHARK|Card cheat with fins?
 SHARP|Smart, or pointy
 SHELL|Pay up, or a nut cover
-SHIFT|Work period, or a keyboard key
 SHINE|Polish, or glow
-SHORT|Brief, or a circuit problem
 SHOT|Photo, or an injection
 SIDE|Dish next to the main?
 SKIRT|Avoid, or clothing
@@ -579,13 +563,11 @@ SPADE|Card suit, or a shovel
 SPIN|Twist a story, or whirl
 SPINE|Book's back, or courage
 SPOT|See, or a stain
-STAGE|Phase, or a theater platform
 STEAL|Bargain, or rob
 STEM|Stop, or a flower stalk
 STIR|Mix, or jail, in slang
 STONE|British weight, or a rock
 STORM|Charge, or bad weather
-STORY|Floor of a building, or a tale
 STUDY|Den, or learn
 SUPER|Building manager, or great
 TABLE|Postpone, or furniture
@@ -601,16 +583,13 @@ TIP|Advice, or a waiter's extra
 TITLE|Championship, or a name
 TOLL|Road fee, or a bell's ring
 TON|Lots, or 2,000 pounds
-TORCH|Burn, or a British flashlight
 TRAP|Snare, or a mouth, in slang
 TURKEY|Flop, or a holiday bird
 TWIST|Plot surprise, or a dance
 TYPE|Kind, or key in
 UPSET|Surprise win, or sad
 VAULT|Leap, or a bank safe
-VET|Check out, or an animal doctor
 WASH|Even trade?
-WAX|Grow, as the moon, or polish
 WEB|Internet, or spider work
 WIRE|Telegram, or cable
 WORM|Bait, or wriggle
@@ -633,4 +612,7 @@ HOCKEY|Pucker up?
 AARDVARK|Ants or uncles?
 # L16.01 (JM Copy Edits from L16): new Wordplay clues (JM edits)
 XI|Is she Chinese?
+# L16.02 (JM Copy Edits from L16, 2nd paste): new Wordplay clues (JM edits)
+SANDCASTLES|Sandy fort? Gritty palace?
+SODIUM|Salty partner?
 `;
