@@ -88,7 +88,7 @@
     for (const e of E.lexicon()) {
       const w = e.w;
       if (w.length < 3 || w.length > 7 || LEXBY[w] || !isWord(w)) continue;
-      const x = { w, l: e.l || 1, e: e.e, h: e.h, wsk: e.wsk, cc: counts(w), m: maskOf(w) };
+      const x = { w, l: e.l || 1, e: e.e, h: e.h, rv: e.rv, wsk: e.wsk, cc: counts(w), m: maskOf(w) }; // v13d: rv = reverse-word clue
       LEXBY[w] = x; LEX.push(x);
     }
     EIGHT = {};
@@ -114,7 +114,7 @@
   // the clue a Hint shows: plain (Literal) clues at Challenge Levels 1–5, figurative (Indirect) ones at 6–10
   function clueOf(w, lv) {
     const x = LEXBY[w];
-    if (x) return (lv >= 6 && pickOne(x.h)) || pickOne(x.e) || pickOne(x.h);
+    if (x) return (E.revClue && E.revClue(x, lv)) || (lv >= 6 && pickOne(x.h)) || pickOne(x.e) || pickOne(x.h); // v13d: ⏪ clue at Challenge Levels 1–3
     const y = EIGHT[w];
     if (y) return (lv <= 3 ? y.ez || y.c : lv <= 7 ? y.c || y.ez : y.hd || y.c) || '';
     return '';
@@ -574,7 +574,7 @@
   $('#krSlots').addEventListener('click', e => {
     const b = e.target.closest('.kr-word'); if (!b || !R || R.over || R.paused) return;
     const i = +b.dataset.i;
-    if (R.found.has(i)) { msg(R.clues[i] ? `${R.words[i]}: ${esc(R.clues[i])}` : R.words[i], 'clue', 3000); return; }
+    if (R.found.has(i)) { msg(R.clues[i] ? `${R.words[i]}: ${UI.clueIcons(esc(R.clues[i]))}` : R.words[i], 'clue', 3000); return; }
     R.sel = R.sel === i ? -1 : i;
     renderSlots(); paintBtns(); save();
     if (R.hinted.has(i)) msg(hintText(i), 'clue', 4500);
@@ -783,7 +783,7 @@
   // the price line under each button: Hint's depends on the slot (the one you picked, or the range over the empty slots)
   // v11c: a Key word with no clue (an everyday word) gets its first letter instead
   // v11d (CD-100: 1.2a): a Key word with no clue yet is never a Hint target
-  const hintText = i => R.clues[i] ? `💡 ${R.words[i].length} letters: ${esc(R.clues[i])}` : 'No clue for this word yet';
+  const hintText = i => R.clues[i] ? `💡 ${R.words[i].length} letters: ${UI.clueIcons(esc(R.clues[i]))}` : 'No clue for this word yet';
   function hintPool() { return R.words.map((w, i) => i).filter(i => !R.found.has(i) && !R.hinted.has(i) && R.clues[i]); }
   function paintBtns() {
     if (!R) return;
@@ -1102,6 +1102,7 @@
       ${sec('The Buttons', `
         <li><b>Shuffle</b> is the steel hub in the middle of the Ring: the letters spin to new places. Free.</li>
         <li><b>💡 Hint</b> (bottom-left corner) shows the clue for one empty slot: the slot you picked (tap a slot; it glows blue), or else a random one, which lights up when you tap Hint. It's a signal, not a solve: no letters are given (a word like JUMPING shows the clue for JUMP, with the ending to add; an everyday word with no clue yet is never a Hint target). The slot keeps a 💡 mark; tap it to read the clue again, free.</li>
+        <li>${UI.clueIcons('⏪ ')}<b>Reverse clue</b> (Challenge Levels 1–3): a clue that starts with the orange <b>rewind</b> icon is the answer <b>spelled backward</b>, so ${UI.clueIcons('⏪ ')}POT means TOP.</li>
         <li><b>🔑 Key Drop</b> (bottom-right corner) drops <b>one letter</b> into an empty square: in the slot you picked, or anywhere. Dropped letters are light blue. A slot it completes counts as found.</li>
         <li><b>⏱ +30s</b> (top-right corner, 🪙${TIME_COST}) adds 30 seconds to a timed Ring. Once any Ring ends (cleared or out of time, timed or not), it opens the Ring again for 30 seconds more, to hunt bonus words or to finish it; a Ring finished in extra time counts as cleared. It's in the result window too.</li>
         <li><b>⏸ Pause</b> (beside the clock, or tap the clock) stops the clock and hides the Ring and the Key grid; tap <b>▶</b> or the clock to go on.</li>

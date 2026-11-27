@@ -99,6 +99,11 @@
     const a = String(t || '').split(';').map(s => s.trim()).filter(Boolean);
     return a.length > 1 ? a[Math.floor((rnd || Math.random)() * a.length)] : (a[0] || '');
   };
+  // v13d (JM CD-144: 3.1–3.2): the reverse-word clue. Its mark in the Lexicon is "⏪" + the answer spelled backward in FULL CAPS
+  // ("⏪ POT" for TOP); every game draws the mark as the same small rewind icon (CDUI.clueIcons). At Challenge Levels 1–3 a word
+  // that has one uses it REV_P of the time in place of its plain clue.
+  const REV = '⏪', REV_P = 0.4;
+  const revClue = (e, lv, rnd) => (e && e.rv && lv >= 1 && lv <= 3 && (rnd || Math.random)() < REV_P ? oneClue(e.rv, rnd) : '');
   let WBY = null;
   function lexicon() {
     if (WORDS) return WORDS;
@@ -118,6 +123,13 @@
         p: (f[4] || '').trim(),
         sk: skRange(f[5])
       };
+      // v13d (JM CD-144: 3.1): a "⏪ POT" choice is a reverse-word clue (the answer spelled backward). It leaves the Literal and
+      // Indirect pools and is used only at Challenge Levels 1–3 (revClue below), so no game shows it at other levels.
+      if (set.e.includes(REV) || set.h.includes(REV)) {
+        const rv = [], keep = t => t.split(';').map(s => s.trim()).filter(Boolean).filter(s => s.startsWith(REV) ? (rv.push(s), false) : true).join('; ');
+        set.e = keep(set.e); set.h = keep(set.h) || set.e;
+        if (rv.length) set.rv = [...new Set(rv)].join('; ');
+      }
       if (WBY[w]) {
         const en = WBY[w];
         (en.alts = en.alts || []).push(set);
@@ -509,7 +521,9 @@
       // and wordplay belong to the main meaning, so an extra set uses its own literal or indirect clue only.
       const sets = [e].concat(e.alts || []).filter(x => inSk(x.sk, skill));
       const cs = sets.length > 1 ? sets[Math.floor(rng() * sets.length)] : (sets[0] || e);
-      if (cs !== e) {
+      const rvc = revClue(cs, skill, rng); // v13d: the reverse-word clue, Challenge Levels 1–3 only
+      if (rvc) clue = { t: rvc, hard: false, rev: true };
+      else if (cs !== e) {
         clue = rng() < pHard && cs.h && cs.h !== cs.e ? { t: cs.h, hard: true } : { t: cs.e, hard: false };
       } else if (pics.length && rng() < pPic) {
         const pick = rng() < 0.65 ? pics[0] : pics[Math.floor(rng() * pics.length)];
@@ -948,6 +962,6 @@
   }
 
   global.Engine = { VAL, SIZES, RULES, MODES, lexicon, generate, newGame, scoreMove, commit, judge, penalize, autoPlace, refill, swapHand, swapSome, endTurn, finish, hint, fits, aiPlan, aiParams, wordValue, boardFull,
-    modeOf, showsValues, tileVal, letterPts, penaltyOf, timerOf, bonusAt, bonusUsed, rollBonuses, pics: picIndex, wordplay: wordplayIndex, PIC_MIN, oneClue, setHandNext, fullBonus
+    modeOf, showsValues, tileVal, letterPts, penaltyOf, timerOf, bonusAt, bonusUsed, rollBonuses, pics: picIndex, wordplay: wordplayIndex, PIC_MIN, oneClue, revClue, REV, setHandNext, fullBonus
   };
 })(typeof self !== 'undefined' ? self : this);

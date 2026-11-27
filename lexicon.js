@@ -5,7 +5,7 @@
    Words are 2–7 letters, plus 11-letter words for Large grids (A–Z only). A repeated word adds an extra clue set (see above). */
 // Lexicon edition (JM, CD-24 other edits 1.1): its own number, separate from the game version. Add 1 whenever the word data or the Lexicon page changes.
 // L01 v07a · L02 v07b · L03 v07c · L04 v07d (wrapping cells) · L05 v07e (8-letter hint clues, edition number) · L06 v08 (8-letter easy and hard hints) · L07 (editor page: Status, Comments, Edit Mode + Copy Edits, advanced search; "/" in 23 Word Vault clues) · L08 v08b (58 country-code clues "Madrid URL" style, JM CD-27; Word Vault tricky hints) · L09 (JM's first Copy Edits, CD-29: ZAR clues, EXCITE added ON-DECK; ";" separates alternative clues, one picked at random) · L10 v08q (JM's Copy Edits, CD-59 + CD-60: 28 clue changes, "on an exchange board" / "on a bag tag" / "on a T-shirt tag" dropped, EXCITE active, new 1-letter clues, T pictures, drawn ICEBERG picture "@iceberg"; the Lexicon page gives each 1-letter row its own key) · L11 v08r (CD-62: 2.1a: 1-letter answers have one clue per row, so F, K and X's new ";" clues became separate rows; page: missing-letter marks drawn as in the game + "Missing-letter clues" filter) · L12 v08s (JM's Copy Edits CD-64 + CD-65: 34 changes, sorted Literal = plain / Indirect = figurative; page: permanent edit record, Reviewed ticks, Wordplay column, Claude drafts) · L13 v08t (JM's Copy Edits CD-66 + CD-67: 375 Claude drafts for A accepted, three-kind test — sound-alike clues to Wordplay, blanks to Indirect; ACRID; 125 new 1-letter clues with the blank inside the word; page: Draft toggle, clue lengths, Wrap / Clip, two-row filters)
-self.LEXICON_VER = 'L16.03'; // L16.03 (v13c): JM's Copy Edits from L16.02 (89 edits + 11 new letter rows U / X / Y), CD-143 fixes (7), economizers: 65 '&' for 'and', 5 'Shape of a X' -> X, 20 possessives for 'of'; L16.02 (v13c): JM's 2nd Copy Edits paste from L16 (111 new edits, incl. 4 new letter rows for G and Q), CD-142 fixes (11), 4 bag-tag economizer edits. L16.01 L16.01 (v13c): JM's Copy Edits from L16 (56 edits: 13 Wordplay clues folded into Indirect, airport codes shortened, XI Wordplay added). L16 L16 (v13c; same edition + 4 LockWord 8-letter ordinal edits, JM CD-141: 2.2, no version bump per JM's lexicon CP): page change (JM CD-140: each over-length clue choice marked in its cell; Longest clue names its column) + 47 pre-approved ordinal edits (first → 1st, etc.) in Literal and Indirect clues. L15 (v13c): L15 (v13c): page change (JM CD-137: Music Library features: bold FULL CAPS defaults, green active filters with ✕, chevron About, All reviewed, Screen button); same words and clues as L14.12. L14.12 (v13b): JM's CD-135: all 760 drafts accepted, 582 tier-2 KeyRing words ACTIVE; L14.11 (v13; same edition + ICE typo fix "Assassinate", JM 2026-11-24, no version bump per JM's lexicon CP): JM's CD-131: 22 edits; round 8: 100 letter-J-K drafts + KeyRing tier 2 round 2, 269 ON-DECK rows C; L14.10 (v12h): JM's CD-129: 618 drafts + 28 edits applied, tier 1 done; round 7: 84 letter-I drafts + KeyRing tier 2 round 1, 313 ON-DECK rows A-B; L14.09 (v12h): JM's CD-127 Copy Edits: 886 drafts applied, 363 KeyRing words ACTIVE; round 6: 156 letter-H drafts + KeyRing round 4, 462 ON-DECK rows Q-Z; L14.08 (v12g): JM's CD-124 fixes: 6 clues; L14.07 (v12e): JM's CD-108 Copy Edits applied, 335 KeyRing words ACTIVE; round 5: 130 letter-G drafts + KeyRing round 3, 363 ON-DECK rows I-P; L14.06 (v11e): KeyRing everyday words round 2: 335 ON-DECK rows D-H with drafts (CD-104: 2.3); L14.05 (v11e): JM's CD-104 Copy Edits: 2,033 drafts applied, 315 KeyRing words ACTIVE; drafts round 4: 175 letter-F rows; L14.04 (v11c): KeyRing everyday words round 1: 315 ON-DECK rows A-C with drafts (CD-100: 1.2.1; CD-101: 2.1-2.4); L14.03 (v11c): data-only, drafts round 3 (138 letter-E rows); L14.02 (v09a): data-only, drafts round 2 (162 letter-D rows, 32 shorter B rows, short CALF Wordplay); L14.01: drafts round 1 (C, short B Wordplay, shorter A); L14 = the renamed page (Master Keys Lexicon; CrossKeys / LockWord), a structure change
+self.LEXICON_VER = 'L16.04'; // L16.04 (v13d): CD-144 fixes (LIP, RUN, SD, T, PROGRAMMING; duplicate U row removed), 147 'X, or Y' Wordplay lines folded into Indirect (90 new choices); 104 reverse-word drafts for review; L16.03 (v13c): JM's Copy Edits from L16.02 (89 edits + 11 new letter rows U / X / Y), CD-143 fixes (7), economizers: 65 '&' for 'and', 5 'Shape of a X' -> X, 20 possessives for 'of'; L16.02 (v13c): JM's 2nd Copy Edits paste from L16 (111 new edits, incl. 4 new letter rows for G and Q), CD-142 fixes (11), 4 bag-tag economizer edits. L16.01 L16.01 (v13c): JM's Copy Edits from L16 (56 edits: 13 Wordplay clues folded into Indirect, airport codes shortened, XI Wordplay added). L16 L16 (v13c; same edition + 4 LockWord 8-letter ordinal edits, JM CD-141: 2.2, no version bump per JM's lexicon CP): page change (JM CD-140: each over-length clue choice marked in its cell; Longest clue names its column) + 47 pre-approved ordinal edits (first → 1st, etc.) in Literal and Indirect clues. L15 (v13c): L15 (v13c): page change (JM CD-137: Music Library features: bold FULL CAPS defaults, green active filters with ✕, chevron About, All reviewed, Screen button); same words and clues as L14.12. L14.12 (v13b): JM's CD-135: all 760 drafts accepted, 582 tier-2 KeyRing words ACTIVE; L14.11 (v13; same edition + ICE typo fix "Assassinate", JM 2026-11-24, no version bump per JM's lexicon CP): JM's CD-131: 22 edits; round 8: 100 letter-J-K drafts + KeyRing tier 2 round 2, 269 ON-DECK rows C; L14.10 (v12h): JM's CD-129: 618 drafts + 28 edits applied, tier 1 done; round 7: 84 letter-I drafts + KeyRing tier 2 round 1, 313 ON-DECK rows A-B; L14.09 (v12h): JM's CD-127 Copy Edits: 886 drafts applied, 363 KeyRing words ACTIVE; round 6: 156 letter-H drafts + KeyRing round 4, 462 ON-DECK rows Q-Z; L14.08 (v12g): JM's CD-124 fixes: 6 clues; L14.07 (v12e): JM's CD-108 Copy Edits applied, 335 KeyRing words ACTIVE; round 5: 130 letter-G drafts + KeyRing round 3, 363 ON-DECK rows I-P; L14.06 (v11e): KeyRing everyday words round 2: 335 ON-DECK rows D-H with drafts (CD-104: 2.3); L14.05 (v11e): JM's CD-104 Copy Edits: 2,033 drafts applied, 315 KeyRing words ACTIVE; drafts round 4: 175 letter-F rows; L14.04 (v11c): KeyRing everyday words round 1: 315 ON-DECK rows A-C with drafts (CD-100: 1.2.1; CD-101: 2.1-2.4); L14.03 (v11c): data-only, drafts round 3 (138 letter-E rows); L14.02 (v09a): data-only, drafts round 2 (162 letter-D rows, 32 shorter B rows, short CALF Wordplay); L14.01: drafts round 1 (C, short B Wordplay, shorter A); L14 = the renamed page (Master Keys Lexicon; CrossKeys / LockWord), a structure change
 self.LEXICON_DATA = `
 # ---------- 2 letters ----------
 AD|Commercial; Selling; Promo|Spot on TV; Billboard filler|1
@@ -144,7 +144,7 @@ ATE|Had a meal; Chowed down|Cleaned one's plate; What's ___ you?|1
 AWE|Wonder; Reverence|Jaw-drop feeling|2
 AXE|Chopping tool|Fire, slangily; Get the ___|2|🪓
 BAD|Not good; Poor|Cool, in old slang; Big ___ Wolf|1|👎
-BAG|Sack; Pouch|Snag, as a trophy; Grab-___|1|👜
+BAG|Sack; Pouch|Snag, as a trophy; Grab-___; Catch; Carry-all|1|👜
 BAN|Forbid; Embargo|No-entry rule; Censor's act|1
 BAR|Pub; Tavern|Lawyers as a group; Candy ___|1|🍫
 BAT|Cave flyer|Club; Baseball stick; Didn't ___ an eye|1|🦇
@@ -162,14 +162,14 @@ BOB|Short haircut|Float on water; ___ for apples|2
 BOG|Swamp; Marsh|Peat land; ___ down (stall)|2
 BOO|Scare sound; Jeer|Ghost's line; Halloween cry|1
 BOW|Ribbon knot|Ship's front; Take a ___|1|🎀
-BOX|Carton; Crate|Spar; Outside the ___|1|📦
+BOX|Carton; Crate|Spar; Outside the ___; Container|1|📦
 BOY|Lad; Son|Oh, ___!; Paper ___|1|👦
 BUD|Flower starter|Pal; Nip in the ___; Taste ___|1|🌱
 BUG|Insect|Glitch; Wiretap; Snug as a ___|1|🐛
 BUN|Bread roll|Hair knot; ___ in the oven|1
 BUS|City transport|Clear dishes; Miss the ___|1|🚌
 BUT|However; Yet|Ifs, ands or ___s|1
-BUY|Purchase|Swallow, as a story; ___ time|1
+BUY|Purchase|Swallow, as a story; ___ time; Believe|1
 BYE|Farewell|Free pass in a draw; ___-bye!|1
 CAB|Taxi; Hack|Yellow ride; Hail one|1|🚕
 CAN|Tin; Is able|Soda holder; Yes, we ___|1|🥫
@@ -298,14 +298,14 @@ LAP|Track circuit|Drink like a cat; Pool length; Above seated knees|1
 LAW|Rule|Legal code|1
 LAY|Put down|Not clerical|1
 LED|Guided|Diode light|1
-LEG|Limb|Stage of a race|1|🦵
+LEG|Limb|Stage of a race; Trip stage|1|🦵
 LET|Allow|Net serve redo|1
-LID|Cover|Eyelid|1
+LID|Cover|Eyelid; Cap|1
 LIE|Fib|Recline|1
-LIP|Mouth edge|Sass; Edge of a cup|1|👄
+LIP|Mouth edge|Sass; Cup's edge|1|👄
 LIT|Burning|Literature|1
 LOG|Tree trunk piece|Record|1|🪵
-LOT|Parking area|Fate|1
+LOT|Parking area|Fate; Many|1
 LOW|Not high|Moo|1
 MAD|Angry|Crazy|1
 MAN|Adult male|Staff|1
@@ -319,7 +319,7 @@ MOB|Crowd|Mafia|1
 MOM|Mother|Ma|1
 MOP|Floor cleaner|Unruly hair|1
 MUD|Wet dirt|Mire|1
-MUG|Coffee cup|Rob|1
+MUG|Coffee cup|Rob; Face|1
 NAB|Catch|Arrest|2
 NAG|Pester|Old horse|2
 NAP|Short sleep|Snooze|1
@@ -331,7 +331,7 @@ NOR|Neither's partner|And not|1
 NOT|Negative|Hardly|1
 NOW|At present|Immediately|1
 NUN|Sister|Habit wearer|2
-NUT|Acorn|Fanatic|1|🥜
+NUT|Acorn|Fanatic; Bolt partner|1|🥜
 OAK|Hard wood|Acorn tree|1
 OAR|Rowing blade|Paddle|1
 OAT|Grain|Cereal grain|1
@@ -356,9 +356,9 @@ PAW|Animal's foot|Handle clumsily|1|🐾
 PAY|Wages|Settle up|1
 PEA|Green veggie|Pod member|1
 PEN|Writing tool|Pigpen|1|🖊️
-PET|Domestic animal|Favorite|1
-PIE|Baked dessert|Pizza, in some cities|1|🥧
-PIG|Hog|Glutton|1|🐷
+PET|Domestic animal|Favorite; Dog|1
+PIE|Baked dessert|Pizza, in some cities; ___ chart|1|🥧
+PIG|Hog|Glutton; Road hog|1|🐷
 PIN|Sewing needle|Bowling target; Brooch|1|📌
 PIT|Hole|Cherry stone; Peach stone; Race-car stop|1
 POD|Pea case|Whale group|2
@@ -369,9 +369,9 @@ PUN|Wordplay|Groaner|2
 PUP|Young dog|Seal baby|1|🐶
 PUT|Place|Set|1
 RAG|Cloth|Tabloid|1
-RAM|Male sheep|Computer memory|1|🐏
+RAM|Male sheep|Computer memory; Butt|1|🐏
 RAN|Sprinted|Managed|1
-RAP|Hip-hop|Knock|1|🎤
+RAP|Hip-hop|Knock; Music style|1|🎤
 RAT|Rodent|Snitch|1|🐀
 RAW|Uncooked|Sore|1
 RAY|Beam|Sting fish; Flat fish; Light beam|1
@@ -379,7 +379,7 @@ RED|Ruby color|Embarrassed, maybe|1|🟥
 RIB|Bone|Tease|1
 RID|Free of|Clear|1
 RIM|Edge|Hoop|1
-RIP|Tear|Rest in peace|1
+RIP|Tear|Rest in peace; Epitaph|1
 ROB|Steal from|Mug|1
 ROD|Pole|Fishing pole|1|🎣
 ROE|Fish eggs|Caviar|2
@@ -388,16 +388,16 @@ ROW|Line|Paddle; Quarrel; Connected seating|1|🚣
 RUB|Massage|Snag|1
 RUG|Carpet|Toupee|1
 RUM|Pirate drink|Odd|2
-RUN|Sprint|Stockings snag; Jog|1|🏃
+RUN|Sprint|Stocking snag; Jog|1|🏃
 RYE|Bread grain|Whiskey type|2
 SAD|Unhappy|Blue|1|😢
-SAP|Tree juice|Sucker|1
+SAP|Tree juice|Sucker; Fool|1
 SAT|Took a seat|Test|1
 SAW|Cutting tool|Proverb|1|🪚
 SAY|Speak|Utter|1
 SEA|Ocean|Main|1
 SEE|Look|Bishop's seat|1|👀
-SET|Group|Tennis unit|1
+SET|Group|Tennis unit; Ready; TV stage|1
 SEW|Stitch|Needle work|1|🧵
 SHE|That woman|Her, as subject|1
 SHY|Bashful|Timid|1
@@ -467,7 +467,7 @@ YET|Still|But|1
 YOU|2nd person|Thee|1
 ZAP|Shock|Microwave|1|⚡
 ZEN|Calm|Meditation school|2
-ZIP|Fasten|Zero|1|🤐
+ZIP|Fasten|Zero; Speed along|1|🤐
 ZOO|Animal park|Madhouse|1
 ABS|Stomach muscles|Six-pack; Crunch targets|2
 ADO|Fuss; Bother; Trouble|Much ___ about…; Song & dance|2
@@ -607,7 +607,7 @@ BAND|Music group|Ring; Rubber ___; Garage ___|1
 BANK|Money place|River edge; Piggy ___; ___ on it|1|🏦
 BARE|Naked; Expose|___ minimum; ___-handed|1
 BARN|Farm building|Hay storage; ___ owl|1
-BASE|Bottom|Home plate; Touch ___; Off ___ (wrong)|1
+BASE|Bottom|Home plate; Touch ___; Off ___ (wrong); Rude|1
 BATH|Tub soak; Wash|Bubble ___; Rubber-duck time|1
 BEAD|Small bauble|Drop; Draw a ___ on; Necklace bit|1
 BEAK|Bird's bill|Nose; Toucan's pride|1
@@ -619,7 +619,7 @@ BEEF|Cow meat|Complaint; Where's the ___?; Bulk, with "up"|1|🥩
 BELL|Ringer; Chime|Saved by the ___; School's end|1|🔔
 BELT|Waist strap|Wallop; Notch holder; Tighten one's ___|1
 BEND|Curve; Flex|River's turn; ___ over backward|1
-BEST|Top; Finest|Gold-medal level; ___ man|1
+BEST|Top; Finest|Gold-medal level; ___ man; To beat|1
 BIKE|Bicycle; Cycle|Two-wheeler; Training-wheel ride|1
 BILL|Invoice|Beak; Duck's ___; Dollar ___|1
 BIRD|Feathered flyer|Robin; Early ___|1|🐦
@@ -681,7 +681,7 @@ COPY|Duplicate|Imitate; Ad text|1
 CORD|Rope; String|Firewood stack; Power ___|1
 CORE|Center|Apple heart; Hard-___|1
 CORN|Grain; Maize|Pop it; Cob crop|1|🌽
-COST|Price|Toll; At all ___s|1
+COST|Price|Toll; At all ___s; Lose|1
 COZY|Snug; Comfy|Tea ___; Fireside feel|1
 CRAB|Shellfish|Grouch; Sideways walker|1|🦀
 CREW|Team; Staff|Rowing team; ___ cut|1
@@ -893,10 +893,10 @@ LATE|Tardy|Deceased|1
 LAWN|Grass|Yard|1
 LAZY|Idle|Slothful|1|🦥
 LEAD|Guide|Metal|1
-LEAF|Foliage|Page|1|🍃
-LEAN|Thin|Slant|1
+LEAF|Foliage|Page; Tree part|1|🍃
+LEAN|Thin|Slant; Tilt|1
 LEAP|Jump|Bound|1
-LEFT|Departed|Port side|1|⬅️
+LEFT|Departed|Port side; Not right|1|⬅️
 LEND|Loan|Give|1
 LENS|Glass|Camera eye|1
 LESS|Fewer|Minus|1
@@ -908,10 +908,10 @@ LIME|Green citrus|Calcium compound; Chalky mineral|1
 LINE|Row|Queue; Actor's words; Dots in a row; Telephone ___|1
 LINK|Chain part|Connect; URL; Web address; File shortcut|1|🔗
 LION|Big cat|King of beasts|1|🦁
-LIST|Roster|Tilt|1|📋
+LIST|Roster|Tilt; Lean; To-do|1|📋
 LIVE|Exist|Not recorded|1
 LOAD|Burden|Fill|1
-LOAF|Bread|Laze|1
+LOAF|Bread|Laze; Lounge|1
 LOAN|Lend|Credit|1
 LOCK|Fasten|Curl of hair|1|🔒
 LOFT|Attic|Lift|1
@@ -922,18 +922,18 @@ LORD|Noble|Master|1
 LOSE|Misplace|Be beaten|1
 LOSS|Defeat|Setback|1
 LOST|Missing|Astray|1
-LOUD|Noisy|Brash|1|📢
+LOUD|Noisy|Brash; Garish|1|📢
 LOVE|Adore|Zero in tennis|1|❤️
 LUCK|Fortune|Chance|1|🍀
 LUNG|Breathing organ|Air sac|1|🫁
 MADE|Created|Built|1
-MAIL|Letters|Post|1|📬
+MAIL|Letters|Post; Armor|1|📬
 MAIN|Primary|Ocean|1
 MAKE|Create|Brand|1
 MALL|Shopping center|Promenade|1
 MANE|Lion's hair|Horse hair|1
 MANY|Lots|Numerous|1
-MARK|Spot|Grade|1
+MARK|Spot|Grade; Target|1
 MASK|Cover|Disguise|1|🎭
 MASS|Bulk|Weight; Church service|1
 MAST|Ship's pole|Spar|1
@@ -942,7 +942,7 @@ MAZE|Labyrinth|Puzzle|1
 MEAL|Dinner|Repast|1
 MEAN|Unkind|Average|1
 MEAT|Flesh|Substance|1
-MEET|Encounter|Sports event|1
+MEET|Encounter|Sports event; Greet|1
 MELT|Thaw|Soften|1
 MENU|Bill of fare|Options list|1
 MESS|Clutter|Muddle|1
@@ -952,7 +952,7 @@ MILE|5,280 feet|Distance|1
 MILK|Dairy drink|Exploit|1|🥛
 MIND|Brain|Care|1|🧠
 MINE|Dig|Belonging to me|1
-MINT|Herb|Coin factory|1
+MINT|Herb|Coin factory; Candy|1
 MISS|Fail to hit|Young woman; O.g. Maiden; O.g. Unmarried woman|1
 MIST|Fog|Haze|1
 MOAT|Castle ditch|Ditch|1
@@ -964,13 +964,13 @@ MORE|Extra|Additional|1
 MOSS|Green growth|Lichen kin|1
 MOST|Majority|Very|1
 MOTH|Night insect|Flutterer|1
-MOVE|Shift|Relocate|1
+MOVE|Shift|Relocate; Chess turn|1
 MUCH|Lots|Plenty|1
 MULE|Pack animal|Courier|1
 MUSE|Ponder|Inspiration|1
 NAIL|Fingernail|Spike; Fastener; Fingertip; Toe tip; ___ clippers|1|💅
 NAME|Title|Call|1
-NAVY|Fleet|Dark blue|1
+NAVY|Fleet|Dark blue; Sailors|1
 NEAR|Close|Nigh|1
 NEAT|Tidy|Cool|1
 NECK|Throat|Smooch; To kiss; Giraffe|1
@@ -999,7 +999,7 @@ OVAL|Egg shape|Ellipse|1
 OVEN|Stove|Kiln|1
 OVER|Above|Done|1
 PACE|Speed|Stride|1
-PACK|Bundle|Wolf group|1|🎒
+PACK|Bundle|Wolf group; Fill a bag|1|🎒
 PAGE|Leaf|Summon; Call someone|1|📄
 PAID|Settled|Remunerated|1
 PAIN|Ache|Nuisance|1
@@ -1007,18 +1007,18 @@ PAIR|Two|Duo|1
 PALE|Wan|Fence stake|1
 PALM|Hand part|Tree|1|🌴
 PARK|Green space|Leave a car|1|🏞️
-PART|Piece|Role|1
+PART|Piece|Role; Hair line|1
 PASS|Go by|Throw; Mountain route; Ticket; Boarding ___|1
 PAST|History|Beyond|1
 PATH|Trail|Course|1
 PEAK|Summit|Top|1|⛰️
 PEAR|Fruit|Bartlett|1|🍐
 PEEL|Skin|Rind|1
-PICK|Choose|Guitar plectrum|1
+PICK|Choose|Guitar plectrum; Choice|1
 PIER|Dock|Jetty|1
 PILE|Heap|Stack|1
 PILL|Tablet|Capsule; Annoying person; Medicine|1
-PINE|Evergreen|Yearn|1|🌲
+PINE|Evergreen|Yearn; Long for; Tree|1|🌲
 PINK|Rosy color|Salmon color|1
 PIPE|Tube|Smoking tube; Plumbing; Fluid's conduit; Smoker's tool|1
 PLAN|Scheme|Blueprint|1
@@ -1047,7 +1047,7 @@ PURE|Clean|Sheer|1
 PUSH|Shove|Press|1
 QUIT|Leave|Stop|1
 QUIZ|Test|Question|1|❓
-RACE|Contest|Speed|1|🏁
+RACE|Contest|Speed; Sprint; People|1|🏁
 RACK|Shelf|Stand|1
 RAFT|Float|Lot|1
 RAGE|Fury|Fad|1
@@ -1057,8 +1057,8 @@ RAIN|Shower|Drizzle|1|🌧️
 RAMP|Incline|Slope|1
 RANK|Grade|Smelly|1
 RARE|Uncommon|Lightly cooked|1
-RASH|Hasty|Skin irritation|1
-RATE|Speed|Price|1
+RASH|Hasty|Skin irritation; Itchy spots|1
+RATE|Speed|Price; Score|1
 READ|Peruse|Scan|1|📖
 REAL|Genuine|True|1
 REAR|Back|Raise; Derriere; A behind; A bottom; Backside; Posterior; Rump; Fanny; Booty; Tush|1
@@ -1068,8 +1068,8 @@ REIN|Bridle strap|Control|1
 RELY|Depend|Trust|1
 REST|Relax|Remainder|1
 RICE|Grain|Sushi base|1|🍚
-RICH|Wealthy|Hearty|1|🤑
-RIDE|Journey|Drive|1
+RICH|Wealthy|Hearty; Creamy|1|🤑
+RIDE|Journey|Drive; Tease; Lift|1
 RING|Band|Call|1|💍
 RIOT|Uprising|Hoot|1
 RISE|Ascend|Increase|1
@@ -1079,25 +1079,25 @@ ROAR|Lion sound|Bellow|1
 ROBE|Gown|Bathrobe|1
 ROCK|Stone|Sway|1|🪨
 ROLE|Part|Character|1
-ROLL|Bun|Tumble|1
+ROLL|Bun|Tumble; Name list|1
 ROOF|Top|Ceiling|1
-ROOM|Chamber|Space|1
-ROOT|Origin|Cheer|1
+ROOM|Chamber|Space; Hotel booking|1
+ROOT|Origin|Cheer; Plant base|1
 ROPE|Cord|Lasso; Learn the ___s|1
 ROSE|Flower|Ascended|1|🌹
 RUBY|Red gem|Jewel|1
 RUDE|Impolite|Crude|1
 RUIN|Wreck|Destroy|1
-RULE|Law|Govern|1
-RUSH|Hurry|Hasten|1
+RULE|Law|Govern; Measuring stick|1
+RUSH|Hurry|Hasten; Reed|1
 RUST|Corrosion|Oxidize|1
-SAFE|Secure|Strongbox|1
+SAFE|Secure|Strongbox; Home free; Vault|1
 SAGA|Epic|Tale|1
 SAIL|Canvas|Cruise|1
 SALE|Discount|Deal|1
 SALT|Seasoning|Sailor|1|🧂
 SAME|Identical|Equal|1
-SAND|Beach grit|Smooth|1
+SAND|Beach grit|Smooth; Smooth wood|1
 SAVE|Rescue|Keep|1
 SCAR|Mark|Blemish|1
 SEAL|Sea mammal|Stamp|1|🦭
@@ -1112,7 +1112,7 @@ SHED|Hut|Cast off; Small outbuilding; Lawnmower hut|1
 SHIP|Vessel|Send|1|🚢
 SHOE|Footwear|Horseshoe|1|👟
 SHOP|Store|Buy|1
-SHOT|Attempt|Injection|1
+SHOT|Attempt|Injection; Photo|1
 SHOW|Display|Program|1
 SHUT|Closed|Close|1
 SICK|Ill|Awesome, slangily|1
@@ -1125,11 +1125,11 @@ SIZE|Dimension|Measure|1
 SKIN|Hide|Peel|1
 SLED|Sledge|Toboggan|1|🛷
 SLIM|Thin|Slender|1
-SLIP|Slide|Error|1
+SLIP|Slide|Error; Petticoat|1
 SLOW|Sluggish|Leisurely|1|🐢
 SNOW|Flakes|Winter white|1|❄️
 SOAP|Cleaner|Drama|1|🧼
-SOCK|Hosiery|Punch|1|🧦
+SOCK|Hosiery|Punch; Foot cover|1|🧦
 SOFA|Couch|Settee|1|🛋️
 SOFT|Gentle|Tender|1
 SOIL|Dirt|Stain|1
@@ -1140,14 +1140,14 @@ SORT|Kind|Organize|1
 SOUL|Spirit|Essence|1
 SOUP|Broth|Bisque|1|🍲
 SOUR|Tart|Bitter|1
-SPIN|Twirl|Rotate|1
-SPOT|Dot|Place|1
+SPIN|Twirl|Rotate; Twist a story|1
+SPOT|Dot|Place; See; Stain|1
 STAR|Celebrity|Sun; Night sky; Dotted night|1|⭐
 STAY|Remain|Visit|1
 STEM|Stalk|Stop|1
 STEP|Pace|Stair|1
 STEW|Ragout|Fret|1
-STIR|Mix|Commotion|1
+STIR|Mix|Commotion; Jail, in slang|1
 STOP|Halt|Cease|1|🛑
 SUIT|Outfit|Lawsuit|1
 SURE|Certain|Confident|1
@@ -1178,7 +1178,7 @@ THEM|Those|They|1
 THEN|Next|At that time|1
 THEY|Those people|Them|1
 THIN|Slim|Lean|1
-TICK|Clock sound|Mite|1
+TICK|Clock sound|Mite; Bug|1
 TIDE|Ebb & flow|Current|1
 TIDY|Neat|Orderly|1
 TILE|Square piece|Floor slab|1
@@ -1202,7 +1202,7 @@ TUBA|Big brass|Oompah horn|1
 TUNE|Melody|Air|1|🎶
 TURN|Rotate|Spin|1
 TWIN|Double|Pair|1
-TYPE|Kind|Keyboard|1|⌨️
+TYPE|Kind|Keyboard; Key in|1|⌨️
 UNDO|Reverse|Cancel|1|↩️
 UNIT|One|Item|1
 UPON|On top of|Atop|1
@@ -1239,7 +1239,7 @@ WIDE|Broad|Spacious|1
 WIFE|Spouse|Partner|1
 WILD|Untamed|Savage|1
 WILL|Testament|Desire|1
-WIND|Breeze|Gust|1|🌬️
+WIND|Breeze|Gust; Coil|1|🌬️
 WINE|Vino|Grape drink|1|🍷
 WING|Arm|Flank; Hospital part; Plane part; "___ it"|1
 WIRE|Cable|Telegram|1
@@ -1250,14 +1250,14 @@ WOOD|Timber|Lumber|1
 WOOL|Fleece|Yarn|1
 WORD|Term|Promise|1
 WORK|Labor|Job|1
-WORM|Crawler|Grub|1|🪱
+WORM|Crawler|Grub; Bait; Wriggle|1|🪱
 WRAP|Bundle|Burrito; Finish filming; Rolled sandwich|1
 YARD|Lawn|Three feet|1
 YARN|Thread|Tall tale; Knitting wool|1
 YEAR|12 months|Annum|1|📆
 YELL|Shout|Holler|1
 YOGA|Mindful stretch|Asana practice|1|🧘
-ZERO|Nothing|Nil|1|0️⃣
+ZERO|Nothing|Nil; Nobody|1|0️⃣
 ZONE|Area|Region|1
 ABET|Aid a crime|Egg on; Help a crook|3
 ADZE|Woodworking ax; Shaping blade|Strange ax; Shipwright's swinger|5
@@ -1476,7 +1476,7 @@ BRAKE|Stop; Slow|Pedal on the left; Pump the ___s|1
 BRAND|Make; Mark|Name on the label; Cattle mark|1
 BRAVE|Bold; Fearless|Home of the ___; Lionhearted|1
 BREAD|Loaf|Money, slangily; Sliced ___|1|🍞
-BREAK|Smash; Rest|Coffee ___; ___ a leg|1
+BREAK|Smash; Rest|Coffee ___; ___ a leg; Recess; Snap|1
 BRICK|Block|Loyal pal; Lego piece|1
 BRIDE|Newlywed; Wife-to-be|Veil wearer; Here comes the ___|1|👰
 BRIEF|Short; Concise|Lawyer's paper; In ___|1
@@ -1555,7 +1555,7 @@ CYCLE|Bike; Loop|Washer setting; Life ___|1
 DAILY|Everyday|Journal; ___ grind|1
 DAIRY|Milk farm|Milk products; ___ aisle|1
 DAISY|Flower|Ox-eye; Fresh as a ___|1|🌼
-DANCE|Waltz; Boogie|Prom; Ballroom move|1|💃
+DANCE|Waltz; Boogie|Prom; Ballroom move; Ball; Sway|1|💃
 DEALT|Distributed|Handled; ___ a bad hand|1
 DECAY|Rot|Decompose; Tooth trouble|1
 DELAY|Wait; Postpone|Hold-up; Flight board word|1
@@ -1569,7 +1569,7 @@ DOUGH|Bread mix|Money; Cookie ___|1
 DOZEN|Twelve|Baker's ___; Egg carton count|1
 DRAFT|Sketch|Breeze; 1st try|1
 DRAIN|Sink hole|Exhaust; Down the ___|1
-DRAMA|Theater|Tension; ___ queen|1
+DRAMA|Theater|Tension; ___ queen; Play; Fuss|1
 DREAM|Fantasy|Vision; American ___|1|💭
 DRESS|Gown; Frock|Bandage a wound; ___ code|1|👗
 DRIFT|Float|Meander; Snow pile|1
@@ -1688,7 +1688,7 @@ LEASH|Dog lead|Rein|1
 LEAST|Minimum|Fewest|1
 LEAVE|Exit|Holiday|1
 LEMON|Citrus|Dud car|1|🍋
-LEVEL|Floor|Even|1
+LEVEL|Floor|Even; Flat|1
 LIGHT|Lamp|Not heavy|1
 LIMIT|Cap|Boundary|1
 LINEN|Sheets|Fabric|1
@@ -1716,8 +1716,8 @@ MERCY|Pity|Leniency|1
 MERIT|Worth|Deserve|1
 METAL|Iron|Rock genre|1
 METER|Measure|Gauge; 100cm; km's base; Parking clock; Poem's beat|1
-MIGHT|Power|May|1
-MINOR|Small|Underage|1
+MIGHT|Power|May; Maybe|1
+MINOR|Small|Underage; Child; Less important|1
 MINUS|Less|Negative|1|➖
 MODEL|Example|Poser|1
 MONEY|Cash|Dough|1|💰
@@ -1728,7 +1728,7 @@ MOUSE|Rodent|Clicker|1
 MOUTH|Lips|River end|1
 MOVIE|Film|Flick|1
 MUSIC|Tunes|Melody|1
-NERVE|Courage|Gall|1
+NERVE|Courage|Gall; Body wire|1
 NEVER|Not ever|At no time|1
 NIGHT|Evening|Dark|1|🌃
 NOBLE|Aristocrat|Honorable|1
@@ -1756,7 +1756,7 @@ PARTY|Celebration|Bash; Political group|1|🥳
 PASTA|Noodles|Spaghetti|1|🍝
 PATCH|Fix|Plot; Garden spot; Allocation (U.K.); Software fix; Repair|1
 PEACE|Calm|Harmony|1|☮️
-PEACH|Fruit|Something lovely|1|🍑
+PEACH|Fruit|Something lovely; Great person|1|🍑
 PEARL|Gem|Oyster jewel|1
 PEDAL|Bike lever|Push|1
 PENNY|Cent|Coin|1
@@ -1775,17 +1775,17 @@ POINT|Tip|Purpose|1|👉
 POLAR|Arctic|Opposite|1
 POUCH|Pocket|Bag|1
 POWER|Strength|Electricity|1
-PRESS|Push|Media|1
+PRESS|Push|Media; Reporters|1
 PRICE|Cost|Value|1
 PRIDE|Lion group|Ego|1
 PRIZE|Award|Reward|1
-PROOF|Evidence|Draft print|1
+PROOF|Evidence|Draft print; Test page|1
 PROUD|Pleased|Arrogant|1
 PUPIL|Student|Eye part|1
 PUPPY|Young dog|Pup|1
 QUEEN|Monarch|Chess piece; Bee boss; "Champions"; Mercury|1|👸
 QUEST|Search|Mission|1
-QUICK|Fast|Swift|1
+QUICK|Fast|Swift; Nail bed|1
 QUIET|Silent|Calm|1
 QUOTE|Cite|Price estimate|1
 RADIO|Wireless|Broadcast|1
@@ -1805,14 +1805,14 @@ ROAST|Cook|Tease; Comic insults; Cooking method; Large meat meal|1
 ROBIN|Red bird|Songbird|1
 ROBOT|Android|Automaton|1|🤖
 ROCKY|Stony|Unsteady|1
-ROUND|Circular|Lap|1
+ROUND|Circular|Lap; Drink order|1
 ROUTE|Path|Way|1
 ROYAL|Regal|Majestic|1
 RULER|King|Measuring stick|1|📏
 RURAL|Country|Rustic|1
 SALAD|Greens|Mixed dish|1
 SAUCE|Gravy|Sass|1
-SCALE|Weigh|Climb|1|⚖️
+SCALE|Weigh|Climb; Fish coat; Weight tool|1|⚖️
 SCARF|Muffler|Wolf down|1|🧣
 SCENE|View|Setting; Make a ___ (cause a fuss)|1
 SCORE|Points|Twenty|1
@@ -1823,10 +1823,10 @@ SHAKE|Tremble|Milkshake|1
 SHAPE|Form|Figure|1
 SHARE|Divide|Stock|1
 SHARK|Predator fish|Card cheat|1|🦈
-SHARP|Keen|Clever|1
+SHARP|Keen|Clever; Smart; Pointy|1
 SHEEP|Ewe|Followers|1|🐑
 SHELF|Ledge|Rack|1
-SHELL|Casing|Seashell|1|🐚
+SHELL|Casing|Seashell; ___ out; Nut cover|1|🐚
 SHIFT|Change|Work period; Keyboard key; KB key; Adjust; Move; Rearrange|1
 SHINE|Glow|Polish|1
 SHIRT|Top|Tee|1|👕
@@ -1835,7 +1835,7 @@ SHORE|Coast|Beach|1
 SHORT|Brief|Small; Circuit problem|1
 SHOUT|Yell|Cry|1
 SIGHT|Vision|View|1
-SKATE|Glide|Fish|1|⛸️
+SKATE|Glide|Fish; Rink glider|1|⛸️
 SKILL|Talent|Ability|1
 SKIRT|Dress|Avoid|1
 SKULL|Head bone|Cranium|1|💀
@@ -1861,25 +1861,25 @@ SPEED|Pace|Velocity|1
 SPELL|Charm|Write letters|1
 SPEND|Pay out|Use up|1
 SPICE|Seasoning|Zest|1|🌶️
-SPINE|Backbone|Book's back|1
+SPINE|Backbone|Book's back; Courage|1
 SPOON|Utensil|Cuddle|1|🥄
 SPORT|Game|Good loser|1
 STACK|Pile|Heap|1
 STAFF|Crew|Rod|1
 STAGE|Platform|Phase; Theater platform|1
 STAIR|Step|Flight|1
-STAMP|Postage|Stomp|1
+STAMP|Postage|Stomp; Foot pound|1
 STAND|Rise|Booth|1
 STEAM|Vapor|Energy|1
 STEEL|Metal|Brace|1
 STICK|Twig|Adhere|1
-STONE|Rock|Pit|1
+STONE|Rock|Pit; British weight|1
 STORE|Shop|Save|1|🏪
-STORM|Tempest|Rage|1|⛈️
+STORM|Tempest|Rage; Charge|1|⛈️
 STORY|Tale|Floor|1
 STOVE|Range|Oven|1
 STRAW|Hay|Drinking tube|1
-STUDY|Learn|Office|1
+STUDY|Learn|Office; Den|1
 SUGAR|Sweetener|Honey|1
 SUNNY|Bright|Cheerful|1
 SUPER|Great|Superb; Building mgr; Exceptional; ___ Glue|1
@@ -1895,7 +1895,7 @@ THICK|Dense|Stocky|1
 THING|Object|Item|1
 THINK|Ponder|Reflect|1|🤔
 THREE|Trio|Number|1|3️⃣
-THROW|Toss|Pitch|1
+THROW|Toss|Pitch; Blanket|1
 THUMB|Digit|Flip through|1
 TIGER|Striped cat|Big cat|1|🐯
 TIMER|Clock|Stopwatch|1|⏱️
@@ -1923,13 +1923,13 @@ TRUCK|Lorry|Big rig|1|🚚
 TRUST|Belief|Faith|1
 TRUTH|Fact|Honesty|1
 TULIP|Spring flower|Dutch bloom|1|🌷
-TWIST|Turn|Plot surprise|1
+TWIST|Turn|Plot surprise; Dance|1
 UNCLE|Aunt's husband|Sam, for one|1
 UNDER|Below|Beneath|1
 UNION|Alliance|Merger|1
 UNTIL|Till|Up to|1
 UPPER|Higher|Top|1
-UPSET|Distressed|Surprise loss|1
+UPSET|Distressed|Surprise loss; Sad|1
 URBAN|City|Metropolitan|1
 USUAL|Normal|Typical|1
 VALUE|Worth|Prize|1
@@ -2259,7 +2259,7 @@ LADDER|Steps|Hierarchy|1|🪜
 LAPTOP|Notebook PC|Portable computer|1|💻
 LEADER|Head|Chief|1
 LEGEND|Myth|Map key|1
-LETTER|Note|Character|1|✉️
+LETTER|Note|Character; Mail; A or B|1|✉️
 LIZARD|Reptile|Gecko kin|1
 MAGNET|Attractor|Draw|1|🧲
 MARKET|Bazaar|Sell|1
@@ -2269,7 +2269,7 @@ MONKEY|Ape|Imp|1|🐒
 MOTHER|Mom|Mama|1
 MUFFIN|Cupcake|Bun|1|🧁
 NATURE|Environment|Character|1
-NEEDLE|Pin|Tease|1|🪡
+NEEDLE|Pin|Tease; Sewing tool|1|🪡
 NUMBER|Digit|Song|1|🔢
 ORANGE|Citrus|Color|1|🍊
 OYSTER|Shellfish|Pearl maker|1|🦪
@@ -2288,7 +2288,7 @@ PUZZLE|Riddle|Mystery|1
 RABBIT|Bunny|Hare|1|🐰
 RECIPE|Formula|Instructions|1
 RESCUE|Save|Free|1
-ROCKET|Spacecraft|Salad green|1|🚀
+ROCKET|Spacecraft|Salad green; Arugula; Space ride|1|🚀
 SADDLE|Seat|Burden|1
 SAFARI|Expedition|Trek|1
 SALMON|Pink fish|Fish|1
@@ -2322,7 +2322,7 @@ WALNUT|Nut|Wood|1
 WINDOW|Pane|Opening|1|🪟
 WINTER|Season|Cold season|1|⛄
 WIZARD|Sorcerer|Genius|1|🧙
-YELLOW|Lemon color|Cowardly|1|🟨
+YELLOW|Lemon color|Cowardly; Sun-colored|1|🟨
 ZIPPER|Fastener|Slide fastener|1
 ABJECT|Wretched; Hopeless|Down & out|4
 ACUMEN|Shrewdness; Insight|Biz wiz; Business savvy|4
@@ -2541,7 +2541,7 @@ ODDS|Betting chances|Likelihood|2
 SEAM|Stitched line|Coal layer|2
 WEEP|Cry|Shed tears|1
 FANG|Snake tooth|Vampire's tooth; Wolf's tooth|2
-SPADE|Digging tool|Card suit|2
+SPADE|Digging tool|Card suit; Shovel|2
 THORN|Rose prickle|Constant annoyance|2
 PETAL|Flower part|Daisy piece|1
 BREW|Make tea|Beer, informally; Witch's pot; Home-___|2
@@ -2551,7 +2551,7 @@ WOUND|Injury|Coiled up|2
 GRAVE|Burial site|Very serious; Turn in one's ___|2
 WITCH|Broom rider|Spell caster|1
 SOLAR|Of the sun|Sun-powered|2
-STEAL|Take without paying|Bargain|1
+STEAL|Take without paying|Bargain; Rob|1
 WEIGH|Put on a scale|Consider|2
 HEARD|Listened to|Caught, as news; Word got out|1
 AISLE|Store walkway; Wedding path|Down the ___; Window-seat rival|2
@@ -2565,7 +2565,7 @@ SNEEZE|"Achoo!"|Allergy reaction|1
 CIRCUS|Big-top show|Chaotic scene; Three-ring ___|1
 POISON|Toxin|Venom|1
 HOARSE|Raspy-voiced|Croaky; Talked out|3
-SEASON|Spring or fall|Add salt|1
+SEASON|Spring or fall|Add salt; Summer|1
 DENTIST|Tooth doctor|Driller with a chair; Say "ahh" spot|1
 COWBOY|Ranch hand|Rodeo rider; Dallas team|1
 CARPET|Floor covering; Rug|Red ___; Magic ___|1
@@ -2818,7 +2818,7 @@ RESTAURANTS|Places to eat out|Diners & cafes|1|🍽️
 SUPERMARKET|Big grocery store|Carts & big aisles|1|🛒
 PHARMACISTS|Drugstore workers|Rx-fillers; Druggists; U.K. Chemists; Prescriptions|2
 ELECTRICIAN|Wiring worker|Outlet fixer; Sparky|2
-PROGRAMMING|Writing code|Computer instructions; Java; HTML; Python; C++; Cobol; Fortran|2|💻
+PROGRAMMING|Writing code|Computer instructions; Java; HTML; Python; C++; Cobol; Fortran; JavaScript; SQL|2|💻
 PROGRAMMERS|Code writers|App builders|2
 POLICEWOMAN|Female officer|Woman on the beat|2|👮‍♀️
 TAMBOURINES|Jingly hand drums|Shakers with cymbals|2
@@ -3015,7 +3015,7 @@ RM|Room|Hotel space|2
 RR|Railroad|Train-line letters|2
 RX|Doctor's prescription|Pharmacy symbol|2
 SC|South Carolina|Columbia's state|2
-SD|South Dakota|Memory-card; Standard Def.|2
+SD|South Dakota|Memory card; Standard Def.|2
 SK|Slovakia, on maps|Bratislava's land|2
 SM|Small, on a size tag|Shirt size below Med.|1
 SQ|Square|___ ft. (area unit)|2
@@ -5752,7 +5752,7 @@ S|Plural ending|3
 T|_OMATO|1|🍅
 T|_IGER|1|🐯
 T|Sounds like a hot drink|2|🍵
-T|T-shirt|2|👕
+T|Golf peg|2|👕
 T|Golf peg, by sound|3
 U|_MBRELLA|1
 U|___-turn|1
@@ -5918,7 +5918,6 @@ Q|Ppl lined up|2
 Q|Waiting line|2
 # L16.03 (JM): Indirect choices for 1-letter answers U, X and Y, each its own row (level of the row JM edited)
 U|Type of turn|2
-U|_mbrella|2
 U|G_mmy bears|2
 U|Bel_ga whale|2
 X|Mulder|2

@@ -15,7 +15,7 @@
    v08j: grid colors, final-play view, clock-out final turn, menu defaults, phone two-finger drag) */
 'use strict';
 (() => {
-  const APP_VER = 'v13c'; // Project CP: shown as a pill beside the title and in the browser tab
+  const APP_VER = 'v13d'; // Project CP: shown as a pill beside the title and in the browser tab
   const NM = window.MK_NAMES || { suite: 'Master Keys', cross: 'CrossKeys', lock: 'LockWord' }; // v09: the game names (names.js)
   // v09a (JM CD-71: 1.2c, 1.3b): the two games' own icons, shown wherever the 🧩 / 🔐 emoji stood
   const GI = { cross: 'icons/crosskeys.svg', lock: 'icons/lockword.svg', ring: 'icons/keyring.svg', cubes: 'icons/keycubes.svg', hidden: 'icons/hiddenkeys.svg' }; // v11: KeyRing; v12: KeyCubes; v13: Hidden Keys
@@ -1298,9 +1298,13 @@
   // v08t (JM CD-67: 3.4a): a 1-letter clue such as "SAND _ ICH" or "C _ _ KIE" is spaced for legibility; non-breaking
   // spaces keep it on one line in the cell (only for all-capital letter patterns, so "Grin and ___ it" still wraps)
   function tightBlanks(t) { return /^[A-Z]+(?: +(?:_|[A-Z]+))+$|^(?:_ +)+[A-Z]/.test(t) && t.includes('_') ? t.replace(/ +/g, ' ') : t; }
+  // v13d (JM CD-144: 3.1–3.2): the reverse-word clue's mark "⏪" (Lexicon "⏪ POT" for TOP) is drawn as one small rewind
+  // icon in every game, so it looks the same on every phone, tablet and computer. Takes and returns escaped HTML.
+  const REV_ICO = '<span class="rev-ico" role="img" aria-label="spelled backward" title="Reverse: spell this word backward"><svg viewBox="0 0 20 12" aria-hidden="true"><path d="M9.5 1v10L1 6zM19 1v10l-8.5-5z" fill="currentColor"/></svg></span>';
+  const clueIcons = h => String(h).replace(/⏪️?\s*/g, REV_ICO);
   function clueMarks(t) {
     t = tightBlanks(t);
-    return esc(t).replace(/_{2,}/g, '<span class="mw" aria-label="missing word"></span>').replace(/_/g, '<span class="ml" aria-label="missing letter">?</span>');
+    return clueIcons(esc(t)).replace(/_{2,}/g, '<span class="mw" aria-label="missing word"></span>').replace(/_/g, '<span class="ml" aria-label="missing letter">?</span>');
   }
   function renderBoard() {
     const pz = G.pz;
@@ -1509,7 +1513,7 @@
     }).join('');
     const sp = solvedPts(s, got);
     const tag = picTag(s) ? `<span class="cb-tag">${picTag(s)}</span>` : '';
-    const clue = s.clue.pic ? `<span class="cb-pic">${picHTML(s.clue.pic)}</span>${tag}` : `<span class="cb-word">${esc(s.clue.t)}</span>`;
+    const clue = s.clue.pic ? `<span class="cb-pic">${picHTML(s.clue.pic)}</span>${tag}` : `<span class="cb-word">${clueIcons(esc(s.clue.t))}</span>`;
     return `<div class="cb-line${primary ? ' on' : ''}" data-s="${si}"><span class="cb-dir">${s.d === 'A' ? '→' : '↓'}</span>${clue}`
       + `<span class="cb-stat"><span class="cb-pat">[${letters}]</span><span class="cb-n">${got.length} / ${s.cells.length}</span>${sp ? `<span class="cb-pts">${sp.v} ${sp.t}</span>` : ''}</span></div>`;
   }
@@ -2190,6 +2194,7 @@
         <li>As the level rises: words get longer and harder, and word and picture clues get trickier.</li>
         <li>Starter letters (gray, already on the grid) help new players: about a quarter of the letters at level 1, fewer at level 2, just 1–3 at level 3, and none from level 4. With fewer starters there are more tiles to play, so games run longer.</li>
         <li>Picture clues: at levels 1–5 the ${go('Clue Cards', 'clue card')} names the kind of picture clue (see ${go('Clue Pics')}); from level 6 you work it out yourself.</li>
+        <li>${clueIcons('⏪ ')}<b>Reverse clue</b> (Challenge Levels 1–3): a clue that starts with the orange <b>rewind</b> icon is the answer <b>spelled backward</b>, so ${clueIcons('⏪ ')}POT means TOP.</li>
         <li>From level 5, word clues turn punny: double meanings and wordplay. A "?" means don't take it literally.</li>`)}
       ${sec('Grid Size', `
         <li><b>Small</b> (5 × 6), <b>Medium</b> (6 × 7) or <b>Large</b> (7 × 11). Bigger grids mean more words, longer games and bigger scores.</li>`)}
@@ -3698,6 +3703,7 @@
     settings: () => settings,
     GI, gimg, // v09a: the game icons
     winLine, meWin, fitOver, // v11a (CD-93): the one-row win report shared by every game
+    clueIcons, // v13d (CD-144: 3.1): the drawn ⏪ reverse-word icon in clue text
     fmtN, BTN_LOOKS, btnOpts, setLook, // v11e: thousands commas; the Button Colors looks shared by every game
     coinHead, coinTotal, // v11b (CD-90: 4.2.4): the result windows' Coins heading and bottom line
     sound, // v08h: sound effects (and the 🔇 / 🔊 buttons) shared with LockWord

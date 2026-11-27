@@ -40,48 +40,37 @@ JAM|Spreadable traffic?
 KEY|Door-opening note?
 KIND|Nice sort?
 LEAD|Guide made of metal?
-LEAN|Thin, or tilt
 LIGHT|Neither heavy nor dark
 LOCK|Secure hair bit?
 LOG|Diary of wood?
 MATCH|Contest you can strike
 MINE|Gold pit that's all yours
-MINT|Candy, or a coin factory
 MOLE|Spy that digs?
 NAIL|Get right with a hammer?
 NOTE|Memo you can sing
 PALM|Tree in your hand?
 PANE|Glass that sounds painful
 PEN|Pig home that writes?
-PIG|Hog, or a road hog
 PRESENT|Gift for here and now
 PUPIL|Student in your eye?
-RACE|Sprint, or a people
 RING|Jewelry that calls?
 ROCK|Stone that's also music
 RULER|Measuring king?
 SAW|Tool that was seen
-SCALE|Fish coat, or weight tool
 SEAL|Envelope-closing animal?
 SHED|Lose fur in the garden hut?
 SHIP|Send by boat
 SOLE|Only fish under your shoe?
 SPELL|Word magic?
 SPRING|Season with a bounce
-STAMP|Postage, or a foot pound
 STAR|Celeb in the night?
 STRAW|Sipper in the hay?
-TAP|Faucet, or a light touch
-TIE|Neckwear, or a draw
 TIRE|Wheel that gets weary?
 TOAST|Bread that honors a guest?
 TRAIN|Teach on rails?
 WATCH|Look at your wrist?
 WAVE|Ocean greeting?
 WELL|Healthy hole for water
-WIND|Breeze, or coil
-YARD|Lawn, or three feet
-BOX|Container, or spar
 CAN|Tin that's able
 CAST|Throw the actors?
 DIAL|Clock face to call
@@ -89,7 +78,6 @@ DRILL|Practice that bores?
 FAST|Quick not to eat?
 FLAT|Airless apartment?
 GRAVE|Serious rest spot?
-LIE|Fib, or recline
 MEAN|Unkind average
 NET|Catch the profit?
 PARK|Green space for a car
@@ -99,13 +87,10 @@ POST|Mail on a pole?
 RIGHT|Correct side?
 ROSE|Flower that got up
 SCORE|Twenty points?
-SKATE|Rink glider, or a fish
 STAND|Booth to rise in?
 STICK|Twig that clings?
 SUIT|Outfit that's fitting
-TICK|Clock sound, or a bug
 TOP|Toy at the summit?
-TRIP|Journey, or stumble
 WAKE|Boat trail when you get up?
 BLUE|Sad color
 BUG|Insect that annoys
@@ -142,14 +127,11 @@ ART|Drawing power?
 ATLAS|Map-book Titan?
 AXE|Job chopper?
 BABY|Tot you sit?
-BACK|Support, or the rear
 BACON|Breadwinner's haul?
 BADGE|Pinned ID?
-BAG|Catch, or carry-all
 BAKER|Dough maker?
 BALL|Dance to kick?
 BAR|Lawyers' candy?
-BASE|Home plate, or rude
 BASIN|Sink of a river?
 BATH|Soak in England?
 BATON|Relay's wand?
@@ -166,7 +148,6 @@ BELL|Ring leader?
 BELT|Waist song?
 BENCH|Judge's dugout?
 BEND|Bow in the road?
-BEST|Top, or to beat
 BID|Auction command?
 BILL|Duck's check?
 BIRD|Little tweeter?
@@ -178,7 +159,6 @@ BLANKET|Cover-all?
 BLAST|Explosive fun?
 BLIND|Sightless shade?
 BLOCK|Writer's street?
-BLOOM|Flower, or flourish
 BLUSH|Shy makeup?
 BOAT|Gravy carrier?
 BOB|Haircut that floats?
@@ -194,12 +174,10 @@ BOWL|Super dish?
 BRAKE|Car's rest?
 BRAND|Cattle label?
 BREAD|Oven money?
-BREAK|Recess, or snap
 BREW|Plotted tea?
 BRICK|Solid friend?
 BRIDGE|Card-game span?
 BRIEF|Short legal paper?
-BRIGHT|Sunny, or smart
 BROOK|Stand a stream?
 BRUSH|Close-call tool?
 BUCKET|Lifetime list?
@@ -211,7 +189,6 @@ BUNCH|Banana crowd?
 BURN|Hot insult?
 BUS|Clear a ride?
 BUTTON|Cute fastener?
-BUY|Believe, or purchase
 CAB|Red-wine ride?
 CABIN|Flying hut?
 CABLE|TV wire?
@@ -242,7 +219,6 @@ CHAIR|Meeting seat?
 CHARM|Lucky spell?
 CHART|Sea list?
 CHEEK|Sassy face part?
-CHEER|Rah, or good spirits
 CHEESE|Camera smile?
 CHICKEN|Cowardly hen?
 CHILL|Cold, relaxed?
@@ -258,7 +234,6 @@ CLICK|Mouse hit?
 CLIFF|Story's hanger?
 CLIMB|Chart scaling?
 CLOCK|Punch-in watch?
-CLOSE|Near, or shut
 CLOUD|Sky storage?
 CLOUT|Influential whack?
 CLUE|This line?
@@ -274,7 +249,6 @@ COPY|Ad clone?
 CORD|Wood rope?
 CORE|Apple's main?
 CORN|Ears but can't hear?
-COST|Price, or lose
 COUCH|Sofa phrasing?
 COURT|Wooing judge?
 COVER|Band's jacket?
@@ -299,7 +273,6 @@ CURVE|Bent grades?
 CUT|Sliced share?
 CYCLE|Bike setting?
 DAM|Beaver's mom?
-DANCE|Ball, or sway
 DARE|Truth's game partner?
 DART|Pub dash?
 DEAL|Card bargain?
@@ -317,13 +290,11 @@ DIM|Not very bright?
 DIP|Swim in salsa?
 DISH|Gossip plate?
 DIVE|Plunging bar?
-DOCK|Pier, or cut pay
 DOCTOR|Photo fixer?
 DOG|Pet tail?
 DOUGH|Baker's money?
 DOWN|Sad feathers?
 DRAIN|Sink exhaust?
-DRAMA|Play, or a fuss
 DREAM|Night movie?
 DRESS|Wound gown?
 DRIFT|Snow gist?
@@ -331,9 +302,7 @@ DRINK|Ocean beverage?
 DRIVE|Ambitious trip?
 DRUM|Oil-barrel beat?
 DRY|Arid wit?
-DUE|Owed, or expected
 DUST|Clean or sprinkle?
-DUTY|Tax, or obligation
 EAR|Corn listener?
 EARTH|Dirt planet?
 ECHO|Sound copy?
@@ -442,135 +411,19 @@ KID|Joking child?
 KING|Royal bed size?
 KNIGHT|Bedtime chess piece?
 KNOT|Sea-speed tie?
-LAST|Endure, or final
-LEAF|Page, or a tree part
 LEAP|Year with an extra day
-LEFT|Departed, or not right
-LEG|Trip stage, or a limb
-LEMON|Bad car, or a citrus
-LETTER|Mail, or an A or B
-LEVEL|Floor, or flat
-LID|Cap, or an eyelid
-LIKE|Similar, or enjoy
-LIST|Lean, or a to-do
-LOAF|Lounge, or bread
-LOT|Parking area, or many
-LOUD|Garish, or noisy
-MAD|Angry, or crazy
-MAIL|Armor, or letters
-MAKE|Brand, or create
 MARCH|Month to walk in step?
-MARK|Target, or a grade
-MEET|Sports event, or greet
-METAL|Rock music, or iron
-MIGHT|Power, or maybe
-MINOR|Child, or less important
 MOP|Hairdo you clean with?
 MOUSE|Squeaky computer pointer?
-MOUTH|River's end, or lips
-MOVE|Relocate, or a chess turn
-MUG|Face, or a coffee cup
-NAVY|Dark blue, or sailors
-NEEDLE|Tease, or a sewing tool
-NERVE|Gall, or a body wire
-NOVEL|New, or a book
-NUT|Fan, or a bolt partner
-ODD|Strange, or not even
-OVER|Done, or above
-PACK|Wolf group, or fill a bag
-PAD|Apartment, or a notebook
-PART|Hair line, or a piece
-PEACH|Great person, or a fruit
 PEARL|Gem of wisdom?
-PET|Favorite, or a dog
-PICK|Choice, or a guitar tool
-PIE|Chart, or dessert
-PINE|Long for, or a tree
-PLACE|Spot, or put
-PLAIN|Simple, or prairie
-PLATE|Home base, or a dish
-POLL|Survey, or vote
-POP|Dad, or soda
-POT|Kitty in poker, or a pan
-PRESS|Reporters, or push
 PRIDE|Lion family
-PROOF|Evidence, or a test page
-PUMP|Shoe, or inflate
 QUEEN|Mercury Champions?
-QUICK|Fast, or the nail bed
-RACKET|Noise, or tennis gear
-RAISE|Pay hike, or lift
-RAM|Butt, or a male sheep
-RANK|Smelly, or military grade
-RAP|Knock, or a music style
-RASH|Hasty, or itchy spots
-RATE|Speed, or score
-RAVE|Party, or rant
-REST|Remainder, or relax
-RICH|Wealthy, or creamy
-RIDE|Tease, or a lift
-RIP|Tear, or an epitaph
 RIVER|Bank's location?
-ROCKET|Arugula, or a space ride
 ROLE|Part in a play
-ROLL|Bread, or a list of names
-ROOM|Space, or a hotel booking
-ROOT|Cheer, or a plant base
-ROUND|Drink order, or circular
-RUB|Massage, or a snag
-RULE|Measuring stick, or a law
 RUN|Ladder in tights?
-RUSH|Hurry, or a reed
-SAFE|Home free, or a vault
-SALT|Old sailor, or seasoning
-SAND|Grit, or smooth wood
-SAP|Fool, or tree juice
-SEASON|Add salt, or summer
-SET|Ready, or a TV stage
-SHAKE|Milk drink, or tremble
 SHARK|Card cheat with fins?
-SHARP|Smart, or pointy
-SHELL|Pay up, or a nut cover
-SHINE|Polish, or glow
-SHOT|Photo, or an injection
 SIDE|Dish next to the main?
-SKIRT|Avoid, or clothing
-SLIP|Mistake, or a petticoat
-SOCK|Punch, or a foot cover
-SOUND|Healthy, or noise
-SPADE|Card suit, or a shovel
-SPIN|Twist a story, or whirl
-SPINE|Book's back, or courage
-SPOT|See, or a stain
-STEAL|Bargain, or rob
-STEM|Stop, or a flower stalk
-STIR|Mix, or jail, in slang
-STONE|British weight, or a rock
-STORM|Charge, or bad weather
-STUDY|Den, or learn
-TABLE|Postpone, or furniture
-TAG|Game of chase, or a label
-TAIL|Follow, or the back end
-TAPE|Record, or a sticky strip
-TASTE|Style, or flavor
-TEE|Golf peg, or a shirt
-TERM|Word, or a school period
-THROW|Blanket, or toss
-TITLE|Championship, or a name
-TON|Lots, or 2,000 pounds
-TURKEY|Flop, or a holiday bird
-TWIST|Plot surprise, or a dance
-TYPE|Kind, or key in
-UPSET|Surprise win, or sad
-VAULT|Leap, or a bank safe
 WASH|Even trade?
-WEB|Internet, or spider work
-WIRE|Telegram, or cable
-WORM|Bait, or wriggle
-YELLOW|Cowardly, or sun-colored
-ZERO|Nothing, or a nobody
-ZIP|Nothing, or speed along
-ZEST|Lemon peel, or gusto
 # L14.05 (CD-104): new Wordplay clues from accepted drafts
 END|Tight finish?
 ESSAY|Try writing?

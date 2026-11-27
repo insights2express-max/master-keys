@@ -112,14 +112,14 @@
   // one clue for a word: a random clue set; from Challenge Level 6 up, the indirect clue half the time
   function clueFor(e, lv) {
     const sets = [e].concat(e.alts || []), s = sets[Math.floor(Math.random() * sets.length)];
-    let c = lv >= 6 && Math.random() < 0.5 ? pick1(s.h) || pick1(s.e) : pick1(s.e) || pick1(s.h);
+    let c = (E.revClue && E.revClue(s, lv)) || (lv >= 6 && Math.random() < 0.5 ? pick1(s.h) || pick1(s.e) : pick1(s.e) || pick1(s.h)); // v13d: ⏪ clue at Challenge Levels 1–3
     if (!c) c = pick1(e.e) || pick1(e.h);
     const wp = WP && WP[e.w];
     if (wp && wp.split(';').map(x => x.trim()).includes(c) && !/\?$/.test(c)) c += '?'; // a wordplay clue keeps its "?"
     return c;
   }
   // the clue drawn: "___" as a bar and "_" as an orange "?" (the Lexicon convention, CD-62)
-  const clueHtml = c => esc(c).replace(/_{2,}/g, '<span class="hk-bar"></span>').replace(/_/g, '<span class="hk-q">?</span>');
+  const clueHtml = c => UI.clueIcons(esc(c)).replace(/_{2,}/g, '<span class="hk-bar"></span>').replace(/_/g, '<span class="hk-q">?</span>');
   const shuffled = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
   const rev = s => s.split('').reverse().join('');
   // filler letters, by how often they turn up in English (no Q, few rare letters)
@@ -864,7 +864,7 @@
     const body = `<div class="${midMatch() ? 'kc-hist-over' : 'overbar kc-hist-over'}">${winHtml()}</div>
       <table class="score-table kc-hist-t"><tr><th></th><th>You</th>${duel ? `<th>${esc(botFirst())}</th>` : ''}<th>Your words</th></tr>${rows}
       ${duel && M.rounds > 1 ? `<tr class="total"><td>Match</td><td>${UI.fmtN(M.me)}</td><td>${UI.fmtN(M.bot)}</td><td></td></tr>` : ''}</table>
-      <p class="help-note">Last round, your words: ${R.words.filter(x => x.by === 'me').map(x => `<b>${hd(x) ? '💡' : ''}${x.m ? '🗝' : ''}${x.w}</b> ${ptsOf(x)}`).join(' · ') || 'none'}${mk ? ` · Master Key: <b>${mk.w}</b> (${esc(mk.clue)})` : ''}</p>`;
+      <p class="help-note">Last round, your words: ${R.words.filter(x => x.by === 'me').map(x => `<b>${hd(x) ? '💡' : ''}${x.m ? '🗝' : ''}${x.w}</b> ${ptsOf(x)}`).join(' · ') || 'none'}${mk ? ` · Master Key: <b>${mk.w}</b> (${UI.clueIcons(esc(mk.clue))})` : ''}</p>`;
     const entry = {
       g: 'hidden', win: duel ? (M.done ? M.me > M.bot : M.me >= M.bot) : !!(R.cleared || R.newBest), // v13c: a Solo new best counts as a win
       title: `${NM.hidden} · ${duel ? (M.done ? (M.me > M.bot ? 'Match won' : M.me === M.bot ? 'Match drawn' : 'Match lost') : `Round ${M.no} of ${M.rounds}`) : 'Solo'} (${M.n}×${M.n})`,
@@ -970,6 +970,7 @@
         <li>Open ${NM.hidden} from its card in the ${NM.suite} Lobby: <b>🆕 New Game</b> starts at once with your last settings, <b>⚙ Setup</b> (or a tap on the card) shows the settings first, and <b>▶ Resume</b> appears while a match is unfinished.</li>
         <li>Each word sits in a <b>straight line</b> of touching letters: across, down or diagonally (Setup's <b>Word directions</b> says which ways; on <b>Hard</b> they can also run backwards). Words may cross and share a letter.</li>
         <li><b>Word length:</b> the hidden words are at least <b>3 letters</b>; the longest is set by the grid size and Challenge Level (Auto: 6 letters on 8×8, 7 from level 5; 8 letters on bigger grids, 7 at levels 1–2). <b>Word count:</b> at Challenge Level 3 each grid hides <b>7–9</b>, <b>10–12</b> or <b>13–15</b> list words; levels 1–2 hide one word fewer, and from level 5 there is one more every two levels (level 10: three more). Setup's <b>Word count</b> and <b>Word length</b> can change both ends. The Key list's heading shows this grid's lengths, and each clue shows its own length.</li>
+        <li>${UI.clueIcons('⏪ ')}<b>Reverse clue</b> (Challenge Levels 1–3): a clue that starts with the orange <b>rewind</b> icon is the answer <b>spelled backward</b>, so ${UI.clueIcons('⏪ ')}POT means TOP.</li>
         <li>The <b>Key list</b> under the grid shows each word's <b>clue</b> and its number of letters (or, with <b>Words</b>, the words themselves). A found word fills in and gets a band on the grid: <b style="color:#2c6bd8">blue</b> = yours, <b style="color:#e01e1e">red</b> = the Bot's.</li>`)}
       ${sec('Find a Word', `
         <li><b>Swipe</b> (touch) or <b>drag</b> (mouse) from the first letter of a word to its last, then let go. The band snaps to the nearest straight line. Either end can come first.</li>

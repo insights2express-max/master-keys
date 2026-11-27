@@ -56,7 +56,7 @@
     }
     for (const e of E.lexicon()) {
       const n = e.w.length;
-      if (n >= 4 && n <= 7 && GUESS[n].has(e.w)) ANS[n].push({ w: e.w, l: e.l, c: e.e, h: e.h });
+      if (n >= 4 && n <= 7 && GUESS[n].has(e.w)) ANS[n].push({ w: e.w, l: e.l, c: e.e, h: e.h, rv: e.rv }); // v13d: rv = reverse-word clue
     }
     // 8-letter answers: WORD|level|clue|easy clue|hard clue|status (v08; status v08b: only blank or ACTIVE answers play)
     for (const line of String(window.VAULT_EIGHT || '').split('\n')) {
@@ -93,6 +93,8 @@
     return [a.c, a.h || a.c, tricky, SHORT[a.w] || tricky];
   }
   function hintText(a, level) {
+    const rv = E.revClue ? E.revClue(a, level) : ''; // v13d (CD-144: 3.1): the ⏪ reverse-word clue, Challenge Levels 1–3
+    if (rv) return rv;
     const t = hintTiers(a);
     let k = level <= 3 ? 0 : level >= 8 ? 3 : -1;
     if (k < 0) { const m = HINT_MIX[level], r = Math.random() * 100; k = r < m[0] ? 0 : r < m[0] + m[1] ? 1 : 2; }
@@ -233,7 +235,7 @@
       prev = { w: R.a.w, hint: R.hint, won: R.over && R.won };
       if (!R.over && counts()) {
         R.over = true; recordLoss();
-        addHistory(`Left unsolved: ${R.a.w}`, '—', `<div class="vt-res-h">🆕 Left for a new word</div><div class="vt-res-w">${R.a.w.split('').map(ch => `<span>${ch}</span>`).join('')}</div>${R.hint && R.hint.t ? `<p class="vt-res-c">Clue: ${esc(R.hint.t)}</p>` : ''}${coinTable(null)}`);
+        addHistory(`Left unsolved: ${R.a.w}`, '—', `<div class="vt-res-h">🆕 Left for a new word</div><div class="vt-res-w">${R.a.w.split('').map(ch => `<span>${ch}</span>`).join('')}</div>${R.hint && R.hint.t ? `<p class="vt-res-c">Clue: ${UI.clueIcons(esc(R.hint.t))}</p>` : ''}${coinTable(null)}`);
       }
       clearInterval(R.tId);
     }
@@ -255,7 +257,7 @@
       R.gate = true;
       showOv('gate', `<div class="vt-ov-h">${prev.won ? '🔓 Solved. The last word was:' : '🔒 Not solved. The word was:'}</div>
         <div class="vt-res-w">${prev.w.split('').map(ch => `<span>${ch}</span>`).join('')}</div>
-        <p class="vt-ov-t small">Clue: ${esc(prev.hint ? prev.hint.t : '')}</p>
+        <p class="vt-ov-t small">Clue: ${UI.clueIcons(esc(prev.hint ? prev.hint.t : ''))}</p>
         <div class="vt-ov-s">Tap anywhere to start your new word${timerOf(R.timer).kind !== 'none' ? ' (its clock starts then)' : ''}</div>`);
     }
     startClock();
@@ -472,7 +474,7 @@
       R.hints = 1; toast(`Hint · 🪙−${HINT_COINS}`);
     }
     const c = R.hint;
-    showOv('hint', `<div class="vt-ov-h">🔎 Hint</div>${c.pic ? `<div class="vt-ov-pic">${esc(c.pic)}</div>` : ''}<div class="vt-ov-t">${esc(c.t)}</div>
+    showOv('hint', `<div class="vt-ov-h">🔎 Hint</div>${c.pic ? `<div class="vt-ov-pic">${esc(c.pic)}</div>` : ''}<div class="vt-ov-t">${UI.clueIcons(esc(c.t))}</div>
       <div class="vt-ov-s">Tap anywhere to close · Hint ✓ shows it again for free</div>`);
     render();
   });
@@ -715,7 +717,7 @@
     const body = `
       <div class="res-top"><span class="res-face">${face}</span><span class="res-title">${head}</span></div>
       <div class="vt-res-w">${w.split('').map(ch => `<span>${ch}</span>`).join('')}</div>
-      ${R.hint && R.hint.t ? `<p class="res-sub">Clue: ${esc(R.hint.t)}</p>` : ''}
+      ${R.hint && R.hint.t ? `<p class="res-sub">Clue: ${UI.clueIcons(esc(R.hint.t))}</p>` : ''}
       <div class="res-cols">${sec(pts)}${sec(coinTable(sc.coins))}</div>
       <div class="res-cols"><section>
       <h3 class="res-h">📊 Your stats</h3>
@@ -774,6 +776,7 @@
         <li><b>💡 Reveal</b> places one letter in its spot. Its price is that letter's share of the word: the whole word is worth <b>80 coins</b>, so one letter costs 80 ÷ the number of letters (rounded up): 4 letters 🪙20 · 5 🪙16 · 6 🪙14 · 7 🪙12 · 8 🪙10. A letter of a short word gives away more, so it costs more.</li>
         <li><b>🔎 Hint (🪙${HINT_COINS})</b> shows a clue for the word (sometimes with a picture) over the grid; tap anywhere to close it. It costs ${HINT_COINS} <b>coins</b>, not points. Once paid for, <b>Hint ✓</b> shows it again for free.</li>
         <li>The Hint follows the <b>Challenge Level</b>: at 1–3 it is direct and simple (mostly one word, like "Froth" for FOAM); at 4–7 you get a mix that grows trickier as the level rises; at 8–10 it is a <b>short, sly</b> hint of one to three words, like "Tree-hanger" for UNAU or "River horse"-style nicknames.</li>
+        <li>${UI.clueIcons('⏪ ')}<b>Reverse clue</b> (Challenge Levels 1–3): a clue that starts with the orange <b>rewind</b> icon is the answer <b>spelled backward</b>, so ${UI.clueIcons('⏪ ')}POT means TOP.</li>
         <li><b>🆕 New Game</b> starts a fresh word. <b>🏳️ Give up</b> shows the word. Both ask first while the word is unfinished ("Keep playing" is the main button). Either one, once you've made a guess or used a Hint or Reveal, counts that word as not solved and breaks your streak. After every New Game, the word that just ended is shown over the new grid until you click or tap anywhere; the new word's clock starts then.</li>
         <li><b>⏸️ Pause:</b> tap the clock. The grid is hidden until you tap anywhere. The clock counts down in timed games and counts up in untimed ones. In the last 10 seconds the grid's border flashes yellow, then red.</li>`)}
       ${sec('Coins', `
