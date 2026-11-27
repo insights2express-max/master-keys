@@ -43,8 +43,8 @@ LEAD|Guide made of metal?
 LIGHT|Neither heavy nor dark
 LOCK|Secure hair bit?
 LOG|Diary of wood?
-MATCH|Contest you can strike
-MINE|Gold pit that's all yours
+MATCH|Striking contest?
+MINE|Pit of my own?
 MOLE|Spy that digs?
 NAIL|Get right with a hammer?
 NOTE|Memo you can sing
@@ -78,7 +78,7 @@ DRILL|Practice that bores?
 FAST|Quick not to eat?
 FLAT|Airless apartment?
 GRAVE|Serious rest spot?
-MEAN|Unkind average
+MEAN|Unkind average?
 NET|Catch the profit?
 PARK|Green space for a car
 PLANT|Factory that grows?
@@ -412,7 +412,7 @@ KING|Royal bed size?
 KNIGHT|Bedtime chess piece?
 KNOT|Sea-speed tie?
 LEAP|Year with an extra day
-MARCH|Month to walk in step?
+MARCH|Month on parade?
 MOP|Hairdo you clean with?
 MOUSE|Squeaky computer pointer?
 PEARL|Gem of wisdom?
@@ -441,4 +441,13 @@ XI|Is she Chinese?
 # L16.02 (JM Copy Edits from L16, 2nd paste): new Wordplay clues (JM edits)
 SANDCASTLES|Gritty palace?; Granular palace?
 SODIUM|Salty partner?
+LIE|Fib in bed?
+LAST|Endure to the end?
+LEFT|Gone to port?
+LION|Pride member?
+MAIL|Armored post?
+MILK|Exploit a cow?
+LEMON|Sour car?
+METAL|Heavy rock?
+MOUTH|River's lips?
 `;
