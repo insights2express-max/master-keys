@@ -15,7 +15,7 @@
    v08j: grid colors, final-play view, clock-out final turn, menu defaults, phone two-finger drag) */
 'use strict';
 (() => {
-  const APP_VER = 'v13d'; // Project CP: shown as a pill beside the title and in the browser tab
+  const APP_VER = 'v13e'; // Project CP: shown as a pill beside the title and in the browser tab
   const NM = window.MK_NAMES || { suite: 'Master Keys', cross: 'CrossKeys', lock: 'LockWord' }; // v09: the game names (names.js)
   // v09a (JM CD-71: 1.2c, 1.3b): the two games' own icons, shown wherever the 🧩 / 🔐 emoji stood
   const GI = { cross: 'icons/crosskeys.svg', lock: 'icons/lockword.svg', ring: 'icons/keyring.svg', cubes: 'icons/keycubes.svg', hidden: 'icons/hiddenkeys.svg' }; // v11: KeyRing; v12: KeyCubes; v13: Hidden Keys
@@ -1928,7 +1928,9 @@
   // v08f (JM CD-37: 2.1): every info window has a ✕ in its top-right corner and also closes on a tap outside it.
   // opt.close: false = a question or a busy screen (no ✕, no outside tap); a function = runs after the window closes
   // (e.g. a result window shows the finished grid and its game-over bar).
+  let helpCap = null; // v13e: while a string, openModal hands a How To Play's HTML back here (for the search) instead of opening it
   function openModal(html, cls, opt) {
+    if (helpCap !== null) { helpCap = html; return; } // v13e: reading a How To Play for the search index, not opening it
     opt = opt || {};
     const can = opt.close !== false, sh = $('#sheet');
     sh.className = 'sheet' + (cls ? ' ' + cls : '');
@@ -1937,6 +1939,7 @@
     const shut = () => { closeModal(); if (typeof opt.close === 'function') opt.close(); };
     $('#modal').onclick = can ? (e => { if (e.target === $('#modal')) shut(); }) : null;
     if (can) sh.querySelector('.sheet-x').addEventListener('click', e => { e.stopPropagation(); shut(); });
+    if (sh.querySelector('.help-sec')) helpSearchBar(sh); // v13e (JM CD-145: 1.2.1): every How To Play gets the search box
     $('#modal').hidden = false;
   }
   function closeModal() { $('#sheet').className = 'sheet'; $('#modal').hidden = true; $('#modal').onclick = null; $('#sheet').innerHTML = ''; $('#sheet').onclick = null; $('#sheet').onpointerdown = null; }
@@ -2128,6 +2131,7 @@
       ${sec('The Lobby', `
         <li>The Lobby is the first screen: the ${NM.suite} title, ${go('You')}, your ${go('Coins', 'coins')}, and one card per game.</li>
         <li>The small buttons in the top corner: the speaker ${go('Sound')}, 📜 ${go('Game History')}, ⚙ ${go(NM.suite + ' Settings')} and ? (this window).</li>
+        <li><b>🔎 Search</b>: the box at the top of every How To Play window searches <b>every game's</b> How To Play at once. Type a word or two (in any order; put "quotes" around a phrase). Results come grouped by window, this one first; tap one to open its window at that line, which flashes with your words marked. <b>◂ Results</b> takes you back to the list, and ✕ clears the search.</li>
         <li><b>A–Z</b> / <b>Z–A</b> beside "Games" sorts the game cards by name (A–Z is the standard; your choice is remembered).</li>
         <li><b>☰</b> in every game takes you back to the Lobby. An unfinished game is kept, ready to resume.</li>`)}
       ${sec('You', `
@@ -2375,6 +2379,117 @@
     const h = e.target.closest('.help-h');
     if (h) { const s = h.parentElement; openSec(s, !s.classList.contains('open')); return true; }
     return false;
+  }
+  // v13e (JM CD-145: 1.2.1): HOW TO PLAY SEARCH. Every How To Play window (Master Keys and each game) opens with a 🔎 box that
+  // searches ALL of them at once, so a Player can find a rule without knowing which game's window holds it. Results are grouped
+  // by window (this one first, then Master Keys, then the other games A–Z); tapping one opens that window at that line, which
+  // flashes with the words marked. Words can come in any order; "quotes" keep a phrase together.
+
+  const helpWins = () => [
+    { k: 'suite', nm: NM.suite, open: () => showSuiteHelp() },
+    { k: 'cross', nm: NM.cross, open: () => showHelp('cross') },
+    { k: 'lock', nm: NM.lock, open: () => window.WordVault && window.WordVault.help() },
+    { k: 'ring', nm: NM.ring, open: () => window.KeyRing && window.KeyRing.help() },
+    { k: 'cubes', nm: NM.cubes || 'KeyCubes', open: () => window.KeyCubes && window.KeyCubes.help() },
+    { k: 'hidden', nm: NM.hidden || 'Hidden Keys', open: () => window.HiddenKeys && window.HiddenKeys.help() }
+  ];
+  // which window is open: the game named in its title (Master Keys when none is)
+  const helpKeyOf = sh => { const t = ($('h2', sh) || {}).textContent || ''; const g = helpWins().find(w => w.k !== 'suite' && t.includes(w.nm)); return g ? g.k : 'suite'; };
+  // every line of every How To Play: { k, sec (section id, '' for the opening text), title, j (line number), t (its text) }
+  function helpIndex() {
+    const sh = $('#sheet'), keep = sh.onclick, out = [];
+    for (const w of helpWins()) {
+      helpCap = '';
+      try { w.open(); } catch (e) { /* a game that isn't loaded is left out */ }
+      const html = helpCap; helpCap = null;
+      if (!html) continue;
+      const d = document.createElement('div'); d.innerHTML = html;
+      d.querySelectorAll(':scope > p:not(.help-note)').forEach((p, j) => out.push({ k: w.k, nm: w.nm, sec: '', title: 'About', j, t: p.textContent }));
+      d.querySelectorAll('.help-sec').forEach(s => {
+        const title = s.querySelector('.help-h').textContent.replace(/[▸▾]\s*$/, '').trim();
+        s.querySelectorAll('li').forEach((li, j) => out.push({ k: w.k, nm: w.nm, sec: s.dataset.sec, title, j, t: li.textContent.replace(/\s+/g, ' ').trim() }));
+      });
+    }
+    sh.onclick = keep; // reading a window set its tap handler: put this window's back
+    return out;
+  }
+  const helpTerms = q => (String(q).toLowerCase().match(/"[^"]+"|\S+/g) || []).map(t => t.replace(/"/g, '').trim()).filter(Boolean);
+  const reEsc = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  // marks the search words in escaped HTML text (never inside a tag)
+  const markTerms = (html, terms) => !terms.length ? html : html.replace(new RegExp(`(${terms.map(reEsc).join('|')})(?![^<]*>)`, 'gi'), '<mark>$1</mark>');
+  function helpSnip(t, terms) {
+    const lo = t.toLowerCase(), at = Math.max(0, Math.min(...terms.map(x => { const i = lo.indexOf(x); return i < 0 ? 1e9 : i; })));
+    let a = 0, b = t.length;
+    if (t.length > 170) { a = Math.max(0, at - 60); b = Math.min(t.length, a + 170); }
+    return (a > 0 ? '…' : '') + markTerms(esc(t.slice(a, b)), terms) + (b < t.length ? '…' : '');
+  }
+  function helpSearchBar(sh) {
+    const here = helpKeyOf(sh), h2 = $('h2', sh);
+    const bar = document.createElement('div'); bar.className = 'hps-bar';
+    bar.innerHTML = `<label class="hps-box"><span class="hps-ico" aria-hidden="true">🔎</span><input type="search" class="hps-q" enterkeyhint="search" autocomplete="off" placeholder="Search How To Play (every game)" aria-label="Search How To Play in every game"><button type="button" class="hps-x" aria-label="Clear the search" title="Clear the search" hidden>✕</button></label><button type="button" class="btn hps-back" hidden>◂ Results</button>`;
+    const res = document.createElement('div'); res.className = 'hps-res'; res.setAttribute('aria-live', 'polite'); res.hidden = true;
+    (h2 || sh.firstChild).after(bar); bar.after(res);
+    const q = $('.hps-q', bar), x = $('.hps-x', bar), back = $('.hps-back', bar);
+    let idx = null, hits = [];
+    const show = on => { sh.classList.toggle('hps-on', on); res.hidden = !on; back.hidden = on || !q.value.trim(); if (on) sh.scrollTop = 0; };
+    function run() {
+      const v = q.value.trim(); q.classList.toggle('has', !!v); x.hidden = !v;
+      if (v.length < 2) { show(false); back.hidden = true; return; }
+      const terms = helpTerms(v);
+      idx = idx || helpIndex();
+      hits = idx.filter(r => { const t = r.t.toLowerCase(); return terms.every(w => t.includes(w)); });
+      const order = [here, 'suite'].concat(helpWins().filter(w => w.k !== here && w.k !== 'suite').sort((a, b) => a.nm.localeCompare(b.nm)).map(w => w.k));
+      const groups = order.map(k => ({ k, rows: hits.filter(r => r.k === k) })).filter(g => g.rows.length);
+      res.innerHTML = !hits.length ? `<p class="hps-none">No matches for <b>${esc(v)}</b>. Try fewer or shorter words.</p>`
+        : `<p class="hps-n">${hits.length} match${hits.length === 1 ? '' : 'es'} in ${groups.length} How To Play window${groups.length === 1 ? '' : 's'}</p>` + groups.map(g => `<h3 class="hps-g">${g.k === 'suite' ? '<img class="gi" src="icons/icon.svg" alt="">' : gimg(g.k)}How To Play ${esc(g.rows[0].nm)}${g.k === here ? ' <span class="chip">this window</span>' : ''}<span class="hps-c">${g.rows.length}</span></h3>`
+          + g.rows.map(r => `<button type="button" class="hps-r" data-i="${hits.indexOf(r)}"><b>${esc(r.title)}</b><span>${helpSnip(r.t, terms)}</span></button>`).join('')).join('');
+      show(true);
+    }
+    q.addEventListener('input', run);
+    q.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && q.value) { e.preventDefault(); e.stopPropagation(); q.value = ''; run(); }
+      else if (e.key === 'Enter') { e.preventDefault(); const f = $('.hps-r', res); if (f) f.click(); }
+    });
+    x.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); q.value = ''; run(); q.focus(); });
+    back.addEventListener('click', e => { e.stopPropagation(); run(); });
+    res.addEventListener('click', e => {
+      const b = e.target.closest('.hps-r'); if (!b) return;
+      e.stopPropagation();
+      const r = hits[+b.dataset.i], terms = helpTerms(q.value), v = q.value;
+      if (r.k !== here) { const w = helpWins().find(w2 => w2.k === r.k); w.open(); }
+      helpJump($('#sheet'), r, terms, v);
+    });
+  }
+  // opens a window's section at the line found, marks the words and flashes the line; the search stays in the box
+  function helpJump(sh, r, terms, v) {
+    const bar = $('.hps-bar', sh);
+    if (bar) { const q = $('.hps-q', bar); q.value = v; q.classList.toggle('has', !!v); $('.hps-x', bar).hidden = !v; $('.hps-back', bar).hidden = !v; sh.classList.remove('hps-on'); $('.hps-res', sh).hidden = true; }
+    let el;
+    if (r.sec) {
+      const s = sh.querySelector(`.help-sec[data-sec="${r.sec}"]`); if (!s) return;
+      sh.querySelectorAll('.help-sec.open').forEach(o => { o.classList.remove('open'); o.querySelector('.help-h').setAttribute('aria-expanded', 'false'); });
+      s.classList.add('open'); s.querySelector('.help-h').setAttribute('aria-expanded', 'true');
+      el = s.querySelectorAll('li')[r.j];
+    } else el = sh.querySelectorAll(':scope > p:not(.help-note)')[r.j];
+    if (!el) return;
+    sh.querySelectorAll('.hps-hit').forEach(o => { o.classList.remove('hps-hit'); o.querySelectorAll('mark.hps-m').forEach(m => m.replaceWith(m.textContent)); });
+    // mark the words in the line's own text (its links and icons stay as they are)
+    const re = terms.length ? new RegExp(terms.map(reEsc).join('|'), 'gi') : null;
+    if (re) {
+      const tw = document.createTreeWalker(el, NodeFilter.SHOW_TEXT), nodes = [];
+      while (tw.nextNode()) nodes.push(tw.currentNode);
+      nodes.forEach(n => {
+        const t = n.nodeValue; if (!re.test(t)) return; re.lastIndex = 0;
+        const f = document.createDocumentFragment(); let a = 0, m;
+        while ((m = re.exec(t))) { f.append(t.slice(a, m.index)); const mk = document.createElement('mark'); mk.className = 'hps-m'; mk.textContent = m[0]; f.append(mk); a = m.index + m[0].length; }
+        f.append(t.slice(a)); n.replaceWith(f);
+      });
+    }
+    sh.classList.add('help-jump');
+    const bh = bar ? bar.offsetHeight : 0;
+    sh.scrollTop = el.getBoundingClientRect().top - sh.getBoundingClientRect().top + sh.scrollTop - bh - 12;
+    void sh.offsetHeight; sh.classList.remove('help-jump');
+    el.classList.remove('hps-hit'); void el.offsetWidth; el.classList.add('hps-hit');
   }
   $('#helpBtn').addEventListener('click', () => { if (G && !G.over && E.timerOf(G.settings.timer).kind !== 'none') setPaused(true); showHelp(); });
   // v06c (CD-18: 3.1a): the phone copies of ☰ and ? in the Scoreboard row do exactly what the top-bar buttons do

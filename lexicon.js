@@ -5753,7 +5753,6 @@ T|_OMATO|1|🍅
 T|_IGER|1|🐯
 T|Sounds like a hot drink|2|🍵
 T|Golf peg|2|👕
-T|Golf peg, by sound|3
 U|_MBRELLA|1
 U|___-turn|1
 U|Sounds like "you"|1
