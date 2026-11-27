@@ -9,7 +9,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Master Keys">
   <meta name="description" content="Master Keys: CrossKeys, a head-to-head crossword tile game, LockWord, a word-guessing game, and KeyRing, a word builder. Plays offline.">
-  <title>Master Keys · v13e</title>
+  <title>Master Keys · v13f</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="icon" href="icons/icon-192.png" type="image/png" sizes="192x192">
@@ -51,7 +51,7 @@
       <header class="brand">
         <img class="logo" src="icons/icon.svg" alt="" width="64" height="64">
         <div class="brand-txt">
-          <h1><span data-mk="suite">Master Keys</span> <span class="vpill" id="verPill">v13e</span></h1>
+          <h1><span data-mk="suite">Master Keys</span> <span class="vpill" id="verPill">v13f</span></h1>
           <p class="tag">Word games. Play anywhere, even offline.</p>
         </div>
       </header>
@@ -193,6 +193,16 @@
         </div>
       </div>
 
+      <!-- v13f (JM 2026-11-27 S.1, every game): the color schemes sit up here, not under More Options, so they're easy to
+           change mid-game. v08j (CD-45: 2.2a): grid colors (they change at once); v11e (CD-102, CD-105): the coin buttons' look -->
+      <div class="pair mk-looks">
+        <label class="field gs-field">
+          <span class="lbl">Grid Colors</span>
+          <span class="gs-pick"><select id="gridSel"></select><span id="gridSample"></span></span>
+        </label>
+        <label class="field"><span class="lbl">Button Colors</span><select id="btnSel"></select></label>
+      </div>
+
       <!-- v08h (JM CD-41: 1.1): the five options you rarely change fold into one row with a one-line summary (▸ / ▾) -->
       <details class="opts" id="optsBox">
         <summary><span class="cec" aria-hidden="true">▸</span><span class="lbl">More Options</span><span class="opts-sum" id="optsSum"></span></summary>
@@ -261,13 +271,6 @@
         </label>
       </div>
       <span class="opt-desc" id="scoringDesc"></span>
-      <!-- v08j (JM CD-45: 2.2a, 4.1c): grid colors (they change at once) and the defaults buttons -->
-      <label class="field gs-field">
-        <span class="lbl">Grid Colors</span>
-        <span class="gs-pick"><select id="gridSel"></select><span id="gridSample"></span></span>
-      </label>
-      <!-- v11e (JM CD-102: 1.1.1; CD-105: 1.1a): the coin buttons' look, as in every game -->
-      <label class="field"><span class="lbl">Button Colors</span><select id="btnSel"></select></label>
       <!-- v10: Screen moved to ⚙ Master Keys settings in the Lobby (it changes every game) -->
       <div class="def-row">
         <button class="btn" id="saveDefBtn" type="button" title="Keep the Challenge Level, Grid Size and all these Options as your defaults">⭐ Save as my defaults</button>
@@ -344,8 +347,16 @@
       <div class="field"><span class="lbl">Letters on the Ring</span>
         <div class="seg kr-nseg" id="krNSeg"><button type="button" data-n="3">3</button><button type="button" data-n="4">4</button><button type="button" data-n="5">5</button><button type="button" data-n="6">6</button><button type="button" data-n="7">7</button><button type="button" data-n="8">8</button></div>
       </div>
-      <div class="kr-prev" id="krPrev" aria-hidden="true"></div>
+      <!-- v13f (JM 2026-11-27 1.2.1.1): the Key Tiles preview and, beside it, the Ring Button colors preview (keyring.js fills #krBsPrev) -->
+      <div class="kr-prevw" aria-hidden="true"><div class="kr-prev" id="krPrev"></div><div class="kr-bprev" id="krBsPrev"></div></div>
       <p class="opt-desc kr-desc" id="krNDesc"></p>
+      <!-- v13f (JM 2026-11-27 S.1, every game): the color schemes sit up here, not under More options, so they're easy to change mid-game -->
+      <div class="mk-looks kr-looks">
+        <div class="field"><span class="lbl">Key word colors</span>
+          <div class="seg" id="krCol"><button type="button" data-v="word">By word</button><button type="button" data-v="letter">By letter</button><button type="button" data-v="none">No colors</button></div>
+        </div>
+        <label class="field"><span class="lbl">Ring Button Colors</span><select id="krBs"><option value="b">Steel</option><option value="a">Sapphire</option><option value="c">Navy &amp; gold</option><option value="d">Ruby</option><option value="e">Emerald</option><option value="f">Onyx</option></select></label>
+      </div>
       <div class="pair">
         <label class="field"><span class="lbl">Challenge Level</span><select id="krLv"></select></label>
         <label class="field"><span class="lbl">Timer</span><select id="krTm"></select></label>
@@ -365,15 +376,10 @@
             <div class="seg" id="krTp"><button type="button" data-v="off">Off</button><button type="button" data-v="on">On</button></div>
           </div>
           <p class="opt-desc kr-desc">On: a timed Ring that runs out pays one letter's worth for each letter you filled. Off: bonus coins only.</p>
-          <div class="field"><span class="lbl">Key word colors</span>
-            <div class="seg" id="krCol"><button type="button" data-v="word">By word</button><button type="button" data-v="letter">By letter</button><button type="button" data-v="none">No colors</button></div>
-          </div>
           <div class="field"><span class="lbl">Layout</span>
             <div class="seg" id="krLay"><button type="button" data-v="auto">Auto</button><button type="button" data-v="stack">Stacked</button><button type="button" data-v="side">Side by side</button></div>
           </div>
           <p class="opt-desc kr-desc">Auto picks the bigger Ring. Side by side needs a tablet or computer screen. During play, the layout pill (tablets and computers) and the Word / Letter switch (top corner of the Key grid) change them too.</p>
-          <label class="field"><span class="lbl">Ring Button Colors</span><select id="krBs"><option value="b">Steel</option><option value="a">Sapphire</option><option value="c">Navy &amp; gold</option><option value="d">Ruby</option><option value="e">Emerald</option><option value="f">Onyx</option></select></label>
-          <p class="opt-desc kr-desc">The look of the Ring's corner buttons (every game has Button Colors too).</p>
         </div>
       </details>      <div class="vt-stats" id="krStats"></div>
     </div>
@@ -438,6 +444,11 @@
         <div class="seg kc-seg" id="kcN"><button type="button" data-v="4">4×4<small>16 cubes</small></button><button type="button" data-v="5">5×5<small>25 cubes</small></button></div>
       </div>
       <div class="kc-prevw" aria-hidden="true"><div class="kc-prev" id="kcPrev"></div><span class="btn coinbtn kc-prevb" id="kcPrevB" title="Your Button Color"><span class="ic">💡</span><span class="nm">Hint</span><span class="cp">Button Color</span></span></div>
+      <!-- v13f (JM 2026-11-27 S.1, every game): the color schemes sit right under the preview, not under More options -->
+      <div class="pair mk-looks">
+        <label class="field"><span class="lbl">Cube Colors</span><select id="kcCs"></select></label>
+        <label class="field"><span class="lbl">Button Colors</span><select id="kcBs"></select></label>
+      </div>
       <div class="pair">
         <label class="field"><span class="lbl">Timer</span><select id="kcTm"></select></label>
         <label class="field" id="kcLvF"><span class="lbl">Challenge Level</span><select id="kcLv"></select></label>      </div>
@@ -452,10 +463,6 @@
           </div>
           <label class="field"><span class="lbl">Scoring</span><select id="kcSc"><option value="lp">Letter points + length bonus</option><option value="len">Word length only</option></select></label>
           <label class="field"><span class="lbl">Bonus cubes</span><select id="kcBon"><option value="on">On: 3W · 2W · 2L · 3L, new places every round</option><option value="off">Off</option></select></label>
-          <div class="pair">
-            <label class="field"><span class="lbl">Cube Colors</span><select id="kcCs"></select></label>
-            <label class="field"><span class="lbl">Button Colors</span><select id="kcBs"></select></label>
-          </div>
           <div class="pair" id="kcSoloF">
             <label class="field"><span class="lbl">Solo Hints</span><select id="kcSh"><option value="free">Free</option><option value="paid">Paid (🪙1 per letter)</option></select></label>
             <label class="field"><span class="lbl">Solo Hint limit</span><select id="kcScap"><option value="3">3 per round</option><option value="none">No limit</option></select></label>
@@ -507,6 +514,8 @@
       <button class="icon-btn" id="hkSet" type="button" aria-label="Hidden Keys Setup" data-mk-aria="{hidden} Setup" title="Setup">⚙</button>
       <button class="icon-btn" id="hkHelp" type="button" aria-label="How To Play Hidden Keys" data-mk-aria="How To Play {hidden}">?</button>
     </header>
+    <!-- v13f (JM 2026-11-27 2.2.1.1 #1): while you play, the title bar hides itself to give the grid room; this tab brings it back -->
+    <button class="hk-hdrtab" id="hkHdrTab" type="button" hidden aria-label="Show the title bar" title="Show the title bar (menu, sound, New Game, Setup, help)"><span aria-hidden="true">▾</span></button>
     <div class="home-wrap ck-wrap kc-setup" id="hkSetup">
       <div class="unfin" id="hkSetUnf" hidden><span id="hkSetUnfTxt"></span><button class="btn primary" id="hkSetResume" type="button">▶ Resume</button></div>
       <div class="field"><span class="lbl">Play</span>
@@ -519,6 +528,11 @@
         <div class="seg kc-seg" id="hkList"><button type="button" data-v="clue">📖 Clues<small>find them from clues</small></button><button type="button" data-v="word">🔤 Words<small>the words are shown</small></button></div>
       </div>
       <div class="kc-prevw hk-prevw" aria-hidden="true"><div id="hkPrev"></div><span class="btn coinbtn kc-prevb" title="Your Button Color"><span class="ic">💡</span><span class="nm">Hint</span><span class="cp">Button Color</span></span></div>
+      <!-- v13f (JM 2026-11-27 S.1, every game): the color schemes sit right under the preview, not under More options -->
+      <div class="pair mk-looks">
+        <label class="field"><span class="lbl">Grid Colors</span><select id="hkGs"></select></label>
+        <label class="field"><span class="lbl">Button Colors</span><select id="hkBs"></select></label>
+      </div>
       <div class="pair">
         <label class="field"><span class="lbl">Timer</span><select id="hkTm"></select></label>
         <label class="field"><span class="lbl">Challenge Level</span><select id="hkLv"></select></label>
@@ -541,10 +555,6 @@
             <label class="field"><span class="lbl">Word directions</span><select id="hkDir"></select></label>
             <label class="field" id="hkRdF"><span class="lbl">Rounds per match</span><select id="hkRd"><option value="1">1 round</option><option value="2">2 rounds</option><option value="3">3 rounds (default)</option><option value="4">4 rounds</option><option value="5">5 rounds</option></select></label>
           </div>
-          <div class="pair">
-            <label class="field"><span class="lbl">Grid Colors</span><select id="hkGs"></select></label>
-            <label class="field"><span class="lbl">Button Colors</span><select id="hkBs"></select></label>
-          </div>
           <div class="pair" id="hkSoloF">
             <label class="field"><span class="lbl">Solo Hints</span><select id="hkSh"><option value="free">Free</option><option value="paid">Paid (🪙1 per letter)</option></select></label>
             <label class="field"><span class="lbl">Solo Hint limit</span><select id="hkScap"><option value="3">3 per round</option><option value="none">No limit</option></select></label>
@@ -557,13 +567,15 @@
       <div class="hk-main" id="hkMain">
         <div class="kc-bar" id="hkBar">
           <div class="kc-side me"><span class="av" id="hkMeAv">🙂</span><span class="nm" id="hkMeNm">You</span><span class="sc" id="hkMeSc">0</span><span class="rd" id="hkMeRd"></span><span class="plus" id="hkMePlus"></span></div>
-          <div class="kc-mid"><button class="kc-clock" id="hkClock" type="button" title="Pause"><span class="e">⏱</span><span id="hkClk">0:00</span></button><button class="kc-pause" id="hkPause" type="button"></button></div>
+          <div class="kc-mid"><button class="kc-clock hk-clockpz" id="hkClock" type="button" title="Pause"><span class="e" id="hkClkIco">⏸️</span><span id="hkClk">0:00</span></button><button class="kc-pause" id="hkPause" type="button" hidden></button></div><!-- v13f (2.2.1.1 #3): pause lives in the timer -->
+
           <div class="kc-side bot" id="hkBot"><span class="av" id="hkBotAv">🤖</span><span class="nm" id="hkBotNm">Bot</span><span class="sc" id="hkBotSc">0</span><span class="rd" id="hkBotRd"></span><span class="plus" id="hkBotPlus">+1</span></div>
         </div>
         <div class="kc-msg hk-msg" id="hkMsg" aria-live="polite"></div>
         <div class="hk-trayw"><div class="hk-tray" id="hkTray"></div><button class="kc-pz" id="hkPz" type="button" hidden><span class="mk-pzi">⏸️</span><b>Paused</b><span>Tap to resume play</span></button></div>
         <div class="kc-btns hk-btns" id="hkBtns">
           <button class="btn coinbtn" id="hkHint" type="button" title="Hint: stripe the first letter of a word"><span class="ic">💡</span><span class="nm" id="hkHintNm">Hint</span><span class="cp" id="hkHintCp"></span></button>
+          <button class="btn coinbtn hk-zoom" id="hkZoom" type="button" title="Zoom: 1×, 1.5×, 2× (or pinch, Ctrl + wheel, + / − keys)" aria-label="Zoom"><span class="ic">🔍</span><span class="nm" id="hkZoomNm">1×</span></button>
           <button class="btn coinbtn" id="hkDone" type="button" title="End this Solo round" hidden><span class="ic">🏁</span><span class="nm">Done</span><span class="cp">Solo</span></button>
         </div>
         <div class="hk-keysw"><h4><span id="hkKHead">Key list</span><span id="hkKPts"></span><span class="seg hk-view" id="hkView" role="group" aria-label="Show clues or words"><button type="button" data-v="clue" title="Show the clues">📖 Clues</button><button type="button" data-v="word" title="Show the words">🔤 Words</button></span></h4><div class="hk-keys" id="hkKeys"></div></div>

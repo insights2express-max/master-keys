@@ -15,7 +15,7 @@
    v08j: grid colors, final-play view, clock-out final turn, menu defaults, phone two-finger drag) */
 'use strict';
 (() => {
-  const APP_VER = 'v13e'; // Project CP: shown as a pill beside the title and in the browser tab
+  const APP_VER = 'v13f'; // Project CP: shown as a pill beside the title and in the browser tab
   const NM = window.MK_NAMES || { suite: 'Master Keys', cross: 'CrossKeys', lock: 'LockWord' }; // v09: the game names (names.js)
   // v09a (JM CD-71: 1.2c, 1.3b): the two games' own icons, shown wherever the 🧩 / 🔐 emoji stood
   const GI = { cross: 'icons/crosskeys.svg', lock: 'icons/lockword.svg', ring: 'icons/keyring.svg', cubes: 'icons/keycubes.svg', hidden: 'icons/hiddenkeys.svg' }; // v11: KeyRing; v12: KeyCubes; v13: Hidden Keys
@@ -2205,8 +2205,8 @@
       ${sec('Options', `
         <li>The five options you change least (${go('Letters in Hand')}, ${go('Bonus Squares')}, ${go('Clue Pics')}, ${go('Scoring')} and ${go('Timer')}) fold into one <b>▸ Options</b> row, so the Setup screen fits on one screen. The row shows your choices in one line, like "6 letters · Floating bonus · Some pics · Classic · Untimed".</li>
         <li>Tap it to open (▾) or close (▸) it. It stays the way you left it. ⚙ Settings in the game changes the same options.</li>
-        <li><b>Button Colors</b> (in More Options, and in ⚙): six looks for the coin buttons: Steel (the default), Sapphire, Navy &amp; gold, Ruby, Emerald or Onyx. Every game has the same choice.</li>
-        <li><b>Grid Colors</b> (at the foot of More Options, and in ⚙): five looks for the grid. <b>Board</b> (the default): empty cells are dark slots and played tiles are cream, with a colored bar for whose they are. <b>Inked</b>: no bars; your letters are blue, the Bot's red, starter letters black. <b>Inked Blue</b>: Inked, with this turn's tiles blue. <b>Painted</b>: solid blue and red tiles with white letters, light-gray starters. <b>Bold</b>: white empty cells and solid tiles. The change shows at once.</li>
+        <li><b>Button Colors</b> (on Setup right under Grid Size, easy to change mid-game, and in ⚙): six looks for the coin buttons: Steel (the default), Sapphire, Navy &amp; gold, Ruby, Emerald or Onyx. Every game has the same choice.</li>
+        <li><b>Grid Colors</b> (on Setup right under Grid Size, and in ⚙): five looks for the grid. <b>Board</b> (the default): empty cells are dark slots and played tiles are cream, with a colored bar for whose they are. <b>Inked</b>: no bars; your letters are blue, the Bot's red, starter letters black. <b>Inked Blue</b>: Inked, with this turn's tiles blue. <b>Painted</b>: solid blue and red tiles with white letters, light-gray starters. <b>Bold</b>: white empty cells and solid tiles. The change shows at once.</li>
         <li><b>Screen</b> (in ⚙ ${NM.suite} settings in the Lobby, and in ⚙ in the game; it changes every game): <b>Auto</b> follows your device's light or dark setting; <b>Light</b> and <b>Dark</b> stay put; <b>Night</b> is the dimmest look (charcoal grays, color only in the owner bars and clocks) for playing in the dark, with one fixed grid look.</li>
         <li>The Setup screen remembers your last choices. <b>⭐ Save as my defaults</b> keeps the Challenge Level, Grid Size and all the Options as your own defaults; <b>↺ Defaults</b> brings them back after you try something different (or the app's defaults, if you haven't saved any).</li>`)}
       ${sec('Letters in Hand', `
@@ -3796,6 +3796,31 @@
   // =====================================================================
   // Boot
   // =====================================================================
+  // v13f (JM 2026-11-27 S.2, the standard for every game, present and future): on a computer, Enter works NEW GAME.
+  // - In a window: Enter presses its blue New Game button (CrossKeys and KeyRing Results) or confirms "Start new".
+  // - After a game: Enter presses the blue New Game button in the win bar (KeyRing; LockWord's "Next word"). CrossKeys
+  //   keeps its own order (Enter closes the last report, then opens Results, then New Game there); KeyCubes and Hidden Keys
+  //   keep Enter twice on their results (CD-119: 1.2.1).
+  // A new game only needs its New Game button to be a .primary button reading "New Game" in its win bar (.overbar) or Results.
+  const NEW_RE = /New Game|^Start new$|^Next word$/i;
+  const ENTER_OWN = ['game', 'keycubes', 'hiddenkeys']; // screens whose own code already takes Enter on the game-over screen
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Enter' || e.repeat || e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) return;
+    if (e.target && e.target.closest && e.target.closest('input, select, textarea, [contenteditable="true"]')) return;
+    const vis = b => b && !b.disabled && b.getClientRects().length > 0;
+    const isNew = b => vis(b) && NEW_RE.test(b.textContent.replace(/🆕/g, '').trim());
+    const m = $('#modal');
+    let b = null;
+    if (m && !m.hidden) b = [...m.querySelectorAll('button.primary')].find(isNew);
+    else {
+      const sec = [...document.querySelectorAll('section.screen')].find(s => !s.hidden);
+      if (!sec || ENTER_OWN.includes(sec.id)) return;
+      b = [...sec.querySelectorAll('.overbar button.primary')].find(isNew);
+    }
+    if (!b) return;
+    e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation(); b.click();
+  }, true);
+
   // v07c: the LockWord mini-game (lockword.js) shares the menu's modal, toasts, storage and avatar list
   // v12d (JM CD-119 add. 1.1.4.3): while a game is paused, a tap anywhere on its screen (outside its header) resumes play,
   // as in LockWord (lockword.js closes its overlay the same way)

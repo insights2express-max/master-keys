@@ -318,9 +318,22 @@
   }
 
   // ---------- Setup ----------
+  // v13f (JM 2026-11-27, 1.2.1.1): a live preview of the Ring Button colors beside the Key Tiles preview: two small copies of the
+  // real corner pieces (BONUS and ⏱ +30s), drawn with the same paths and classes, so the chosen Ring Button Colors show at once
+  function paintBsPrev() {
+    const box = $('#krBsPrev'); if (!box) return;
+    const s = 64, c = s + 15, rho = s * 0.72, rad = Math.max(8, s * 0.14), depth = 3;
+    const piece = (cls, fx, inner) => {
+      const d = cornerPath(s, c, c, rho, rad, fx, 0);
+      return `<span class="kr-cp ${cls}"><svg class="kr-cps" viewBox="0 0 ${s} ${s}"><path class="e" d="${d}" transform="translate(0 ${depth})"/><path class="b" d="${d}"/><path class="g" d="${d}"/><path class="r" d="${d}"/></svg>${inner}</span>`;
+    };
+    box.innerHTML = piece('kr-bonus', 0, '<span class="kr-cpc tl"><span class="lab">★ BONUS</span><span class="num">7</span></span>')
+      + piece('kr-time', 1, '<span class="kr-cpc tr"><span class="lab">+30s</span><span class="cost">🪙<b>10</b></span></span>');
+  }
   function paintSetup() {
     for (const b of document.querySelectorAll('#krNSeg button')) { const on = +b.dataset.n === ks.n; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); }
     $('#krPrev').innerHTML = [...N_DEMO[ks.n]].sort().map(c => `<span>${c}</span>`).join('');
+    paintBsPrev();
     $('#krNDesc').textContent = N_DESC[ks.n];
     $('#krLv').value = String(ks.lv);
     $('#krTm').value = String(ks.timer);
@@ -410,6 +423,7 @@
     if (!W0 || !H0) return;
     const coarse = matchMedia('(pointer: coarse)').matches;
     const big = W0 >= 700 && H0 >= 560; // tablets and computers: bigger message pills
+    main.classList.toggle('kr-compact', !big); // v13f (1.1 MB): phones: the colors button moves to the message row, the Key grid fills its panel
     const sideOk = W0 >= 640 && H0 >= 400; // side by side is possible (the layout pill shows)
     $('#krLayP').hidden = !sideOk; // before the info row is measured
     paintColP(); // v11d (CD-100: 3.4.1b): the colors switch sits in the Key grid's top-right corner on every screen
@@ -503,18 +517,25 @@
   // ---------- slots ----------
   function renderSlots(pops) {
     if (!R) return;
-    const box = $('#krSlots'), bs = getComputedStyle(box), W = box.clientWidth - parseFloat(bs.paddingLeft) - parseFloat(bs.paddingRight) - 8;
+    // v13f (JM 2026-11-27, 1.1 MB): on phones (krMain.kr-compact) the Key grid has no switch row and a thin edge, and the gaps
+    // between words and rows are tighter, so the Key words get as big as the panel allows
+    const compact = $('#krMain').classList.contains('kr-compact'), WG = compact ? 0.42 : 0.7, RG = compact ? 0.16 : 0.22;
+    const box = $('#krSlots'), bs = getComputedStyle(box), W = box.clientWidth - parseFloat(bs.paddingLeft) - parseFloat(bs.paddingRight) - (compact ? 2 : 8);
     const H = box.clientHeight - parseFloat(bs.paddingTop) - parseFloat(bs.paddingBottom) - 4; // v11f (CD-107: 3.3.1): the box's real padding (the colors switch row)
     if (W <= 0 || H <= 0) return;
     const ml = maxLen();
     let best = null;
+    // each row as drawn: a word is len squares + 0.1 cs between its squares + 6 px of padding; words are WG cs apart
+    const rowFit = row => { let u = 0, px = 0; row.forEach((i, j) => { const L = R.words[i].length; u += L * 1.1 - 0.1 + (j ? WG : 0); px += 6; }); return (W - px) / u; };
     // v11c: rows may hold as many letters as the width allows (as fit() plans), not just about two words' worth
-    for (let C = ml; C <= Math.max(ml * 2 + 2, Math.floor((W / 20 - 0.6) / 1.1)); C += 0.5) {
-      const rows = pack(C), size = Math.min(W / (C * 1.1 + 0.6), (H - 6 * rows.length) / (rows.length * 1.22 + (rows.length - 1) * 0.22), 62); // v11f: each row is cs + 6 px of padding, rows are 0.22 cs apart
+    for (let C = ml; C <= Math.max(ml * 2 + 2, Math.floor((W / 16 - 0.6) / 1.1)); C += 0.5) {
+      const rows = pack(C), r = rows.length;
+      // v13f: the exact width of the widest row (was an estimate that left an empty margin); each row is cs + 6 px tall
+      const size = Math.min(...rows.map(rowFit), (H - 6 * r) / (r * (compact ? 1.02 : 1.22) + (r - 1) * RG), compact ? 72 : 62);
       if (!best || size > best.size + 0.5) best = { rows, size };
     }
     cs = Math.max(16, Math.floor(best.size));
-    box.style.setProperty('--cs', cs + 'px'); box.style.setProperty('--rg', Math.round(cs * 0.22) + 'px');
+    box.style.setProperty('--cs', cs + 'px'); box.style.setProperty('--rg', Math.round(cs * RG) + 'px'); box.style.setProperty('--wg', WG);
     const col = colorize(best.rows);
     box.innerHTML = best.rows.map(r => `<div class="kr-row">${r.map(i => {
       const w = R.words[i], f = R.found.has(i);
@@ -722,7 +743,8 @@
   }
   function fitMsg() {
     const m = $('#krMsg'), t = m.querySelector('.mt:not(.sm)'); if (!t) return;
-    const maxW = Math.max(120, Math.min(rs, m.clientWidth || rs));
+    const ms = getComputedStyle(m), inner = m.clientWidth - parseFloat(ms.paddingLeft) - parseFloat(ms.paddingRight); // v13f: clear of the phone's colors button
+    const maxW = Math.max(120, Math.min(rs, inner > 0 ? inner : rs));
     const mh = parseFloat(getComputedStyle($('#krMain')).getPropertyValue('--mh')) || 44;
     let f = Math.round(Math.min(34, mh * 0.56, Math.max(17, rs * 0.072)));
     t.style.maxWidth = maxW + 'px'; t.style.whiteSpace = 'nowrap'; t.style.fontSize = f + 'px';

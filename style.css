@@ -3206,3 +3206,73 @@ html[data-screen="night"] .hk-key { filter: brightness(.82); }
 .hps-r b { display: block; font-size: 12px; color: var(--you); text-transform: uppercase; letter-spacing: .03em; margin-bottom: 2px; }
 .hps-r mark, mark.hps-m { background: #ffe066; color: #000; border-radius: 3px; padding: 0 1px; }
 .sheet li.hps-hit, .sheet p.hps-hit { animation: helpflash 2.4s ease-out; border-radius: 6px; }
+
+/* ---------- v13f KeyRing (CD-150) ---------- */
+/* KeyRing session (JM 2026-11-27): 1.1 MB Key grid without dead space; Missed words red; Ring Button preview */
+/* 1.1 (MB): on phones (#krMain.kr-compact, set by keyring.js fit()) the colors button becomes a round dot at the right end of the
+   message row, so the Key grid needs no switch row; its edge is thin, and the gaps between words and rows are tighter */
+#krSlots .kr-row { gap: calc(var(--cs) * var(--wg, .7)); }
+#keyring #krMain.kr-compact .kr-slots { padding: 4px; }
+#keyring #krMain.kr-compact .kr-colsw#krColP { grid-area: msg; justify-self: end; align-self: center; margin: 0; padding: 0; gap: 0;
+  width: 36px; height: 36px; justify-content: center; border-radius: 50%; font-size: 16px; }
+#keyring #krMain.kr-compact #krColT { display: none; }
+#keyring #krMain.kr-compact .kr-colsw#krColP .sw-dot { width: 20px; height: 20px; }
+#keyring #krMain.kr-compact .kr-msg { padding: 0 42px; }
+#keyring #krMain.kr-compact .kr-word .hm { left: calc(var(--cs) * -.28); top: -3px; transform: none; font-size: calc(var(--cs) * .34); z-index: 2; }
+/* 1.2.1.1 (all devices): the results' Missed words group is red, the same red as the "not a word" message pill (.kr-msg .mt.bad);
+   its word chips stay white with black letters so they read clearly */
+.kr-grp.kr-mw { background: #ff2626; color: #fff; border-color: #b51c1c; }
+.kr-grp.kr-mw .kr-chips span:not(.none):not(.hd) { background: #fff; color: #000; }
+html[data-screen="night"] .kr-grp.kr-mw { background: #8a2b2b; color: #ddd; border-color: #5e1d1d; }
+html[data-screen="night"] .kr-grp.kr-mw .kr-chips span:not(.none):not(.hd) { background: rgba(0, 0, 0, .3); color: #eee; }
+/* 1.2.1.1 (Setup): the Key Tiles preview with the Ring Button colors preview beside it (keyring.js paintBsPrev; the same corner-piece
+   paths, so every Ring Button Colors choice shows live). On a narrow phone the pair wraps under the tiles. */
+.kr-prevw { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 10px 18px; }
+.kr-prevw .kr-prev { margin-top: 0; }
+.kr-bprev { position: relative; flex: none; width: 138px; height: 67px; --cps: 64px; pointer-events: none; }
+.kr-bprev .kr-cp { position: absolute; top: 0; width: 64px; height: 64px; display: block; }
+.kr-bprev .kr-cp.kr-bonus { left: 0; } .kr-bprev .kr-cp.kr-time { right: 0; left: auto; }
+.kr-bprev .kr-cpc .lab { font-size: 11px; } .kr-bprev .kr-bonus .kr-cpc .num { font-size: 19px; } .kr-bprev .kr-cpc .cost { font-size: 11px; }
+
+/* =====================================================================
+   v13f lead (JM 2026-11-27, KeyCubes / Hidden Keys session): S.1 the color schemes up top in every game's Setup;
+   Hidden Keys room for the grid (title bar auto-hide, zoom, pause in the clock, short Hint, grid to the screen edges);
+   KeyCubes bonus tags with a fine black outline, word bonuses in the top-right corner
+   ===================================================================== */
+/* S.1: the color fields sit right under each game's preview (CrossKeys: under Grid Size), not under More options */
+.mk-looks { margin-top: 2px; }
+.mk-looks .gs-field { display: flex; flex-direction: column; }
+.mk-looks.pair:has(.gs-field) { grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); }
+@media (max-width: 520px) { .mk-looks.pair:has(.gs-field) { grid-template-columns: minmax(0, 1fr); } } /* CrossKeys: the grid sample needs the full width on a phone */
+.kr-looks { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 10px; align-items: end; }
+@media (max-width: 480px) { .kr-looks { grid-template-columns: minmax(0, 1fr); } }
+/* Hidden Keys #1: while a round is on, the title bar hides; a small ▾ tab at the top brings it back */
+#hiddenkeys.hk-hh > header.hk-top { display: none; }
+.hk-hdrtab { position: absolute; top: env(safe-area-inset-top); left: 50%; transform: translateX(-50%); z-index: 8; border: 0; margin: 0; padding: 0 18px;
+  height: 16px; border-radius: 0 0 10px 10px; background: var(--kc-glass); box-shadow: var(--kc-edge); color: #fff; font: 900 12px/16px system-ui, sans-serif; cursor: pointer; }
+.hk-hdrtab[hidden] { display: none; }
+.hk-hdrtab:focus-visible { outline: 2px solid var(--kc-glow); outline-offset: 2px; }
+#hiddenkeys.hk-hh .hk-main { padding-top: 18px; }
+/* #2 zoomed, the frame keeps its size and the bigger grid scrolls inside it */
+#hiddenkeys.hk-zoomed .hk-trayw { display: block; justify-self: center; width: var(--ts); height: var(--ts); overflow: auto; overscroll-behavior: contain;
+  border-radius: calc(var(--ts) * .05); scrollbar-width: thin; }
+#hiddenkeys .hk-zoom .nm { grid-row: span 2; }
+#hiddenkeys .btn.coinbtn.hk-zoom { min-width: 0; grid-template-columns: auto auto; }
+/* #3 pause lives in the clock (the standard blue pause / play square); Hint is short until its first press opens it */
+#hiddenkeys .hk-clockpz { cursor: pointer; }
+#hiddenkeys .hk-clockpz .e { font-size: 20px; line-height: 0; }
+#hiddenkeys .hk-clockpz .e .mk-pp { width: 1.25em; height: 1.25em; }
+#hiddenkeys .btn.coinbtn#hkHint:not(.open) { min-width: 0; grid-template-columns: auto auto; }
+#hiddenkeys #hkHint:not(.open) .cp { display: none; }
+#hiddenkeys #hkHint:not(.open) .nm { grid-row: span 2; }
+/* the grid out to the screen edges on phones */
+@media (max-width: 699px) { .hk-main { padding: 4px 4px 8px; gap: 6px; } }
+#hiddenkeys.hk-hh .hk-main { padding-top: 18px; }
+/* KeyCubes 3.1.1: a fine black outline on every bonus tag; 3.1.2: 2W / 3W in the top-right corner, 2L / 3L stay top-left */
+.kc-bn { box-shadow: 0 0 0 1.25px #000, inset 0 1px 0 rgba(255, 255, 255, .45), inset 0 -1px 0 rgba(0, 0, 0, .2), 0 1px 2px rgba(0, 0, 0, .4);
+  text-shadow: 0 0 1px #000, 0 1px 0 rgba(0, 0, 0, .6); }
+.kc-bn.b2W, .kc-bn.b3W { left: auto; right: 7%; }
+.kc-mini .kc-bn { box-shadow: 0 0 0 1px #000; }
+.kc-mini .kc-bn.b2L, .kc-mini .kc-bn.b3L { right: auto; left: 1px; }
+/* a hinted word-bonus cube shows its Hint number in the top-left instead, clear of the tag */
+.kc-cube.bon.b2W.hint::after, .kc-cube.bon.b3W.hint::after { justify-content: flex-start; }

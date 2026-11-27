@@ -44,7 +44,11 @@
   const st = Object.assign(blankSt(), store.get('cd.hk.stats', {}));
   const saveSt = () => store.set('cd.hk.stats', st);
   const SAVE_KEY = 'cd.hk.save';
-  const TIMERS = [[60, '1 min'], [120, '2 min'], [180, '3 min'], [300, '5 min'], [480, '8 min'], [0, 'Untimed']];
+  // v13f: the title bar's auto-hide and the grid zoom (state up here: paintPause can run before their code below)
+  let hdrPeek = false, hdrT = 0, zoom = 1, pinch = null;
+  const ptrs = new Map();
+  // v13f (JM 2026-11-27 2.1.1.1): every whole minute from 1 to 8
+  const TIMERS = [1, 2, 3, 4, 5, 6, 7, 8].map(m => [m * 60, `${m} min`]).concat([[0, 'Untimed']]);
   const timerName = t => (TIMERS.find(x => x[0] === +t) || TIMERS[2])[1];
   // v13a (JM CD-132 add. 1–2): Word count (min / max list words per grid) and Word length (shortest / longest), side by side
   // in More options. Auto = by grid size: 8×8 7–9 words of 3–6 letters; 10×10 10–12 words, 12×12 13–15 words, 3–8 letters.
@@ -270,11 +274,12 @@
   const playOn = () => screenOn() && !$('#hkPlay').hidden;
   const modalOpen = () => { const m = $('#modal'); return m && !m.hidden; };
   function setHead(sub) { $('#hkSub').textContent = sub; document.title = `${NM.hidden} · ${NM.suite} ${UI.APP_VER}`; }
-  function part(id) { for (const p of ['hkSetup', 'hkPlay', 'hkRes']) $('#' + p).hidden = p !== id; }
+  function part(id) { for (const p of ['hkSetup', 'hkPlay', 'hkRes']) $('#' + p).hidden = p !== id; hdrAuto(); } // v13f: the title bar hides only during play
   function showSetup() { UI.showScreen('hiddenkeys'); part('hkSetup'); setHead('Setup'); paintSetup(); $('#hkSetup').scrollTop = 0; }
   function showPlay() {
     if (!R) return;
     if (R.over) { showRes(); return; }
+    if (!R.started) { zoom = 1; SEC.classList.remove('hk-zoomed'); $('#hkZoomNm').textContent = '1×'; tray.parentNode.scrollTo(0, 0); } // v13f: each round starts with the whole grid
     UI.showScreen('hiddenkeys'); part('hkPlay');
     setHead(M.mode === 'solo' ? `Solo · ${M.n}×${M.n}` : `Round ${M.no} of ${M.rounds} · ${M.n}×${M.n}`);
     buildBoard(); paintGame(); tick(0);
@@ -685,12 +690,20 @@
     const open = R.words.map((x, i) => i).filter(i => !R.words[i].by && !R.words[i].m);
     return open.length ? open[Math.floor(Math.random() * open.length)] : -1;
   }
-  let hintArm = -1;
+  let hintArm = -1, hintOpenT = 0;
+  const aN = n => n === 8 || n === 11 || n === 18 ? 'an' : 'a'; // "an 8-letter word"
+  // v13f (JM 2026-11-27 2.2.1.1 #3): Hint is a short button ("💡 Hint"); its first press opens it to show the cost and
+  // "n left", and the second press uses it (paid: the first press also arms it, as every coin button does)
+  function hintOpen(on) {
+    const b = $('#hkHint'); b.classList.toggle('open', !!on); clearTimeout(hintOpenT);
+    if (on) hintOpenT = setTimeout(() => { b.classList.remove('open'); if (b.classList.contains('armed')) UI.armTap(b, 0); }, 3500);
+  }
   $('#hkHint').addEventListener('click', () => {
     if (!canPlay()) return;
-    const b = $('#hkHint');
+    const b = $('#hkHint'), wasOpen = b.classList.contains('open');
+    hintOpen(true);
     if (nextOn()) {
-      if (hintFree()) { giveNext(0); return; }
+      if (hintFree()) { if (!wasOpen) { msg('💡 Next: tap again to stripe the next letter (free)', '', 2600); return; } giveNext(0); return; }
       if (!b.classList.contains('armed')) {
         if (UI.coins && UI.coins.bal < 1) { UI.coins.spend(1, `${NM.hidden} Next letter`); return; }
         UI.armTap(b, 1); msg('💡 Stripe the next letter of your hinted word: tap again to buy (🪙1)', '', 2600); return;
@@ -704,10 +717,13 @@
       hintArm = pickHint();
       if (hintArm < 0) { msg('No words left to hint', 'dup', 2000); return; }
       const x = R.words[hintArm];
-      if (hintFree()) { giveHint(hintArm, 0); return; }
+      if (hintFree()) {
+        if (!wasOpen) { const left = hintCap() - R.hints; msg(`💡 Hint (free${left === Infinity ? '' : ` · ${left} left`}): tap again to stripe the first letter of ${R.sel === hintArm ? 'your clue' : aN(x.w.length)} ${x.w.length}-letter word`, '', 2600); return; }
+        giveHint(hintArm, 0); return;
+      }
       if (UI.coins && UI.coins.bal < x.w.length) { UI.coins.spend(x.w.length, `${NM.hidden} Hint`); return; }
       UI.armTap(b, x.w.length);
-      msg(`💡 Stripe the first letter of ${R.sel === hintArm ? 'your clue' : 'a'} ${x.w.length}-letter word: tap again to buy (🪙${x.w.length})`, '', 2600);
+      msg(`💡 Stripe the first letter of ${R.sel === hintArm ? 'your clue' : aN(x.w.length)} ${x.w.length}-letter word: tap again to buy (🪙${x.w.length})`, '', 2600);
       return;
     }
     UI.armTap(b, 0);
@@ -719,11 +735,11 @@
   function giveHint(i, price) {
     R.hints++; R.hintCoins += price; M.coins -= price;
     R.hint = i; R.hintK = 1; R.sel = i; R.hinted[R.words[i].w] = 1; // a 💡 mark on every word a Hint helped
-    paintHint(); paintKeys(); msg(''); paintHintBtn(); save();
+    hintOpen(false); paintHint(); paintKeys(); msg(''); paintHintBtn(); save();
   }
   function giveNext(price) {
     R.hintK = (R.hintK || 1) + 1; R.hintCoins += price; M.coins -= price;
-    paintHint(); snd('key'); msg(''); paintHintBtn(); save();
+    hintOpen(false); paintHint(); snd('key'); msg(''); paintHintBtn(); save();
   }
   $('#hkDone').addEventListener('click', () => { if (R && !R.over && M.mode === 'solo') endRound(false); });
 
@@ -737,9 +753,11 @@
   function paintPause() {
     const p = !!(R && R.paused);
     tray.classList.toggle('blur', p); $('#hkPz').hidden = !p;
-    const b = $('#hkPause');
-    b.textContent = p ? '▶️' : '⏸️';
-    b.title = p ? 'Resume' : 'Pause: the clock stops and the letters are hidden'; b.setAttribute('aria-label', b.title);
+    // v13f (JM 2026-11-27 2.2.1.1 #3): pause lives in the timer: tap the clock; its icon is the standard pause / play square
+    const b = $('#hkClock');
+    $('#hkClkIco').textContent = p ? '▶️' : '⏸️';
+    b.title = p ? 'Resume' : 'Pause: tap the clock (the clock stops and the letters are hidden)'; b.setAttribute('aria-label', (p ? 'Resume, ' : 'Pause, ') + 'clock');
+    hdrAuto(); placePz();
   }
   $('#hkPause').addEventListener('click', () => setPause(!(R && R.paused)));
   $('#hkClock').addEventListener('click', () => setPause(!(R && R.paused)));
@@ -775,7 +793,7 @@
   // ---------- the end of a round ----------
   function endRound(cleared) {
     if (!R || R.over) return;
-    R.over = true; R.paused = false; clearSel(); setFlash(0);
+    R.over = true; R.paused = false; clearSel(); setFlash(0); hdrAuto(); // v13f: the title bar comes back
     document.querySelectorAll('#hiddenkeys .btn.armed').forEach(b => UI.armTap(b, 0));
     const duel = M.mode === 'duel', T = M.timer, sec = Math.floor(R.el / 1000), rem = T ? Math.max(0, T - sec) : 0;
     R.meTot = myPts(); R.botTot = duel ? botPts() : 0;
@@ -933,6 +951,73 @@
   $('#hkResLobby').addEventListener('click', goLobby);
   $('#hkResSetup').addEventListener('click', showSetup);
 
+  // ---------- v13f (JM 2026-11-27 2.2.1.1): room for the grid ----------
+  // #1 While a round is on, the title bar hides itself. The ▾ tab brings it back for 6 seconds (or until you touch the
+  // grid); it stays while paused, and on Setup and the results.
+  function hdrAuto() {
+    const live = playOn() && R && !R.over && !R.paused, hide = live && !hdrPeek;
+    const was = SEC.classList.contains('hk-hh');
+    SEC.classList.toggle('hk-hh', !!hide);
+    $('#hkHdrTab').hidden = !hide;
+    if (was !== !!hide) fit();
+  }
+  function hdrShow() { hdrPeek = true; hdrAuto(); clearTimeout(hdrT); hdrT = setTimeout(() => { hdrPeek = false; hdrAuto(); }, 6000); }
+  $('#hkHdrTab').addEventListener('click', hdrShow);
+  tray.addEventListener('pointerdown', () => { if (hdrPeek) { clearTimeout(hdrT); hdrPeek = false; hdrAuto(); } }, true);
+
+  // #2 Zoom, as in CrossKeys: 🔍 steps 1× → 1.5× → 2×; two fingers pinch (and slide) the grid; Ctrl + wheel and + / − on a
+  // computer. Zoomed, the grid scrolls inside its frame: one finger still picks words; two fingers, the wheel or the scroll
+  // bars slide it.
+  const Z_MAX = 2.5, wrapEl = () => tray.parentNode;
+  function setZoom(z, ax, ay) {
+    z = Math.max(1, Math.min(Z_MAX, Math.round(z * 20) / 20));
+    const w = wrapEl(), r = w.getBoundingClientRect();
+    const fx = ax == null ? r.width / 2 : ax - r.left, fy = ay == null ? r.height / 2 : ay - r.top;
+    const gx = (w.scrollLeft + fx) / zoom, gy = (w.scrollTop + fy) / zoom;
+    zoom = z; SEC.classList.toggle('hk-zoomed', z > 1); fit();
+    w.scrollLeft = gx * z - fx; w.scrollTop = gy * z - fy;
+    $('#hkZoomNm').textContent = `${Math.round(z * 10) / 10}×`;
+    placePz();
+  }
+  // the Paused panel stays in the middle of what you see, even zoomed
+  function placePz() {
+    const pz = $('#hkPz'), w = tray.parentNode;
+    if (zoom > 1) { pz.style.top = `${w.scrollTop + w.clientHeight / 2}px`; pz.style.left = `${w.scrollLeft + w.clientWidth / 2}px`; }
+    else { pz.style.top = ''; pz.style.left = ''; }
+  }
+  $('#hkZoom').addEventListener('click', () => setZoom(zoom < 1.25 ? 1.5 : zoom < 1.75 ? 2 : 1));
+  wrapEl().addEventListener('wheel', e => { if (!e.ctrlKey || !playOn()) return; e.preventDefault(); setZoom(zoom * (e.deltaY < 0 ? 1.12 : 1 / 1.12), e.clientX, e.clientY); }, { passive: false });
+  wrapEl().addEventListener('scroll', () => { if (R && R.paused) placePz(); });
+  document.addEventListener('keydown', e => {
+    if (!playOn() || modalOpen() || e.ctrlKey || e.metaKey || e.altKey || (e.target && e.target.closest && e.target.closest('input, select, textarea'))) return;
+    if (e.key === '+' || e.key === '=') { e.preventDefault(); setZoom(zoom * 1.25); }
+    else if (e.key === '-' || e.key === '_') { e.preventDefault(); setZoom(zoom / 1.25); }
+  });
+  // two fingers: pinch to zoom and slide; this runs before the word-picking handlers and stops them while it lasts
+  const mid = () => { const p = [...ptrs.values()]; return { x: (p[0].x + p[1].x) / 2, y: (p[0].y + p[1].y) / 2, d: Math.hypot(p[0].x - p[1].x, p[0].y - p[1].y) || 1 }; };
+  tray.addEventListener('pointerdown', e => {
+    if (e.pointerType !== 'touch') return;
+    ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (ptrs.size === 2 && R && !R.over && !R.paused) {
+      e.stopImmediatePropagation(); e.preventDefault();
+      dragging = false; clearSel(); msg('');
+      const m = mid(), w = wrapEl(), r = w.getBoundingClientRect();
+      pinch = { d0: m.d, z0: zoom, gx: (w.scrollLeft + m.x - r.left) / zoom, gy: (w.scrollTop + m.y - r.top) / zoom };
+    }
+  }, true);
+  tray.addEventListener('onpointerrawupdate' in window ? 'pointerrawupdate' : 'pointermove', e => {
+    if (!ptrs.has(e.pointerId)) return;
+    ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (!pinch || ptrs.size < 2) return;
+    e.stopImmediatePropagation();
+    const m = mid(), w = wrapEl(), r = w.getBoundingClientRect();
+    const z = Math.max(1, Math.min(Z_MAX, pinch.z0 * m.d / pinch.d0));
+    if (Math.abs(z - zoom) > 0.01) { zoom = z; SEC.classList.toggle('hk-zoomed', z > 1); fit(); $('#hkZoomNm').textContent = `${Math.round(z * 10) / 10}×`; }
+    w.scrollLeft = pinch.gx * zoom - (m.x - r.left); w.scrollTop = pinch.gy * zoom - (m.y - r.top);
+  }, true);
+  const ptrUp = e => { ptrs.delete(e.pointerId); if (pinch) { if (ptrs.size < 2) { pinch = null; dragging = false; } e.stopImmediatePropagation(); } };
+  tray.addEventListener('pointerup', ptrUp, true); tray.addEventListener('pointercancel', ptrUp, true);
+
   // ---------- layout ----------
   function fit() {
     if (!screenOn()) return;
@@ -942,9 +1027,11 @@
       const top = $('#hkPlay').getBoundingClientRect().top, bar = $('#hkBar').offsetHeight;
       let size;
       if (wide) size = Math.min(H - top - bar - 64, (Math.min(W, 1400) - 60) * 0.56); // room for the tray's edge and the key tips
-      else size = Math.min(W - 20, H - top - bar - Math.max(52, $('#hkBtns').offsetHeight) - 190 - 34, 640); // room for about 4 clues below
+      // v13f (JM 2026-11-27 2.2.1.1): out to the screen edges, with room for about 3 clues below (was W − 20 and 4 clues)
+      else size = Math.min(W - 8, H - top - bar - Math.max(44, $('#hkBtns').offsetHeight) - 150 - 30, 640);
       size = Math.max(220, Math.floor(size));
-      tray.style.setProperty('--ts', size + 'px'); tray.parentNode.style.setProperty('--ts', size + 'px');
+      // zoomed, the frame keeps this size and the grid inside it grows (it scrolls)
+      tray.style.setProperty('--ts', Math.round(size * zoom) + 'px'); tray.parentNode.style.setProperty('--ts', size + 'px');
     }
     if (!$('#hkRes').hidden && R && R.over) UI.fitOver($('#hkWin'));
   }
@@ -992,10 +1079,12 @@
       ${sec('Scoring', `
         <li>Every word scores <b>1 point per letter</b>; the 🗝 Master Key scores <b>×3</b>. In a Duel that started with Clues, a word found while the words show scores half (see Find a Word).</li>`)}
       ${sec('The Buttons', `
-        <li><b>💡 Hint</b> stripes the <b>first letter</b> of a word (the clue you picked, or else any word still open): a signal, not a solve. It costs <b>🪙1 per letter</b> of that word (two taps: the first shows the price), at most <b>3 per round</b> in a Duel. In Solo, Hints are free or paid, 3 per round or no limit (Setup).</li>
+        <li><b>💡 Hint</b> is a short button: its <b>first tap</b> opens it to show the price and how many are left, the <b>second</b> uses it. It stripes the <b>first letter</b> of a word (the clue you picked, or else any word still open): a signal, not a solve. It costs <b>🪙1 per letter</b> of that word, at most <b>3 per round</b> in a Duel. In Solo, Hints are free or paid, 3 per round or no limit (Setup).</li>
         <li>While your hinted word is still unfound, the button reads <b>💡 Next</b>: each tap stripes its <b>next letter</b> (numbered 1, 2, 3…) for <b>🪙1</b>. It never shows the last letter, and it doesn't count toward the Hint limit.</li>
         <li>A word a Hint helped keeps a <b>💡 mark</b> in the list and the results.</li>
-        <li><b>⏸ Pause</b> (or tap the clock) stops the clock (and the Bot) and hides the letters. Tap anywhere to resume play.</li>
+        <li><b>⏸ Pause lives in the clock</b>: tap the clock (or press <b>Space</b>) to stop it (and the Bot) and hide the letters. Tap anywhere to resume play.</li>
+        <li><b>🔍 Zoom</b> steps 1×, 1.5×, 2×. On a phone, pinch with two fingers (and slide with two fingers); on a computer, Ctrl + mouse wheel or the <b>+</b> / <b>−</b> keys. Zoomed, the grid scrolls in its frame; one finger still picks words. Each round starts with the whole grid.</li>
+        <li>While you play, the <b>title bar hides itself</b> to give the grid more room. Tap the small <b>▾</b> tab at the top to bring it back (menu, sound, New Game, Setup, help); it hides again after a few seconds, or when you touch the grid. It stays while paused and after the round.</li>
         <li>In the last 10 seconds the grid flashes every second: <b>yellow</b> from 10 to 6, <b>red</b> from 5 to 1, with a tick each second.</li>`)}
       ${sec('Coins', `
         <li>In a Duel: a round won pays <b>🪙${WIN}</b>, a draw <b>🪙${DRAW}</b>, and a match won <b>🪙${MATCH}</b> more.</li>
@@ -1006,8 +1095,8 @@
         <li>The score card shows the <b>game totals</b> big, then each round with the running total; the higher score of each round is <b style="color:#12a03c">green</b>.</li>
         <li>The grid shows every word: yours in blue, the Bot's in red, missed words dashed. Tap a word in the list to see where it was hidden, who found it and when, and its 📖 clue.</li>`)}
       ${sec('Setup', `
-        <li><b>Play</b>: Duel or Solo. <b>Grid</b>: 8×8, 10×10 (standard) or 12×12; each button shows its word count. <b>Key list</b>: Clues or Words. <b>Timer</b>: 1, 2, 3 (standard), 5 or 8 min; Untimed in Solo. <b>Challenge Level</b> 1–10.</li>
-        <li>Under <b>▸ More options</b>, first: <b>Word count</b>, min and max side by side (Auto follows the grid size and Challenge Level, as in The Basics, and shows its number; each round picks a number in your range), then <b>Word length</b>, min and max (min 3 letters standard; max Auto by grid size and Challenge Level; 12×12 also offers 11-letter words). A min set above the max moves the max along (and the other way round). Then <b>Word directions</b> (Easy → ↓, Standard → ↓ ↘ ↗, Hard: all 8 ways), Rounds per match, <b>Grid Colors</b> (Cream, Inked, Inked Blue, Steel, Sky, Navy &amp; gold, Onyx, Ruby), <b>Button Colors</b> (Steel, Sapphire, Navy &amp; gold, Ruby, Emerald, Onyx; the preview shows both) and, for Solo, Hints (free or paid, 3 per round or no limit).</li>
+        <li><b>Play</b>: Duel or Solo. <b>Grid</b>: 8×8, 10×10 (standard) or 12×12; each button shows its word count. <b>Key list</b>: Clues or Words. <b>Timer</b>: any whole minute from 1 to 8 (3 is standard); Untimed in Solo. <b>Grid Colors</b> and <b>Button Colors</b> sit right under the preview, so they're easy to change mid-game. <b>Challenge Level</b> 1–10.</li>
+        <li>Under <b>▸ More options</b>, first: <b>Word count</b>, min and max side by side (Auto follows the grid size and Challenge Level, as in The Basics, and shows its number; each round picks a number in your range), then <b>Word length</b>, min and max (min 3 letters standard; max Auto by grid size and Challenge Level; 12×12 also offers 11-letter words). A min set above the max moves the max along (and the other way round). Then <b>Word directions</b> (Easy → ↓, Standard → ↓ ↘ ↗, Hard: all 8 ways), Rounds per match and, for Solo, Hints (free or paid, 3 per round or no limit).</li>
         <li>Every grid is made fresh from our Lexicon, so every hidden word has a clue.</li>`)}
       ${sec('Your Stats', `
         <li>Matches, the share won, words found, Master Keys found and your Solo bests (fastest clear, best speed, best timed scores) are kept on this device. Every match (and Solo round) also goes into <b>📜 Game History</b>, where you can sort and filter them.</li>`)}
