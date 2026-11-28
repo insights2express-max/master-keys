@@ -9,7 +9,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Master Keys">
   <meta name="description" content="Master Keys: CrossKeys, a head-to-head crossword tile game, LockWord, a word-guessing game, and KeyRing, a word builder. Plays offline.">
-  <title>Master Keys · v13f</title>
+  <title>Master Keys · v13g</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="icon" href="icons/icon-192.png" type="image/png" sizes="192x192">
@@ -51,7 +51,7 @@
       <header class="brand">
         <img class="logo" src="icons/icon.svg" alt="" width="64" height="64">
         <div class="brand-txt">
-          <h1><span data-mk="suite">Master Keys</span> <span class="vpill" id="verPill">v13f</span></h1>
+          <h1><span data-mk="suite">Master Keys</span> <span class="vpill" id="verPill">v13g</span></h1>
           <p class="tag">Word games. Play anywhere, even offline.</p>
         </div>
       </header>
@@ -475,7 +475,7 @@
       <div class="kc-main" id="kcMain">
         <div class="kc-bar" id="kcBar">
           <div class="kc-side me"><span class="av" id="kcMeAv">🙂</span><span class="nm" id="kcMeNm">You</span><span class="sc" id="kcMeSc">0</span><span class="rd" id="kcMeRd"></span><span class="plus" id="kcMePlus"></span></div>
-          <div class="kc-mid"><button class="kc-clock" id="kcClock" type="button" title="Pause"><span class="e">⏱</span><span id="kcClk">0:00</span></button><button class="kc-pause" id="kcPause" type="button"></button></div>
+          <div class="kc-mid"><button class="kc-clock hk-clockpz" id="kcClock" type="button" title="Pause"><span class="e" id="kcClkIco">⏸️</span><span id="kcClk">0:00</span></button><button class="kc-pause" id="kcPause" type="button" hidden></button></div><!-- v13g (JM CD-150: 5.2): pause lives in the clock, as in Hidden Keys -->
           <div class="kc-side bot" id="kcBot"><span class="av" id="kcBotAv">🤖</span><span class="nm" id="kcBotNm">Bot</span><span class="sc" id="kcBotSc">0</span><span class="rd" id="kcBotRd"></span><span class="plus" id="kcBotPlus">+1</span></div>
         </div>
         <div class="kc-msg" id="kcMsg" aria-live="polite"></div>

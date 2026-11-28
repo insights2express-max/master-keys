@@ -365,7 +365,7 @@
     tray.classList.remove('turning', 'tf-y', 'tf-r', 'tf-a', 'tf-b');
     const bon = R.bon || {};
     const candy = c => { if (ks.cs !== 'candy') return ''; const [a, d, e] = candyOf(c); return ` style="--c1:${a};--c2:${d};--ce:${e}"`; };
-    tray.innerHTML = dispOrder().map(i => { const c = R.cells[i], b = bon[i]; return `<div class="kc-cell"><div class="kc-cube${b ? ' bon b' + b : ''}" data-i="${i}"${candy(c)}><div class="kc-face"><b class="${c === 'QU' ? 'qu' : ''}">${c === 'QU' ? 'Qu' : c}</b>${M.sc === 'lp' ? `<i>${ptOf(c)}</i>` : ''}${b ? `<em class="kc-bn b${b}">${b}</em>` : ''}</div></div></div>`; }).join('')
+    tray.innerHTML = dispOrder().map(i => { const c = R.cells[i], b = bon[i]; return `<div class="kc-cell"><div class="kc-cube${b ? ' bon b' + b : ''}" data-i="${i}"${candy(c)}><div class="kc-face"><b class="${c === 'QU' ? 'qu' : ''}">${c === 'QU' ? 'Qu' : c}</b>${M.sc === 'lp' ? `<i>${ptOf(c)}</i>` : ''}${b ? `<em class="kc-bn b${b}"><span>${b}</span></em>` : ''}</div></div></div>`; }).join('')
       + '<svg class="kc-line" aria-hidden="true"><polyline class="g" points=""/><polyline points=""/></svg>';
     cubes = []; tray.querySelectorAll('.kc-cube').forEach(el => { cubes[+el.dataset.i] = el; });
     lineEls = [...tray.querySelectorAll('.kc-line polyline')]; lit = [];
@@ -505,12 +505,15 @@
     if (p) { trace = p; tapMode = true; paintTrace(); }
     else { trace = []; paintTrace(); $('#kcMsg').innerHTML = typed.split('').map(c => `<span class="kc-wl no">${c}</span>`).join('') + '<span class="kc-wp">not on the grid</span>'; }
   }
+  // v13g (JM CD-151: 2.2): on the results, ↑ / ↓ scroll the word list (Page Up / Down a screenful)
+  document.addEventListener("keydown", e => { if (screenOn() && !$("#kcRes").hidden && !modalOpen() && UI.scrollList) UI.scrollList(e, $("#kcList")); });
   // v12d (CD-119: 1.2.1): on the results, Enter twice = ▶ Next round (or 🆕 New Game after the last round)
   let enterT = 0;
   document.addEventListener('keydown', e => {
     if (e.key !== 'Enter' || !screenOn() || $('#kcRes').hidden || modalOpen() || e.repeat) return;
     if (e.target && e.target.closest && e.target.closest('input, select, textarea')) return;
     e.preventDefault(); // also stops Enter from pressing a focused button (a tab or a word row)
+    if (UI.armEnter) { UI.armEnter($('#kcNext')); return; } // v13g (JM CD-151: 1.1): the suite standard, Enter twice within 3 s with the "Enter again" look
     if (Date.now() - enterT < 1500) { enterT = 0; $('#kcNext').click(); return; }
     enterT = Date.now();
     if (UI.toast) UI.toast(`Press Enter again for ${M && M.done ? 'a New Game' : 'the next round'}`, '', 1500);
@@ -615,7 +618,7 @@
   });
   $('#kcDone').addEventListener('click', () => { if (R && !R.over && M.mode === 'solo') endRound(); });
 
-  // ---------- ⏸ Pause: the button or the clock ----------
+  // ---------- ⏸ Pause: the clock (v13g) ----------
   function setPause(on) {
     if (!R || R.over) return;
     R.paused = !!on;
@@ -625,9 +628,10 @@
   function paintPause() {
     const p = !!(R && R.paused);
     tray.classList.toggle('blur', p); $('#kcPz').hidden = !p;
-    const b = $('#kcPause');
-    b.textContent = p ? '▶️' : '⏸️'; // v12e (CD-122: 2.1): the standard blue pause / play square (app.js draws it), twice as big
-    b.title = p ? 'Resume' : 'Pause: the clock stops and the cubes are hidden'; b.setAttribute('aria-label', b.title);
+    // v13g (JM CD-150: 5.2): pause lives in the clock, as in Hidden Keys: tap the clock; its icon is the standard pause / play square
+    const b = $('#kcClock');
+    $('#kcClkIco').textContent = p ? '▶️' : '⏸️';
+    b.title = p ? 'Resume' : 'Pause: tap the clock (the clock stops and the cubes are hidden)'; b.setAttribute('aria-label', (p ? 'Resume, ' : 'Pause, ') + 'clock');
   }
   $('#kcPause').addEventListener('click', () => setPause(!(R && R.paused)));
   $('#kcClock').addEventListener('click', () => setPause(!(R && R.paused)));
@@ -828,7 +832,7 @@
     const pos = {}; r.p.forEach((i, k) => { pos[i] = k + 1; });
     const order = dispOrder(), dp = {}; order.forEach((li, k) => { dp[li] = k; });
     const bon = R.bon || {};
-    const cells = order.map(i => { const c = R.cells[i], b = bon[i]; return `<span class="${pos[i] ? 'lit' + (pos[i] === 1 ? ' st' : '') : ''}">${pos[i] ? `<sup>${pos[i]}</sup>` : ''}${c === 'QU' ? 'Qu' : c}${b ? `<em class="kc-bn b${b}">${b}</em>` : ''}</span>`; }).join('');
+    const cells = order.map(i => { const c = R.cells[i], b = bon[i]; return `<span class="${pos[i] ? 'lit' + (pos[i] === 1 ? ' st' : '') : ''}">${pos[i] ? `<sup>${pos[i]}</sup>` : ''}${c === 'QU' ? 'Qu' : c}${b ? `<em class="kc-bn b${b}"><span>${b}</span></em>` : ''}</span>`; }).join('');
     const step = ms + 3, xy = i => [5 + (dp[i] % n) * step + ms / 2, 5 + Math.floor(dp[i] / n) * step + ms / 2];
     const both = r.tag === 'both', c = clueOf(r.w);
     const by = { me: M.mode === 'solo' ? 'You found it.' : 'Only you found it.', bot: `Only ${esc(botNm())} found it.`, both: 'You both found it, so it scores for nobody.', miss: 'Nobody found it.' }[r.tag] + (hd(r.w) ? ' 💡 A Hint pointed to this word.' : '');
@@ -896,14 +900,14 @@
       ${sec('Scoring', `
         <li><b>Letter points + length bonus</b> (the standard): each cube shows its letter's points (common letters 1, rare ones up to 10; Qu 10), and longer words add a bonus: 4 letters +2, 5 +4, 6 +7, 7 +11, 8 +16, then +5 for each letter more.</li>
         <li><b>Word length only</b> (a Setup choice): 3 letters 1, 4 = 2, 5 = 3, 6 = 5, 7 = 8, 8 = 12, then +4 for each letter more.</li>
-        <li><b>Bonus cubes</b> (On unless you turn them off in Setup) carry a badge with a fine black outline and move to new cubes every round (letter bonuses in the top-left corner, word bonuses in the top-right): <b>2L</b> / <b>3L</b> double / triple that cube's letter points; <b>2W</b> / <b>3W</b> double / triple the whole word (two word bonuses in one word multiply). 4×4 has one of each; 5×5 has one 3W, two 2W, two 2L and one 3L. With Word length only, there are only 2W and 3W. They count for the Bot too.</li>`)}
+        <li><b>Bonus cubes</b> (On unless you turn them off in Setup) carry a corner tag with a fine black outline and move to new cubes every round (letter bonuses fill the lower-left corner, word bonuses the upper-left; the lower-right keeps the cube's points): <b>2L</b> / <b>3L</b> double / triple that cube's letter points; <b>2W</b> / <b>3W</b> double / triple the whole word (two word bonuses in one word multiply). 4×4 has one of each; 5×5 has one 3W, two 2W, two 2L and one 3L. With Word length only, there are only 2W and 3W. They count for the Bot too.</li>`)}
       ${sec('The Buttons', `
         <li><b>💡 Hint</b> shows the clue and the length of a word you haven't found, and stripes its first cube: a signal, not a solve. It costs <b>🪙1 per letter</b> of that word (two taps: the first shows the price), at most <b>3 per round</b> in a Duel. In Solo, Hints are free or paid, 3 per round or no limit (Setup).</li>
         <li>While your hinted word is still unfound, the button reads <b>💡 Next</b>: each tap stripes its <b>next cube</b> (numbered 1, 2, 3…) for <b>🪙1</b> (free with free Solo Hints). It never shows the last cube, and it doesn't count toward the Hint limit.</li>
         <li>A word a Hint pointed to keeps a <b>💡 mark</b>: in your words while you play (with a gold edge) and in the results.</li>
         <li><b>Left</b>, under your words, counts the words you haven't found yet, by length. Free.</li>
         <li><b>🔄 Rotate</b> gives the grid a quarter turn, which helps you see new words. Free.</li>
-        <li><b>⏸ Pause</b> (or tap the clock) stops the clock (and the Bot) and hides the cubes. Tap anywhere to resume play.</li>
+        <li>Tap the <b>clock</b> to pause (its ⏸ turns to ▶): it stops (with the Bot) and the cubes are hidden. Tap anywhere to resume play.</li>
         <li>In the last 10 seconds the grid flashes every second: <b>yellow</b> from 10 to 6, <b>red</b> from 5 to 1, with a tick each second.</li>`)}
       ${sec('Coins', `
         <li>In a Duel: a round won pays <b>🪙${WIN}</b>, a draw <b>🪙${DRAW}</b>, and a match won <b>🪙${MATCH}</b> more. Hints cost 🪙1 per letter; Next cube 🪙1.</li>
@@ -912,7 +916,7 @@
       ${sec('Results', `
         <li>In a Duel, the big number in each score card is the <b>game total</b> so far; the line under it is this round: your points, and the Bot's word count (its words, and so its round points, stay hidden until the round ends).</li>
         <li>After rounds before the last: "<b>Round 1 of 3 · You lead: 48 – 31</b>". After the last round: the gold "<b>You WIN!</b>" row with the final game total.</li>
-        <li>On a computer, press <b>Enter twice</b> for the next round (or a New Game after the last round).</li>
+        <li>On a computer, press <b>Enter twice</b> for the next round (or a New Game after the last round): the first Enter lights the button "Enter again", the second (within 3 seconds) presses it. <b>↑</b> / <b>↓</b> scroll the word list (<b>Page Up</b> / <b>Page Down</b> a screenful).</li>
         <li>The score card shows the <b>game totals</b> big, then each round with the running total; the higher score of each round is <b style="color:#12a03c">green</b> (both on a tie). Below it: your words out of every word in the grid, the shared words and your coins.</li>
         <li>Tabs: <b>Your words</b>, <b>Bot's words</b> and <b>All words</b> (every word in the grid, found or missed). Words <b>only you</b> found are <b style="color:#12a03c">green</b>; <b>shared</b> words are <b style="color:#e01e1e">red</b> and score 0. Tap a word to see its path on a small grid (blue = the first cube; the way it was played, or for a missed word its highest-scoring way), how its points add up (with any bonus), and its <b>📖 clue</b> when it's a Lexicon word.</li>`)}
       ${sec('Setup', `

@@ -424,7 +424,11 @@
     const coarse = matchMedia('(pointer: coarse)').matches;
     const big = W0 >= 700 && H0 >= 560; // tablets and computers: bigger message pills
     main.classList.toggle('kr-compact', !big); // v13f (1.1 MB): phones: the colors button moves to the message row, the Key grid fills its panel
-    const sideOk = W0 >= 640 && H0 >= 400; // side by side is possible (the layout pill shows)
+    // v13g (CD-150: 5.1): a short landscape phone (e.g. 812×375) has no room to stack the Key grid over the Ring, so it is always
+    // side by side: the Key grid (with the info row on top) takes the full height on the left, the Ring column sits on the right
+    const short = W0 >= 560 && H0 < 400 && W0 >= H0 * 1.5;
+    main.classList.toggle('kr-short', short);
+    const sideOk = !short && W0 >= 640 && H0 >= 400; // side by side is possible (the layout pill shows)
     $('#krLayP').hidden = !sideOk; // before the info row is measured
     paintColP(); // v11d (CD-100: 3.4.1b): the colors switch sits in the Key grid's top-right corner on every screen
     const infoH = $('#krInfo').offsetHeight || 34, msgH = big ? 56 : 44, gap = 6; // v12a (CD-111: 2.4.3.2): a slimmer message row
@@ -442,16 +446,21 @@
     const colW = (W0 - 44 - 26) / 2.1; // side by side: the Ring's column (1 of 2.1 shares)
     const rsSide = sideOk ? Math.min(colW, H0 - 24 - infoH - msgH - tipH - gap * 4, 640) : 0;
     const lay = ks.layout;
-    wide = sideOk && (lay === 'side' || (lay !== 'stack' && rsSide > rsStack + 12));
+    wide = short || (sideOk && (lay === 'side' || (lay !== 'stack' && rsSide > rsStack + 12)));
     main.classList.toggle('wide', wide);
     $('#krLayP').innerHTML = `<span class="e">${wide ? '⇆' : '⇅'}</span> ${lay === 'auto' ? 'Auto' : lay === 'side' ? 'Side by side' : 'Stacked'}`;
-    rs = Math.max(170, Math.floor(wide ? rsSide : rsStack));
+    // short: the Ring column (a fixed 38% of the width, --krcol) holds the message row and the Ring; the keyboard tip is hidden,
+    // and the win report sits under the Key grid in the left column, so the Ring keeps its size. Padding 6 + 8, row gaps 2 × 6.
+    const krcol = short ? Math.floor((W0 - 28) * 0.38) : 0;
+    if (short) main.style.setProperty('--krcol', krcol + 'px');
+    const rsShort = short ? Math.min(krcol, H0 - 14 - msgH - 12 - 2, 640) : 0;
+    rs = short ? Math.max(120, Math.floor(rsShort)) : Math.max(170, Math.floor(wide ? rsSide : rsStack));
     const n = R.tiles.length;
     const tsFull = Math.round(Math.min(rs * (n <= 4 ? 0.27 : n === 5 ? 0.25 : n === 6 ? 0.23 : n === 7 ? 0.21 : 0.19), 104));
     ts = n >= 7 ? Math.round(tsFull * (n === 7 ? 0.88 : 0.84)) : tsFull; // v12a (CD-111: 2.4.2.1): smaller tiles, the same letters
     main.style.setProperty('--tf', Math.round(tsFull * 0.56) + 'px');
     // the stage holds the Ring and its corner pieces; when there is room beside the Ring, the stage widens (CD-90: 4.1.6)
-    const availW = wide ? colW : W0 - 24;
+    const availW = short ? krcol : wide ? colW : W0 - 24;
     const sw = Math.floor(Math.min(availW, rs + 2 * Math.round(Math.min(110, Math.max(0, rs * 0.11)))));
     main.style.setProperty('--rs', rs + 'px');
     main.style.setProperty('--sw', sw + 'px');

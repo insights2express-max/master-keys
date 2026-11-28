@@ -3268,11 +3268,59 @@ html[data-screen="night"] .kr-grp.kr-mw .kr-chips span:not(.none):not(.hd) { bac
 /* the grid out to the screen edges on phones */
 @media (max-width: 699px) { .hk-main { padding: 4px 4px 8px; gap: 6px; } }
 #hiddenkeys.hk-hh .hk-main { padding-top: 18px; }
-/* KeyCubes 3.1.1: a fine black outline on every bonus tag; 3.1.2: 2W / 3W in the top-right corner, 2L / 3L stay top-left */
-.kc-bn { box-shadow: 0 0 0 1.25px #000, inset 0 1px 0 rgba(255, 255, 255, .45), inset 0 -1px 0 rgba(0, 0, 0, .2), 0 1px 2px rgba(0, 0, 0, .4);
-  text-shadow: 0 0 1px #000, 0 1px 0 rgba(0, 0, 0, .6); }
-.kc-bn.b2W, .kc-bn.b3W { left: auto; right: 7%; }
-.kc-mini .kc-bn { box-shadow: 0 0 0 1px #000; }
-.kc-mini .kc-bn.b2L, .kc-mini .kc-bn.b3L { right: auto; left: 1px; }
-/* a hinted word-bonus cube shows its Hint number in the top-left instead, clear of the tag */
-.kc-cube.bon.b2W.hint::after, .kc-cube.bon.b3W.hint::after { justify-content: flex-start; }
+/* (v13f's top-corner tags were replaced in v13g: see "v13g lead" below) */
+
+/* =====================================================================
+   v13g lead (JM CD-151, KeyCubes / Hidden Keys session): the "Enter again" look on any button; KeyCubes corner tags
+   ===================================================================== */
+/* CD-151: 1.1 the first Enter lights a Next / New Game button with "Enter again" (the coin buttons' armed look) */
+.btn.ent-arm { position: relative; }
+.btn.ent-arm.armed > .arm-lab { font-size: 12.5px; line-height: 1.12; }
+/* KeyCubes CD-150: 5.2: pause lives in the clock (the standard blue pause / play square), as in Hidden Keys; the big button is gone */
+#keycubes .hk-clockpz { cursor: pointer; }
+#keycubes .hk-clockpz .e { font-size: 20px; line-height: 0; }
+#keycubes .hk-clockpz .e .mk-pp { width: 1.25em; height: 1.25em; }
+#keycubes .kc-pause[hidden] { display: none; }
+/* KeyCubes CD-151: 3.1a, 3.2 (JM 3.2.1–3.2.2.1): each bonus tag is a corner triangle on the cube's face: 2L / 3L fill the
+   LOWER-left corner, 2W / 3W the UPPER-left (the lower-right keeps the point value, the upper-right the Hint number).
+   Its size (36% of a cell) clears every letter A–Z and Qu (widest: M at the lower-left, W at the upper-left, measured);
+   the text is as big as the corner allows, with the tag's color showing all round it, and both the tag and its text
+   have a fine black outline. The colors are v12's. */
+.kc-face .kc-bn { --t: calc(var(--cs) * .36); left: 0; right: auto; top: auto; bottom: 0; width: var(--t); height: var(--t); padding: 0;
+  border-radius: 0 0 0 calc(var(--cs) * .035) / 0 0 0 calc(var(--cs) * .09); overflow: hidden; background: none !important; box-shadow: none;
+  text-shadow: none; z-index: 2; }
+.kc-face .kc-bn.b2W, .kc-face .kc-bn.b3W { top: 0; bottom: auto; border-radius: calc(var(--cs) * .15) 0 0 0 / calc(var(--cs) * .143) 0 0 0; }
+.kc-bn::before, .kc-bn::after { content: ""; position: absolute; inset: 0; }
+.kc-bn::before { background: #000; clip-path: polygon(0 0, 0 100%, 100% 100%); }
+.kc-bn::after { clip-path: polygon(0 1.8px, 0 100%, calc(100% - 1.8px) 100%); }
+.kc-bn.b2W::before, .kc-bn.b3W::before { clip-path: polygon(0 0, 100% 0, 0 100%); }
+.kc-bn.b2W::after, .kc-bn.b3W::after { clip-path: polygon(0 0, calc(100% - 1.8px) 0, 0 calc(100% - 1.8px)); }
+.kc-bn.b3W::after { background: linear-gradient(135deg, #ff7b6b, #d62828); }
+.kc-bn.b2W::after { background: linear-gradient(135deg, #ffa3c4, #dd3f7a); }
+.kc-bn.b3L::after { background: linear-gradient(45deg, #6ea6ff, #1f4fbf); }
+.kc-bn.b2L::after { background: linear-gradient(45deg, #7fd0ff, #1f8bd0); }
+/* text as big as each corner allows, with about 3 px of the tag's color all round (measured): "2W" is wider than "2L", and
+   the upper-left corner is more rounded, so the W text is a little smaller */
+.kc-bn > span { position: absolute; z-index: 1; left: 7.5%; bottom: 8.5%; font: 900 calc(var(--t) * .4)/.74 system-ui, "Segoe UI", Roboto, sans-serif;
+  letter-spacing: -.01em; color: #fff; -webkit-text-stroke: 1px #000; paint-order: stroke fill; white-space: nowrap; }
+.kc-bn.b2W > span, .kc-bn.b3W > span { bottom: auto; top: 9.3%; left: 12%; font-size: calc(var(--t) * .28); letter-spacing: -.03em; }
+/* the Hint number goes back to the top-right on every cube */
+.kc-cube.bon.b2W.hint::after, .kc-cube.bon.b3W.hint::after { justify-content: flex-end; }
+/* the results mini grid: the same corner triangles, smaller */
+.kc-mini .kc-bn { --t: calc(var(--ms) * .42); left: 0; right: auto; top: auto; bottom: 0; width: var(--t); height: var(--t); padding: 0; font-size: 0;
+  border-radius: 0 0 0 22%; overflow: hidden; background: none !important; box-shadow: none; }
+.kc-mini .kc-bn.b2W, .kc-mini .kc-bn.b3W { top: 0; bottom: auto; border-radius: 22% 0 0 0; }
+.kc-mini .kc-bn::after { clip-path: polygon(0 1.2px, 0 100%, calc(100% - 1.2px) 100%); }
+.kc-mini .kc-bn.b2W::after, .kc-mini .kc-bn.b3W::after { clip-path: polygon(0 0, calc(100% - 1.2px) 0, 0 calc(100% - 1.2px)); }
+.kc-mini .kc-bn > span { font-size: calc(var(--t) * .36); -webkit-text-stroke: .6px #000; }
+
+/* ---------- v13g KeyRing (CD-151) ---------- */
+/* CD-150: 5.1 (short landscape phones, e.g. 812×375 and 740×360): keyring.js fit() sets #krMain.kr-short and always lays the game
+   out side by side. The info row and the Key grid fill the left column from top to bottom; the message row and the Ring sit in the
+   right column (--krcol, 38% of the width). The keyboard tip is hidden; once the Ring is over, its win report (the tip's area)
+   sits under the Key grid, so the Ring keeps its size. */
+#keyring #krMain.kr-grid.wide.kr-short { grid-template-columns: minmax(0, 1fr) var(--krcol, 290px); column-gap: 14px; row-gap: 6px; padding: 6px 14px 8px;
+  grid-template-rows: var(--mh, 44px) minmax(0, 1fr) auto;
+  grid-template-areas: "info msg" "slots play" "tip play"; }
+#keyring #krMain.kr-short .kr-info { align-self: center; }
+#keyring #krMain.kr-short .kr-tip { display: none; }

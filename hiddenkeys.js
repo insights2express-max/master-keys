@@ -591,9 +591,12 @@
     return '';
   }
   // v13a (JM CD-132: 6.3.1.1.1): a word shorter or longer than this grid's hidden words gets a reminder of the lengths
+  // v13g (JM CD-150: 2.6.2; CD-151: 2.3): the range is THIS round's real shortest and longest hidden word (the Master Key
+  // too), not the Setup range, in the Key list heading and in the "Too short / Too long" reminder
   function lenRange() {
-    const [a, b] = lensOf(), ls = R.words.map(x => x.w.length);
-    return [Math.min(a, ...ls), Math.max(b, ...ls)];
+    const ls = R.words.map(x => x.w.length);
+    if (!ls.length) return lensOf();
+    return [Math.min(...ls), Math.max(...ls)];
   }
   function lenNudge(s) {
     const [a, b] = lenRange(), L = s.length;
@@ -647,11 +650,14 @@
     if (x.by) { msg(`${x.w}: already found${x.by === 'bot' ? ' by ' + esc(botFirst()) : ''}`, 'dup', 1500); snd('draw'); return; }
     claim(x, 'me');
   }
+  // v13g (JM CD-151: 2.2): on the results, ↑ / ↓ scroll the word list (Page Up / Down a screenful)
+  document.addEventListener("keydown", e => { if (screenOn() && !$("#hkRes").hidden && !modalOpen() && UI.scrollList) UI.scrollList(e, $("#hkRList")); });
   let enterT = 0, wordTypeT = 0;
   document.addEventListener('keydown', e => { // on the results, Enter twice = ▶ Next round (or 🆕 New Game after the last round)
     if (e.key !== 'Enter' || !screenOn() || $('#hkRes').hidden || modalOpen() || e.repeat) return;
     if (e.target && e.target.closest && e.target.closest('input, select, textarea')) return;
     e.preventDefault();
+    if (UI.armEnter) { UI.armEnter($('#hkNext')); return; } // v13g (JM CD-151: 1.1): the suite standard, Enter twice within 3 s with the "Enter again" look
     if (Date.now() - enterT < 1500) { enterT = 0; $('#hkNext').click(); return; }
     enterT = Date.now();
     if (UI.toast) UI.toast(`Press Enter again for ${M && M.done ? 'a New Game' : 'the next round'}`, '', 1500);
@@ -661,6 +667,7 @@
     if (e.target && e.target.closest && e.target.closest('input, select, textarea')) return;
     if (e.key === ' ') { e.preventDefault(); setPause(!R.paused); return; }
     if (R.paused) return;
+    if (UI.scrollList && UI.scrollList(e, $("#hkKeys"))) return; // v13g (JM CD-150: 2.6.1; CD-151: 2.1a): ↑ / ↓ scroll the Key list, Page Up / Down a screenful
     if (/^[a-z]$/i.test(e.key)) {
       e.preventDefault();
       if (view() !== 'clue') { if (Date.now() - wordTypeT > 4000) { wordTypeT = Date.now(); msg('Words list shown: drag across a word', 'dup', 2600); } return; }
@@ -1062,8 +1069,8 @@
       ${sec('Find a Word', `
         <li><b>Swipe</b> (touch) or <b>drag</b> (mouse) from the first letter of a word to its last, then let go. The band snaps to the nearest straight line. Either end can come first.</li>
         <li>Or <b>tap</b> the first letter, then the last one. A tap on the same letter again cancels.</li>
-        <li>On a computer, in <b>Clues</b> mode, you can also <b>type the answer</b> to a clue and press <b>Enter</b>: the app finds it in the grid (if the letters spell more than one hidden word, it takes the highest-scoring one, the 🗝 Master Key first). <b>⌫</b> takes a letter back, <b>Esc</b> clears, <b>Space</b> pauses. In <b>Words</b> mode the list already shows the words, so you drag.</li>
-        <li>A swipe, drag or typed word that is <b>shorter or longer</b> than this grid's hidden words gets a red reminder of the lengths, e.g. "Too short (2 letters): the hidden words here are 3–8 letters".</li>
+        <li>On a computer, in <b>Clues</b> mode, you can also <b>type the answer</b> to a clue and press <b>Enter</b>: the app finds it in the grid (if the letters spell more than one hidden word, it takes the highest-scoring one, the 🗝 Master Key first). <b>⌫</b> takes a letter back, <b>Esc</b> clears, <b>Space</b> pauses, <b>↑</b> / <b>↓</b> scroll the Key list (<b>Page Up</b> / <b>Page Down</b> a screenful). In <b>Words</b> mode the list already shows the words, so you drag.</li>
+        <li>A swipe, drag or typed word that is <b>shorter or longer</b> than this round's hidden words gets a red reminder of the lengths, e.g. "Too short (3 letters): the hidden words here are 4–7 letters". The Key list heading shows the same range: this round's shortest and longest hidden word.</li>
         <li><b>📖 Clues / 🔤 Words</b> in the Key list's heading switches the list between the clues and the words at any time; it keeps for the rest of the match (a new game starts with your Setup choice). The Bot's pace stays as set in Setup.</li>
         <li>In a game that started with <b>Clues</b>, switching to <b>Words</b> first shows a <b>warning</b> you must agree to (the clock waits). In a <b>Duel</b>, each word you find while the words show scores <b>half points</b> (rounded up, marked ½); the 🗝 Master Key stays a clue and keeps its ×3. In <b>Solo</b>, a round in which the words were shown counts toward your <b>Words</b> bests.</li>
         <li>Tap a clue in the Key list to pick it: it shows big above the grid, and 💡 Hint helps with that word.</li>

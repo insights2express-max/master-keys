@@ -15,7 +15,7 @@
    v08j: grid colors, final-play view, clock-out final turn, menu defaults, phone two-finger drag) */
 'use strict';
 (() => {
-  const APP_VER = 'v13f'; // Project CP: shown as a pill beside the title and in the browser tab
+  const APP_VER = 'v13g'; // Project CP: shown as a pill beside the title and in the browser tab
   const NM = window.MK_NAMES || { suite: 'Master Keys', cross: 'CrossKeys', lock: 'LockWord' }; // v09: the game names (names.js)
   // v09a (JM CD-71: 1.2c, 1.3b): the two games' own icons, shown wherever the 🧩 / 🔐 emoji stood
   const GI = { cross: 'icons/crosskeys.svg', lock: 'icons/lockword.svg', ring: 'icons/keyring.svg', cubes: 'icons/keycubes.svg', hidden: 'icons/hiddenkeys.svg' }; // v11: KeyRing; v12: KeyCubes; v13: Hidden Keys
@@ -1965,8 +1965,41 @@
     btn._armT = setTimeout(() => disarm(btn), ARM_MS);
     return false;
   }
+  // v13g (JM CD-151: 1.1, the standard for every game, present and future): on a computer a new round / word / game always
+  // takes TWO Enters. The first lights its button with "Enter again" (the same look as a coin button's "Tap again") for
+  // 3 seconds; a second Enter in that time presses it. So an Enter meant for a word as the clock runs out never skips the
+  // results. Returns true when the press went ahead.
+  function armEnter(btn) {
+    if (!btn) return false;
+    if (btn.classList.contains('armed') && btn.classList.contains('ent-arm')) { disarm(btn); btn.classList.remove('ent-arm'); btn.click(); return true; }
+    document.querySelectorAll('.armed').forEach(disarm);
+    const t = btn.textContent, nx = t.match(/Next (round|word)/i);
+    btn.dataset.arm = `Enter again\n${/New Game/i.test(t) || !nx ? 'for a New Game' : 'for the next ' + nx[1].toLowerCase()}`;
+    let lab = btn.querySelector(':scope > .arm-lab');
+    if (!lab) { lab = document.createElement('span'); lab.className = 'arm-lab'; lab.setAttribute('aria-hidden', 'true'); btn.appendChild(lab); }
+    lab.innerHTML = '<span class="al"></span>'; lab.firstChild.textContent = btn.dataset.arm;
+    btn.classList.add('armed', 'ent-arm');
+    clearTimeout(btn._armT);
+    btn._armT = setTimeout(() => { disarm(btn); btn.classList.remove('ent-arm'); }, ARM_MS);
+    return false;
+  }
+  // v13g (JM CD-150: 2.6.1; CD-151: 2.1a, 2.2: the standard for any word list): on a computer ↑ / ↓ scroll a word list one
+  // row at a time (hold to keep going), Page Up / Page Down a screenful. It scrolls whichever box around the list scrolls.
+  // Returns true when it took the key. (CrossKeys keeps ↑ / ↓ for zoom, CD-54.)
+  function scrollList(e, el) {
+    if (!el || !['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown'].includes(e.key) || e.ctrlKey || e.metaKey || e.altKey) return false;
+    if (e.target && e.target.closest && e.target.closest('input, select, textarea')) return false;
+    let s = el;
+    while (s && s !== document.body && !(s.scrollHeight > s.clientHeight + 1 && /auto|scroll/.test(getComputedStyle(s).overflowY))) s = s.parentElement;
+    if (!s || s === document.body) return false;
+    const r = el.firstElementChild && el.firstElementChild.getBoundingClientRect().height;
+    const d = e.key.startsWith('Arrow') ? (r ? r + 4 : 32) : s.clientHeight * 0.85;
+    e.preventDefault();
+    s.scrollTop += (/Up$/.test(e.key) ? -1 : 1) * d; // instant: quick presses add up exactly
+    return true;
+  }
   document.addEventListener('pointerdown', e => {
-    document.querySelectorAll('.btn.armed').forEach(b => { if (!b.contains(e.target)) disarm(b); });
+    document.querySelectorAll('.armed').forEach(b => { if (!b.contains(e.target) && (b.classList.contains('btn') || b.classList.contains('ent-arm'))) { disarm(b); b.classList.remove('ent-arm'); } });
   }, true);
 
   // v08c (JM CD-30: 4.5): GAME HISTORY. The last 100 results from both games, newest first, kept on this device.
@@ -2309,7 +2342,7 @@
         <li><b>⏸️ Pause</b> (or the P key) shows your clock in timed games. On a phone, tapping the clock under your score also pauses (and resumes) the game. It stops every clock and hides the grid, clues and hand; tap the PLAY PAUSED panel, ▶️, or P to resume. The game also pauses when you switch to another tab or app.</li>
         <li><b>⏱️ +30s (🪙${R.timeCost})</b> (timed games only): adds 30 seconds to your clock for ${R.timeCost} coins. Use it as often as you like. Bought time never pays speed coins.</li>
         <li><b>✓ Done</b> (green) checks and banks this turn's tiles. It shows how many are penciled in, like <b>Done · 3</b> (not the points, which would give away which tiles are right). With nothing placed it turns <b>orange</b> and reads <b>⏭ Pass</b>: orange means "think first", since a pass is sometimes needed but never a gain.</li>
-        <li><b>Keyboard</b> (computers): <b>Enter</b> is ✓ Done. With nothing placed, press Enter <b>twice</b> within 3 seconds to pass (the button reads "Enter again to pass"). Enter also closes a waiting turn report or LAST CHANCE notice. <b>P</b> or <b>Space</b> pauses (press again to resume). <b>Z</b> is 🔍 zoom; <b>+</b> or <b>↑</b> zooms in, <b>−</b> or <b>↓</b> zooms out, <b>←</b> and <b>→</b> (or <b>Shift + ↑</b> and <b>Shift + ↓</b>) slide a zoomed grid, and <b>Esc</b> shows the whole grid again.</li>
+        <li><b>Keyboard</b> (computers): <b>Enter</b> is ✓ Done. With nothing placed, press Enter <b>twice</b> within 3 seconds to pass (the button reads "Enter again to pass"). Enter also closes a waiting turn report or LAST CHANCE notice. After the game, Enter opens Results and lights its <b>New Game</b> ("Enter again"); a second Enter within 3 seconds starts it. <b>P</b> or <b>Space</b> pauses (press again to resume). <b>Z</b> is 🔍 zoom; <b>+</b> or <b>↑</b> zooms in, <b>−</b> or <b>↓</b> zooms out, <b>←</b> and <b>→</b> (or <b>Shift + ↑</b> and <b>Shift + ↓</b>) slide a zoomed grid, and <b>Esc</b> shows the whole grid again.</li>
         <li><b>🔍 Zoom</b> (among the buttons between the two scores): tap it, then tap the part of the grid you want; it fills the view. Tap 🔍 again for the whole grid, and twice more to go back to your last view. You can also pinch the grid (phones) or hold Ctrl and roll the mouse wheel (computers). Zoomed, drag the grid to slide it, use the arrows at its edges, or tap the small map in the corner to jump.</li>`)}
       ${sec('Bonuses', `
         <li><span class="chip x2">2×</span> doubles your turn's points from tiles and words. Each extra 2× in the same turn adds another double: 10 → 20 → 40 → 60.</li>
@@ -2647,7 +2680,12 @@
       e.preventDefault();
       if (document.activeElement && document.activeElement !== document.body && document.activeElement.blur) document.activeElement.blur();
       // v08j (CD-45: 3.1a): after the game, Enter closes the last report, then opens Results
-      if (G.over) { if (repsOn()) clearReports(); else if ($('#modal').hidden) showResults(); return; }
+      // v13g (CD-151: 1.1): the Enter that opens Results also lights its New Game ("Enter again"), so a second Enter starts it
+      if (G.over) {
+        if (repsOn()) clearReports();
+        else if ($('#modal').hidden) { showResults(); armEnter([...document.querySelectorAll('#modal button.primary')].find(b => /New Game/i.test(b.textContent))); }
+        return;
+      }
       if (ui.paused || Date.now() < (ui.repAt || 0)) return;
       if (repsOn() || ui.wrong) { clearReports(); return; }
       if (!myTurn()) return;
@@ -3802,6 +3840,8 @@
   //   keeps its own order (Enter closes the last report, then opens Results, then New Game there); KeyCubes and Hidden Keys
   //   keep Enter twice on their results (CD-119: 1.2.1).
   // A new game only needs its New Game button to be a .primary button reading "New Game" in its win bar (.overbar) or Results.
+  // v13g (JM CD-151: 1.1–1.2): TWO Enters everywhere (armEnter: the first lights the button "Enter again", the second
+  // presses it within 3 s). The one exception: a "Start new" window you opened yourself confirms on ONE Enter.
   const NEW_RE = /New Game|^Start new$|^Next word$/i;
   const ENTER_OWN = ['game', 'keycubes', 'hiddenkeys']; // screens whose own code already takes Enter on the game-over screen
   document.addEventListener('keydown', e => {
@@ -3818,7 +3858,8 @@
       b = [...sec.querySelectorAll('.overbar button.primary')].find(isNew);
     }
     if (!b) return;
-    e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation(); b.click();
+    e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation();
+    if (/^Start new$/i.test(b.textContent.trim())) b.click(); else armEnter(b);
   }, true);
 
   // v07c: the LockWord mini-game (lockword.js) shares the menu's modal, toasts, storage and avatar list
@@ -3837,7 +3878,7 @@
   window.CDUI = {
     $, esc, store, toast, openModal, closeModal, APP_VER, AVATARS, coins, coinPill, COIN, // v08: coins shared with LockWord
     OPP, // v12d (JM CD-119 add. 2.3.1): the rivals, one per Challenge Level, shared with KeyCubes
-    armTap, history: hist, // v08c: two-tap coin buttons; Game History shared with LockWord
+    armTap, armEnter, scrollList, history: hist, // v08c: two-tap coin buttons; Game History shared with LockWord
     helpSec, helpClick, // v08f: How To Play sections shared with LockWord
     showScreen, goHome: () => { showScreen('home'); renderHome(); }, lobby: () => renderHome(), // v10: the Lobby (refreshed once LockWord has loaded)
     settings: () => settings,
